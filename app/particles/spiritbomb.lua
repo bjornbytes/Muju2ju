@@ -38,7 +38,8 @@ function SpiritBomb:update()
 		self.y = self.y + self.vy * tickRate
 		self.vy = self.vy + self.gravity * tickRate
 		self.angle = self.angle + math.sign(self.vx) * tickRate
-		if self.y + self.image:getWidth() >= love.graphics.getHeight() - ctx.environment.groundHeight then
+    local image = media.graphics.spujuSkull
+		if self.y + image:getWidth() >= love.graphics.getHeight() - ctx.environment.groundHeight then
 			self.health = self.maxHealth
 			table.each(ctx.target:getMinionsInRange(self, self.radius), function(m)
 				m:hurt(self.damage)
@@ -57,7 +58,7 @@ function SpiritBomb:draw()
 	local g = love.graphics
 	if self.health then
 		g.setColor(80, 230, 80, 200 * self.health / self.maxHealth)
-		g.draw(Burst.image, self.x, g.getHeight() - ctx.environment.groundHeight, self.angle, self.burstScale + .25, self.burstScale + .25, Burst.image:getWidth() / 2, Burst.image:getHeight() / 2)
+		g.draw(media.graphics.explosion, self.x, g.getHeight() - ctx.environment.groundHeight, self.angle, self.burstScale + .25, self.burstScale + .25, Burst.image:getWidth() / 2, Burst.image:getHeight() / 2)
 	else
     local image = media.graphics.spujuSkull
 		g.setColor(255, 255, 255)

@@ -3,7 +3,6 @@ require 'app/particles/particle'
 Burst = extend(Particle)
 
 Burst.maxHealth = .5
-Burst.image = love.graphics.newImage('media/graphics/explosion.png')
 
 function Burst:init(data)
 	self.health = self.maxHealth
@@ -19,7 +18,8 @@ end
 
 function Burst:draw()
 	local g = love.graphics
+  local image = media.graphics.explosion
 	g.setColor(230, 40, 40, (self.health / self.maxHealth) * 255)
-	g.draw(self.image, self.x, self.y, self.angle, self.scale + .2, self.scale + .2, self.image:getWidth() / 2, self.image:getHeight() / 2)
+	g.draw(image, self.x, self.y, self.angle, self.scale + .2, self.scale + .2, image:getWidth() / 2, image:getHeight() / 2)
 end
 

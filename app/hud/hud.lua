@@ -6,8 +6,6 @@ local rich = require 'lib/deps/richtext/richtext'
 local normalFont = love.graphics.newFont('media/fonts/inglobal.ttf', 14)
 local fancyFont = love.graphics.newFont('media/fonts/inglobal.ttf', 24)
 local boldFont = love.graphics.newFont('media/fonts/inglobalb.ttf', 14)
-local deadFontBig = love.graphics.newFont('media/fonts/inglobal.ttf', 64)
-local deadFontSmall = love.graphics.newFont('media/fonts/inglobal.ttf', 44)
 Hud.richOptions = {title = fancyFont, bold = boldFont, normal = normalFont, white = {255, 255, 255}, whoCares = {230, 230, 230}, red = {255, 100, 100}, green = {100, 255, 100}}
 Hud.upgradeGeometry = {
 	zuju = {
@@ -36,6 +34,7 @@ Hud.upgradeGeometry = {
 		distort = {508, 478, 40}
 	}
 }
+
 Hud.upgradeDotGeometry = {
 	zuju = {
 		empower = {{139, 229, 7}, {149, 235, 7}, {160, 238, 7}, {171, 235, 7}, {181, 229, 7}},
@@ -63,24 +62,9 @@ Hud.upgradeDotGeometry = {
 		distort = {{508, 514, 13}}
 	}
 }
-Hud.upgradePillows = {
-	{g.newImage('media/graphics/pipe1.png'), 131, 238, check = function() return ctx.upgrades.zuju.empower.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe2.png'), 177, 234, check = function() return ctx.upgrades.zuju.fortify.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe3.png'), 230, 234, check = function() return ctx.upgrades.zuju.fortify.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe4.png'), 284, 237, check = function() return ctx.upgrades.zuju.burst.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe5.png'), 491, 238, check = function() return ctx.upgrades.vuju.surge.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe6.png'), 537, 234, check = function() return ctx.upgrades.vuju.charge.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe7.png'), 590, 234, check = function() return ctx.upgrades.vuju.charge.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe8.png'), 644, 237, check = function() return ctx.upgrades.vuju.condemn.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe9.png'), 205, 452, check = function() return ctx.upgrades.muju.flow.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe10.png'), 216, 492, check = function() return ctx.upgrades.muju.harvest.level >= 1 end, alpha = 0},
-	{g.newImage('media/graphics/pipe11.png'), 394, 437, check = function() return ctx.upgrades.muju.zeal.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe12.png'), 390, 499, check = function() return ctx.upgrades.muju.absorb.level >= 1 end, alpha = 0},
-	{g.newImage('media/graphics/pipe13.png'), 567, 452, check = function() return ctx.upgrades.muju.imbue.level >= 3 end, alpha = 0},
-	{g.newImage('media/graphics/pipe14.png'), 559, 493, check = function() return ctx.upgrades.muju.mirror.level >= 1 end, alpha = 0},
-}
 
 function Hud:init()
+  self.protectFont = love.graphics.newFont('media/fonts/inglobal.ttf', 64)
 	self.cursorImage = g.newImage('media/graphics/cursor.png')
 	self.cursorX = g.getWidth() / 2
 	self.cursorY = g.getHeight() / 2
@@ -88,55 +72,60 @@ function Hud:init()
 	self.prevCursorY = self.cursorY
 	self.cursorSpeed = 0
 	self.upgrading = false
-	self.upgradeBg = g.newImage('media/graphics/upgrade-menu.png')
-	self.upgradeCircles = g.newImage('media/graphics/upgrade-menu-circles.png')
-	self.upgradeDot = g.newImage('media/graphics/level-icon.png')
 	self.upgradeDotAlpha = {}
 	self.lock = g.newImage('media/graphics/lock.png')
 	self.upgradeAlpha = 0
 	self.upgradesBought = 0
 	self.tooltip = nil
 	self.tooltipRaw = ''
-	self.jujuIcon = g.newImage('media/graphics/juju-icon.png')
 	self.jujuIconScale = .75
 	self.timer = {total = 0, minutes = 0, seconds = 0}
 	self.particles = Particles()
-	self.selectBg = {g.newImage('media/graphics/select-zuju.png'), g.newImage('media/graphics/select-vuju.png')}
+	self.selectBg = {media.graphics.selectZuju, media.graphics.selectVuju}
 	self.selectFactor = {0, 0}
 	self.selectExtra = {0, 0}
 	self.selectQuad = {}
 	self.selectQuad[1] = g.newQuad(0, 0, self.selectBg[1]:getWidth(), self.selectBg[1]:getHeight(), self.selectBg[1]:getWidth(), self.selectBg[1]:getHeight())
 	self.selectQuad[2] = g.newQuad(0, 0, self.selectBg[2]:getWidth(), self.selectBg[2]:getHeight(), self.selectBg[2]:getWidth(), self.selectBg[2]:getHeight())
-	self.deadAlpha = 0
-	self.deadName = ''
-	self.deadNameFrame = g.newImage('media/graphics/death-box.png')
-	self.deadOk = g.newImage('media/graphics/death-ok.png')
-	self.deadReplay = g.newImage('media/graphics/death-replay.png')
-	self.deadQuit = g.newImage('media/graphics/death-quit.png')
+  self.dead = HudDead()
 	self.deadScreen = 1
-	self.pauseAlpha = 0
-	self.pauseScreen = g.newImage('media/graphics/pause-menu.png')
+  self.pause = HudPause()
 	self.tutorialIndex = 1
 	self.tutorialTimer = 0
 	self.tutorialEnabled = true or not love.filesystem.exists('playedBefore')
 	self.tutorialImages = {
-		[1] = g.newImage('media/graphics/tutorial-move1.png'),
-		[2] = g.newImage('media/graphics/tutorial-summon.png'),
-		[3] = g.newImage('media/graphics/tutorial-move2.png'),
-		[3.5] = g.newImage('media/graphics/tutorial-juju.png'),
-		[4] = g.newImage('media/graphics/tutorial-shrine.png'),
-		[5] = g.newImage('media/graphics/tutorial-minions.png')
+		[1] = media.graphics.tutorialMove1,
+		[2] = media.graphics.tutorialSummon,
+		[3] = media.graphics.tutorialMove2,
+		[3.5] = media.graphics.tutorialJuju,
+		[4] = media.graphics.tutorialShrine,
+		[5] = media.graphics.tutorialMinions
 	}
 	self.tutorialDirty = {}
 	self.protectAlpha = 3
 	love.filesystem.write('playedBefore', 'achievement unlocked.')
 	ctx.view:register(self, 'gui')
+
+  self.upgradePillows = {
+    {media.graphics.pipe1, 131, 238, check = function() return ctx.upgrades.zuju.empower.level >= 3 end, alpha = 0},
+    {media.graphics.pipe2, 177, 234, check = function() return ctx.upgrades.zuju.fortify.level >= 3 end, alpha = 0},
+    {media.graphics.pipe3, 230, 234, check = function() return ctx.upgrades.zuju.fortify.level >= 3 end, alpha = 0},
+    {media.graphics.pipe4, 284, 237, check = function() return ctx.upgrades.zuju.burst.level >= 3 end, alpha = 0},
+    {media.graphics.pipe5, 491, 238, check = function() return ctx.upgrades.vuju.surge.level >= 3 end, alpha = 0},
+    {media.graphics.pipe6, 537, 234, check = function() return ctx.upgrades.vuju.charge.level >= 3 end, alpha = 0},
+    {media.graphics.pipe7, 590, 234, check = function() return ctx.upgrades.vuju.charge.level >= 3 end, alpha = 0},
+    {media.graphics.pipe8, 644, 237, check = function() return ctx.upgrades.vuju.condemn.level >= 3 end, alpha = 0},
+    {media.graphics.pipe9, 205, 452, check = function() return ctx.upgrades.muju.flow.level >= 3 end, alpha = 0},
+    {media.graphics.pipe10, 216, 492, check = function() return ctx.upgrades.muju.harvest.level >= 1 end, alpha = 0},
+    {media.graphics.pipe11, 394, 437, check = function() return ctx.upgrades.muju.zeal.level >= 3 end, alpha = 0},
+    {media.graphics.pipe12, 390, 499, check = function() return ctx.upgrades.muju.absorb.level >= 1 end, alpha = 0},
+    {media.graphics.pipe13, 567, 452, check = function() return ctx.upgrades.muju.imbue.level >= 3 end, alpha = 0},
+    {media.graphics.pipe14, 559, 493, check = function() return ctx.upgrades.muju.mirror.level >= 1 end, alpha = 0},
+  }
 end
 
 function Hud:update()
 	self.upgradeAlpha = math.lerp(self.upgradeAlpha, self.upgrading and 1 or 0, 12 * tickRate)
-	self.deadAlpha = math.lerp(self.deadAlpha, ctx.ded and 1 or 0, 12 * tickRate)
-	self.pauseAlpha = math.lerp(self.pauseAlpha, ctx.paused and 1 or 0, 12 * tickRate)
 	self.protectAlpha = math.max(self.protectAlpha - tickRate, 0)
 	self.jujuIconScale = math.lerp(self.jujuIconScale, .75, 12 * tickRate)
 	for i = 1, #self.selectFactor do
@@ -309,9 +298,9 @@ function Hud:gui()
 		g.setFont(boldFont)
 		if not self.upgrading then
 			g.setColor(255, 255, 255, 255 * (1 - self.upgradeAlpha))
-			g.draw(self.jujuIcon, 52, 55, 0, self.jujuIconScale, self.jujuIconScale, self.jujuIcon:getWidth() / 2, self.jujuIcon:getHeight() / 2)
+			g.draw(media.graphics.juju, 52, 55, 0, self.jujuIconScale, self.jujuIconScale, media.graphics.juju:getWidth() / 2, media.graphics.juju:getHeight() / 2)
 			g.setColor(0, 0, 0)
-			g.printf(math.floor(ctx.player.juju), 16, 18 + self.jujuIcon:getHeight() * .375 - (g.getFont():getHeight() / 2), self.jujuIcon:getWidth() * .75, 'center')
+			g.printf(math.floor(ctx.player.juju), 16, 18 + media.graphics.juju:getHeight() * .375 - (g.getFont():getHeight() / 2), media.graphics.juju:getWidth() * .75, 'center')
 			g.setColor(255, 255, 255)
 		end
 
@@ -423,7 +412,7 @@ function Hud:gui()
 
 		-- Protect message
 		if self.protectAlpha > .1 then
-			g.setFont(deadFontBig)
+			g.setFont(self.protectFont)
 			g.setColor(0, 0, 0, 150 * math.min(self.protectAlpha, 1))
 			g.printf('Protect Your Shrine!', 2, h * .25 + 2, w, 'center')
 			g.setColor(253, 238, 65, 255 * math.min(self.protectAlpha, 1))
@@ -432,13 +421,7 @@ function Hud:gui()
 		end
 
 		-- Pause Menu
-		if self.pauseAlpha > .01 then
-			g.setColor(0, 0, 0, 128 * self.pauseAlpha)
-			g.rectangle('fill', 0, 0, g.getDimensions())
-
-			g.setColor(255, 255, 255, 255 * self.pauseAlpha)
-			g.draw(self.pauseScreen, w * .5, h * .5, 0, 1, 1, self.pauseScreen:getWidth() / 2, self.pauseScreen:getHeight() / 2)
-		end
+    self.pause:draw()
 	end
 
 	-- Upgrade screen
@@ -446,13 +429,14 @@ function Hud:gui()
 		local mx, my = love.mouse.getPosition()
 		local w2, h2 = w / 2, h / 2
 		
+    local upgradeMenu = media.graphics.upgradeMenu
 		g.setColor(255, 255, 255, self.upgradeAlpha * 250)
-		g.draw(self.upgradeBg, 400, 300, 0, .875, .875, self.upgradeBg:getWidth() / 2, self.upgradeBg:getHeight() / 2)
+		g.draw(upgradeMenu, 400, 300, 0, .875, .875, upgradeMenu:getWidth() / 2, upgradeMenu:getHeight() / 2)
 
 		for i = 1, #self.upgradePillows do
 			local pillow = self.upgradePillows[i]
 			if pillow.check() then
-				g.setColor(255, 255, 255, 255 * pillow.alpha)
+				g.setColor(255, 255, 255, 255 * pillow.alpha * self.upgradeAlpha)
 				local img, x, y = unpack(pillow)
 				x = ((x - 400) * .875) + 400
 				y = ((y - 313) * .875) + 300
@@ -460,8 +444,9 @@ function Hud:gui()
 			end
 		end
 
+    local circles = media.graphics.upgradeMenuCircles
 		g.setColor(255, 255, 255, self.upgradeAlpha * 250)
-		g.draw(self.upgradeCircles, 400, 300, 0, 1, 1, self.upgradeCircles:getWidth() / 2, self.upgradeCircles:getHeight() / 2)
+		g.draw(circles, 400, 300, 0, 1, 1, circles:getWidth() / 2, circles:getHeight() / 2)
 
 		g.setColor(0, 0, 0, self.upgradeAlpha * 250)
 		local str = tostring(math.floor(ctx.player.juju))
@@ -473,7 +458,7 @@ function Hud:gui()
 					local info = self.upgradeDotGeometry[who][what][i]
 					if info then
 						local x, y, scale = unpack(info)
-						local dot = self.upgradeDot
+						local dot = media.graphics.levelIcon
 						local w, h = dot:getDimensions()
 						g.setColor(255, 255, 255, (self.upgradeDotAlpha[who .. what .. i] or 1) * 255 * self.upgradeAlpha)
 						g.draw(dot, x + .5, y + .5, 0, scale / w, scale / h, w / 2, h / 2)
@@ -512,70 +497,8 @@ function Hud:gui()
 
 	-- Death Screen
 	if ctx.ded then
-		if self.deadScreen == 1 then
-			g.setColor(244, 188, 80, 255 * self.deadAlpha)
-			g.setFont(deadFontBig)
-			local str = 'YOUR SHRINE HAS BEEN DESTROYED!'
-			g.printf(str, 50, 30, 700, 'center')
-
-			g.setColor(253, 238, 65, 255 * self.deadAlpha)
-			g.setFont(deadFontSmall)
-			str = 'Your Score:'
-			g.printf(str, 0, h * .325, w, 'center')
-
-			g.setColor(240, 240, 240, 255 * self.deadAlpha)
-			str = tostring(math.floor(self.timer.total * tickRate))
-			g.printf(str, 0, h * .41, w, 'center')
-			
-			g.setColor(253, 238, 65, 255 * self.deadAlpha)
-			str = 'Your Name:'
-			g.printf(str, 0, h * .51, w, 'center')
-
-			g.setColor(255, 255, 255, 255 * self.deadAlpha)
-			g.draw(self.deadNameFrame, w / 2 - self.deadNameFrame:getWidth() / 2, h * .584)
-			
-			g.setColor(240, 240, 240, 255 * self.deadAlpha)
-			local font = g.getFont()
-			local scale = 1
-			while font:getWidth(self.deadName) * scale > self.deadNameFrame:getWidth() - 24 do scale = scale - .05 end
-			
-			local xx = w / 2 - font:getWidth(self.deadName) * scale / 2
-			local yy = h * .584 + (self.deadNameFrame:getHeight() / 2) - font:getHeight() * scale / 2
-			g.print(self.deadName, xx, yy, 0, scale, scale)
-
-			local cursorx = xx + font:getWidth(self.deadName) * scale + 1
-			g.line(cursorx, yy, cursorx, yy + font:getHeight() * scale)
-
-			g.setColor(255, 255, 255, 255 * self.deadAlpha)
-			g.draw(self.deadOk, w / 2 - self.deadOk:getWidth() / 2, h * .825)
-		else
-			if self.highscores then
-				g.setColor(253, 238, 65, 255 * self.deadAlpha)
-				g.setFont(deadFontSmall)
-				g.printf('Highscores', 0, h * .05, w, 'center')
-
-				g.setFont(fancyFont)
-				g.setColor(255, 255, 255, 255 * self.deadAlpha)
-				local yy = h * .2
-
-				for _, entry in ipairs(self.highscores) do
-					g.print(entry.who, w * .3, yy)
-					g.printf(entry.what, 0, yy, w * .7, 'right')
-					yy = yy + g.getFont():getHeight() + 4
-				end
-				
-				g.draw(self.deadReplay, w * .4, h * .825, 0, 1, 1, self.deadReplay:getWidth() / 2)
-				g.draw(self.deadQuit, w * .6, h * .825, 0, 1, 1, self.deadQuit:getWidth() / 2)
-			else
-				g.setColor(253, 238, 65, 255 * self.deadAlpha)
-				g.setFont(deadFontSmall)
-				g.printf('Unable to load highscores :[', 0, h * .4, w, 'center')
-
-				g.draw(self.deadReplay, w * .4, h * .825, 0, 1, 1, self.deadReplay:getWidth() / 2)
-				g.draw(self.deadQuit, w * .6, h * .825, 0, 1, 1, self.deadQuit:getWidth() / 2)
-			end
-		end
-	end
+    self.dead:draw()
+  end
 
 	if self.upgrading or ctx.paused or ctx.ded then
 		if ctx.player.gamepad then
@@ -615,15 +538,20 @@ function Hud:keyreleased(key)
 end
 
 function Hud:textinput(char)
-	if ctx.ded then
-		if #self.deadName < 16 and char:match('%w') then
-			self.deadName = self.deadName .. char
-		end
-	end
+  self.dead:textinput(char)
 end
 
 function Hud:gamepadpressed(gamepad, button)
 	if gamepad == ctx.player.gamepad and not ctx.ded then
+    if button == 'b' and self.upgrading then
+      self.upgrading = false
+      self.cursorX = g.getWidth() / 2
+      self.cursorY = g.getHeight() / 2
+      self.prevCursorX = self.cursorX
+      self.prevCursorY = self.cursorY
+      return true
+    end
+
 		if (button == 'x' or button == 'y') and math.abs(ctx.player.x - ctx.shrine.x) < ctx.player.width then
 			self.upgrading = not self.upgrading
 			self.cursorX = g.getWidth() / 2
@@ -632,6 +560,7 @@ function Hud:gamepadpressed(gamepad, button)
 			self.prevCursorY = self.cursorY
 			return true
 		end
+
 		if button == 'a' and (self.upgrading or ctx.paused or ctx.ded) then
 			self:mousepressed(self.cursorX, self.cursorY, 'l')
 			self:mousereleased(self.cursorX, self.cursorY, 'l')
@@ -677,27 +606,7 @@ function Hud:mousereleased(x, y, b)
 		end
 	end
 
-	if b == 'l' and ctx.ded then
-		if self.deadScreen == 1 then
-			local img = self.deadOk
-			local w2 = g.getWidth() / 2
-			if math.inside(x, y, w2 - img:getWidth() / 2, g.getHeight() * .825, img:getDimensions()) then
-				self:sendScore()
-			end
-		elseif self.deadScreen == 2 then
-			local img1 = self.deadReplay
-			local img2 = self.deadQuit
-			local w = g.getWidth()
-			local h = g.getHeight()
-			if math.inside(x, y, w * .4 - img1:getWidth() / 2, h * .825, img1:getDimensions()) then
-				Context:remove(ctx)
-				Context:add(Game)
-			elseif math.inside(x, y, w * .6 - img2:getWidth() / 2, h * .825, img2:getDimensions()) then
-				Context:remove(ctx)
-				Context:add(Menu)
-			end
-		end
-	end
+  self.dead:mousepressed(x, y, b)
 
 	if b == 'l' and ctx.paused then
 		local w, h = g.getDimensions()
@@ -710,21 +619,3 @@ function Hud:mousereleased(x, y, b)
 	end
 end
 
-function Hud:sendScore()
-	self.highscores = nil
-
-	if #self.deadName > 0 then
-		local seconds = math.floor(self.timer.total * tickRate)
-		local http = require('socket.http')
-		http.TIMEOUT = 5
-		local response = http.request('http://plasticsarcastic.com/mujuJuju/score.php?name=' .. self.deadName .. '&score=' .. seconds)
-		if response then
-			self.highscores = {}
-			for who, what, when in response:gmatch('(%w+)%,(%w+)%,(%w+)') do
-				table.insert(self.highscores, {who = who, what = what, when = when})
-			end
-		end
-	end
-
-	self.deadScreen = 2
-end

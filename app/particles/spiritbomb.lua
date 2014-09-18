@@ -1,7 +1,6 @@
 SpiritBomb = extend(Particle)
 
 SpiritBomb.gravity = 700
-SpiritBomb.image = love.graphics.newImage('media/graphics/spuju-skull.png')
 SpiritBomb.scale = 1
 SpiritBomb.maxHealth = .3
 SpiritBomb.radius = 40
@@ -60,7 +59,8 @@ function SpiritBomb:draw()
 		g.setColor(80, 230, 80, 200 * self.health / self.maxHealth)
 		g.draw(Burst.image, self.x, g.getHeight() - ctx.environment.groundHeight, self.angle, self.burstScale + .25, self.burstScale + .25, Burst.image:getWidth() / 2, Burst.image:getHeight() / 2)
 	else
+    local image = media.graphics.spujuSkull
 		g.setColor(255, 255, 255)
-		g.draw(self.image, self.x, self.y, self.angle, self.scale, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
+		g.draw(image, self.x, self.y, self.angle, self.scale, self.scale, image:getWidth() / 2, image:getHeight() / 2)
 	end
 end

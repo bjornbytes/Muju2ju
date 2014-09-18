@@ -14,7 +14,6 @@ function Shrine:init()
 	self.y = h - ctx.environment.groundHeight - self.height - 7
 	self.health = self.maxHealth
 	self.healthDisplay = self.health
-	self.image = love.graphics.newImage('media/graphics/shrine-v3.png')
 	self.color = {255, 255, 255}
 	self.highlight = 0
 
@@ -35,14 +34,15 @@ end
 
 function Shrine:draw()
 	local g = love.graphics
+  local image = media.graphics.shrine
 
-	local scale = self.width / self.image:getWidth()
+	local scale = self.width / image:getWidth()
 	g.setColor(self.color)
-	g.draw(self.image, self.x, self.y + self.height + 12, 0, scale, scale, self.image:getWidth() / 2, self.image:getHeight())
+	g.draw(image, self.x, self.y + self.height + 12, 0, scale, scale, image:getWidth() / 2, image:getHeight())
 
 	g.setBlendMode('additive')
 	g.setColor(255, 255, 255, self.highlight)
-	g.draw(self.image, self.x, self.y + self.height + 12, 0, scale, scale, self.image:getWidth() / 2, self.image:getHeight())
+	g.draw(image, self.x, self.y + self.height + 12, 0, scale, scale, image:getWidth() / 2, image:getHeight())
 	g.setColor(255, 255, 255, 255)
 	g.setBlendMode('alpha')
 end

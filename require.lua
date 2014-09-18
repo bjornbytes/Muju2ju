@@ -23,4 +23,5 @@ load 'app/particles'
 load 'app/effects'
 
 load 'app/ctx'
+load 'app/hud'
 load 'app'

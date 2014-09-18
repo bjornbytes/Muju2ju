@@ -1,6 +1,7 @@
 require 'require'
 
 function love.load()
+  media.load()
 	Context:add(Menu)
 end
 

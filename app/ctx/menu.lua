@@ -3,7 +3,6 @@ Menu = class()
 function Menu:init()
 	self.sound = Sound()
 	self.menuSounds = self.sound:loop({sound = 'menu'})
-	self.bg = love.graphics.newImage('media/graphics/main-menu.png')
 	self.font = love.graphics.newFont('media/fonts/pixel.ttf', 8)
 	self.creditsAlpha = 0
 	love.mouse.setCursor(love.mouse.newCursor('media/graphics/cursor.png'))
@@ -15,7 +14,7 @@ end
 
 function Menu:draw()
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.draw(self.bg)
+	love.graphics.draw(media.graphics.mainMenu)
 	love.graphics.setFont(self.font)
 	love.graphics.setColor(255, 255, 255, math.min(self.creditsAlpha * 255, 255))
 	love.graphics.print('We do not mind who gets the credit.', 2, 0)

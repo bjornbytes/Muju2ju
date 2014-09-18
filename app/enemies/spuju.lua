@@ -44,7 +44,7 @@ function Spuju:draw()
 	g.draw(self.image, self.x, self.y + 2 * math.sin(tick * tickRate * 4 + math.pi / 2), 0, self.scale * sign, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
 	if self.damageReduction > 0 then
 		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
-		g.draw(self.curseIcon, self.x, self.y - 65, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
+		g.draw(media.graphics.curseIcon, self.x, self.y - 65, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
 	end
 end
 

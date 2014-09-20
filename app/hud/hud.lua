@@ -3,7 +3,7 @@ Hud = class()
 local g = love.graphics
 
 function Hud:init()
-	self.particles = Particles()
+  self.particles = Particles()
 
   self:resize()
 
@@ -21,7 +21,7 @@ function Hud:init()
   self.pause = HudPause()
   self.dead = HudDead()
 
-	ctx.view:register(self, 'gui')
+  ctx.view:register(self, 'gui')
 end
 
 function Hud:update()
@@ -35,8 +35,8 @@ function Hud:update()
   self.dead:update()
 
   -- TODO
-	self.particles:update()
-	if ctx.ded then love.keyboard.setKeyRepeat(true) end -- events
+  self.particles:update()
+  if ctx.ded then love.keyboard.setKeyRepeat(true) end -- events
 end
 
 function Hud:gui()

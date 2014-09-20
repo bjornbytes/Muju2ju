@@ -132,7 +132,7 @@ function Player:update()
 
 	table.each(self.minioncds, function(cooldown, index)
 		self.minioncds[index] = timer.rot(cooldown, function()
-			ctx.hud.selectExtra[index] = 1
+			ctx.hud.minions.extra[index] = 1
 		end)
 	end)
 

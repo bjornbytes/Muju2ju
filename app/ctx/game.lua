@@ -48,7 +48,7 @@ function Game:load()
 end
 
 function Game:update()
-	if self.hud.upgrading or self.paused or self.ded then
+	if self.hud.upgrades.active or self.paused or self.ded then
 		self.player.prevx = self.player.x
 		self.player.prevy = self.player.y
 		if self.player.ghost then
@@ -83,39 +83,32 @@ end
 function Game:resize()
 	self.view:resize()
 	self.effects:resize()
+  self.hud:resize()
 end
 
 function Game:keypressed(key)
 	if not self.ded then
-		if (key == 'p' or key == 'escape') and not self.hud.upgrading then self.paused = not self.paused
+		if (key == 'p' or key == 'escape') and not self.hud.upgrades.active then self.paused = not self.paused
 		elseif key == 'm' then self.sound:mute()
 		elseif key == 'f' then love.window.setFullscreen(not love.window.getFullscreen()) end
 	end
-	if self.hud.upgrading or self.paused or self.ded then return self.hud:keypressed(key) end
+	if self.hud.upgrades.active or self.paused or self.ded then return self.hud:keypressed(key) end
 	self.hud:keypressed(key)
 	self.player:keypressed(key)
 end
 
-function Game:keyreleased(...)
-	if self.hud.upgrading or self.paused or self.ded then return self.hud:keyreleased(...) end
+function Game:mousereleased(...)
+	if self.hud.upgrades.active or self.paused or self.ded then return self.hud:mousereleased(...) end
 end
 
 function Game:textinput(char)
 	self.hud:textinput(char)
 end
 
-function Game:mousepressed(...)
-	if self.hud.upgrading or self.paused or self.ded then return self.hud:mousepressed(...) end
-end
-
-function Game:mousereleased(...)
-	if self.hud.upgrading or self.paused or self.ded then return self.hud:mousereleased(...) end
-end
-
 function Game:gamepadpressed(gamepad, button)
   if button == 'b' and self.paused then self.paused = not self.paused end
 	if button == 'start' or button == 'guide' then self.paused = not self.paused end
-	if self.hud.upgrading or self.paused or self.ded then return self.hud:gamepadpressed(gamepad, button) end
+	if self.hud.upgrades.active or self.paused or self.ded then return self.hud:gamepadpressed(gamepad, button) end
 	self.hud:gamepadpressed(gamepad, button)
 	self.player:gamepadpressed(gamepad, button)
 end

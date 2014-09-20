@@ -17,6 +17,8 @@ function HudDead:update()
 end
 
 function HudDead:draw()
+  if not ctx.ded then return end
+
   local u, v = ctx.hud.u, ctx.hud.v
 
   if self.screen == 1 then
@@ -34,7 +36,7 @@ function HudDead:draw()
     g.printf(str, 0, h * .325, w, 'center')
 
     g.setColor(240, 240, 240, 255 * self.alpha)
-    str = tostring(math.floor(ctx.hud.timer.total * tickRate))
+    str = tostring(math.floor(ctx.hud.timer.values.total * tickRate))
     g.printf(str, 0, h * .41, w, 'center')
     
     g.setColor(253, 238, 65, 255 * self.alpha)
@@ -90,7 +92,22 @@ function HudDead:draw()
   end
 end
 
-function HudDead:mousepressed(x, y, b)
+function HudDead:keypressed(key)
+	if ctx.ded and self.alpha > .9 then
+		if key == 'backspace' then
+			self.name = self.name:sub(1, -2)
+		elseif key == 'return' then
+			if self.screen == 1 then self:sendScore() end
+		end
+		
+		if key == 'escape' then
+			Context:remove(ctx)
+			Context:add(Menu)
+		end
+	end
+end
+
+function HudDead:mousereleased(x, y, b)
 	if b == 'l' and ctx.ded then
 		if self.screen == 1 then
 			local img = media.graphics.deathOk
@@ -126,7 +143,7 @@ function Hud:sendScore()
 	self.highscores = nil
 
 	if #self.name > 0 then
-		local seconds = math.floor(ctx.hud.timer.total * tickRate)
+		local seconds = math.floor(ctx.hud.timer.values.total * tickRate)
 		local http = require('socket.http')
 		http.TIMEOUT = 5
 		local response = http.request('http://plasticsarcastic.com/mujuJuju/score.php?name=' .. self.name .. '&score=' .. seconds)

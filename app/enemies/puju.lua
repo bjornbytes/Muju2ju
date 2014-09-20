@@ -69,7 +69,7 @@ function Puju:update()
 	self.buttTimer = timer.rot(self.buttTimer)
 
 	self.skeleton.skeleton.x = self.x
-	self.skeleton.skeleton.y = self.y + self.height / 2 + 5 * math.sin(ctx.hud.timer.total * tickRate * 4)
+	self.skeleton.skeleton.y = self.y + self.height / 2 + 5 * math.sin(tick * tickRate * 4)
 	self.skeleton.skeleton.flipX = (self.target.x - self.x) > 0
 	self.animator:update(self.animationSpeeds[self.animationState]() * ((self.animationState ~= 'attack' or self.attackAnimation > 0) and 1 or 0))
 	self.attackAnimation = timer.rot(self.attackAnimation)

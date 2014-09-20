@@ -1,8 +1,6 @@
-require 'app/enemies/enemy'
-
-Spuju = extend(Enemy)
-
+local Spuju = extend(Enemy)
 Spuju.code = 'spuju'
+
 Spuju.width = 60
 Spuju.height = 60
 Spuju.maxHealth = 65
@@ -13,8 +11,8 @@ Spuju.attackRange = Spuju.width * 2
 Spuju.speed = 18
 Spuju.image = love.graphics.newImage('media/skeletons/spuju/spuju.png')
 
-function Spuju:init(data)
-	Enemy.init(self, data)
+function Spuju:activate()
+	Enemy.activate(self)
 
   self.scale = self.scale - .2
 
@@ -43,7 +41,7 @@ function Spuju:draw()
 	g.draw(self.image, self.x, self.y + 2 * math.sin(tick * tickRate * 4 + math.pi / 2), 0, self.scale * sign, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
 	if self.damageReduction > 0 then
 		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
-		g.draw(media.graphics.curseIcon, self.x, self.y - 65, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
+		g.draw(data.media.graphics.curseIcon, self.x, self.y - 65, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
 	end
 end
 
@@ -56,3 +54,5 @@ function Spuju:attack()
 	local damage = self.damage * (1 - self.damageReduction)
 	ctx.particles:add(SpiritBomb, {x = self.x, y = self.y - self.height / 2, targetx = targetx, velocity = velocity, damage = damage, owner = self})
 end
+
+return Spuju

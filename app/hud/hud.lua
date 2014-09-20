@@ -3,7 +3,7 @@ Hud = class()
 local g = love.graphics
 
 function Hud:init()
-  self.particles = Particles()
+  self.particles = Manager('particle')
 
   self:resize()
 

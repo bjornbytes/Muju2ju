@@ -1,8 +1,6 @@
-require 'app/minions/minion'
-
-Zuju = extend(Minion)
-
+local Zuju = extend(Minion)
 Zuju.code = 'zuju'
+
 Zuju.cost = 12
 Zuju.cooldown = 3
 
@@ -12,8 +10,8 @@ Zuju.fireRate = 1
 Zuju.attackRange = Zuju.width / 2
 Zuju.maxHealth = 80
 
-function Zuju:init(data)
-	Minion.init(self, data)
+function Zuju:activate()
+	Minion.activate(self)
 
   -- Stats
 	self.speed = self.speed + love.math.random(-10, 10)
@@ -136,6 +134,35 @@ function Zuju:hurt(amount)
 	end
 end
 
+function Zuju:die()
+	if ctx.upgrades.zuju.burst.level > 0 then
+		local radius = (minion.width / 2) + 50
+		local damage = 20 * ctx.upgrades.zuju.burst.level
+		ctx.particles:add('burst', {x = minion.x, y = minion.y, radius = radius})
+		local enemiesInRadius = ctx.target:inRange(minion, radius, 'enemy')
+		table.each(enemiesInRadius, function(enemy)
+			enemy:hurt(damage)
+		end)
+		if math.abs(ctx.player.x - minion.x) < radius + ctx.player.width / 2 then
+			ctx.player:hurt(damage / 2)
+		end
+		if ctx.upgrades.zuju.sanctuary.level > 0 then
+			ctx.particles:add('burstHeal', {x = minion.x, y = minion.y, radius = radius})
+		end
+	end
+	if ctx.upgrades.muju.harvest.level > 0 then
+		local x = love.math.random(1 + ctx.upgrades.muju.harvest.level, 3 + ctx.upgrades.muju.harvest.level * 2)
+		if love.math.random() > .5 then
+			ctx.spells:add('juju', {amount = x, x = minion.x, y = minion.y, vx = love.math.random(-35, 35)})
+		else
+			ctx.spells:add('juju', {amount = x / 2, x = minion.x, y = minion.y, vx = love.math.random(0, 45)})
+			ctx.spells:add('juju', {amount = x / 2, x = minion.x, y = minion.y, vx = love.math.random(-45, 0)})
+		end
+	end
+
+  return Minion.die(self)
+end
+
 function Zuju:damage()
 	local damage = 20 + (5 + ctx.upgrades.zuju.empower.level) * ctx.upgrades.zuju.empower.level
 	damage = damage + love.math.random(-3, 3)
@@ -146,3 +173,5 @@ function Zuju:getCost()
 	local upgradeCount = ctx.upgrades.zuju.empower.level + ctx.upgrades.zuju.fortify.level + ctx.upgrades.zuju.burst.level + ctx.upgrades.zuju.siphon.level + ctx.upgrades.zuju.sanctuary.level
 	return self.cost + upgradeCount * 3
 end
+
+return Zuju

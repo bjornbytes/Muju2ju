@@ -29,14 +29,14 @@ function HudHealth:draw()
   bar(ctx.shrine.x - 60, ctx.shrine.y - 65, ctx.shrine.healthDisplay / ctx.shrine.maxHealth, green, 120, 4)
 
   local t = {}
-  table.each(ctx.enemies.enemies, function(enemy)
+  ctx.enemies:each(function(enemy)
     local location = math.floor(enemy.x)
     stack(t, location, enemy.width * 2, .5)
     bar(enemy.x - 25, g.getHeight() - ctx.environment.groundHeight - enemy.height - 15 - 15 * t[location], enemy.healthDisplay / enemy.maxHealth, red, 50, 2)
   end)
 
   t = {}
-  table.each(ctx.minions.minions, function(minion)
+  ctx.minions:each(function(minion)
     local location = math.floor(minion.x)
     stack(t, math.floor(minion.x), minion.width * 2, .5)
     bar(minion.x - 25, g.getHeight() - ctx.environment.groundHeight - minion.height - 15 * t[location], minion.healthDisplay / minion.maxHealth, green, 50, 2)

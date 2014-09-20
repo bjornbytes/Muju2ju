@@ -1,4 +1,5 @@
-Vignette = {}
+local Vignette = {}
+Vignette.code = 'vignette'
 
 function Vignette:init()
   self:resize()
@@ -14,6 +15,8 @@ function Vignette:update()
 end
 
 function Vignette:resize()
-  self.shader = love.graphics.newShader('media/shaders/vignette.shader')
+  self.shader = data.media.shaders.vignette
   self.shader:send('frame', {0, 0, love.graphics.getDimensions()})
 end
+
+return Vignette

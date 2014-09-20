@@ -3,7 +3,7 @@ HudMinions = class()
 local g = love.graphics
 
 function HudMinions:init()
-	self.bg = {media.graphics.selectZuju, media.graphics.selectVuju}
+	self.bg = {data.media.graphics.selectZuju, data.media.graphics.selectVuju}
 	self.factor = {0, 0}
 	self.extra = {0, 0}
 	self.quad = {}
@@ -18,7 +18,7 @@ function HudMinions:update()
 		self.factor[i] = math.lerp(self.factor[i], ctx.player.selectedMinion == i and 1 or 0, 18 * tickRate)
 		self.extra[i] = math.lerp(self.extra[i], 0, 5 * tickRate)
 		if ctx.player.minions[i] then
-			local y = self.bg[i]:getHeight() * (ctx.player.minioncds[i] / ctx.player.minions[i].cooldown)
+			local y = self.bg[i]:getHeight() * (ctx.player.minioncds[i] / data.minion[ctx.player.minions[i]].cooldown)
 			self.quad[i]:setViewport(0, y, self.bg[i]:getWidth(), self.bg[i]:getHeight() - y)
 		end
 	end
@@ -35,7 +35,7 @@ function HudMinions:draw()
     local w, h = bg:getDimensions()
     local scale = .75 + (.15 * self.factor[i]) + (.1 * self.extra[i])
     local xx = 48 - 10 * (1 - self.factor[i])
-    local f, cost = font, tostring(ctx.player.minions[i]:getCost())
+    local f, cost = font, tostring(data.minion[ctx.player.minions[i]]:getCost())
     local tx, ty = xx - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35
 

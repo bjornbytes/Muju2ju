@@ -14,7 +14,7 @@ function HudPause:draw()
   if ctx.ded then return end
 
   local u, v = ctx.hud.u, ctx.hud.v
-  local image = media.graphics.pauseMenu
+  local image = data.media.graphics.pauseMenu
 
   if self.alpha > .01 then
     g.setColor(0, 0, 0, 128 * self.alpha)

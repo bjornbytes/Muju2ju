@@ -3,10 +3,10 @@ Effects = class()
 function Effects:init()
   self.active = love.graphics.isSupported('shader')
   self.effects = {}
-	self:add(Vignette)
-	self:add(Bloom)
-	self:add(Wave)
-	self:add(DeathBlur)
+	self:add('vignette')
+	self:add('bloom')
+	self:add('wave')
+	self:add('deathBlur')
 end
 
 function Effects:update()
@@ -16,9 +16,8 @@ end
 
 function Effects:paused()
   if ctx.ded then
-    if self:get(DeathBlur) then
-      self:get(DeathBlur):update()
-    end
+    local deathBlur = self:get('deathBlur')
+    if deathBlur then deathBlur:update() end
   end
 end
 
@@ -29,7 +28,7 @@ end
 
 function Effects:add(kind)
   if not self.active then return end
-  local effect = new(kind)
+  local effect = new(data.effect[kind])
   f.exe(effect.activate, effect)
   table.insert(self.effects, effect)
   self.effects[kind] = effect

@@ -4,7 +4,7 @@ Minion.width = 48
 Minion.height = 48
 Minion.depth = -10
 
-function Minion:init(data)
+function Minion:activate()
 	self.y = love.graphics.getHeight() - ctx.environment.groundHeight - self.height
 	self.target = nil
 	self.fireTimer = 0
@@ -20,8 +20,11 @@ function Minion:init(data)
 	self.scale = .5 + (r / 210)
 	self.depth = self.depth - r / 30 + love.math.random() * (1 / 30)
 
-	table.merge(data, self)
 	ctx.view:register(self)
+end
+
+function Minion:deactivate()
+  ctx.view:unregister(self)
 end
 
 function Minion:update()
@@ -56,6 +59,10 @@ function Minion:hurt(amount)
 		ctx.minions:remove(self)
 		return true
 	end
+end
+
+function Minion:die()
+  ctx.minions:remove(self)
 end
 
 function Minion:move()

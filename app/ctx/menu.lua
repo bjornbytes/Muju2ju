@@ -14,7 +14,7 @@ end
 
 function Menu:draw()
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.draw(media.graphics.mainMenu)
+	love.graphics.draw(data.media.graphics.mainMenu)
 	love.graphics.setFont(self.font)
 	love.graphics.setColor(255, 255, 255, math.min(self.creditsAlpha * 255, 255))
 	love.graphics.print('We do not mind who gets the credit.', 2, 0)
@@ -39,8 +39,4 @@ function Menu:mousepressed(x, y, b)
 	elseif math.inside(x, y, 455, 445, 160, 90) then
 		love.event.quit()
 	end
-end
-
-function Menu:mousereleased(x, y, b)
-
 end

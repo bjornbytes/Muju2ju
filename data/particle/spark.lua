@@ -1,13 +1,18 @@
-Spark = extend(Particle)
+local Spark = class()
+Spark.code = 'spark'
 
 Spark.depth = -12
 
-function Spark:init(data)
+function Spark:activate()
 	self.direction = love.math.random() * -math.pi
 	self.speed = love.math.random(180, 700)
 	self.alpha = .9
 	self.length = love.math.random(4, 12)
-	Particle.init(self, data)
+  ctx.view:register(self)
+end
+
+function Spark:deactivate()
+  ctx.view:unregister(self)
 end
 
 function Spark:update()
@@ -29,3 +34,5 @@ function Spark:draw()
 	g.setBlendMode('alpha')
 	g.setLineWidth(1)
 end
+
+return Spark

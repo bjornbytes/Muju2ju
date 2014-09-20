@@ -1,10 +1,15 @@
-Lifesteal = extend(Particle)
+local Lifesteal = class()
+Lifesteal.code = 'lifesteal'
 
-function Lifesteal:init(data)
+function Lifesteal:activate()
 	self.vx = love.math.random(-100, 100)
 	self.vy = love.math.random(-300, -150)
 	self.alpha = 1
-	Particle.init(self, data)
+  ctx.view:register(self)
+end
+
+function Lifesteal:deactivate()
+  ctx.view:unregister(self)
 end
 
 function Lifesteal:update()
@@ -20,3 +25,5 @@ function Lifesteal:draw()
 	g.setColor(0, 255, 0, 255 * self.alpha)
 	g.circle('fill', self.x, self.y, 4)
 end
+
+return Lifesteal

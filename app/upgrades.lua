@@ -1,7 +1,7 @@
 Upgrades = class()
 
 -- TODO Player:has(Minion) etc.
-local function hasVuju() return ctx.player.minions[2] == Vuju end
+local function hasVuju() return ctx.player.minions[2] == 'vuju' end
 
 function Upgrades:init()
 	self.zuju = {

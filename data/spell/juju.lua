@@ -1,14 +1,13 @@
-Juju = class()
+local Juju = class()
+Juju.code = 'juju'
 
 Juju.maxHealth = 100
 Juju.moveSpeed = 10
 Juju.depth = -6
 
-function Juju:init(data)
+function Juju:activate()
 	-- Data = ({amount, x, y, velocity,speed})
 	--self.amount = 20
-	self.x = 100
-	self.y = 100
 	self.prevx = self.x
 	self.prevy = self.y
 	self.angle = love.math.random() * 2 * math.pi
@@ -17,12 +16,16 @@ function Juju:init(data)
 	self.scale = 0
 	self.alpha = 0
 	self.dead = false
-	table.merge(data, self)
 
 	for i = 1, 15 do
-		ctx.particles:add(JujuSex, {x = self.x, y = self.y})
+		ctx.particles:add('jujuSex', {x = self.x, y = self.y})
 	end
+
 	ctx.view:register(self)
+end
+
+function Juju:deactivate()
+  ctx.view:unregister(self)
 end
 
 function Juju:update()
@@ -34,15 +37,15 @@ function Juju:update()
 		self.x, self.y = math.lerp(self.x, tx, 10 * tickRate), math.lerp(self.y, ty, 10 * tickRate)
 		self.scale = math.lerp(self.scale, .1, 5 * tickRate)
 		if math.distance(self.x, self.y, tx, ty) < 16 then
-			ctx.jujus:remove(self)
+			ctx.spells:remove(self)
 			ctx.player.juju = ctx.player.juju + self.amount
 			ctx.hud.jujuIconScale = 1
 			for i = 1, 20 do
-				ctx.particles:add(JujuSex, {x = tx, y = ty})
+				ctx.particles:add('jujuSex', {x = tx, y = ty})
 			end
 		end
 		for i = 1, 2 do
-			ctx.particles:add(JujuSex, {x = self.x, y = self.y})
+			ctx.particles:add('jujuSex', {x = self.x, y = self.y})
 		end
 		return
 	end
@@ -56,7 +59,7 @@ function Juju:update()
 	end
 	
 	if love.math.random() < 2 * tickRate then
-		ctx.particles:add(JujuSex, {x = self.x, y = self.y, vy = love.math.random(-150, -75), vx = love.math.random(-100, 100), alpha = .35})
+		ctx.particles:add('jujuSex', {x = self.x, y = self.y, vy = love.math.random(-150, -75), vx = love.math.random(-100, 100), alpha = .35})
 	end
 
 	if ctx.player.jujuRealm > 0 then
@@ -77,7 +80,7 @@ function Juju:update()
 	end
 
 	if self.y < -50 then
-		ctx.jujus:remove(self)
+		ctx.spells:remove(self)
 	end
 
 	self.angle = self.angle + (math.sin(tick * tickRate) * math.cos(tick * tickRate)) / love.math.random(9, 11)
@@ -91,7 +94,7 @@ function Juju:draw()
 	local g = love.graphics
 	local x, y = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
 	local wave = math.sin(tick * tickRate * 4)
-  local image = media.graphics.juju
+  local image = data.media.graphics.juju
 
 	g.setBlendMode('additive')
 	g.setColor(255, 255, 255, 30 * self.alpha)
@@ -101,3 +104,5 @@ function Juju:draw()
 	g.setColor(255, 255, 255, 255 * self.alpha)
 	g.draw(image, self.x, self.y + 5 * wave, self.angle, self.scale, self.scale, image:getWidth() / 2, image:getHeight() / 2)
 end
+
+return Juju

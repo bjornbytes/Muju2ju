@@ -1,10 +1,9 @@
-require 'app/particles/particle'
-
-Lightning = extend(Particle)
+local Lightning = class()
+Lightning.code = 'lightning'
 
 Lightning.maxHealth = .2
 
-function Lightning:init(data)
+function Lightning:activate()
 	self.x = data.x
 	self.y = data.y
 	self.target = data.target
@@ -14,6 +13,10 @@ function Lightning:init(data)
 	self.sparked = false
 	self:lightning()
 	ctx.view:register(self)
+end
+
+function Lightning:deactivate()
+  ctx.view:unregister(self)
 end
 
 function Lightning:lightning()
@@ -80,3 +83,4 @@ function Lightning:draw()
 	g.setLineWidth(1)
 end
 
+return Lightning

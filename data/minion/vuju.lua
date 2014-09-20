@@ -1,8 +1,6 @@
-require 'app/minions/minion'
-
-Vuju = extend(Minion)
-
+local Vuju = extend(Minion)
 Vuju.code = 'vuju'
+
 Vuju.cost = 20
 Vuju.cooldown = 6
 Vuju.maxHealth = 70
@@ -12,8 +10,8 @@ Vuju.damage = 17
 Vuju.fireRate = 1.7
 Vuju.attackRange = 125
 
-function Vuju:init(data)
-	Minion.init(self, data)
+function Vuju:activate()
+	Minion.activate(self)
 
   -- Stats
 	self.attackRange = 125 + ctx.upgrades.vuju.surge.level * 25
@@ -133,3 +131,5 @@ function Vuju:getCost()
 	local upgradeCount = ctx.upgrades.vuju.surge.level + ctx.upgrades.vuju.charge.level + ctx.upgrades.vuju.condemn.level + ctx.upgrades.vuju.arc.level + ctx.upgrades.vuju.soak.level
 	return self.cost + upgradeCount * 4
 end
+
+return Vuju

@@ -16,12 +16,13 @@ end
 
 function Environment:draw()
 	local g, w, h = love.graphics, love.graphics.getDimensions()
+  local bg, bgSpirit = data.media.graphics.bg, data.media.graphics.bgSpirit
 
 	g.setColor(255, 255, 255)
-	g.draw(self.bg)
+	g.draw(bg)
 
 	local alpha = self.spiritAlpha * 255
 	alpha = math.lerp(alpha, (1 - (ctx.player.healthDisplay / ctx.player.maxHealth)) * 255, .5)
 	g.setColor(255, 255, 255, alpha)
-	g.draw(self.bgSpirit)
+	g.draw(bgSpirit)
 end

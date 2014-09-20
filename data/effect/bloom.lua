@@ -1,4 +1,5 @@
-Bloom = {}
+local Bloom = {}
+Bloom.code = 'bloom'
 
 local g = love.graphics
 
@@ -34,10 +35,8 @@ function Bloom:applyEffect(source, target)
   g.setShader()
   g.setCanvas(target)
   g.draw(source)
-	table.each(ctx.particles.particles, function(particle)
-		if getmetatable(particle).__index == JujuSex then
-			particle:draw()
-		end
+  ctx.particles:each(function(particle)
+		if particle.code == 'jujuSex' then particle:draw() end
 	end)
 	local factor = ctx.player.dead and 1 or 1
   love.graphics.setColor(255, 255, 255, self.alpha * 100 * factor)
@@ -52,7 +51,9 @@ function Bloom:applyEffect(source, target)
 
 	if ctx.player.dead then
 		ctx.player.ghost:draw()
-		table.each(ctx.jujus.jujus, function(juju) juju:draw() end)
+		ctx.spells:each(function(spell)
+      if spell.code == 'juju' then spell:draw() end
+    end)
 	end
 
   g.setCanvas()
@@ -65,7 +66,9 @@ function Bloom:resize()
   local w, h = g.getDimensions()
   self.canvas = g.newCanvas(w / 4, h / 4)
   self.working = g.newCanvas(w / 4, h / 4)
-	self.threshold = love.graphics.newShader('media/shaders/threshold.shader')
-	self.hblur = love.graphics.newShader('media/shaders/horizontalBlur.shader')
-	self.vblur = love.graphics.newShader('media/shaders/verticalBlur.shader')
+	self.threshold = data.media.shaders.threshold
+	self.hblur = data.media.shaders.horizontalBlur
+	self.vblur = data.media.shaders.verticalBlur
 end
+
+return Bloom

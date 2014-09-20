@@ -118,7 +118,7 @@ function HudUpgrades:draw()
 	if self.alpha > .001 then
 		local mx, my = love.mouse.getPosition()
 		
-    local upgradeMenu = media.graphics.upgradeMenu
+    local upgradeMenu = data.media.graphics.upgradeMenu
 		g.setColor(255, 255, 255, self.alpha * 250)
 		g.draw(upgradeMenu, u * .5, v * .5, 0, .875, .875, upgradeMenu:getWidth() / 2, upgradeMenu:getHeight() / 2)
 
@@ -126,7 +126,7 @@ function HudUpgrades:draw()
 			local pillow = self.pillows[i]
 			if pillow.check() then
 				g.setColor(255, 255, 255, 255 * pillow.alpha * self.alpha)
-        local img = media.graphics['pillow' .. i]
+        local img = data.media.graphics['pillow' .. i]
 				local x, y = unpack(pillow)
 				x = ((x - 400) * .875) + 400
 				y = ((y - 313) * .875) + 300
@@ -134,7 +134,7 @@ function HudUpgrades:draw()
 			end
 		end
 
-    local circles = media.graphics.upgradeMenuCircles
+    local circles = data.media.graphics.upgradeMenuCircles
 		g.setColor(255, 255, 255, self.alpha * 250)
 		g.draw(circles, u * .5, v * .5, 0, 1, 1, circles:getWidth() / 2, circles:getHeight() / 2)
 
@@ -149,7 +149,7 @@ function HudUpgrades:draw()
 					local info = self.dotGeometry[who][what][i]
 					if info then
 						local x, y, scale = unpack(info)
-						local dot = media.graphics.levelIcon
+						local dot = data.media.graphics.levelIcon
 						local w, h = dot:getDimensions()
 						g.setColor(255, 255, 255, (self.dotAlpha[who .. what .. i] or 1) * 255 * self.alpha)
 						g.draw(dot, x + .5, y + .5, 0, scale / w, scale / h, w / 2, h / 2)
@@ -159,12 +159,12 @@ function HudUpgrades:draw()
 		end
 
 		g.setColor(255, 255, 255, 220 * self.alpha)
-		local lw, lh = media.graphics.lock:getDimensions()
+		local lw, lh = data.media.graphics.lock:getDimensions()
 		for who in pairs(self.geometry) do
 			for what, geometry in pairs(self.geometry[who]) do
 				if not ctx.upgrades:checkPrerequisites(who, what) then
 					local scale = math.min(geometry[3] / lw, geometry[3] / lh) + .1
-					g.draw(media.graphics.lock, geometry[1], geometry[2], 0, scale, scale, lw / 2, lh / 2)
+					g.draw(data.media.graphics.lock, geometry[1], geometry[2], 0, scale, scale, lw / 2, lh / 2)
 				end
 			end
 		end
@@ -189,7 +189,7 @@ function HudUpgrades:draw()
 	if self.active and ctx.player.gamepad then
     local xx, yy = math.lerp(self.prevCursorX, self.cursorX, tickDelta / tickRate), math.lerp(self.prevCursorY, self.cursorY, tickDelta / tickRate)
     g.setColor(255, 255, 255)
-    g.draw(media.graphics.cursor, xx, yy)
+    g.draw(data.media.graphics.cursor, xx, yy)
 	end
 end
 
@@ -218,7 +218,7 @@ function HudUpgrades:mousereleased(x, y, button)
 						ctx.upgrades[who][what].level = nextLevel
 						ctx.sound:play({sound = 'menuClick'})
 						for i = 1, 80 do
-							ctx.hud.particles:add(UpgradeParticle, {x = x, y = y})
+							ctx.hud.particles:add('upgrade', {x = x, y = y})
 						end
 						self.dotAlpha[who .. what .. nextLevel] = 0
 					end
@@ -227,10 +227,10 @@ function HudUpgrades:mousereleased(x, y, button)
 		end
 
 		if #ctx.player.minions < 2 and math.distance(x, y, 560, 140) < 38 and ctx.player:spend(80) then
-			table.insert(ctx.player.minions, Vuju)
+			table.insert(ctx.player.minions, 'vuju')
 			table.insert(ctx.player.minioncds, 0)
 			for i = 1, 100 do
-				ctx.hud.particles:add(UpgradeParticle, {x = x, y = y})
+				ctx.hud.particles:add('upgrade', {x = x, y = y})
 			end
 			self.bought = self.bought + 1
 		end

@@ -1,5 +1,5 @@
-Wave = {}
-Wave = class()
+local Wave = {}
+Wave.code = 'wave'
 
 function Wave:init()
   self:resize()
@@ -14,5 +14,7 @@ function Wave:update()
 end
 
 function Wave:resize()
-  self.shader = love.graphics.newShader('media/shaders/wave.shader')
+  self.shader = data.media.shaders.wave
 end
+
+return Wave

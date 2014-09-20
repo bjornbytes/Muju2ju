@@ -1,14 +1,12 @@
-SpiritBomb = extend(Particle)
+local SpiritBomb = class()
+SpiritBomb.code = 'spiritBomb'
 
 SpiritBomb.gravity = 700
 SpiritBomb.scale = 1
 SpiritBomb.maxHealth = .3
 SpiritBomb.radius = 40
 
-function SpiritBomb:init(data)
-	self.owner = data.owner
-	data.owner = nil
-	Particle.init(self, data)
+function SpiritBomb:activate()
 	local dx = math.abs(self.targetx - self.x)
 	local dy = -Spuju.height
 	local g = self.gravity
@@ -29,6 +27,10 @@ function SpiritBomb:init(data)
 	ctx.view:register(self)
 end
 
+function SpiritBomb:deactivate()
+  ctx.view:unregister(self)
+end
+
 function SpiritBomb:update()
 	if self.health then
 		self.health = timer.rot(self.health, function() ctx.particles:remove(self) end)
@@ -38,7 +40,7 @@ function SpiritBomb:update()
 		self.y = self.y + self.vy * tickRate
 		self.vy = self.vy + self.gravity * tickRate
 		self.angle = self.angle + math.sign(self.vx) * tickRate
-    local image = media.graphics.spujuSkull
+    local image = data.media.graphics.spujuSkull
 		if self.y + image:getWidth() >= love.graphics.getHeight() - ctx.environment.groundHeight then
 			self.health = self.maxHealth
 			table.each(ctx.target:inRange(self, self.radius, 'minion'), function(m)
@@ -57,11 +59,14 @@ end
 function SpiritBomb:draw()
 	local g = love.graphics
 	if self.health then
+    local explosion = data.media.graphics.explosion
 		g.setColor(80, 230, 80, 200 * self.health / self.maxHealth)
-		g.draw(media.graphics.explosion, self.x, g.getHeight() - ctx.environment.groundHeight, self.angle, self.burstScale + .25, self.burstScale + .25, media.graphics.explosion:getWidth() / 2, media.graphics.explosion:getHeight() / 2)
+		g.draw(explosion, self.x, g.getHeight() - ctx.environment.groundHeight, self.angle, self.burstScale + .25, self.burstScale + .25, explosion:getWidth() / 2, explosion:getHeight() / 2)
 	else
     local image = media.graphics.spujuSkull
 		g.setColor(255, 255, 255)
 		g.draw(image, self.x, self.y, self.angle, self.scale, self.scale, image:getWidth() / 2, image:getHeight() / 2)
 	end
 end
+
+return SpiritBomb

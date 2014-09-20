@@ -1,6 +1,7 @@
-Dirt = extend(Particle)
+local Dirt = class()
+Dirt.code = 'dirt'
 
-function Dirt:init(data)
+function Dirt:activate()
 	self.vx = love.math.random(-150, 150)
 	self.vy = love.math.random(-500, -250)
 	self.alpha = .9
@@ -10,7 +11,7 @@ function Dirt:init(data)
 	self.r = 100 + love.math.random(-20, 20)
 	self.g = 50 + love.math.random(-10, 10)
 	self.b = love.math.random(10)
-	Particle.init(self, data)
+  ctx.view:register(self)
 end
 
 function Dirt:update()
@@ -40,3 +41,5 @@ function Dirt:draw()
 	g.setColor(self.r, self.g, self.b, 255 * self.alpha)
 	g.circle('fill', self.x, self.y, self.size)
 end
+
+return Dirt

@@ -22,8 +22,8 @@ function HudDead:draw()
   local u, v = ctx.hud.u, ctx.hud.v
 
   if self.screen == 1 then
-    local ok = media.graphics.deathOk
-    local nameFrame = media.graphics.deathBox
+    local ok = data.media.graphics.deathOk
+    local nameFrame = data.media.graphics.deathBox
 
     g.setColor(244, 188, 80, 255 * self.alpha)
     g.setFont(self.bigFont)
@@ -61,8 +61,8 @@ function HudDead:draw()
     g.setColor(255, 255, 255, 255 * self.alpha)
     g.draw(ok, w / 2 - ok:getWidth() / 2, h * .825)
   else
-    local replay = media.graphics.deathReplay
-    local quit = media.graphics.deathQuit
+    local replay = data.media.graphics.deathReplay
+    local quit = data.media.graphics.deathQuit
 
     if self.highscores then
       g.setColor(253, 238, 65, 255 * self.alpha)
@@ -110,14 +110,14 @@ end
 function HudDead:mousereleased(x, y, b)
 	if b == 'l' and ctx.ded then
 		if self.screen == 1 then
-			local img = media.graphics.deathOk
+			local img = data.media.graphics.deathOk
 			local w2 = g.getWidth() / 2
 			if math.inside(x, y, w2 - img:getWidth() / 2, g.getHeight() * .825, img:getDimensions()) then
 				self:sendScore()
 			end
 		elseif self.screen == 2 then
-			local img1 = media.graphics.deathReplay
-			local img2 = media.graphics.deathQuit
+			local img1 = data.media.graphics.deathReplay
+			local img2 = data.media.graphics.deathQuit
 			local w = g.getWidth()
 			local h = g.getHeight()
 			if math.inside(x, y, w * .4 - img1:getWidth() / 2, h * .825, img1:getDimensions()) then

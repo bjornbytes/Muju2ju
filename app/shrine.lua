@@ -34,7 +34,7 @@ end
 
 function Shrine:draw()
 	local g = love.graphics
-  local image = media.graphics.shrine
+  local image = data.media.graphics.shrine
 
 	local scale = self.width / image:getWidth()
 	g.setColor(self.color)

@@ -2,7 +2,7 @@ Input = class()
 
 Input.devices = {
   keyboard = {
-    action = 'isDown'
+    action = 'isDown',
     axis = 'isDown'
   },
   gamepad = {

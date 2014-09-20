@@ -1,7 +1,7 @@
 require 'require'
 
 function love.load()
-  media.load()
+  data.load()
 	Context:add(Menu)
 end
 

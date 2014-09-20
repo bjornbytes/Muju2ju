@@ -10,16 +10,14 @@ local getEntries = {
     table.insert(t, {ctx.player, math.abs(ctx.player.x - source.x)})
   end,
   enemy = function(source, t)
-    if not next(ctx.enemies.enemies) then return end
-    table.each(ctx.enemies.enemies, function(enemy)
+    ctx.enemies:each(function(enemy)
       if source ~= enemy and not enemy.dead then
         table.insert(t, {enemy, math.abs(enemy.x - source.x)})
       end
     end)
   end,
   minion = function(source, t)
-    if not next(ctx.minions.minions) then return end
-    table.each(ctx.minions.minions, function(minion)
+    ctx.minions:each(function(minion)
       if source ~= minion and not minion.dead then
         table.insert(t, {minion, math.abs(minion.x - source.x)})
       end

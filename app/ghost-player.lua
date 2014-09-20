@@ -11,7 +11,6 @@ function GhostPlayer:init()
 	self.magnetRange = 15
 	self.prevx = self.x
 	self.prevy = self.y
-	self.image = love.graphics.newImage('media/graphics/spiritmuju.png')
 
 	self.angle = -math.pi / 2
 	self.maxRange = 500
@@ -110,6 +109,7 @@ end
 function GhostPlayer:draw()
 	local g = love.graphics
 	local x, y = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
+  local image = data.media.graphics.spiritMuju
 
 	local scale = math.min(ctx.player.jujuRealm, 2) / 2
 	local maxJuju = 7
@@ -119,11 +119,11 @@ function GhostPlayer:draw()
 	scale = .4 + scale * .4
 	local alphaScale = math.min(ctx.player.jujuRealm * 6 / maxJuju, 1)
 	g.setColor(255, 255, 255, 30 * alphaScale)
-	g.draw(self.image, x, y, self.angle, 1 * scale, 1 * scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
+	g.draw(image, x, y, self.angle, 1 * scale, 1 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 75 * alphaScale)
-	g.draw(self.image, x, y, self.angle, .75 * scale, .75 * scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
+	g.draw(image, x, y, self.angle, .75 * scale, .75 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 200 * alphaScale)
-	g.draw(self.image, x, y, self.angle, .6 * scale, .6 * scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
+	g.draw(image, x, y, self.angle, .6 * scale, .6 * scale, image:getWidth() / 2, image:getHeight() / 2)
 
 	g.setColor(255, 255, 255, 10)
 	g.circle('fill', ctx.player.x, ctx.player.y + ctx.player.height, self.maxDis)

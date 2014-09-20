@@ -2,9 +2,10 @@ Enemy = class()
 
 Enemy.depth = -10
 
-function Enemy:init(data)
+function Enemy:activate()
 	self.x = 0
 	self.y = love.graphics.getHeight() - ctx.environment.groundHeight - self.height
+  print(self.y)
 	self.target = ctx.shrine
 	self.fireTimer = 0
 
@@ -22,8 +23,11 @@ function Enemy:init(data)
 	self.damageAmplificationDuration = 0
 	self.slow = 0
 
-	table.merge(data, self)	
 	ctx.view:register(self)
+end
+
+function Enemy:deactivate()
+  ctx.view:unregister(self)
 end
 
 function Enemy:update()
@@ -50,7 +54,21 @@ end
 function Enemy:hurt(amount)
 	self.health = self.health - (amount + (amount * self.damageAmplification))
 	if self.health <= 0 then
-		ctx.enemies:remove(self)
+    self:die()
 		return true
 	end
+end
+
+function Enemy:die()
+  
+  -- Juju!
+	local x = love.math.random(14 + (ctx.enemies.level ^ .85) * .75, 20 + (ctx.enemies.level ^ .85))
+	if love.math.random() > .5 then
+		ctx.spells:add('juju', {amount = x, x = self.x, y = self.y, vx = love.math.random(-35, 35)})
+	else
+		ctx.spells:add('juju', {amount = x / 2, x = self.x, y = self.y, vx = love.math.random(0, 45)})
+		ctx.spells:add('juju', {amount = x / 2, x = self.x, y = self.y, vx = love.math.random(-45, 0)})
+	end
+
+  ctx.enemies:remove(self)
 end

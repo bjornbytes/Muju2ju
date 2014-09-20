@@ -1,8 +1,6 @@
-require 'app/enemies/enemy'
-
-Puju = extend(Enemy)
-
+local Puju = extend(Enemy)
 Puju.code = 'puju'
+
 Puju.width = 64
 Puju.height = 24
 Puju.speed = 40
@@ -15,8 +13,8 @@ Puju.buttRate = 4
 Puju.buttDamage = 27
 Puju.buttRange = Puju.attackRange * 1.25
 
-function Puju:init(data)
-	Enemy.init(self, data)
+function Puju:activate()
+	Enemy.activate(self)
 
   -- Stats
 	self.maxHealth = self.maxHealth + 4 * ctx.enemies.level ^ 1.1
@@ -68,7 +66,7 @@ function Puju:update()
   -- Animation
 	self.skeleton.skeleton.x = self.x
 	self.skeleton.skeleton.y = self.y + self.height / 2 + 5 * math.sin(tick * tickRate * 4)
-	self.skeleton.skeleton.flipX = (self.target.x - self.x) > 0
+  self.skeleton.skeleton.flipX = (self.target.x - self.x) > 0
 	self.animator:update(self.animationSpeeds[self.animationState]() * ((self.animationState ~= 'attack' or self.attackAnimation > 0) and 1 or 0))
 	self.attackAnimation = timer.rot(self.attackAnimation)
 end
@@ -83,6 +81,7 @@ function Puju:attack()
 	local damage = self.damage * (1 - self.damageReduction)
 	if self.target:hurt(damage, self) then self.target = false end
 	self:hurt(damage * .25 * ctx.upgrades.muju.mirror.level)
+  if not self.target then self.target = ctx.shrine end
 	local sound = ctx.sound:play({sound = 'combat'})
 	if sound then sound:setVolume(.5) end
 	self.attackAnimation = 1
@@ -104,6 +103,7 @@ function Puju:butt()
 	self.animator:set(self.animationState, false)
 	local sound = ctx.sound:play({sound = 'combat'})
 	if sound then sound:setVolume(.5) end
+  if not self.target then self.target = ctx.shrine end
 end
 
 function Puju:draw()
@@ -113,6 +113,8 @@ function Puju:draw()
 	self.animator:draw()
 	if self.damageReduction > 0 then
 		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
-		g.draw(media.graphics.curseIcon, self.x, self.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
+		g.draw(data.media.graphics.curseIcon, self.x, self.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
 	end
 end
+
+return Puju

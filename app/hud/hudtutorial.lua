@@ -8,12 +8,12 @@ function HudTutorial:init()
 	self.enabled = true or not love.filesystem.exists('playedBefore')
 	self.dirty = {}
 	self.images = {
-		[1] = media.graphics.tutorialMove1,
-		[2] = media.graphics.tutorialSummon,
-		[3] = media.graphics.tutorialMove2,
-		[3.5] = media.graphics.tutorialJuju,
-		[4] = media.graphics.tutorialShrine,
-		[5] = media.graphics.tutorialMinions
+		[1] = data.media.graphics.tutorialMove1,
+		[2] = data.media.graphics.tutorialSummon,
+		[3] = data.media.graphics.tutorialMove2,
+		[3.5] = data.media.graphics.tutorialJuju,
+		[4] = data.media.graphics.tutorialShrine,
+		[5] = data.media.graphics.tutorialMinions
 	}
 
 	love.filesystem.write('playedBefore', 'achievement unlocked.')

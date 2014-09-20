@@ -20,7 +20,7 @@ function Player:init()
 	self.juju = 30
 	self.jujuTimer = 1
 	self.dead = false
-	self.minions = {Zuju}
+	self.minions = {'zuju'}
 	self.minioncds = {0}
 	self.selectedMinion = 1
 	self.recentSelect = 0
@@ -209,18 +209,18 @@ function Player:cooldown()
 end
 
 function Player:summon()
-	local minion = self.minions[self.selectedMinion]
+	local minion = data.minion[self.minions[self.selectedMinion]]
 	local cooldown = self.minioncds[self.selectedMinion]
 	local cost = minion:getCost()
 	if cooldown == 0 and self:spend(cost) then
-		ctx.minions:add(minion, {x = self.x + love.math.random(-20, 20), direction = self.direction})
+		ctx.minions:add(minion.code, {x = self.x + love.math.random(-20, 20), direction = self.direction})
 		self.minioncds[self.selectedMinion] = minion.cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
 		if ctx.upgrades.muju.refresh.level == 1 and love.math.random() < .15 then
 			self.minioncds[self.selectedMinion] = 0
 		end
 
     for i = 1, 15 do
-      ctx.particles:add(Dirt, {x = self.x, y = self.y + self.height})
+      ctx.particles:add('dirt', {x = self.x, y = self.y + self.height})
     end
 
 		self.summonedMinions = self.summonedMinions + 1

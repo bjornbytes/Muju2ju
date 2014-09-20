@@ -1,5 +1,5 @@
-DeathBlur = {}
-DeathBlur = class()
+local DeathBlur = {}
+DeathBlur.code = 'deathBlur'
 
 function DeathBlur:init()
   self:resize()
@@ -41,6 +41,8 @@ end
 
 function DeathBlur:resize()
 	self.canvas = love.graphics.newCanvas()
-	self.hblur = love.graphics.newShader('media/shaders/horizontalBlur.shader')
-	self.vblur = love.graphics.newShader('media/shaders/verticalBlur.shader')
+	self.hblur = data.media.shaders.horizontalBlur
+	self.vblur = data.media.shaders.verticalBlur
 end
+
+return DeathBlur

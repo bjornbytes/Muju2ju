@@ -1,12 +1,12 @@
-JujuSex = extend(Particle)
+local JujuSex = class()
+JujuSex.code = 'jujuSex'
 
-function JujuSex:init(data)
+function JujuSex:activate()
 	self.vx = love.math.random(-200, 200)
 	self.vy = -100 + love.math.random() * -350
 	self.gravity = 1000
 	self.size = love.math.random(2, 6)
 	self.alpha = .7
-	Particle.init(self, data)
 	ctx.view:unregister(self)
 end
 
@@ -33,3 +33,5 @@ function JujuSex:draw()
 	g.circle('fill', self.x, self.y, self.size * 2)
 	g.setBlendMode('alpha')
 end
+
+return JujuSex

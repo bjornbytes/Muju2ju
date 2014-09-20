@@ -219,6 +219,10 @@ function Player:summon()
 			self.minioncds[self.selectedMinion] = 0
 		end
 
+    for i = 1, 15 do
+      ctx.particles:add(Dirt, {x = self.x, y = self.y + self.height})
+    end
+
 		self.summonedMinions = self.summonedMinions + 1
 
 		self.animationLock = true

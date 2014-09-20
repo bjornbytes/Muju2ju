@@ -15,6 +15,7 @@ Vuju.attackRange = 125
 function Vuju:init(data)
 	Minion.init(self, data)
 
+  -- Stats
 	self.attackRange = 125 + ctx.upgrades.vuju.surge.level * 25
 	self.damage = 30
 	local inc = 7
@@ -26,9 +27,8 @@ function Vuju:init(data)
 	self.curseRate = 8 - ctx.upgrades.vuju.condemn.level
 	self.curseTimer = 0
 
-	self.depth = self.depth + love.math.random()
+  -- Animation Stuff ew
 	self.skeleton = Skeleton({name = 'vuju', x = self.x, y = self.y + self.height, scale = .5})
-
 	self.animator = Animator({
 		skeleton = self.skeleton,
 		mixes = {
@@ -38,7 +38,6 @@ function Vuju:init(data)
 			{from = 'idle', to = 'death', time = .2}
 		}
 	})
-
 	self.animationState = 'idle'
 	self.animator:add(self.animationState, true)
 	self.animator.state.onComplete = function(trackIndex)
@@ -50,53 +49,48 @@ function Vuju:init(data)
 			self.animator:add(self.animationState, true)
 		end
 	end
-
 	self.skeleton.skeleton.flipX = not ctx.player.skeleton.skeleton.flipX
-
 	self.animationSpeeds = table.map({
 		idle = .4 * tickRate,
 		cast = .8 * tickRate,
 		death = .8 * tickRate
 	}, f.val)
+  self.draw = self.animator.draw
 end
 
 function Vuju:update()
-	if self.animationState == 'death' then
-		self.dead = true
+	if self.animationState == 'death' then -- TODO 'blocking' animations
+		self.dead = self.animationState == 'death'
+		self.x = self.x + self.knockBack * tickRate * 3000
+		self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
+		self.knockBackDisplay = math.lerp(self.knockBackDisplay, math.abs(self.knockBack), 20 * tickRate)
+		self.skeleton.skeleton.x = self.x
+		self.skeleton.skeleton.y = self.y + self.height + 8 - math.abs(self.knockBackDisplay * 200)
 		self.animator:update(self.animationSpeeds[self.animationState]())
 		self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 		return
 	end
 
 	Minion.update(self)
-	self.target = ctx.target:closest(self, 'enemy')
-	if self.target then
-		if self.fireTimer == 0 and self.animationState ~= 'cast' and math.abs(self.target.x - self.x) <= self.attackRange + self.target.width / 2 then
-			self.animationState = 'cast'
-			self.animator:set(self.animationState, false)
-		end
-		self:attack()
-	end
 
+  -- Target Acquired
+	self.target = ctx.target:closest(self, 'enemy')
+	if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
+
+  -- Animations
 	self.skeleton.skeleton.x = self.x
 	self.skeleton.skeleton.y = self.y + self.height + 8
 	self.animator:update(self.animationSpeeds[self.animationState]())
 end
 
-function Vuju:draw()
-	self.animator:draw()
-end
-
 function Vuju:attack()
-	if self.target == nil then return end
-	if math.abs(self.target.x - self.x) > self.attackRange + self.target.width / 2 then return end
-	if ctx.upgrades.vuju.condemn.level > 0 and self.fireTimer == 0 and self.curseTimer == 0 then
+	if ctx.upgrades.vuju.condemn.level > 0 and self.curseTimer == 0 then
 		self.target.damageReduction = .4 + (ctx.upgrades.vuju.condemn.level * .1)
 		self.target.damageReductionDuration = 5
 		self.target.damageAmplification = .33 * ctx.upgrades.vuju.soak.level
 		self.target.damageAmplificationDuration = 5
 		self.curseTimer = self.curseRate
-	elseif self.fireTimer == 0 then
+  else
 		local targets = {self.target}
 		local damage = self.damage
 		local ox, oy = self.target.x, 0
@@ -118,12 +112,17 @@ function Vuju:attack()
 
 		self.fireTimer = self.fireRate
 	end
+
+  if self.animationState ~= 'cast' then
+    self.animationState = 'cast'
+    self.animator:set(self.animationState, false)
+  end
 end
 
 function Vuju:hurt(amount)
 	self.health = math.max(self.health - amount, 0)
 	if self.health <= 0 then
-		if self.animationState ~= 'death' then
+		if self.animationState ~= 'death' then -- TODO pls
 			self.animationState = 'death'
 			self.animator:set('death', false)
 		end

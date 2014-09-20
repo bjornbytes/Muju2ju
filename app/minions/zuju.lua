@@ -1,4 +1,4 @@
-require('app/minions/minion')
+require 'app/minions/minion'
 
 Zuju = extend(Minion)
 
@@ -14,21 +14,16 @@ Zuju.maxHealth = 80
 
 function Zuju:init(data)
 	Minion.init(self, data)
-	local r = love.math.random(-20, 20)
-	self.y = self.y + r
-	local scale = .5 + (r / 210)
-	self.depth = self.depth - r / 30 + love.math.random() * (1 / 30)
-	self.skeleton = Skeleton({name = 'zuju', x = self.x, y = self.y + self.height + 8, scale = scale})
+
+  -- Stats
+	self.speed = self.speed + love.math.random(-10, 10)
 	local healths = {[0] = 80, 125, 175, 235, 300, 400}
 	self.maxHealth = healths[ctx.upgrades.zuju.fortify.level]
 	self.health = self.maxHealth
 	self.healthDisplay = self.health
-	self.speed = self.speed + love.math.random(-10, 10)
 
-	for i = 1, 15 do
-		ctx.particles:add(Dirt, {x = self.x, y = self.y + self.height})
-	end
-
+  -- Animation Stuff ew
+	self.skeleton = Skeleton({name = 'zuju', x = self.x, y = self.y + self.height + 8, scale = scale})
 	self.animator = Animator({
 		skeleton = self.skeleton,
 		mixes = {
@@ -39,7 +34,6 @@ function Zuju:init(data)
 			{from = 'walk', to = 'death', time = .2}
 		}
 	})
-
 	self.animationState = 'spawn'
 	self.animationLock = true
 	self.animator:add(self.animationState, false)
@@ -53,9 +47,7 @@ function Zuju:init(data)
 			ctx.minions:remove(self)
 		end
 	end
-
 	self.skeleton.skeleton.flipX = not ctx.player.skeleton.skeleton.flipX
-
 	self.animationSpeeds = table.map({
 		walk = .73 * tickRate,
 		idle = .3 * tickRate,
@@ -63,10 +55,11 @@ function Zuju:init(data)
 		spawn = .85 * tickRate,
 		death = .8 * tickRate
 	}, f.val)
+  self.draw = self.animator.draw
 end
 
 function Zuju:update()
-	if self.animationState == 'death' or self.animationState == 'spawn' then
+	if self.animationState == 'death' or self.animationState == 'spawn' then -- TODO 'blocking' animations
 		self.dead = self.animationState == 'death'
 		self.x = self.x + self.knockBack * tickRate * 3000
 		self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
@@ -80,13 +73,14 @@ function Zuju:update()
 
 	Minion.update(self)
 
-	if self.target == nil then self.target = ctx.shrine end
-	local dif = self.target.x - self.x
-	local inRange = math.abs(dif) <= self.attackRange + self.target.width / 2
-	if not inRange then
-		self.x = self.x + self.speed * math.sign(dif) * tickRate * self.timeScale
-	end
+  -- Target Acquired
+	self.target = ctx.target:closest(self, 'enemy') or ctx.shrine
+	if self.target ~= ctx.shrine and self.fireTimer == 0 and self:inRange() then self:attack() end
 
+  -- Movement
+  self:move()
+
+  -- Animations
 	if not self.animationLock then
 		if not inRange and self.animationState ~= 'walk' then
 			self.animationState = 'walk'
@@ -106,14 +100,34 @@ function Zuju:update()
 	self.animator:update(self.animationSpeeds[self.animationState]())
 end
 
-function Zuju:draw()
-	self.animator:draw()
+function Zuju:attack()
+  local damage = self:damage()
+
+  -- Lifesteal
+  local heal = math.min(damage, self.target.health) * .1 * ctx.upgrades.zuju.siphon.level
+  self.health = math.min(self.health + heal, self.maxHealth)
+  for i = 1, ctx.upgrades.zuju.siphon.level do
+    ctx.particles:add(Lifesteal, {x = self.x, y = self.y})
+  end
+
+  -- The Works
+  self.target:hurt(damage)
+  self.fireTimer = self.fireRate
+
+  -- Sound
+  local pitch = 1 + love.math.random() * .2
+  if love.math.random() > .5 then pitch = 1 / pitch end
+  local sound = ctx.sound:play({sound = 'combat'})
+  if sound then
+    sound:setPitch(pitch)
+    sound:setVolume(.5)
+  end
 end
 
 function Zuju:hurt(amount)
 	self.health = math.max(self.health - amount, 0)
 	if self.health <= 0 then
-		if self.animationState ~= 'death' then
+		if self.animationState ~= 'death' then -- TODO pls
 			self.animationLock = true
 			self.animationState = 'death'
 			self.animator:set('death', false)

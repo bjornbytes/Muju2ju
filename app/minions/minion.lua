@@ -2,70 +2,48 @@ Minion = class()
 
 Minion.width = 48
 Minion.height = 48
-
 Minion.depth = -10
 
 function Minion:init(data)
-	self.knockBack = 0
-	self.knockBackDisplay = 0
+	self.y = love.graphics.getHeight() - ctx.environment.groundHeight - self.height
 	self.target = nil
 	self.fireTimer = 0
 	self.dead = false
-	self.y = love.graphics.getHeight() - ctx.environment.groundHeight - self.height
-
-	table.merge(data, self)
-
 	self.health = self.maxHealth
 	self.healthDisplay = self.health
+	self.knockBack = 0
+	self.knockBackDisplay = 0
 
+  -- Depth randomization / Fake3D
+	local r = love.math.random(-20, 20)
+	self.y = self.y + r
+	local scale = .5 + (r / 210)
+	self.depth = self.depth - r / 30 + love.math.random() * (1 / 30)
+
+	table.merge(data, self)
 	ctx.view:register(self)
 end
 
 function Minion:update()
+
+  -- Rots and Lerps
 	self.timeScale = 1 / (1 + ctx.upgrades.muju.distort.level * (ctx.player.dead and 1 or 0))
-	self.target = ctx.target:closest(self, 'enemy')
-	if self.target ~= ctx.shrine then
-		self:attack()
-	end
-	
 	self.fireTimer = self.fireTimer - math.min(self.fireTimer, tickRate * self.timeScale)
-	self:hurt(self.maxHealth * .02 * tickRate)
-	self.speed = math.max(self.speed - .5 * tickRate, 20)
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 
+  -- Health and Speed Decay
+	self:hurt(self.maxHealth * .02 * tickRate)
+	self.speed = math.max(self.speed - .5 * tickRate, 20)
+
+  -- Knockback
 	self.x = self.x + self.knockBack * tickRate * 3000
 	self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
 	self.knockBackDisplay = math.lerp(self.knockBackDisplay, math.abs(self.knockBack), 20 * tickRate)
 end
 
-function Minion:attack()
-	if self.fireTimer == 0 then		
-		if self.target ~= nil then
-			local dif = math.abs(self.target.x - self.x)
-			if dif <= self.attackRange + self.target.width / 2 then
-				local damage = type(self.damage) == 'function' and self:damage() or self.damage
-				if self.code == 'zuju' then
-					local heal = math.min(damage, self.target.health) * .1 * ctx.upgrades.zuju.siphon.level
-					self.health = math.min(self.health + heal, self.maxHealth)
-					for i = 1, ctx.upgrades.zuju.siphon.level do
-						ctx.particles:add(Lifesteal, {x = self.x, y = self.y})
-					end
-				end
-
-				self.target:hurt(damage)
-				self.fireTimer = self.fireRate
-				local pitch = 1 + love.math.random() * .2
-				if love.math.random() > .5 then
-					pitch = 1 / pitch
-				end
-				local sound = ctx.sound:play({sound = 'combat'})
-				if sound then
-					sound:setPitch(pitch)
-					sound:setVolume(.5)
-				end
-			end
-		end
-	end
+function Minion:inRange()
+  if not self.target then return false end
+  return math.abs(self.target.x - self.x) <= self.attackRange + self.target.width / 2
 end
 
 function Minion:hurt(amount)
@@ -76,12 +54,7 @@ function Minion:hurt(amount)
 	end
 end
 
-function Minion:draw()
-	local g = love.graphics
-
-	g.setColor(0, 255, 0, 160)
-	g.rectangle('fill', self.x - self.width / 2, self.y, self.width, self.height)
-
-	g.setColor(0, 255, 0)
-	g.rectangle('line', self.x - self.width / 2, self.y, self.width, self.height)
+function Minion:move()
+  if self:inRange() then return end
+  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate * self.timeScale
 end

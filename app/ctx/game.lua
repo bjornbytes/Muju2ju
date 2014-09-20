@@ -5,6 +5,7 @@ function Game:load()
 	self.ded = false
 
 	self.view = View()
+  self.event = Event()
 	self.environment = Environment()
 	self.foreground = Foreground()
 	self.enemies = Enemies()

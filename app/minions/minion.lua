@@ -58,7 +58,7 @@ function Minion:attack()
 				if love.math.random() > .5 then
 					pitch = 1 / pitch
 				end
-				local sound = ctx.sound:play({sound = ctx.sounds.combat})
+				local sound = ctx.sound:play({sound = 'combat'})
 				if sound then
 					sound:setPitch(pitch)
 					sound:setVolume(.5)

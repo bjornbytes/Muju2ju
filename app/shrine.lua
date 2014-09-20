@@ -50,7 +50,7 @@ end
 function Shrine:hurt(value)
 	self.health = self.health - value
 	if self.health < 0 then
-		ctx.sound:play({sound = ctx.sounds['youlose']})
+		ctx.sound:play({sound = 'youlose'})
 		backgroundSound:stop()
 		return true
 	end

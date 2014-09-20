@@ -216,7 +216,7 @@ function Player:summon()
 		self.animationState = 'summon'
 		self.animator:set('summon', false)
 		local summonSound = love.math.random(1, 3)
-		ctx.sound:play({sound = ctx.sounds['summon' .. summonSound]})
+		ctx.sound:play({sound = 'summon' .. summonSound})
 	end
 end
 
@@ -243,7 +243,7 @@ function Player:hurt(amount, source)
 		self.animationState = 'death'
 		self.animationLock = true
 		self.animator:set('death', false)
-		ctx.sound:play({sound = ctx.sounds.death})
+		ctx.sound:play({sound = 'death'})
 
 		if self.gamepad and self.gamepad:isVibrationSupported() then
 			self.gamepad:setVibration(1, 1, .5)

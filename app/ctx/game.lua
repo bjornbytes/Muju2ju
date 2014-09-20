@@ -19,27 +19,7 @@ function Game:load()
 	self.target = Target()
 	self.sound = Sound()
 
-	self.sounds = {
-		background = 'background',
-		summon1 = 'summon1',
-		summon2 = 'summon2',
-		summon3 = 'summon3',
-		spirit = 'spirit',
-		juju1 = 'juju1',
-		juju2 = 'juju2',
-		juju3 = 'juju3',
-		juju4 = 'juju4',
-		juju5 = 'juju5',
-		juju6 = 'juju6',
-		juju7 = 'juju7',
-		juju8 = 'juju8',
-		combat = 'combat',
-		death = 'death',
-		menuClick = 'menuClick',
-		youlose = 'youlose'
-	}
-
-	backgroundSound = self.sound:loop({sound = self.sounds.background})
+	backgroundSound = self.sound:loop({sound = 'background'})
 	love.keyboard.setKeyRepeat(false)
 end
 
@@ -83,18 +63,20 @@ function Game:resize()
 end
 
 function Game:keypressed(key)
-	if not self.ded then
-		if (key == 'p' or key == 'escape') and not self.hud.upgrades.active then self.paused = not self.paused
-		elseif key == 'm' then self.sound:mute()
-		elseif key == 'f' then love.window.setFullscreen(not love.window.getFullscreen()) end
-	end
-	if self.hud.upgrades.active or self.paused or self.ded then return self.hud:keypressed(key) end
-	self.hud:keypressed(key)
+  self.hud:keypressed(key)
+
+  -- Try to move elsewhere.
+  if (key == 'p' or key == 'escape') and not self.hud.upgrades.active then self.paused = not self.paused
+  elseif key == 'm' then self.sound:mute()
+  elseif key == 'f' then love.window.setFullscreen(not love.window.getFullscreen()) end
+
+  if self.hud.upgrades.active or self.paused or self.ded then return end
+
 	self.player:keypressed(key)
 end
 
 function Game:mousereleased(...)
-	if self.hud.upgrades.active or self.paused or self.ded then return self.hud:mousereleased(...) end
+  self.hud:mousereleased(...)
 end
 
 function Game:textinput(char)
@@ -102,9 +84,12 @@ function Game:textinput(char)
 end
 
 function Game:gamepadpressed(gamepad, button)
+  self.hud:gamepadpressed(gamepad, button)
+
   if button == 'b' and self.paused then self.paused = not self.paused end
 	if button == 'start' or button == 'guide' then self.paused = not self.paused end
-	if self.hud.upgrades.active or self.paused or self.ded then return self.hud:gamepadpressed(gamepad, button) end
-	self.hud:gamepadpressed(gamepad, button)
+
+	if self.hud.upgrades.active or self.paused or self.ded then return end
+
 	self.player:gamepadpressed(gamepad, button)
 end

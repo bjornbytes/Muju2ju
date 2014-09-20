@@ -73,7 +73,7 @@ function HudUpgrades:update()
 		for who in pairs(self.geometry) do
 			for what, geometry in pairs(self.geometry[who]) do
 				if math.distance(mx, my, geometry[1], geometry[2]) < geometry[3] then
-					local str = ctx.upgrades.makeTooltip(who, what)
+					local str = ctx.upgrades:makeTooltip(who, what)
 					self.tooltip = rich.new(table.merge({str, 300}, self.tooltipOptions))
 					self.tooltipRaw = str:gsub('{%a+}', '')
 					hover = true
@@ -162,7 +162,7 @@ function HudUpgrades:draw()
 		local lw, lh = media.graphics.lock:getDimensions()
 		for who in pairs(self.geometry) do
 			for what, geometry in pairs(self.geometry[who]) do
-				if not ctx.upgrades.checkPrerequisites(who, what) then
+				if not ctx.upgrades:checkPrerequisites(who, what) then
 					local scale = math.min(geometry[3] / lw, geometry[3] / lh) + .1
 					g.draw(media.graphics.lock, geometry[1], geometry[2], 0, scale, scale, lw / 2, lh / 2)
 				end
@@ -214,7 +214,7 @@ function HudUpgrades:mousereleased(x, y, button)
 					local nextLevel = upgrade.level + 1
 					local cost = upgrade.costs[nextLevel]
 
-					if ctx.upgrades.canBuy(who, what) and ctx.player:spend(cost) then
+					if ctx.upgrades:canBuy(who, what) and ctx.player:spend(cost) then
 						ctx.upgrades[who][what].level = nextLevel
 						ctx.sound:play({sound = 'menuClick'})
 						for i = 1, 80 do

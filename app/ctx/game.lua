@@ -3,6 +3,7 @@ Game = class()
 function Game:load()
 	self.paused = false
 	self.ded = false
+
 	self.view = View()
 	self.environment = Environment()
 	self.foreground = Foreground()
@@ -13,15 +14,11 @@ function Game:load()
 	self.jujus = Jujus()
 	self.particles = Particles()
 	self.effects = Effects()
-	self.effects:add(Vignette)
-	self.effects:add(Bloom)
-	self.effects:add(Wave)
-	self.effects:add(DeathBlur)
 	self.hud = Hud()
-	self.upgrades = Upgrades
-	self.upgrades:clear()
+	self.upgrades = Upgrades()
 	self.target = Target()
 	self.sound = Sound()
+
 	self.sounds = {
 		background = 'background',
 		summon1 = 'summon1',
@@ -43,7 +40,6 @@ function Game:load()
 	}
 
 	backgroundSound = self.sound:loop({sound = self.sounds.background})
-	love.audio.setPosition(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, love.graphics.getHeight() / 2)
 	love.keyboard.setKeyRepeat(false)
 end
 

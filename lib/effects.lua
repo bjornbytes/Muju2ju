@@ -3,6 +3,10 @@ Effects = class()
 function Effects:init()
   self.active = love.graphics.isSupported('shader')
   self.effects = {}
+	self:add(Vignette)
+	self:add(Bloom)
+	self:add(Wave)
+	self:add(DeathBlur)
 end
 
 function Effects:update()

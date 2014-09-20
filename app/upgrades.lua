@@ -1,10 +1,10 @@
-Upgrades = {}
+Upgrades = class()
 
 -- TODO Player:has(Minion) etc.
 local function hasVuju() return ctx.player.minions[2] == Vuju end
 
-Upgrades.clear = function()
-	Upgrades.zuju = {
+function Upgrades:init()
+	self.zuju = {
 		empower = {
 			level = 0,
 			costs = {45, 65, 95, 135, 185},
@@ -67,7 +67,7 @@ Upgrades.clear = function()
 		}
 	}
 
-	Upgrades.vuju = {
+	self.vuju = {
 		surge = {
 			level = 0,
 			costs = {25, 40, 55, 70, 85},
@@ -133,7 +133,7 @@ Upgrades.clear = function()
 		}
 	}
 
-	Upgrades.muju = {
+	self.muju = {
 		flow = {
 			level = 0,
 			costs = {30, 50, 70, 90, 110},
@@ -231,52 +231,52 @@ Upgrades.clear = function()
 			}
 		}
 	}
+end
 
-	Upgrades.makeTooltip = function(who, what)
-		local pieces = {}
-		local upgrade = Upgrades[who][what]
-		table.insert(pieces, '{white}{title}' .. what:capitalize() .. '{normal}')
-		table.insert(pieces, '{whoCares}' .. upgrade.description .. '\n')
-		table.insert(pieces, '{white}{bold}Level ' .. upgrade.level .. (upgrade.values[upgrade.level] and ': ' .. upgrade.values[upgrade.level] or ''))
-		if not upgrade.values[upgrade.level + 1] then
-			table.insert(pieces, '{whoCares}{normal}Max Level')
-		else
-			table.insert(pieces, '{white}{bold}Next Level: ' .. upgrade.values[upgrade.level + 1])
-			local color = ctx.player.juju >= upgrade.costs[upgrade.level + 1] and '{green}' or '{red}'
-			table.insert(pieces, color .. upgrade.costs[upgrade.level + 1] .. ' juju')
-			if upgrade.prerequisites then
-				for name, min in pairs(upgrade.prerequisites) do
-					if type(min) == 'function' then
-						if min == hasVuju then
-							local color = hasVuju() and '{green}' or '{red}'
-							table.insert(pieces, color .. 'Requires Vuju')
-						end
-					else
-						local color = Upgrades[who][name].level >= min and '{green}' or '{red}'
-						local points = (min == 1) and 'point' or 'points'
-						table.insert(pieces, color .. min .. ' ' .. points .. ' in ' .. name:capitalize())
-					end
-				end
-			end
-		end
+function Upgrades:makeTooltip(who, what)
+  local pieces = {}
+  local upgrade = self[who][what]
+  table.insert(pieces, '{white}{title}' .. what:capitalize() .. '{normal}')
+  table.insert(pieces, '{whoCares}' .. upgrade.description .. '\n')
+  table.insert(pieces, '{white}{bold}Level ' .. upgrade.level .. (upgrade.values[upgrade.level] and ': ' .. upgrade.values[upgrade.level] or ''))
+  if not upgrade.values[upgrade.level + 1] then
+    table.insert(pieces, '{whoCares}{normal}Max Level')
+  else
+    table.insert(pieces, '{white}{bold}Next Level: ' .. upgrade.values[upgrade.level + 1])
+    local color = ctx.player.juju >= upgrade.costs[upgrade.level + 1] and '{green}' or '{red}'
+    table.insert(pieces, color .. upgrade.costs[upgrade.level + 1] .. ' juju')
+    if upgrade.prerequisites then
+      for name, min in pairs(upgrade.prerequisites) do
+        if type(min) == 'function' then
+          if min == hasVuju then
+            local color = hasVuju() and '{green}' or '{red}'
+            table.insert(pieces, color .. 'Requires Vuju')
+          end
+        else
+          local color = self[who][name].level >= min and '{green}' or '{red}'
+          local points = (min == 1) and 'point' or 'points'
+          table.insert(pieces, color .. min .. ' ' .. points .. ' in ' .. name:capitalize())
+        end
+      end
+    end
+  end
 
-		return table.concat(pieces, '\n')
-	end
+  return table.concat(pieces, '\n')
+end
 
-	Upgrades.canBuy = function(who, what)
-		local upgrade = Upgrades[who][what]
-		if not upgrade.costs[upgrade.level + 1] then return false end
-		if ctx.player.juju < upgrade.costs[upgrade.level + 1] then return false end
-		return Upgrades.checkPrerequisites(who, what)
-	end
+function Upgrades:canBuy(who, what)
+  local upgrade = self[who][what]
+  if not upgrade.costs[upgrade.level + 1] then return false end
+  if ctx.player.juju < upgrade.costs[upgrade.level + 1] then return false end
+  return self:checkPrerequisites(who, what)
+end
 
-	Upgrades.checkPrerequisites = function(who, what)
-		local upgrade = Upgrades[who][what]
-		if not upgrade.prerequisites then return true end
-		for key, level in pairs(upgrade.prerequisites) do
-			if type(level) == 'function' then if  not level() then return false end
-			elseif ctx.upgrades[who][key].level < level then return false end
-		end
-		return true
-	end
+function Upgrades:checkPrerequisites(who, what)
+  local upgrade = self[who][what]
+  if not upgrade.prerequisites then return true end
+  for key, level in pairs(upgrade.prerequisites) do
+    if type(level) == 'function' then if  not level() then return false end
+    elseif ctx.upgrades[who][key].level < level then return false end
+  end
+  return true
 end

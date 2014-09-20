@@ -49,7 +49,7 @@ function Puju:init(data)
 	end
 
 	self.animator.state.onEvent = function(trackIndex, event)
-		print(event.data.name)
+		print('event ' .. event.data.name)
 	end
 
 	self.animationSpeeds = table.map({

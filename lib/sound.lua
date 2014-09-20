@@ -5,17 +5,19 @@ function Sound:init()
 	self.sounds = {}
 end
 
-function Sound:play(_data)
+function Sound:update()
+  love.audio.setPosition(ctx.view.x + ctx.view.width / 2, ctx.view.y + ctx.view.height / 2, 200)
+end
+
+function Sound:play(options)
   if self.muted then return end
-
-  local sound = data.media.sounds[_data.sound]
-
-	if sound then
-		local instance = sound:play()
-		return instance
-	end
-
-	return nil
+  local name = options.sound
+  local sound = data.media.sounds[name]:play()
+  sound:setRelative(options.relative or false)
+  sound:setRolloff(options.rolloff or 1)
+  sound:setPosition(options.x or 0, options.y or 0, options.z or 0)
+  sound:setAttenuationDistances(options.minrange or 10000, options.maxrange or 10000)
+  return sound
 end
 
 function Sound:loop(data)

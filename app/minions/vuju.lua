@@ -69,7 +69,7 @@ function Vuju:update()
 	end
 
 	Minion.update(self)
-	self.target = ctx.target:getClosestEnemy(self)
+	self.target = ctx.target:closest(self, 'enemy')
 	if self.target then
 		if self.fireTimer == 0 and self.animationState ~= 'cast' and math.abs(self.target.x - self.x) <= self.attackRange + self.target.width / 2 then
 			self.animationState = 'cast'
@@ -106,7 +106,7 @@ function Vuju:attack()
 			ctx.particles:add(Lightning, {x = ox, y = oy, target = targets[1]})
 			ox, oy = targets[1].x, targets[1].y
 			damage = math.max(damage / 2, self.damage / 4)
-			local newTargets = ctx.target:getEnemiesInRange(targets[1], 25 + (25 * ctx.upgrades.vuju.arc.level))
+			local newTargets = ctx.target:inRange(targets[1], 25 + (25 * ctx.upgrades.vuju.arc.level), 'enemy')
 			if not newTargets then break end
 			for j = 1, #newTargets do
 				if not table.has(targets, newTargets[j]) then

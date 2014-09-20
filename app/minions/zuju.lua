@@ -80,9 +80,7 @@ function Zuju:update()
 
 	Minion.update(self)
 
-	if self.target == nil then
-		self.target = ctx.target:getShrine(self)
-	end
+	if self.target == nil then self.target = ctx.shrine end
 	local dif = self.target.x - self.x
 	local inRange = math.abs(dif) <= self.attackRange + self.target.width / 2
 	if not inRange then

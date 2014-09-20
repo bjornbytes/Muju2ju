@@ -19,7 +19,7 @@ function Minions:remove(minion)
 		local radius = (minion.width / 2) + 50
 		local damage = 20 * ctx.upgrades.zuju.burst.level
 		ctx.particles:add(Burst, {x = minion.x, y = minion.y, radius = radius})
-		local enemiesInRadius = ctx.target:getEnemiesInRange(minion, radius)
+		local enemiesInRadius = ctx.target:inRange(minion, radius, 'enemy')
 		table.each(enemiesInRadius, function(enemy)
 			enemy:hurt(damage)
 		end)

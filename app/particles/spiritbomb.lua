@@ -41,7 +41,7 @@ function SpiritBomb:update()
     local image = media.graphics.spujuSkull
 		if self.y + image:getWidth() >= love.graphics.getHeight() - ctx.environment.groundHeight then
 			self.health = self.maxHealth
-			table.each(ctx.target:getMinionsInRange(self, self.radius), function(m)
+			table.each(ctx.target:inRange(self, self.radius, 'minion'), function(m)
 				m:hurt(self.damage)
 			end)
 			if math.abs(self.x - ctx.player.x) < self.radius + ctx.player.width / 2 then

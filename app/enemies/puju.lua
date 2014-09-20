@@ -63,7 +63,7 @@ end
 function Puju:update()
 	Enemy.update(self)
 
-	self.target = (ctx.player.dead or ctx.player.invincible > 0) and ctx.target:getClosestNPC(self) or ctx.target:getClosestTarget(self)
+	self.target = ctx.target:closest(self, 'shrine', 'player', 'minion')
 	self:move()
 
 	self.buttTimer = timer.rot(self.buttTimer)
@@ -91,7 +91,7 @@ function Puju:attack()
 end
 
 function Puju:butt()
-	local targets = ctx.target:getMinionsInRange(self, self.buttRange * 2)
+	local targets = ctx.target:inRange(self, self.buttRange * 2, 'minion')
 	local damage = self.buttDamage * (1 - self.damageReduction)
 	if #targets >= 2 then damage = damage / 2 end
 	table.each(targets, function(target)

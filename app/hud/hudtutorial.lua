@@ -53,7 +53,7 @@ function HudTutorial:update()
 		if self.index == 1 and ctx.player.hasMoved then decay() end
 		if self.index == 2 and (ctx.player.summonedMinions > 0 or ctx.player.dead) then decay() end
 		if self.index == 3 and not ctx.player.dead then decay() end
-		if self.index == 4 and self.upgrades.bought > 0 then decay() end
+		if self.index == 4 and ctx.hud.upgrades.bought > 0 then decay() end
 		if self.index == 5 and ctx.player.selectedMinion == 2 then decay() end
 	end
 end

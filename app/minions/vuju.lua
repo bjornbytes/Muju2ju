@@ -55,7 +55,6 @@ function Vuju:init(data)
 		cast = .8 * tickRate,
 		death = .8 * tickRate
 	}, f.val)
-  self.draw = self.animator.draw
 end
 
 function Vuju:update()

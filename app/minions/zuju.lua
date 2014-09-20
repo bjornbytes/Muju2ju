@@ -23,7 +23,7 @@ function Zuju:init(data)
 	self.healthDisplay = self.health
 
   -- Animation Stuff ew
-	self.skeleton = Skeleton({name = 'zuju', x = self.x, y = self.y + self.height + 8, scale = scale})
+	self.skeleton = Skeleton({name = 'zuju', x = self.x, y = self.y + self.height + 8, scale = self.scale})
 	self.animator = Animator({
 		skeleton = self.skeleton,
 		mixes = {
@@ -55,7 +55,6 @@ function Zuju:init(data)
 		spawn = .85 * tickRate,
 		death = .8 * tickRate
 	}, f.val)
-  self.draw = self.animator.draw
 end
 
 function Zuju:update()
@@ -82,6 +81,7 @@ function Zuju:update()
 
   -- Animations
 	if not self.animationLock then
+    local inRange = self:inRange()
 		if not inRange and self.animationState ~= 'walk' then
 			self.animationState = 'walk'
 			self.animator:set(self.animationState, true)
@@ -91,8 +91,8 @@ function Zuju:update()
 		end
 	end
 
-	if self.animationState == 'walk' then
-		self.skeleton.skeleton.flipX = dif < 0
+	if self.animationState == 'walk' and self.target then
+		self.skeleton.skeleton.flipX = (self.target.x - self.x) < 0
 	end
 
 	self.skeleton.skeleton.x = self.x

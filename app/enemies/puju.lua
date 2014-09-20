@@ -15,20 +15,18 @@ Puju.buttRate = 4
 Puju.buttDamage = 27
 Puju.buttRange = Puju.attackRange * 1.25
 
-Puju.image = love.graphics.newImage('media/skeletons/puju/puju.png')
-
 function Puju:init(data)
-	self.buttTimer = 1
 	Enemy.init(self, data)
-	local r = love.math.random(-20, 20)
-	self.scale = 1 + (r / 210)
-	self.y = self.y + r
-	self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
+
+  -- Stats
 	self.maxHealth = self.maxHealth + 4 * ctx.enemies.level ^ 1.1
 	self.health = self.maxHealth
+  self.healthDispaly = self.health
 	self.damage = self.damage + .5 * ctx.enemies.level
 	self.buttDamage = self.damage * 1.5
+	self.buttTimer = 1
 
+  -- Animation Stuff ew
 	self.skeleton = Skeleton({name = 'puju', x = self.x, y = self.y + self.height + 8, scale = self.scale})
 	self.animator = Animator({
 		skeleton = self.skeleton,
@@ -37,7 +35,6 @@ function Puju:init(data)
 			{from = 'headbutt', to = 'attack', time = .2},
 		}
 	})
-
 	self.animationState = 'attack'
 	self.animator:set(self.animationState, true)
 	self.animator.state.onComplete = function(trackIndex)
@@ -47,27 +44,28 @@ function Puju:init(data)
 			self.animator:set(self.animationState, true)
 		end
 	end
-
 	self.animator.state.onEvent = function(trackIndex, event)
 		print('event ' .. event.data.name)
 	end
-
 	self.animationSpeeds = table.map({
 		headbutt = .69 * tickRate,
 		attack = .8 * tickRate
 	}, f.val)
-
 	self.attackAnimation = 0
 end
 
 function Puju:update()
 	Enemy.update(self)
 
+  -- Targeting
 	self.target = ctx.target:closest(self, 'shrine', 'player', 'minion')
+	if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
 	self:move()
 
+  -- Rots
 	self.buttTimer = timer.rot(self.buttTimer)
 
+  -- Animation
 	self.skeleton.skeleton.x = self.x
 	self.skeleton.skeleton.y = self.y + self.height / 2 + 5 * math.sin(tick * tickRate * 4)
 	self.skeleton.skeleton.flipX = (self.target.x - self.x) > 0
@@ -113,7 +111,6 @@ function Puju:draw()
 	local sign = -math.sign(self.target.x - self.x)
 	g.setColor(255, 255, 255)
 	self.animator:draw()
-	--g.draw(self.image, self.x, self.y + , 0, self.scale * sign, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
 	if self.damageReduction > 0 then
 		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
 		g.draw(media.graphics.curseIcon, self.x, self.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)

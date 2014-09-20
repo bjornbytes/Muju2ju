@@ -16,10 +16,9 @@ Spuju.image = love.graphics.newImage('media/skeletons/spuju/spuju.png')
 function Spuju:init(data)
 	Enemy.init(self, data)
 
-	local r = love.math.random(-25, 25)
-	self.y = self.y + r
-	self.scale = .8 + (r / 210)
-	self.depth = self.depth - r / 25 + love.math.random() * (1 / 25)
+  self.scale = self.scale - .2
+
+  -- Stats
 	self.maxHealth = self.maxHealth + 5 * ctx.enemies.level ^ .9
 	self.health = self.maxHealth
 	self.damage = self.damage + 1.1 * ctx.enemies.level ^ .9

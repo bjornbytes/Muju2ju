@@ -17,7 +17,7 @@ function Minion:init(data)
   -- Depth randomization / Fake3D
 	local r = love.math.random(-20, 20)
 	self.y = self.y + r
-	local scale = .5 + (r / 210)
+	self.scale = .5 + (r / 210)
 	self.depth = self.depth - r / 30 + love.math.random() * (1 / 30)
 
 	table.merge(data, self)
@@ -41,6 +41,10 @@ function Minion:update()
 	self.knockBackDisplay = math.lerp(self.knockBackDisplay, math.abs(self.knockBack), 20 * tickRate)
 end
 
+function Minion:draw()
+  self.animator:draw()
+end
+
 function Minion:inRange()
   if not self.target then return false end
   return math.abs(self.target.x - self.x) <= self.attackRange + self.target.width / 2
@@ -55,6 +59,6 @@ function Minion:hurt(amount)
 end
 
 function Minion:move()
-  if self:inRange() then return end
+  if not self.target or self:inRange() then return end
   self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate * self.timeScale
 end

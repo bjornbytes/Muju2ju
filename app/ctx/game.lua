@@ -25,16 +25,12 @@ end
 
 function Game:update()
 	if self.hud.upgrades.active or self.paused or self.ded then
-		self.player.prevx = self.player.x
-		self.player.prevy = self.player.y
-		if self.player.ghost then
-			self.player.ghost.prevx = self.player.ghost.x
-			self.player.ghost.prevy = self.player.ghost.y
-		end
-		self.hud:update()
-		if self.ded then self.effects:get(DeathBlur):update() end
+    self.player:paused()
+    self.effects:paused()
+    self.hud:update()
 		return
 	end
+
 	self.enemies:update()
 	self.minions:update()
 	self.player:update()

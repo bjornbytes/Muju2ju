@@ -152,6 +152,15 @@ function Player:update()
 	self:animate()
 end
 
+function Player:paused()
+  self.prevx = self.x
+  self.prevy = self.y
+  if self.ghost then
+    self.ghost.prevx = self.ghost.x
+    self.ghost.prevy = self.ghost.y
+  end
+end
+
 function Player:animate()
 	if not self.animationLock and not self.dead then
 		local old = self.animationState

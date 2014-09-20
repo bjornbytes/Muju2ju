@@ -14,6 +14,14 @@ function Effects:update()
   for i = 1, #self.effects do f.exe(self.effects[i].update, self.effects[i]) end
 end
 
+function Effects:paused()
+  if ctx.ded then
+    if self:get(DeathBlur) then
+      self:get(DeathBlur):update()
+    end
+  end
+end
+
 function Effects:resize()
   if not self.active then return end
   for i = 1, #self.effects do f.exe(self.effects[i].resize, self.effects[i]) end

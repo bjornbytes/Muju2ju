@@ -27,7 +27,7 @@ function Shrine:update()
 
 	self.color = table.interpolate(self.color, ctx.player.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
-	self.highlight = math.lerp(self.highlight, math.abs(ctx.player.x - self.x) < ctx.player.width and 128 or 0, 5 * tickRate)
+	self.highlight = math.lerp(self.highlight, ctx.player:atShrine() and 128 or 0, 5 * tickRate)
 end
 
 function Shrine:draw()

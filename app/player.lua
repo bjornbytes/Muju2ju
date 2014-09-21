@@ -228,3 +228,6 @@ function Player:hurt(amount, source)
 	end
 end
 
+function Player:atShrine()
+  return math.abs(self.x - ctx.shrine.x) < self.width 
+end

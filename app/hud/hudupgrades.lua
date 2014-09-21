@@ -194,7 +194,7 @@ function HudUpgrades:draw()
 end
 
 function HudUpgrades:keypressed(key)
-	if (key == 'tab' or key == 'e') and math.abs(ctx.player.x - ctx.shrine.x) < ctx.player.width and not ctx.ded then
+	if (key == 'tab' or key == 'e') and ctx.player:atShrine() and not ctx.ded then
 		self.active = not self.active
 	end
 
@@ -256,7 +256,7 @@ function HudUpgrades:gamepadpressed(gamepad, button)
       return true
     end
 
-		if (button == 'x' or button == 'y') and math.abs(ctx.player.x - ctx.shrine.x) < ctx.player.width then
+		if (button == 'x' or button == 'y') and ctx.player:atShrine() then
 			self.active = not self.active
 			self.cursorX = u * .5
 			self.cursorY = v * .5

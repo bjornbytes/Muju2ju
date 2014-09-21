@@ -6,6 +6,7 @@ function Game:load()
 
 	self.view = View()
   self.event = Event()
+  self.map = Map()
 	self.environment = Environment()
 	self.foreground = Foreground()
 	self.player = Player()

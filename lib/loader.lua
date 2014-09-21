@@ -52,6 +52,7 @@ data.load = function()
   load('data/enemy', 'enemy')
   load('data/minion', 'minion')
   load('data/spell', 'spell')
+  load('data/animation', 'animation')
   load('data/particle', 'particle')
   load('data/effect', 'effect')
 end

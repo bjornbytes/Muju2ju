@@ -25,19 +25,7 @@ function Vuju:activate()
 	self.curseRate = 8 - ctx.upgrades.vuju.condemn.level
 	self.curseTimer = 0
 
-  -- Animation Stuff ew
-	self.skeleton = Skeleton({name = 'vuju', x = self.x, y = self.y + self.height, scale = .5})
-	self.animator = Animator({
-		skeleton = self.skeleton,
-		mixes = {
-			{from = 'idle', to = 'cast', time = .2},
-			{from = 'cast', to = 'idle', time = .2},
-			{from = 'cast', to = 'death', time = .2},
-			{from = 'idle', to = 'death', time = .2}
-		}
-	})
-	self.animationState = 'idle'
-	self.animator:add(self.animationState, true)
+  -- Animation
 	self.animator.state.onComplete = function(trackIndex)
 		local name = self.animator.state:getCurrent(trackIndex).animation.name
 		if name == 'death' then
@@ -47,12 +35,7 @@ function Vuju:activate()
 			self.animator:add(self.animationState, true)
 		end
 	end
-	self.skeleton.skeleton.flipX = not ctx.player.skeleton.skeleton.flipX
-	self.animationSpeeds = table.map({
-		idle = .4 * tickRate,
-		cast = .8 * tickRate,
-		death = .8 * tickRate
-	}, f.val)
+	self.animation.flipX = not ctx.player.animation.flipX
 end
 
 function Vuju:update()

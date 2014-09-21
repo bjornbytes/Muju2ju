@@ -11,8 +11,8 @@ Player.depth = -10
 function Player:init()
 	self.health = 100
 	self.healthDisplay = self.health
-	self.x = love.graphics.getWidth() / 2
-	self.y = love.graphics.getHeight() - ctx.environment.groundHeight - self.height
+	self.x = ctx.map.width / 2
+	self.y = ctx.map.height - ctx.environment.groundHeight - self.height
 	self.prevx = self.x
 	self.prevy = self.y
 	self.speed = 0
@@ -23,8 +23,6 @@ function Player:init()
 	self.minions = {'zuju'}
 	self.minioncds = {0}
 	self.selectedMinion = 1
-	self.recentSelect = 0
-	self.direction = 1
 	self.invincible = 0
 
 	self.summonedMinions = 0
@@ -36,41 +34,7 @@ function Player:init()
 	end
 	self.gamepadSelectDirty = false
 
-	self.skeleton = Skeleton({name = 'muju', x = self.x, y = self.y, scale = .6})
-
-	self.animator = Animator({
-		skeleton = self.skeleton,
-		mixes = {
-			{from = 'idle', to = 'idle', time = .1},
-			{from = 'walk', to = 'idle', time = .2},
-			{from = 'idle', to = 'walk', time = .2},
-			{from = 'walk', to = 'summon', time = .1},
-			{from = 'summon', to = 'walk', time = .2},
-			{from = 'idle', to = 'summon', time = .1},
-			{from = 'summon', to = 'idle', time = .2},
-			{from = 'death', to = 'resurrect', time = .2},
-			{from = 'idle', to = 'death', time = .2},
-			{from = 'walk', to = 'death', time = .2},
-			{from = 'death', to = 'idle', time = .2}
-		}
-	})
-
-	self.animationState = 'idle'
-	self.animator:add(self.animationState, true)
-	self.animator.state.onComplete = function(trackIndex)
-		local name = self.animator.state:getCurrent(trackIndex).animation.name
-		if name == 'summon' or name == 'death' or name == 'resurrect' then
-			self.animationLock = nil
-		end
-	end
-
-	self.animationSpeeds = table.map({
-		walk = function() return tickRate * math.abs(self.speed / self.walkSpeed) end,
-		idle = tickRate * .4,
-		summon = tickRate * 1.85,
-		resurrect = tickRate * 2,
-		death = tickRate
-	}, f.val)
+  self.animation = data.animation.muju(self)
 
 	ctx.view:register(self)
 end
@@ -79,77 +43,26 @@ function Player:update()
 	self.prevx = self.x
 	self.prevy = self.y
 
-	if self.dead or self.animationState == 'summon' or self.animationState == 'death' or self.animationState == 'resurrect' then
-		self.speed = 0
-	else
-		local maxSpeed = self.walkSpeed
-		if self.gamepad and math.abs(self.gamepad:getGamepadAxis('leftx')) > .5 then
-			maxSpeed = self.walkSpeed * math.abs(self.gamepad:getGamepadAxis('leftx'))
-		end
-		if love.keyboard.isDown('left', 'a') or (self.gamepad and self.gamepad:getGamepadAxis('leftx') < -.5) then
-			self.speed = math.lerp(self.speed, -maxSpeed, math.min(10 * tickRate, 1))
-		elseif love.keyboard.isDown('right', 'd') or (self.gamepad and self.gamepad:getGamepadAxis('leftx') > .5) then
-			self.speed = math.lerp(self.speed, maxSpeed, math.min(10 * tickRate, 1))
-		else
-			self.speed = math.lerp(self.speed, 0, math.min(10 * tickRate, 1))
-		end
-
-		if self.speed ~= 0 then self.hasMoved = true end
-
-		local delta = self.x + self.speed * tickRate
-		self.x = self.x + self.speed * tickRate
-		self.direction = self.speed == 0 and self.direction or math.sign(self.speed)
-
-		-- Controller
-		if self.gamepad then
-			local ltrigger = self.gamepad:getGamepadAxis('triggerleft') > .5
-			local rtrigger = self.gamepad:getGamepadAxis('triggerright') > .5
-			if not self.gamepadSelectDirty then
-				if rtrigger then self.selectedMinion = self.selectedMinion + 1 end
-				if ltrigger then self.selectedMinion = self.selectedMinion - 1 end
-				if ltrigger or rtrigger then self.recentSelect = 1 end
-				if self.selectedMinion <= 0 then self.selectedMinion = #self.minions
-				elseif self.selectedMinion > #self.minions then self.selectedMinion = 1 end
-			end
-			self.gamepadSelectDirty = rtrigger or ltrigger
-		end
-	end
-
-	self.x = math.clamp(self.x, 0, love.graphics.getWidth())
-
-	self.jujuRealm = timer.rot(self.jujuRealm, function()
-		self.invincible = 2
-		self.health = self.maxHealth
-		self.dead = false
-		self.ghost:despawn()
-		self.ghost = nil
-
-		self.animationState = 'resurrect'
-		self.animationLock = true
-		self.animator:set('resurrect', false)
-	end)
+  -- Global behavior
 	self.invincible = timer.rot(self.invincible)
-
-	table.each(self.minioncds, function(cooldown, index)
-		self.minioncds[index] = timer.rot(cooldown, function()
-			ctx.hud.minions.extra[index] = 1
-		end)
-	end)
-
-	if self.ghost then
-		self.ghost:update()
-	end
-
-	self:hurt(self.maxHealth * .033 * tickRate)
-
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 	self.jujuTimer = timer.rot(self.jujuTimer, function()
 		self.juju = self.juju + 1
 		return 1
 	end)
-	self.recentSelect = timer.rot(self.recentSelect)
-	
+  self:slot()
 	self:animate()
+	
+  -- Dead behavior
+  if self.dead then
+    self.ghost:update()
+    self.jujuRealm = timer.rot(self.jujuRealm, function() self:spawn() end)
+    return
+  end
+
+  -- Alive behavior
+  self:move()
+	self:hurt(self.maxHealth * .033 * tickRate)
 end
 
 function Player:paused()
@@ -161,59 +74,111 @@ function Player:paused()
   end
 end
 
-function Player:animate()
-	if not self.animationLock and not self.dead then
-		local old = self.animationState
-		if self.animationState ~= 'walk' and math.abs(self.speed) > self.walkSpeed / 2 then
-			self.animationState = 'walk'
-		elseif self.animationState ~= 'idle' and math.abs(self.speed) <= self.walkSpeed / 2 then
-			self.animationState = 'idle'
-		end
-
-		if old ~= self.animationState then
-			self.animator:set(self.animationState, true)
-		end
-	end
-
-	self.skeleton.skeleton.x = self.x
-	self.skeleton.skeleton.y = self.y + self.height / 2
-	if self.animationState == 'resurrect' then self.skeleton.skeleton.y = self.skeleton.skeleton.y - 16 end
-	if self.speed ~= 0 then
-		self.skeleton.skeleton.flipX = self.speed > 0
-	end
-	
-	self.animator:update(self.animationSpeeds[self.animationState]())
-end
-
-function Player:spend(amount)
-	-- Check if Muju is broke
-	if self.juju >= amount then
-		-- He's not broke!
-		self.juju = self.juju - amount
-		return true
-	else 
-		-- He's broke!
-		return false
-	end
-end
-
 function Player:draw()
 	if math.floor(self.invincible * 4) % 2 == 0 then
 		love.graphics.setColor(255, 255, 255)
-		self.animator:draw()
+		self.animation:draw()
 	end
 end
 
-function Player:cooldown()
-	
+function Player:keypressed(key)
+	for i = 1, #self.minions do
+		if tonumber(key) == i then
+			self.selectedMinion = i
+			self.recentSelect = 1
+			return
+		end
+	end
+
+	if key == ' ' then
+		self:summon()
+	end
+end
+
+function Player:gamepadpressed(gamepad, button)
+	if gamepad == self.gamepad then
+		if (button == 'a' or button == 'rightstick' or button == 'rightshoulder') then
+      self:summon()
+		end
+	end
+end
+
+function Player:move()
+  if self.animationState == 'summon' or self.animationState == 'death' or self.animationState == 'resurrect' then
+    self.speed = 0
+    return
+  end
+
+  local maxSpeed = self.walkSpeed
+  if self.gamepad and math.abs(self.gamepad:getGamepadAxis('leftx')) > .5 then
+    maxSpeed = self.walkSpeed * math.abs(self.gamepad:getGamepadAxis('leftx'))
+  end
+  if love.keyboard.isDown('left', 'a') or (self.gamepad and self.gamepad:getGamepadAxis('leftx') < -.5) then
+    self.speed = math.lerp(self.speed, -maxSpeed, math.min(10 * tickRate, 1))
+  elseif love.keyboard.isDown('right', 'd') or (self.gamepad and self.gamepad:getGamepadAxis('leftx') > .5) then
+    self.speed = math.lerp(self.speed, maxSpeed, math.min(10 * tickRate, 1))
+  else
+    self.speed = math.lerp(self.speed, 0, math.min(10 * tickRate, 1))
+  end
+
+  if self.speed ~= 0 then self.hasMoved = true end
+  self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
+end
+
+function Player:slot()
+  for i = 1, #self.minioncds do
+		self.minioncds[i] = timer.rot(self.minioncds[i], function() ctx.hud.minions.extra[i] = 1 end)
+	end
+
+  if self.gamepad then
+    local ltrigger = self.gamepad:getGamepadAxis('triggerleft') > .5
+    local rtrigger = self.gamepad:getGamepadAxis('triggerright') > .5
+    if not self.gamepadSelectDirty then
+      if rtrigger then self.selectedMinion = self.selectedMinion + 1 end
+      if ltrigger then self.selectedMinion = self.selectedMinion - 1 end
+      if self.selectedMinion <= 0 then self.selectedMinion = #self.minions
+      elseif self.selectedMinion > #self.minions then self.selectedMinion = 1 end
+    end
+    self.gamepadSelectDirty = rtrigger or ltrigger
+  end
+end
+
+function Player:spawn()
+  self.invincible = 2
+  self.health = self.maxHealth
+  self.dead = false
+  self.ghost:despawn()
+  self.ghost = nil
+
+  self.animation:set('resurrect')
+end
+
+function Player:animate()
+	if not self.dead then
+    if math.abs(self.speed) > self.walkSpeed / 2 then
+      self.animation:set('walk')
+    else
+      self.animation:set('idle')
+    end
+  end
+
+	if self.speed ~= 0 then self.animation.flipX = self.speed > 0 end
+	self.animation:update()
+end
+
+function Player:spend(amount)
+  if self.juju < amount then return false end
+  self.juju = self.juju - amount
+  return true
 end
 
 function Player:summon()
+  if self.dead then return end
 	local minion = data.minion[self.minions[self.selectedMinion]]
 	local cooldown = self.minioncds[self.selectedMinion]
 	local cost = minion:getCost()
 	if cooldown == 0 and self:spend(cost) then
-		ctx.minions:add(minion.code, {x = self.x + love.math.random(-20, 20), direction = self.direction})
+		ctx.minions:add(minion.code, {x = self.x + love.math.random(-20, 20)})
 		self.minioncds[self.selectedMinion] = minion.cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
 		if ctx.upgrades.muju.refresh.level == 1 and love.math.random() < .15 then
 			self.minioncds[self.selectedMinion] = 0
@@ -225,9 +190,7 @@ function Player:summon()
 
 		self.summonedMinions = self.summonedMinions + 1
 
-		self.animationLock = true
-		self.animationState = 'summon'
-		self.animator:set('summon', false)
+		self.animation:set('summon')
 		local summonSound = love.math.random(1, 3)
 		ctx.sound:play({sound = 'summon' .. summonSound})
 	end
@@ -246,17 +209,16 @@ function Player:hurt(amount, source)
 			self.gamepad:setVibration(l, r, .25)
 		end
 	end
+
 	-- Check whether or not to enter Juju Realm
 	if self.health <= 0 and self.jujuRealm == 0 then
+
   	-- We jujuin'
 		self.jujuRealm = 7
 		self.dead = true
 		self.ghost = GhostPlayer()
 
-		self.animationState = 'death'
-		self.animationLock = true
-		self.animator:set('death', false)
-		ctx.sound:play({sound = 'death'})
+		self.animation:set('death')
 
 		if self.gamepad and self.gamepad:isVibrationSupported() then
 			self.gamepad:setVibration(1, 1, .5)
@@ -266,24 +228,3 @@ function Player:hurt(amount, source)
 	end
 end
 
-function Player:keypressed(key)
-	for i = 1, #self.minions do
-		if tonumber(key) == i then
-			self.selectedMinion = i
-			self.recentSelect = 1
-			return
-		end
-	end
-
-	if key == ' ' and not self.dead then
-		self:summon()
-	end
-end
-
-function Player:gamepadpressed(gamepad, button)
-	if gamepad == self.gamepad then
-		if (button == 'a' or button == 'rightstick' or button == 'rightshoulder') and not self.dead then
-				self:summon()
-		end
-	end
-end

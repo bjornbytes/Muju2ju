@@ -20,50 +20,19 @@ function Zuju:activate()
 	self.health = self.maxHealth
 	self.healthDisplay = self.health
 
-  -- Animation Stuff ew
-	self.skeleton = Skeleton({name = 'zuju', x = self.x, y = self.y + self.height + 8, scale = self.scale})
-	self.animator = Animator({
-		skeleton = self.skeleton,
-		mixes = {
-			{from = 'spawn', to = 'walk', time = .4},
-			{from = 'walk', to = 'cast', time = .2},
-			{from = 'cast', to = 'walk', time = .2},
-			{from = 'cast', to = 'death', time = .2},
-			{from = 'walk', to = 'death', time = .2}
-		}
-	})
-	self.animationState = 'spawn'
-	self.animationLock = true
-	self.animator:add(self.animationState, false)
-	self.animator.state.onComplete = function(trackIndex)
-		local name = self.animator.state:getCurrent(trackIndex).animation.name
-		if name == 'spawn' then
-			self.animationLock = nil
-			self.animationState = 'idle'
-			self.animator:set(self.animationState, true)
-		elseif name == 'death' then
-			ctx.minions:remove(self)
-		end
-	end
-	self.skeleton.skeleton.flipX = not ctx.player.skeleton.skeleton.flipX
-	self.animationSpeeds = table.map({
-		walk = .73 * tickRate,
-		idle = .3 * tickRate,
-		cast = .85 * tickRate,
-		spawn = .85 * tickRate,
-		death = .8 * tickRate
-	}, f.val)
+  -- Animation
+  self.animation = data.animation.zuju(self, {scale = self.scale})
+	self.animation.flipX = not ctx.player.animation.flipX
 end
 
 function Zuju:update()
-	if self.animationState == 'death' or self.animationState == 'spawn' then -- TODO 'blocking' animations
-		self.dead = self.animationState == 'death'
+	if self.animation:blocking() then
+		self.dead = self.animation:current().name == 'death'
 		self.x = self.x + self.knockBack * tickRate * 3000
 		self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
 		self.knockBackDisplay = math.lerp(self.knockBackDisplay, math.abs(self.knockBack), 20 * tickRate)
-		self.skeleton.skeleton.x = self.x
-		self.skeleton.skeleton.y = self.y + self.height + 8 - math.abs(self.knockBackDisplay * 200)
-		self.animator:update(self.animationSpeeds[self.animationState]())
+		self.animation.offsety = self.height + 8 - math.abs(self.knockBackDisplay * 200)
+		self.animation:update()
 		self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 		return
 	end
@@ -78,24 +47,18 @@ function Zuju:update()
   self:move()
 
   -- Animations
-	if not self.animationLock then
-    local inRange = self:inRange()
-		if not inRange and self.animationState ~= 'walk' then
-			self.animationState = 'walk'
-			self.animator:set(self.animationState, true)
-		elseif inRange and self.target == ctx.shrine and self.animationState ~= 'idle' then
-			self.animationState = 'idle'
-			self.animator:set(self.animationState, true)
-		end
+  if not self:inRange() then
+    self.animation:set('walk')
+  elseif self.target == ctx.shrine then
+    self.animation:set('idle')
+  end
+
+	if self.animation:current().name == 'walk' and self.target then
+		self.animation.flipX = (self.target.x - self.x) < 0
 	end
 
-	if self.animationState == 'walk' and self.target then
-		self.skeleton.skeleton.flipX = (self.target.x - self.x) < 0
-	end
-
-	self.skeleton.skeleton.x = self.x
-	self.skeleton.skeleton.y = self.y + self.height + 8 - math.abs(self.knockBackDisplay * 200)
-	self.animator:update(self.animationSpeeds[self.animationState]())
+  self.animation.offsety = self.height + 8 - math.abs(self.knockBackDisplay * 200)
+	self.animation:update()
 end
 
 function Zuju:attack()
@@ -125,11 +88,7 @@ end
 function Zuju:hurt(amount)
 	self.health = math.max(self.health - amount, 0)
 	if self.health <= 0 then
-		if self.animationState ~= 'death' then -- TODO pls
-			self.animationLock = true
-			self.animationState = 'death'
-			self.animator:set('death', false)
-		end
+    self.animation:set('death')
 		return true
 	end
 end

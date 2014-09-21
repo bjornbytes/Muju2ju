@@ -2,29 +2,6 @@ Map = class()
 
 Map.width, Map.height = love.graphics.getDimensions()
 
-function Map:init()
-  self.groundHeight = 92
-
-  self.spiritAlpha = 0
-
-  self.background = {
-    depth = 5,
-    draw = drawBackground
-  }
-
-  self.foreground = {
-    depth = -50,
-    draw = drawForeground
-  }
-
-  ctx.view:register(self.background)
-  ctx.view:register(self.foreground)
-end
-
-function Map:update()
-	self.spiritAlpha = math.lerp(self.spiritAlpha, ctx.player.dead and 1 or 0, .6 * tickRate)
-end
-
 local function drawBackground(self)
   local g  = love.graphics
 
@@ -47,4 +24,27 @@ local function drawForeground(self)
 	alpha = math.lerp(alpha, (1 - (ctx.player.healthDisplay / ctx.player.maxHealth)) * 255, .5)
 	g.setColor(200, 200, 200, alpha)
 	g.draw(data.media.graphics.spiritGrass, 0, 32)
+end
+
+function Map:init()
+  self.groundHeight = 92
+
+  self.spiritAlpha = 0
+
+  self.background = {
+    depth = 5,
+    draw = drawBackground
+  }
+
+  self.foreground = {
+    depth = -50,
+    draw = drawForeground
+  }
+
+ ctx.view:register(self.background)
+ ctx.view:register(self.foreground)
+end
+
+function Map:update()
+	self.spiritAlpha = math.lerp(self.spiritAlpha, ctx.player.dead and 1 or 0, .6 * tickRate)
 end

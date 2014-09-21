@@ -46,7 +46,7 @@ end
 function Lightning:update()
 	self.prevHealth = self.health
 	self.health = timer.rot(self.health, function()
-		ctx.particles:remove(self)
+		ctx.spells:remove(self)
 	end)
 	if not self.sparked and self.health < self.maxHealth / 2 then
 		for i = 1, 12 do

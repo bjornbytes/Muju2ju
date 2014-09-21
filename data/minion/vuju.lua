@@ -67,7 +67,7 @@ function Vuju:attack()
 		for i = 1, math.max(1, 2 * ctx.upgrades.vuju.arc.level) do
 			if i > #targets then break end
 			targets[1]:hurt(damage)
-			ctx.particles:add('lightning', {x = ox, y = oy, target = targets[1]})
+			ctx.spells:add('lightning', {x = ox, y = oy, target = targets[1]})
 			ox, oy = targets[1].x, targets[1].y
 			damage = math.max(damage / 2, self.damage / 4)
 			local newTargets = ctx.target:inRange(targets[1], 25 + (25 * ctx.upgrades.vuju.arc.level), 'enemy')

@@ -96,31 +96,10 @@ end
 
 function Zuju:die()
 	if ctx.upgrades.zuju.burst.level > 0 then
-		local radius = (minion.width / 2) + 50
-		local damage = 20 * ctx.upgrades.zuju.burst.level
-		ctx.particles:add('burst', {x = minion.x, y = minion.y, radius = radius})
-		local enemiesInRadius = ctx.target:inRange(minion, radius, 'enemy')
-		table.each(enemiesInRadius, function(enemy)
-			enemy:hurt(damage)
-		end)
-		if math.abs(ctx.player.x - minion.x) < radius + ctx.player.width / 2 then
-			ctx.player:hurt(damage / 2)
-		end
-		if ctx.upgrades.zuju.sanctuary.level > 0 then
-			ctx.particles:add('burstHeal', {x = minion.x, y = minion.y, radius = radius})
-		end
-	end
-	if ctx.upgrades.muju.harvest.level > 0 then
-		local x = love.math.random(1 + ctx.upgrades.muju.harvest.level, 3 + ctx.upgrades.muju.harvest.level * 2)
-		if love.math.random() > .5 then
-			ctx.spells:add('juju', {amount = x, x = minion.x, y = minion.y, vx = love.math.random(-35, 35)})
-		else
-			ctx.spells:add('juju', {amount = x / 2, x = minion.x, y = minion.y, vx = love.math.random(0, 45)})
-			ctx.spells:add('juju', {amount = x / 2, x = minion.x, y = minion.y, vx = love.math.random(-45, 0)})
-		end
+    ctx.spells:add('burst', {x = self.x, y = self.y})
 	end
 
-  return Minion.die(self)
+  Minion.die(self)
 end
 
 function Zuju:damage()

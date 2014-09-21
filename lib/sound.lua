@@ -10,8 +10,8 @@ function Sound:update()
 end
 
 function Sound:play(options)
-  if self.muted then return end
   local name = options.sound
+  if self.muted or not data.media.sounds[name] then return end
   local sound = data.media.sounds[name]:play()
   sound:setRelative(options.relative or false)
   sound:setRolloff(options.rolloff or 1)

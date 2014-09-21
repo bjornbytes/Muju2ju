@@ -37,7 +37,7 @@ Zuju.animations.death = {
   blocking = true,
   speed = .8,
   complete = function(self, owner)
-    ctx.minions:remove(owner)
+    owner:die()
   end
 }
 

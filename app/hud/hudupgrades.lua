@@ -128,7 +128,7 @@ function HudUpgrades:draw()
 			local pillow = self.pillows[i]
 			if pillow.check() then
 				g.setColor(255, 255, 255, 255 * pillow.alpha * self.alpha)
-        local img = data.media.graphics['pillow' .. i]
+        local img = data.media.graphics['pipe' .. i]
 				local x, y = unpack(pillow)
 				x = ((x - 400) * .875) + 400
 				y = ((y - 313) * .875) + 300

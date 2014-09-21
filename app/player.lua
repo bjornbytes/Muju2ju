@@ -17,7 +17,7 @@ function Player:init()
 	self.prevy = self.y
 	self.speed = 0
 	self.jujuRealm = 0
-	self.juju = 300
+	self.juju = 3000
 	self.jujuTimer = 1
 	self.dead = false
 	self.minions = {'zuju'}
@@ -156,11 +156,7 @@ end
 
 function Player:animate()
 	if not self.dead then
-    if math.abs(self.speed) > self.walkSpeed / 2 then
-      self.animation:set('walk')
-    else
-      self.animation:set('idle')
-    end
+    self.animation:set(math.abs(self.speed) > self.walkSpeed / 2 and 'walk' or 'idle')
   end
 
 	if self.speed ~= 0 then self.animation.flipX = self.speed > 0 end
@@ -175,26 +171,30 @@ end
 
 function Player:summon()
   if self.dead then return end
-	local minion = data.minion[self.minions[self.selectedMinion]]
+
+  local code = self.minions[self.selectedMinion]
+	local minion = data.minion[code]
 	local cooldown = self.minioncds[self.selectedMinion]
-	local cost = minion:getCost()
-	if cooldown == 0 and self:spend(cost) then
-		ctx.minions:add(minion.code, {x = self.x + love.math.random(-20, 20)})
-		self.minioncds[self.selectedMinion] = minion.cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
-		if ctx.upgrades.muju.refresh.level == 1 and love.math.random() < .15 then
-			self.minioncds[self.selectedMinion] = 0
-		end
 
-    for i = 1, 15 do
-      ctx.particles:add('dirt', {x = self.x, y = self.y + self.height})
-    end
+  -- Check cooldown and juju
+  if cooldown > 0 or not self:spend(minion:getCost()) then return end
 
-		self.summonedMinions = self.summonedMinions + 1
+  ctx.minions:add(code, {x = self.x + love.math.random(-20, 20)})
 
-		self.animation:set('summon')
-		local summonSound = love.math.random(1, 3)
-		ctx.sound:play({sound = 'summon' .. summonSound})
-	end
+  -- Set cooldown
+  self.minioncds[self.selectedMinion] = minion.cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
+  if ctx.upgrades.muju.refresh.level == 1 and love.math.random() < .15 then
+    self.minioncds[self.selectedMinion] = 0
+  end
+
+  self.summonedMinions = self.summonedMinions + 1
+
+  self.animation:set('summon')
+
+  -- Juice
+  for i = 1, 15 do ctx.particles:add('dirt', {x = self.x, y = self.y + self.height}) end
+  local summonSound = love.math.random(1, 3)
+  ctx.sound:play({sound = 'summon' .. summonSound})
 end
 
 function Player:hurt(amount, source)
@@ -211,20 +211,12 @@ function Player:hurt(amount, source)
 		end
 	end
 
-	-- Check whether or not to enter Juju Realm
+	-- Death
 	if self.health <= 0 and self.jujuRealm == 0 then
-
-  	-- We jujuin'
 		self.jujuRealm = 7
 		self.dead = true
 		self.ghost = GhostPlayer()
-
 		self.animation:set('death')
-
-		if self.gamepad and self.gamepad:isVibrationSupported() then
-			self.gamepad:setVibration(1, 1, .5)
-		end
-
 		return true
 	end
 end

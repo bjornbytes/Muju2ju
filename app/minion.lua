@@ -56,12 +56,22 @@ end
 function Minion:hurt(amount)
 	self.health = self.health - amount
 	if self.health <= 0 then
-		ctx.minions:remove(self)
+    self:die()
 		return true
 	end
 end
 
 function Minion:die()
+  if ctx.upgrades.muju.harvest.level > 0 then
+    local x = love.math.random(1 + ctx.upgrades.muju.harvest.level, 3 + ctx.upgrades.muju.harvest.level * 2)
+    if love.math.random() > .5 then
+      ctx.spells:add('juju', {amount = x, x = minion.x, y = minion.y, vx = love.math.random(-35, 35)})
+    else
+      ctx.spells:add('juju', {amount = x / 2, x = minion.x, y = minion.y, vx = love.math.random(0, 45)})
+      ctx.spells:add('juju', {amount = x / 2, x = minion.x, y = minion.y, vx = love.math.random(-45, 0)})
+    end
+  end
+
   ctx.minions:remove(self)
 end
 

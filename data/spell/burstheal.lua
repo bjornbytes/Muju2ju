@@ -21,7 +21,7 @@ function BurstHeal:update()
 		minion.lastSanctuary = tick
 	end)
 	self.health = timer.rot(self.health, function()
-		ctx.particles:remove(self)
+		ctx.spells:remove(self)
 	end)
 end
 

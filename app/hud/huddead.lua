@@ -36,7 +36,7 @@ function HudDead:draw()
     g.printf(str, 0, h * .325, w, 'center')
 
     g.setColor(240, 240, 240, 255 * self.alpha)
-    str = tostring(math.floor(ctx.hud.timer.values.total * tickRate))
+    str = tostring(math.floor(ctx.timer * tickRate))
     g.printf(str, 0, h * .41, w, 'center')
     
     g.setColor(253, 238, 65, 255 * self.alpha)
@@ -143,7 +143,7 @@ function Hud:sendScore()
 	self.highscores = nil
 
 	if #self.name > 0 then
-		local seconds = math.floor(ctx.hud.timer.values.total * tickRate)
+		local seconds = math.floor(ctx.timer * tickRate)
 		local http = require('socket.http')
 		http.TIMEOUT = 5
 		local response = http.request('http://plasticsarcastic.com/mujuJuju/score.php?name=' .. self.name .. '&score=' .. seconds)

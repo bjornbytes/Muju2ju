@@ -3,6 +3,7 @@ Game = class()
 function Game:load()
 	self.paused = false
 	self.ded = false
+  self.timer = 0
 
 	self.view = View()
   self.event = Event()
@@ -31,6 +32,7 @@ function Game:update()
 		return
 	end
 
+  self.timer = self.timer + 1
 	self.player:update()
 	self.shrine:update()
 	self.enemies:update()

@@ -15,8 +15,7 @@ function GhostPlayer:init()
 	self.angle = -math.pi / 2
 	self.maxRange = 500
 
-	local maxJuju = 7
-	self.maxDis = math.lerp(self.maxRange, 0, (1 - (ctx.player.jujuRealm / maxJuju)) ^ 3)
+	self.maxDis = math.lerp(self.maxRange, 0, (1 - (ctx.player.deathTimer / ctx.player.deathDuration)) ^ 3)
 
 	local sound = ctx.sound:play({sound = 'spirit'})
 	if sound then sound:setVolume(.12) end
@@ -25,8 +24,6 @@ function GhostPlayer:init()
 end
 
 function GhostPlayer:update()
-	local maxJuju = 7
-
 	self.prevx = self.x
 	self.prevy = self.y
 
@@ -70,7 +67,7 @@ function GhostPlayer:update()
 	end
 
 	local len = (self.vx ^ 2 + self.vy ^ 2) ^ .5
-	if len > 0 and ctx.player.jujuRealm < maxJuju - 1 then
+	if len > 0 and ctx.player.deathTimer < ctx.player.deathDuration - 1 then
 		self.vx = (self.vx / len) * math.min(len, speed)
 		self.vy = (self.vy / len) * math.min(len, speed)
 	end
@@ -78,7 +75,7 @@ function GhostPlayer:update()
 	self.x = self.x + self.vx * tickRate
 	self.y = self.y + self.vy * tickRate
 
-	self.maxDis = math.lerp(self.maxRange, 0, (1 - (ctx.player.jujuRealm / maxJuju)) ^ 3)
+	self.maxDis = math.lerp(self.maxRange, 0, (1 - (ctx.player.deathTimer / ctx.player.deathDuration)) ^ 3)
 	if math.distance(self.x, self.y, px, py) > self.maxDis then
 		local angle = math.direction(px, py, self.x, self.y)
 		self.x = math.lerp(self.x, px + math.dx(self.maxDis, angle), 8 * tickRate)
@@ -88,16 +85,15 @@ function GhostPlayer:update()
 	self.x = math.clamp(self.x, self.radius, ctx.map.width - self.radius)
 	self.y = math.clamp(self.y, self.radius, ctx.map.height - self.radius - ctx.map.groundHeight)
 
-	local scale = math.min(ctx.player.jujuRealm, 2) / 2
-	local maxJuju = 7
-	if maxJuju - ctx.player.jujuRealm < 1 then
-		scale = maxJuju - ctx.player.jujuRealm
+	local scale = math.min(ctx.player.deathTimer, 2) / 2
+	if ctx.player.deathDuration - ctx.player.deathTimer < 1 then
+		scale = ctx.player.deathDuration - ctx.player.deathTimer
 	end
 	scale = .4 + scale * .4
 	self.radius = 40 * scale
 	
-	if ctx.upgrades.muju.diffuse.level == 1 and ctx.player.jujuRealm < 5 and math.distance(self.x, self.y, px, py) < self.radius * 2 then
-		ctx.player.jujuRealm = .1
+	if ctx.upgrades.muju.diffuse.level == 1 and ctx.player.deathTimer < 5 and math.distance(self.x, self.y, px, py) < self.radius * 2 then
+		ctx.player.deathTimer = math.min(ctx.player.deathTimer, .1)
 	end
 end
 
@@ -111,13 +107,12 @@ function GhostPlayer:draw()
 	local x, y = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
   local image = data.media.graphics.spiritMuju
 
-	local scale = math.min(ctx.player.jujuRealm, 2) / 2
-	local maxJuju = 7
-	if maxJuju - ctx.player.jujuRealm < 1 then
-		scale = maxJuju - ctx.player.jujuRealm
+	local scale = math.min(ctx.player.deathTimer, 2) / 2
+	if ctx.player.deathDuration - ctx.player.deathTimer < 1 then
+		scale = ctx.player.deathDuration - ctx.player.deathTimer
 	end
 	scale = .4 + scale * .4
-	local alphaScale = math.min(ctx.player.jujuRealm * 6 / maxJuju, 1)
+	local alphaScale = math.min(ctx.player.deathTimer * 6 / ctx.player.deathDuration, 1)
 	g.setColor(255, 255, 255, 30 * alphaScale)
 	g.draw(image, x, y, self.angle, 1 * scale, 1 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 75 * alphaScale)

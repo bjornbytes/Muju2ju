@@ -62,7 +62,7 @@ function Juju:update()
 		ctx.particles:add('jujuSex', {x = self.x, y = self.y, vy = love.math.random(-150, -75), vx = love.math.random(-100, 100), alpha = .35})
 	end
 
-	if ctx.player.jujuRealm > 0 then
+	if ctx.player.dead then
 		local ghost = ctx.player.ghost
 		if ctx.upgrades.muju.absorb.level > 0 then
 			local distance, direction = math.vector(self.x, self.y, ghost.x, ghost.y)

@@ -16,9 +16,10 @@ function Player:init()
 	self.prevx = self.x
 	self.prevy = self.y
 	self.speed = 0
-	self.jujuRealm = 0
 	self.juju = 30
 	self.jujuTimer = 1
+  self.deathTimer = 0
+  self.deathDuration = 7
 	self.dead = false
 	self.minions = {'zuju'}
 	self.minioncds = {0}
@@ -56,7 +57,7 @@ function Player:update()
   -- Dead behavior
   if self.dead then
     self.ghost:update()
-    self.jujuRealm = timer.rot(self.jujuRealm, function() self:spawn() end)
+    self.deathTimer = timer.rot(self.deathTimer, function() self:spawn() end)
     return
   end
 
@@ -212,8 +213,8 @@ function Player:hurt(amount, source)
 	end
 
 	-- Death
-	if self.health <= 0 and self.jujuRealm == 0 then
-		self.jujuRealm = 7
+	if self.health <= 0 and self.deathTimer == 0 then
+		self.deathTimer = self.deathDuration
 		self.dead = true
 		self.ghost = GhostPlayer()
 		self.animation:set('death')

@@ -7,6 +7,7 @@ function Game:load()
 
 	self.view = View()
   self.event = Event()
+  self.input = Input()
   self.map = Map()
 	self.player = Player()
 	self.shrine = Shrine()
@@ -25,6 +26,8 @@ function Game:load()
 end
 
 function Game:update()
+  self.input:update()
+
 	if self.hud.upgrades.active or self.paused or self.ded then
     self.player:paused()
     self.effects:paused()
@@ -89,4 +92,12 @@ function Game:gamepadpressed(gamepad, button)
 	if self.hud.upgrades.active or self.paused or self.ded then return end
 
 	self.player:gamepadpressed(gamepad, button)
+end
+
+function Game:joystickadded(...)
+  return self.input:joystickadded(...)
+end
+
+function Game:joystickremoved(...)
+  return self.input:joystickremoved(...)
 end

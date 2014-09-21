@@ -63,6 +63,7 @@ function Player:update()
 
   -- Alive behavior
   self:move()
+  if ctx.input:getAction('summon') then self:summon() end
 	self:hurt(self.maxHealth * .033 * tickRate)
 end
 
@@ -90,18 +91,6 @@ function Player:keypressed(key)
 			return
 		end
 	end
-
-	if key == ' ' then
-		self:summon()
-	end
-end
-
-function Player:gamepadpressed(gamepad, button)
-	if gamepad == self.gamepad then
-		if (button == 'a' or button == 'rightstick' or button == 'rightshoulder') then
-      self:summon()
-		end
-	end
 end
 
 function Player:move()
@@ -111,18 +100,8 @@ function Player:move()
     return
   end
 
-  local maxSpeed = self.walkSpeed
-  if self.gamepad and math.abs(self.gamepad:getGamepadAxis('leftx')) > .5 then
-    maxSpeed = self.walkSpeed * math.abs(self.gamepad:getGamepadAxis('leftx'))
-  end
-  if love.keyboard.isDown('left', 'a') or (self.gamepad and self.gamepad:getGamepadAxis('leftx') < -.5) then
-    self.speed = math.lerp(self.speed, -maxSpeed, math.min(10 * tickRate, 1))
-  elseif love.keyboard.isDown('right', 'd') or (self.gamepad and self.gamepad:getGamepadAxis('leftx') > .5) then
-    self.speed = math.lerp(self.speed, maxSpeed, math.min(10 * tickRate, 1))
-  else
-    self.speed = math.lerp(self.speed, 0, math.min(10 * tickRate, 1))
-  end
-
+  local x = ctx.input:getAxis('x')
+  self.speed = math.lerp(self.speed, self.walkSpeed * x, math.min(10 * tickRate, 1))
   if self.speed ~= 0 then self.hasMoved = true end
   self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
 end

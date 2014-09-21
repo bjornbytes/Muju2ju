@@ -33,7 +33,16 @@ function Animation:init(owner, vars)
   self.state = spine.AnimationState.new(self.stateData)
 
   self.state.onComplete = function(track)
-    f.exe(self.complete and self.complete[self:current(track)], self, self.owner)
+    local action = self:current(track).complete
+    if not action then return end
+    if type(action) == 'function' then action(self, self.owner)
+    elseif type(action) == 'string' then self:set(action) end
+  end
+
+  self.state.onEvent = function(track, event)
+    if self.on and self.on[event.data.name] then
+      self.on[event.data.name](self, self.owner, event)
+    end
   end
 
   if self.initial then self:set(self.initial) end
@@ -45,6 +54,7 @@ function Animation:update()
   self.skeleton.flipX = self.flipX
 
   local current = self:current()
+  if not current then return end
   self.state:update(tickRate * (f.exe(current.speed, self, self.owner) or 1))
   self.state:apply(self.skeleton)
   self.skeleton:updateWorldTransform()

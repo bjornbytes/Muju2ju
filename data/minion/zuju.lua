@@ -53,7 +53,8 @@ function Zuju:update()
     self.animation:set('idle')
   end
 
-	if self.animation:current().name == 'walk' and self.target then
+  local current = self.animation:current()
+	if current and current.name == 'walk' and self.target then
 		self.animation.flipX = (self.target.x - self.x) < 0
 	end
 

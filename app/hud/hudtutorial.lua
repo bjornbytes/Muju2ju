@@ -71,7 +71,7 @@ function HudTutorial:draw()
       ox, oy = img:getWidth() / 2, img:getHeight() / 2
       scale = .4
     elseif self.index == 2 then
-      x, y = 48 + self.selectBg[1]:getWidth() * .45 + 16, 135 + self.selectBg[1]:getHeight() * .45 / 2 - 8
+      x, y = 48 + ctx.hud.minions.bg[1]:getWidth() * .45 + 16, 135 + ctx.hud.minions.bg[1]:getHeight() * .45 / 2 - 8
       ox, oy = 1, 56
       scale = .4
     elseif self.index == 3 then
@@ -88,7 +88,7 @@ function HudTutorial:draw()
       x, y = ctx.shrine.x, ctx.shrine.y - 85
       scale = .4
     elseif self.index == 5 then
-      x, y = 48 + self.selectBg[1]:getWidth() * .4 + 16, 135
+      x, y = 48 + ctx.hud.minions.bg[1]:getWidth() * .4 + 16, 135
       scale = .4
     end
     g.draw(img, x, y, 0, scale, scale, ox, oy)

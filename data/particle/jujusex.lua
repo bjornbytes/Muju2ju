@@ -2,8 +2,8 @@ local JujuSex = class()
 JujuSex.code = 'jujuSex'
 
 function JujuSex:activate()
-	self.vx = love.math.random(-200, 200)
-	self.vy = -100 + love.math.random() * -350
+	self.vx = self.vx or love.math.random(-200, 200)
+	self.vy = self.vy or (-100 + love.math.random() * -350)
 	self.gravity = 1000
 	self.size = love.math.random(2, 6)
 	self.alpha = .7

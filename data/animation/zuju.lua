@@ -35,11 +35,8 @@ Zuju.animations.walk = {
 Zuju.animations.death = {
   priority = 3,
   blocking = true,
-  speed = .8
-}
-
-Zuju.complete = {
-  death = function(self, owner)
+  speed = .8,
+  complete = function(self, owner)
     ctx.minions:remove(owner)
   end
 }

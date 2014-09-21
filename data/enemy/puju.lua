@@ -24,31 +24,8 @@ function Puju:activate()
 	self.buttDamage = self.damage * 1.5
 	self.buttTimer = 1
 
-  -- Animation Stuff ew
-	self.skeleton = Skeleton({name = 'puju', x = self.x, y = self.y + self.height + 8, scale = self.scale})
-	self.animator = Animator({
-		skeleton = self.skeleton,
-		mixes = {
-			{from = 'attack', to = 'headbutt', time = .2},
-			{from = 'headbutt', to = 'attack', time = .2},
-		}
-	})
-	self.animationState = 'attack'
-	self.animator:set(self.animationState, true)
-	self.animator.state.onComplete = function(trackIndex)
-		local name = self.animator.state:getCurrent(trackIndex).animation.name
-		if name == 'headbutt' then
-			self.animationState = 'attack'
-			self.animator:set(self.animationState, true)
-		end
-	end
-	self.animator.state.onEvent = function(trackIndex, event)
-		print('event ' .. event.data.name)
-	end
-	self.animationSpeeds = table.map({
-		headbutt = .69 * tickRate,
-		attack = .8 * tickRate
-	}, f.val)
+  -- Animation
+  self.animation = data.animation.puju(self, {scale = self.scale})
 	self.attackAnimation = 0
 end
 
@@ -64,10 +41,9 @@ function Puju:update()
 	self.buttTimer = timer.rot(self.buttTimer)
 
   -- Animation
-	self.skeleton.skeleton.x = self.x
-	self.skeleton.skeleton.y = self.y + self.height / 2 + 5 * math.sin(tick * tickRate * 4)
-  self.skeleton.skeleton.flipX = (self.target.x - self.x) > 0
-	self.animator:update(self.animationSpeeds[self.animationState]() * ((self.animationState ~= 'attack' or self.attackAnimation > 0) and 1 or 0))
+	self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
+  self.animation.flipX = (self.target.x - self.x) > 0
+	self.animation:update()
 	self.attackAnimation = timer.rot(self.attackAnimation)
 end
 
@@ -99,8 +75,7 @@ function Puju:butt()
 		end
 	end)
 	self.buttTimer = self.buttRate
-	self.animationState = 'headbutt'
-	self.animator:set(self.animationState, false)
+	self.animation:set('headbutt')
 	local sound = ctx.sound:play({sound = 'combat'})
 	if sound then sound:setVolume(.5) end
   if not self.target then self.target = ctx.shrine end
@@ -110,7 +85,7 @@ function Puju:draw()
 	local g = love.graphics
 	local sign = -math.sign(self.target.x - self.x)
 	g.setColor(255, 255, 255)
-	self.animator:draw()
+	self.animation:draw()
 	if self.damageReduction > 0 then
 		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
 		g.draw(data.media.graphics.curseIcon, self.x, self.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)

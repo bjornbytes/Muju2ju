@@ -2,7 +2,6 @@ local Vuju = extend(Animation)
 Vuju.code = 'vuju'
 
 Vuju.scale = .5
-Vuju.offsety = Vuju.height + 8
 Vuju.initial = 'idle'
 Vuju.animations = {}
 
@@ -28,11 +27,8 @@ Vuju.animations.cast = {
 Vuju.animations.death = {
   priority = 3,
   blocking = true,
-  speed = .8
-}
-
-Vuju.complete = {
-  death = function(self, owner)
+  speed = .8,
+  complete = function(self, owner)
     ctx.minions:remove(owner)
   end
 }

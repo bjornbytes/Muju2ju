@@ -31,6 +31,7 @@ function Spuju:update()
 	Enemy.update(self)
 
 	self.target = ctx.target:closest(self, 'shrine', 'minion')
+  if self:inRange() and self.fireTimer == 0 then self:attack() end
 	self:move()
 end
 
@@ -52,7 +53,7 @@ function Spuju:attack()
 	local targetx = self.target == ctx.shrine and self.target.x or self.target.x + love.math.randomNormal(65)
 	local velocity = 150 + 250 * (math.abs(self.target.x - self.x) / self.attackRange)
 	local damage = self.damage * (1 - self.damageReduction)
-	ctx.particles:add(SpiritBomb, {x = self.x, y = self.y - self.height / 2, targetx = targetx, velocity = velocity, damage = damage, owner = self})
+	ctx.spells:add('spiritbomb', {x = self.x, y = self.y - self.height / 2, targetx = targetx, velocity = velocity, damage = damage, owner = self})
 end
 
 return Spuju

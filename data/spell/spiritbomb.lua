@@ -1,0 +1,55 @@
+local SpiritBomb = class()
+SpiritBomb.code = 'spiritbomb'
+
+SpiritBomb.gravity = 700
+SpiritBomb.scale = 1
+SpiritBomb.radius = 40
+
+function SpiritBomb:activate()
+	local dx = math.abs(self.targetx - self.x)
+	local dy = -data.enemy.spuju.height
+	local g = self.gravity
+	local v = self.velocity
+	local root = math.sqrt(v ^ 4 - (g * ((g * dx ^ 2) + (2 * dy * v ^ 2))))
+	local angle
+	if root ~= root then
+		angle = math.pi / 2 + love.math.random(-math.pi / 4, math.pi / 4)
+	else
+		local a1, a2 = math.atan((v ^ 2 + root) / (g * dx)), math.atan((v ^ 2 - root) / (g * dx))
+		angle = math.max(a1, a2)
+	end
+	self.vx = math.cos(angle) * v * math.sign(self.targetx - self.x)
+	self.vy = math.sin(angle) * -v
+	self.angle = love.math.random() * 2 * math.pi
+	ctx.view:register(self)
+end
+
+function SpiritBomb:deactivate()
+  ctx.view:unregister(self)
+end
+
+function SpiritBomb:update()
+  self.x = self.x + self.vx * tickRate
+  self.y = self.y + self.vy * tickRate
+  self.vy = self.vy + self.gravity * tickRate
+  self.angle = self.angle + math.sign(self.vx) * tickRate
+  if self.y + data.media.graphics.spujuSkull:getWidth() >= ctx.map.height - ctx.map.groundHeight + love.math.random(-5, 5) then
+    table.each(ctx.target:inRange(self, self.radius, 'minion', 'shrine'), function(obj)
+      obj:hurt(self.damage)
+    end)
+    if math.abs(self.x - ctx.player.x) < self.radius + ctx.player.width / 2 then
+      ctx.player:hurt(self.damage / 2, self.owner)
+    end
+    ctx.particles:add('spiritbomb', {x = self.x, y = self.y, radius = self.radius})
+    ctx.spells:remove(self)
+  end
+end
+
+function SpiritBomb:draw()
+	local g = love.graphics
+  local image = data.media.graphics.spujuSkull
+  g.setColor(255, 255, 255)
+  g.draw(image, self.x, self.y, self.angle, self.scale, self.scale, image:getWidth() / 2, image:getHeight() / 2)
+end
+
+return SpiritBomb

@@ -4,8 +4,7 @@ Enemy.depth = -10
 
 function Enemy:activate()
 	self.x = 0
-	self.y = love.graphics.getHeight() - ctx.environment.groundHeight - self.height
-  print(self.y)
+	self.y = ctx.map.height - ctx.map.groundHeight - self.height
 	self.target = ctx.shrine
 	self.fireTimer = 0
 

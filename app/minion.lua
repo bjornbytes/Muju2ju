@@ -5,7 +5,7 @@ Minion.height = 48
 Minion.depth = -10
 
 function Minion:activate()
-	self.y = love.graphics.getHeight() - ctx.environment.groundHeight - self.height
+	self.y = ctx.map.height - ctx.map.groundHeight - self.height
 	self.target = nil
 	self.fireTimer = 0
 	self.dead = false

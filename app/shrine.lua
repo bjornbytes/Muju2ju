@@ -8,10 +8,8 @@ Shrine.maxHealth = 2500
 Shrine.depth = 5
 
 function Shrine:init()
-	local w, h = love.graphics.getDimensions()
-
-	self.x = w / 2
-	self.y = h - ctx.environment.groundHeight - self.height - 7
+	self.x = ctx.map.width / 2
+	self.y = ctx.map.height - ctx.map.groundHeight - self.height - 7
 	self.health = self.maxHealth
 	self.healthDisplay = self.health
 	self.color = {255, 255, 255}

@@ -12,7 +12,7 @@ function Player:init()
 	self.health = 100
 	self.healthDisplay = self.health
 	self.x = ctx.map.width / 2
-	self.y = ctx.map.height - ctx.environment.groundHeight - self.height
+	self.y = ctx.map.height - ctx.map.groundHeight - self.height
 	self.prevx = self.x
 	self.prevy = self.y
 	self.speed = 0

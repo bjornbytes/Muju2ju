@@ -91,7 +91,7 @@ function HudTutorial:draw()
       x, y = ctx.view:screenPoint(x, y)
       scale = .4
     elseif self.index == 5 then
-      x, y = 48 + ctx.hud.minions.bg[1]:getWidth() * .4 + 16, 135
+      x, y = 48 + ctx.hud.minions.bg[1]:getWidth() * .4 + 16, 125
       scale = .4
     end
     g.draw(img, x, y, 0, scale, scale, ox, oy)

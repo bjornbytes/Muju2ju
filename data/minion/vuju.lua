@@ -26,13 +26,7 @@ function Vuju:activate()
 	self.curseTimer = 0
 
   -- Animation
-	self.animator.state.onComplete = function(trackIndex)
-		local name = self.animator.state:getCurrent(trackIndex).animation.name
-		if name == 'cast' then
-			self.animationState = 'idle'
-			self.animator:add(self.animationState, true)
-		end
-	end
+  self.animation = data.animation.vuju(self)
 	self.animation.flipX = not ctx.player.animation.flipX
 end
 
@@ -55,7 +49,7 @@ function Vuju:update()
 	if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
 
   -- Animations
-	self.offsety = self.height + 8
+	self.animation.offsety = self.height + 8
 	self.animation:update()
 end
 
@@ -73,7 +67,7 @@ function Vuju:attack()
 		for i = 1, math.max(1, 2 * ctx.upgrades.vuju.arc.level) do
 			if i > #targets then break end
 			targets[1]:hurt(damage)
-			ctx.particles:add(Lightning, {x = ox, y = oy, target = targets[1]})
+			ctx.particles:add('lightning', {x = ox, y = oy, target = targets[1]})
 			ox, oy = targets[1].x, targets[1].y
 			damage = math.max(damage / 2, self.damage / 4)
 			local newTargets = ctx.target:inRange(targets[1], 25 + (25 * ctx.upgrades.vuju.arc.level), 'enemy')

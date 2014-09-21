@@ -4,9 +4,6 @@ Lightning.code = 'lightning'
 Lightning.maxHealth = .2
 
 function Lightning:activate()
-	self.x = data.x
-	self.y = data.y
-	self.target = data.target
 	self.range = 50
 	self.health = self.maxHealth
 	self.prevHealth = self.health
@@ -53,7 +50,7 @@ function Lightning:update()
 	end)
 	if not self.sparked and self.health < self.maxHealth / 2 then
 		for i = 1, 12 do
-			ctx.particles:add(Spark, {x = self.path[#self.path - 1], y = self.path[#self.path]})
+			ctx.particles:add('spark', {x = self.path[#self.path - 1], y = self.path[#self.path]})
 		end
 		self.sparked = true
 	end

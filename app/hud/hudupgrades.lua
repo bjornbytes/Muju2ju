@@ -86,7 +86,7 @@ function HudUpgrades:update()
 
     -- TODO auxiliary tooltips
 		if math.distance(mx, my, 560, 140) < 38 then
-			if #ctx.player.minions < 2 then
+			if not table.has(ctx.player.minions, 'vuju') then
 				local color = ctx.player.juju >= 80 and '{green}' or '{red}'
 				local str = '{white}{title}Vuju{normal}\n{whoCares}Casts chain lightning and hexes enemies.\n\n' .. color .. '{bold}80 juju'
 				self.tooltip = rich.new(table.merge({str, 300}, self.tooltipOptions))
@@ -228,7 +228,7 @@ function HudUpgrades:mousereleased(x, y, button)
 			end
 		end
 
-		if #ctx.player.minions < 2 and math.distance(x, y, 560, 140) < 38 and ctx.player:spend(80) then
+		if not table.has(ctx.player.minions, 'vuju') and math.distance(x, y, 560, 140) < 38 and ctx.player:spend(80) then
 			table.insert(ctx.player.minions, 'vuju')
 			table.insert(ctx.player.minioncds, 0)
 			for i = 1, 100 do

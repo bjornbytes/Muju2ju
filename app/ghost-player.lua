@@ -38,7 +38,7 @@ function GhostPlayer:update()
 
   self.vx = math.lerp(self.vx, speed * x, 8 * tickRate)
   self.vy = math.lerp(self.vy, speed * y, 8 * tickRate)
-  self.vy = vy - 50 * math.max(ctx.player.deathTimer - (ctx.player.deathDuration - 1), 0) -- initial boost
+  self.vy = self.vy - 50 * math.max(ctx.player.deathTimer - (ctx.player.deathDuration - 1), 0) -- initial boost
 	self.x = self.x + self.vx * tickRate
 	self.y = self.y + self.vy * tickRate
 

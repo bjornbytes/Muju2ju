@@ -6,11 +6,11 @@ function BurstHeal:activate()
 	self.maxHealth = self.health
 	self.amount = (ctx.upgrades.zuju.sanctuary.level * 10) * tickRate
 	self.depth = 0 + love.math.random()
-  ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function BurstHeal:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function BurstHeal:update()

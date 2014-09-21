@@ -7,7 +7,7 @@ function JujuSex:activate()
 	self.gravity = 1000
 	self.size = love.math.random(2, 6)
 	self.alpha = .7
-	ctx.view:unregister(self)
+  ctx.event:emit('view.unreigster', {object = self})
 end
 
 function JujuSex:update()

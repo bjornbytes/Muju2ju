@@ -21,11 +21,11 @@ function Juju:activate()
 		ctx.particles:add('jujuSex', {x = self.x, y = self.y})
 	end
 
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Juju:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function Juju:update()

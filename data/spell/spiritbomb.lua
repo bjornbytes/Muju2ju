@@ -21,11 +21,11 @@ function SpiritBomb:activate()
 	self.vx = math.cos(angle) * v * math.sign(self.targetx - self.x)
 	self.vy = math.sin(angle) * -v
 	self.angle = love.math.random() * 2 * math.pi
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function SpiritBomb:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function SpiritBomb:update()

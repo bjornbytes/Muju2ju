@@ -32,14 +32,14 @@ function Effects:add(kind)
   f.exe(effect.activate, effect)
   table.insert(self.effects, effect)
   self.effects[kind] = effect
-  ctx.view:register(effect, 'effect')
+  ctx.event:emit('view.register', {object = effect, mode = 'effect'})
 end
 
 function Effects:remove(code)
   self.effects[code] = nil
   for i = #self.effects, 1, -1 do
     if self.effects[i].code == code then
-      ctx.view:unregister(self.effects[i])
+      ctx.event:emit('view.unregister', {object = self.effects[i]})
       table.remove(self.effects, i)
     end
   end

@@ -5,11 +5,11 @@ function Lifesteal:activate()
 	self.vx = love.math.random(-100, 100)
 	self.vy = love.math.random(-300, -150)
 	self.alpha = 1
-  ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Lifesteal:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function Lifesteal:update()

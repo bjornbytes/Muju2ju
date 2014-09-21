@@ -41,8 +41,8 @@ function Map:init()
     draw = drawForeground
   }
 
- ctx.view:register(self.background)
- ctx.view:register(self.foreground)
+  ctx.event:emit('view.register', {object = self.background})
+  ctx.event:emit('view.register', {object = self.foreground})
 end
 
 function Map:update()

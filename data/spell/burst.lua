@@ -8,11 +8,11 @@ function Burst:activate()
 	self.angle = love.math.random() * 2 * math.pi
 	self.scale = 0
   self:damage()
-  ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Burst:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function Burst:update()

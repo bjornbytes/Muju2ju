@@ -30,6 +30,14 @@ function View:init()
   self.prevscale = self.scale
 
   self.shake = 0
+
+  ctx.event:on('view.register', function(data)
+    self:register(data.object, data.mode)
+  end)
+
+  ctx.event:on('view.unregister', function(data)
+    self:unregister(data.object)
+  end)
 end
 
 function View:update()

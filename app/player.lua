@@ -37,7 +37,7 @@ function Player:init()
 
   self.animation = data.animation.muju(self)
 
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Player:update()

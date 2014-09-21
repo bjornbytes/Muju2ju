@@ -22,11 +22,11 @@ function Enemy:activate()
 	self.damageAmplificationDuration = 0
 	self.slow = 0
 
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Enemy:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function Enemy:update()

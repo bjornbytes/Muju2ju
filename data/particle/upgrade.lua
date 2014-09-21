@@ -8,11 +8,11 @@ function Upgrade:activate()
 	self.gravityDecay = 1 + love.math.random() * 1
 	self.size = love.math.random(2, 6)
 	self.alpha = 1
-	ctx.view:register(self, 'gui')
+  ctx.event:emit('view.register', {object = self, mode = 'gui'})
 end
 
 function Upgrade:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function Upgrade:update()

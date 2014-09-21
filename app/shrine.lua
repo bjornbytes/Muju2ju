@@ -15,7 +15,7 @@ function Shrine:init()
 	self.color = {255, 255, 255}
 	self.highlight = 0
 
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Shrine:update()

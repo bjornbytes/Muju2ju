@@ -1,12 +1,11 @@
-Game = class()
+Server = class()
 
-function Game:load()
+function Server:load()
 	self.paused = false
 	self.ded = false
   self.timer = 0
 
   self.event = Event()
-	self.view = View()
   self.input = Input()
   self.map = Map()
 	self.player = Player()
@@ -25,7 +24,7 @@ function Game:load()
 	love.keyboard.setKeyRepeat(false)
 end
 
-function Game:update()
+function Server:update()
   self.input:update()
 
 	if self.hud.upgrades.active or self.paused or self.ded then
@@ -48,21 +47,21 @@ function Game:update()
 	self.effects:update()
 end
 
-function Game:unload()
+function Server:unload()
 	backgroundSound:stop()
 end
 
-function Game:draw()
+function Server:draw()
 	self.view:draw()
 end
 
-function Game:resize()
+function Server:resize()
 	self.view:resize()
 	self.effects:resize()
   self.hud:resize()
 end
 
-function Game:keypressed(key)
+function Server:keypressed(key)
   self.hud:keypressed(key)
 
   -- Try to move elsewhere.
@@ -75,15 +74,15 @@ function Game:keypressed(key)
 	self.player:keypressed(key)
 end
 
-function Game:mousereleased(...)
+function Server:mousereleased(...)
   self.hud:mousereleased(...)
 end
 
-function Game:textinput(char)
+function Server:textinput(char)
 	self.hud:textinput(char)
 end
 
-function Game:gamepadpressed(gamepad, button)
+function Server:gamepadpressed(gamepad, button)
   self.hud:gamepadpressed(gamepad, button)
 
   if button == 'b' and self.paused then self.paused = not self.paused end
@@ -94,10 +93,10 @@ function Game:gamepadpressed(gamepad, button)
 	self.player:gamepadpressed(gamepad, button)
 end
 
-function Game:joystickadded(...)
+function Server:joystickadded(...)
   return self.input:joystickadded(...)
 end
 
-function Game:joystickremoved(...)
+function Server:joystickremoved(...)
   return self.input:joystickremoved(...)
 end

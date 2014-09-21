@@ -21,7 +21,7 @@ function Hud:init()
   self.pause = HudPause()
   self.dead = HudDead()
 
-  ctx.view:register(self, 'gui')
+  ctx.event:emit('view.register', {object = self, mode = 'gui'})
 end
 
 function Hud:update()

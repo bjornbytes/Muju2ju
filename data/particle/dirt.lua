@@ -11,7 +11,11 @@ function Dirt:activate()
 	self.r = 100 + love.math.random(-20, 20)
 	self.g = 50 + love.math.random(-10, 10)
 	self.b = love.math.random(10)
-  ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
+end
+
+function Dirt:deactivate()
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function Dirt:update()

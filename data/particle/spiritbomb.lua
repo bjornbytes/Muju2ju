@@ -7,11 +7,11 @@ function SpiritBomb:activate()
   self.health = self.maxHealth
   self.angle = love.math.random() * 2 * math.pi
   self.scale = 0
-  ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function SpiritBomb:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function SpiritBomb:update()

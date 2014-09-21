@@ -20,7 +20,7 @@ function GhostPlayer:init()
 	local sound = ctx.sound:play({sound = 'spirit'})
 	if sound then sound:setVolume(.12) end
 
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function GhostPlayer:update()
@@ -68,7 +68,7 @@ end
 
 function GhostPlayer:despawn()
 	GhostPlayer.first = false
-	ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function GhostPlayer:draw()

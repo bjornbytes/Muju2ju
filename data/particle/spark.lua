@@ -8,11 +8,11 @@ function Spark:activate()
 	self.speed = love.math.random(180, 700)
 	self.alpha = .9
 	self.length = love.math.random(4, 12)
-  ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Spark:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unreigster', {object = self})
 end
 
 function Spark:update()

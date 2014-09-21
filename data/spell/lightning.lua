@@ -9,11 +9,11 @@ function Lightning:activate()
 	self.prevHealth = self.health
 	self.sparked = false
 	self:lightning()
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Lightning:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unregister', {object = self})
 end
 
 function Lightning:lightning()

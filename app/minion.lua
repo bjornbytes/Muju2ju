@@ -20,11 +20,11 @@ function Minion:activate()
 	self.scale = .5 + (r / 210)
 	self.depth = self.depth - r / 30 + love.math.random() * (1 / 30)
 
-	ctx.view:register(self)
+  ctx.event:emit('view.register', {object = self})
 end
 
 function Minion:deactivate()
-  ctx.view:unregister(self)
+  ctx.event:emit('view.unreigster', {object = self})
 end
 
 function Minion:update()

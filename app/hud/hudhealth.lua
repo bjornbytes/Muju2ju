@@ -4,6 +4,7 @@ local g = love.graphics
 
 local function bar(x, y, percent, color, width, thickness)
 	thickness = thickness or 2
+  x, y = ctx.view:screenPoint(x, y)
 
 	g.setColor(0, 0, 0, 160)
 	g.rectangle('fill', x, y, width + 1, thickness + 1)

@@ -182,6 +182,13 @@ function View:worldPoint(x, y)
   return x, y
 end
 
+function View:screenPoint(x, y)
+  local vx, vy = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
+  x = (x - vx) * self.scale
+  if y then y = (y - vy) * self.scale end
+  return x, y
+end
+
 function View:worldMouseX()
   return math.round(((love.mouse.getX() - self.frame.x) / self.scale) + self.x)
 end

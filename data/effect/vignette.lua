@@ -16,7 +16,7 @@ end
 
 function Vignette:resize()
   self.shader = data.media.shaders.vignette
-  self.shader:send('frame', {0, 0, love.graphics.getDimensions()})
+  self.shader:send('frame', {ctx.view.frame.x, ctx.view.frame.y, ctx.view.frame.width, ctx.view.frame.height})
 end
 
 return Vignette

@@ -68,6 +68,7 @@ function HudTutorial:draw()
     local img = self.images[self.index]
     if self.index == 1 then
       x, y = math.lerp(ctx.player.prevx, ctx.player.x, tickDelta / tickRate), math.lerp(ctx.player.prevy, ctx.player.y, tickDelta / tickRate) - 50
+      x, y = ctx.view:screenPoint(x, y)
       ox, oy = img:getWidth() / 2, img:getHeight() / 2
       scale = .4
     elseif self.index == 2 then
@@ -78,6 +79,7 @@ function HudTutorial:draw()
       if not ctx.player.ghost then x, y = -1000, -1000
       else
         x, y = math.lerp(ctx.player.ghost.prevx, ctx.player.ghost.x, tickDelta / tickRate), math.lerp(ctx.player.ghost.prevy, ctx.player.ghost.y, tickDelta / tickRate) - 80
+        x, y = ctx.view:screenPoint(x, y)
         ox, oy = img:getWidth() / 2, img:getHeight() / 2
         scale = .3
       end
@@ -86,6 +88,7 @@ function HudTutorial:draw()
     elseif self.index == 4 then
       ox, oy = 440, 400
       x, y = ctx.shrine.x, ctx.shrine.y - 85
+      x, y = ctx.view:screenPoint(x, y)
       scale = .4
     elseif self.index == 5 then
       x, y = 48 + ctx.hud.minions.bg[1]:getWidth() * .4 + 16, 135

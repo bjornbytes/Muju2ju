@@ -70,17 +70,19 @@ function HudUpgrades:update()
 			mx, my = self.cursorX, self.cursorY
 		end
 
-		for who in pairs(self.geometry) do
-			for what, geometry in pairs(self.geometry[who]) do
-				if math.distance(mx, my, geometry[1], geometry[2]) < geometry[3] then
-					local str = ctx.upgrades:makeTooltip(who, what)
-					self.tooltip = rich.new(table.merge({str, 300}, self.tooltipOptions))
-					self.tooltipRaw = str:gsub('{%a+}', '')
-					hover = true
-					break
-				end
-			end
-		end
+    for who in pairs(self.geometry) do
+      for what, geometry in pairs(self.geometry[who]) do
+        if math.distance(mx, my, geometry[1], geometry[2]) < geometry[3] then
+          if not self.tooltip then
+            local str = ctx.upgrades:makeTooltip(who, what)
+            self.tooltip = rich.new(table.merge({str, 300}, self.tooltipOptions))
+            self.tooltipRaw = str:gsub('{%a+}', '')
+          end
+          hover = true
+          break
+        end
+      end
+    end
 
     -- TODO auxiliary tooltips
 		if math.distance(mx, my, 560, 140) < 38 then

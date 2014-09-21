@@ -35,9 +35,11 @@ function Bloom:applyEffect(source, target)
   g.setShader()
   g.setCanvas(target)
   g.draw(source)
+  ctx.view:worldPush()
   ctx.particles:each(function(particle)
 		if particle.code == 'jujuSex' then particle:draw() end
 	end)
+  g.pop()
 	local factor = ctx.player.dead and 1 or 1
   love.graphics.setColor(255, 255, 255, self.alpha * 100 * factor)
   g.setBlendMode('additive')
@@ -49,12 +51,14 @@ function Bloom:applyEffect(source, target)
 	end
   g.setBlendMode('alpha')
 
+  ctx.view:worldPush()
 	if ctx.player.dead then
 		ctx.player.ghost:draw()
 		ctx.spells:each(function(spell)
       if spell.code == 'juju' then spell:draw() end
     end)
 	end
+  g.pop()
 
   g.setCanvas()
 

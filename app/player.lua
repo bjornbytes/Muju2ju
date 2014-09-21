@@ -104,7 +104,8 @@ function Player:gamepadpressed(gamepad, button)
 end
 
 function Player:move()
-  if self.animationState == 'summon' or self.animationState == 'death' or self.animationState == 'resurrect' then
+  local current = self.animation:current()
+  if current and current.blocking then
     self.speed = 0
     return
   end

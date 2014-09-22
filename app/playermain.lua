@@ -2,9 +2,14 @@ PlayerMain = extend(Player)
 
 function PlayerMain:init()
   self.gamepadSelectDirty = false
+  self.prev = setmetatable({}, self.meta)
   self.inputs = {}
 
   Player.init(self)
+end
+
+function PlayerMain:get(t)
+  return t == tick and self or self.prev
 end
 
 function PlayerMain:update()
@@ -19,6 +24,9 @@ function PlayerMain:update()
     end
     self.gamepadSelectDirty = rtrigger or ltrigger
   end
+
+  self.prev.x = self.x
+  self.prev.y = self.y
 
   local input = self:readInput()
   self:move(input)

@@ -61,7 +61,7 @@ end
 
 function HudTutorial:draw()
   if ctx.ded then return end
-  local p = cxt.players:get(ctx.id)
+  local p = ctx.players:get(ctx.id)
   if self.enabled and self.timer > 0 then
     g.setColor(255, 255, 255, 255 * math.abs(math.sin(self.timer)))
     local x, y

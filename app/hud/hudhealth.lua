@@ -21,7 +21,7 @@ end
 function HudHealth:draw()
   if ctx.ded then return end
 
-  local p = ps:get(ctx.id)
+  local p = ctx.players:get(ctx.id)
   local px, py = math.lerp(p.prevx, p.x, tickDelta / tickRate), math.lerp(p.prevy, p.y, tickDelta / tickRate)
   local green = {50, 230, 50}
   local red = {255, 0, 0}

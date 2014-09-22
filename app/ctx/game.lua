@@ -12,7 +12,7 @@ function Game:load()
 	self.view = View()
   self.input = Input()
   self.map = Map()
-	self.player = PlayerMain()
+	self.players = Players()
 	self.shrine = Shrine()
 	self.enemies = Enemies()
 	self.minions = Manager('minion')
@@ -23,6 +23,9 @@ function Game:load()
 	self.upgrades = Upgrades()
 	self.target = Target()
 	self.sound = Sound()
+
+  self.id = 1
+  self.players:add(1)
 
 	backgroundSound = self.sound:loop({sound = 'background'})
 	love.keyboard.setKeyRepeat(false)
@@ -40,7 +43,7 @@ function Game:update()
 
   self.timer = self.timer + 1
   self.net:update()
-	self.player:update()
+	self.players:update()
 	self.shrine:update()
 	self.enemies:update()
 	self.minions:update()
@@ -76,7 +79,7 @@ function Game:keypressed(key)
 
   if self.hud.upgrades.active or self.paused or self.ded then return end
 
-	self.player:keypressed(key)
+	--self.player:keypressed(key)
 end
 
 function Game:mousereleased(...)
@@ -95,7 +98,7 @@ function Game:gamepadpressed(gamepad, button)
 
 	if self.hud.upgrades.active or self.paused or self.ded then return end
 
-	self.player:gamepadpressed(gamepad, button)
+	--self.player:gamepadpressed(gamepad, button)
 end
 
 function Game:joystickadded(...)

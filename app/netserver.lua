@@ -51,9 +51,9 @@ end
 
 function NetServer:quit()
   if self.host then
-    for i = 1, ctx.players.max do
-      if self.host:get_peer(i) then self.host:get_peer(i):disconnect_now() end
-    end
+    ctx.players:each(function(player)
+      if self.host:get_peer(player.id) then self.host:get_peer(player.id):disconnect_now() end
+    end)
     self.host:flush()
   end
   self.host = nil

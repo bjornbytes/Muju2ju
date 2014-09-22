@@ -22,7 +22,7 @@ function Zuju:activate()
 
   -- Animation
   self.animation = data.animation.zuju(self, {scale = self.scale})
-	self.animation.flipX = not ctx.player.animation.flipX
+	self.animation.flipX = not self.owner.animation.flipX
 end
 
 function Zuju:update()
@@ -77,13 +77,11 @@ function Zuju:attack()
   self.fireTimer = self.fireRate
 
   -- Sound
-  local pitch = 1 + love.math.random() * .2
-  if love.math.random() > .5 then pitch = 1 / pitch end
-  local sound = ctx.sound:play({sound = 'combat'})
-  if sound then
+  ctx.event:emit('sound.play', {sound = 'combat', volume = .5, with = function(sound)
+    local pitch = 1 + love.math.random() * .2
+    if love.math.random() > .5 then pitch = 1 / pitch end
     sound:setPitch(pitch)
-    sound:setVolume(.5)
-  end
+  end})
 end
 
 function Zuju:hurt(amount)

@@ -30,8 +30,7 @@ end
 function Minion:update()
 
   -- Rots and Lerps
-	self.timeScale = 1 / (1 + ctx.upgrades.muju.distort.level * (ctx.player.dead and 1 or 0))
-	self.fireTimer = self.fireTimer - math.min(self.fireTimer, tickRate * self.timeScale)
+	self.fireTimer = self.fireTimer - math.min(self.fireTimer, tickRate)
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 
   -- Health and Speed Decay
@@ -77,5 +76,5 @@ end
 
 function Minion:move()
   if not self.target or self:inRange() then return end
-  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate * self.timeScale
+  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate
 end

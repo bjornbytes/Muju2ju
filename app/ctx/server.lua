@@ -1,11 +1,14 @@
 Server = class()
 
+Server.tag = 'server'
+
 function Server:load()
 	self.paused = false
 	self.ded = false
   self.timer = 0
 
   self.event = Event()
+  self.net = NetServer()
   self.map = Map()
 	self.player = Player()
 	self.shrine = Shrine()
@@ -21,6 +24,8 @@ function Server:update()
     self.player:paused()
 		return
 	end
+
+  self.net:update()
 
   self.timer = self.timer + 1
 	self.player:update()

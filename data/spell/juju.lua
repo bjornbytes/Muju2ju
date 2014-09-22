@@ -16,6 +16,7 @@ function Juju:activate()
 	self.scale = 0
 	self.alpha = 0
 	self.dead = false
+  self.collectedBy = nil
 
 	for i = 1, 15 do
 		ctx.particles:add('jujuSex', {x = self.x, y = self.y})
@@ -38,7 +39,7 @@ function Juju:update()
 		self.scale = math.lerp(self.scale, .1, 5 * tickRate)
 		if math.distance(self.x, self.y, tx, ty) < 16 then
 			ctx.spells:remove(self)
-			ctx.player.juju = ctx.player.juju + self.amount
+			self.collectedBy.juju = self.collectedBy.juju + self.amount
 			ctx.hud.jujuIconScale = 1
 			for i = 1, 20 do
 				ctx.particles:add('jujuSex', {x = tx, y = ty})
@@ -62,22 +63,25 @@ function Juju:update()
 		ctx.particles:add('jujuSex', {x = self.x, y = self.y, vy = love.math.random(-150, -75), vx = love.math.random(-100, 100), alpha = .35})
 	end
 
-	if ctx.player.dead then
-		local ghost = ctx.player.ghost
-		if ctx.upgrades.muju.absorb.level > 0 then
-			local distance, direction = math.vector(self.x, self.y, ghost.x, ghost.y)
-			local threshold = self.amount + 75 + 50 * ctx.upgrades.muju.absorb.level
-			local factor = math.clamp((threshold - distance) / threshold, 0, 1)
-			local speed = threshold * factor * tickRate
-			self.x = self.x + math.dx(speed, direction)
-			self.y = self.y + math.dy(speed, direction)
-		end
+  ctx.players:each(function(player)
+    if player.dead then
+      local ghost = player.ghost
+      if ctx.upgrades.muju.absorb.level > 0 then
+        local distance, direction = math.vector(self.x, self.y, ghost.x, ghost.y)
+        local threshold = self.amount + 75 + 50 * ctx.upgrades.muju.absorb.level
+        local factor = math.clamp((threshold - distance) / threshold, 0, 1)
+        local speed = threshold * factor * tickRate
+        self.x = self.x + math.dx(speed, direction)
+        self.y = self.y + math.dy(speed, direction)
+      end
 
-		if math.distance(ghost.x, ghost.y, self.x, self.y) < self.amount + ghost.radius then
-			ctx.sound:play({sound = 'juju'})
-			self.dead = true
-		end
-	end
+      if math.distance(ghost.x, ghost.y, self.x, self.y) < self.amount + ghost.radius then
+        ctx.event:emit('sound.play', {sound = 'juju'})
+        self.dead = true
+        self.collectedBy = ghost.owner
+      end
+    end
+  end)
 
 	if self.y < -50 then
 		ctx.spells:remove(self)

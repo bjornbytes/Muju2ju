@@ -1,4 +1,5 @@
 Player = class()
+Player.code = 'player'
 
 Player.width = 45
 Player.height = 90
@@ -9,6 +10,8 @@ Player.maxHealth = 100
 Player.depth = -10
 
 function Player:init()
+  self.meta = {__index = self}
+
 	self.health = 100
 	self.healthDisplay = self.health
 	self.x = ctx.map.width / 2
@@ -28,12 +31,6 @@ function Player:init()
 
 	self.summonedMinions = 0
 	self.hasMoved = false
-
-	local joysticks = love.joystick.getJoysticks()
-	for _, joystick in ipairs(joysticks) do
-		if joystick:isGamepad() then self.gamepad = joystick break end
-	end
-	self.gamepadSelectDirty = false
 
   self.animation = data.animation.muju(self)
 
@@ -62,8 +59,7 @@ function Player:update()
   end
 
   -- Alive behavior
-  self:move()
-  if ctx.input:getAction('summon') then self:summon() end
+  --if ctx.input:getAction('summon') then self:summon() end
 	self:hurt(self.maxHealth * .033 * tickRate)
 end
 
@@ -93,35 +89,27 @@ function Player:keypressed(key)
 	end
 end
 
-function Player:move()
+function Player:move(input)
+  if self.dead then
+    self.speed = 0
+    return self.ghost:move(input)
+  end
+
   local current = self.animation:current()
   if current and current.blocking then
     self.speed = 0
     return
   end
 
-  local x = ctx.input:getAxis('x')
-  self.speed = math.lerp(self.speed, self.walkSpeed * x, math.min(10 * tickRate, 1))
+  self.speed = math.lerp(self.speed, self.walkSpeed * input.x, math.min(10 * tickRate, 1))
   if self.speed ~= 0 then self.hasMoved = true end
   self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
 end
 
-function Player:slot()
+function Player:slot(input)
   for i = 1, #self.minioncds do
 		self.minioncds[i] = timer.rot(self.minioncds[i], function() ctx.hud.minions.extra[i] = 1 end)
 	end
-
-  if self.gamepad then
-    local ltrigger = self.gamepad:getGamepadAxis('triggerleft') > .5
-    local rtrigger = self.gamepad:getGamepadAxis('triggerright') > .5
-    if not self.gamepadSelectDirty then
-      if rtrigger then self.selectedMinion = self.selectedMinion + 1 end
-      if ltrigger then self.selectedMinion = self.selectedMinion - 1 end
-      if self.selectedMinion <= 0 then self.selectedMinion = #self.minions
-      elseif self.selectedMinion > #self.minions then self.selectedMinion = 1 end
-    end
-    self.gamepadSelectDirty = rtrigger or ltrigger
-  end
 end
 
 function Player:spawn()
@@ -159,7 +147,7 @@ function Player:summon()
   -- Check cooldown and juju
   if cooldown > 0 or not self:spend(minion:getCost()) then return end
 
-  ctx.minions:add(code, {x = self.x + love.math.random(-20, 20)})
+  ctx.minions:add(code, {x = self.x + love.math.random(-20, 20), owner = self})
 
   -- Set cooldown
   self.minioncds[self.selectedMinion] = minion.cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
@@ -173,8 +161,7 @@ function Player:summon()
 
   -- Juice
   for i = 1, 15 do ctx.particles:add('dirt', {x = self.x, y = self.y + self.height}) end
-  local summonSound = love.math.random(1, 3)
-  ctx.sound:play({sound = 'summon' .. summonSound})
+  ctx.event:emit('sound.play', {sound = 'summon' .. (love.math.random(1, 3))})
 end
 
 function Player:hurt(amount, source)
@@ -195,7 +182,7 @@ function Player:hurt(amount, source)
 	if self.health <= 0 and self.deathTimer == 0 then
 		self.deathTimer = self.deathDuration
 		self.dead = true
-		self.ghost = GhostPlayer()
+		self.ghost = GhostPlayer(self)
 		self.animation:set('death')
 		return true
 	end

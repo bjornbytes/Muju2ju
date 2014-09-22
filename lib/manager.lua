@@ -10,10 +10,12 @@ function Manager:update()
 end
 
 function Manager:add(kind, vars)
-  local object = data[self.manages][kind]()
+  if type(kind) == 'string' then kind = data[self.manages][kind] end
+  local object = kind()
   table.merge(vars, object, true)
   f.exe(object.activate, object)
   self.objects[object] = object
+  return object
 end
 
 function Manager:remove(object)

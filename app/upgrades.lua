@@ -1,7 +1,6 @@
 Upgrades = class()
 
--- TODO Player:has(Minion) etc.
-local function hasVuju() return ctx.player.minions[2] == 'vuju' end
+local hasVuju = function() return table.has(ctx.players:get(ctx.id).minions, 'vuju') end
 
 function Upgrades:init()
 	self.zuju = {
@@ -243,7 +242,7 @@ function Upgrades:makeTooltip(who, what)
     table.insert(pieces, '{whoCares}{normal}Max Level')
   else
     table.insert(pieces, '{white}{bold}Next Level: ' .. upgrade.values[upgrade.level + 1])
-    local color = ctx.player.juju >= upgrade.costs[upgrade.level + 1] and '{green}' or '{red}'
+    local color = ctx.players:get(ctx.id).juju >= upgrade.costs[upgrade.level + 1] and '{green}' or '{red}'
     table.insert(pieces, color .. upgrade.costs[upgrade.level + 1] .. ' juju')
     if upgrade.prerequisites then
       for name, min in pairs(upgrade.prerequisites) do
@@ -267,7 +266,7 @@ end
 function Upgrades:canBuy(who, what)
   local upgrade = self[who][what]
   if not upgrade.costs[upgrade.level + 1] then return false end
-  if ctx.player.juju < upgrade.costs[upgrade.level + 1] then return false end
+  if ctx.players:get(ctx.id).juju < upgrade.costs[upgrade.level + 1] then return false end
   return self:checkPrerequisites(who, what)
 end
 

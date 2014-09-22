@@ -26,6 +26,8 @@ function HudUpgrades:init()
 end
 
 function HudUpgrades:update()
+  local p = ctx.players:get(ctx.id)
+
 	self.alpha = math.lerp(self.alpha, self.active and 1 or 0, 12 * tickRate)
 
 	for i = 1, #self.pillows do
@@ -36,9 +38,9 @@ function HudUpgrades:update()
 	end
 
 	-- Virtual cursor
-	if ctx.player.gamepad then
+	if p.gamepad then
 		local vx, vy = 0, 0
-		local xx, yy = ctx.player.gamepad:getGamepadAxis('leftx'), ctx.player.gamepad:getGamepadAxis('lefty')
+		local xx, yy = p.gamepad:getGamepadAxis('leftx'), p.gamepad:getGamepadAxis('lefty')
 		local cursorSpeed = 500
 		local len = (xx * xx + yy * yy) ^ .5
 		self.prevCursorX = self.cursorX
@@ -66,7 +68,7 @@ function HudUpgrades:update()
 		local mx, my = love.mouse.getPosition()
 		local hover = false
 
-		if ctx.player.gamepad then
+		if p.gamepad then
 			mx, my = self.cursorX, self.cursorY
 		end
 
@@ -86,8 +88,8 @@ function HudUpgrades:update()
 
     -- TODO auxiliary tooltips
 		if math.distance(mx, my, 560, 140) < 38 then
-			if not table.has(ctx.player.minions, 'vuju') then
-				local color = ctx.player.juju >= 80 and '{green}' or '{red}'
+			if not table.has(p.minions, 'vuju') then
+				local color = p.juju >= 80 and '{green}' or '{red}'
 				local str = '{white}{title}Vuju{normal}\n{whoCares}Casts chain lightning and hexes enemies.\n\n' .. color .. '{bold}80 juju'
 				self.tooltip = rich.new(table.merge({str, 300}, self.tooltipOptions))
 				self.tooltipRaw = str:gsub('{%a+}', '')
@@ -117,6 +119,8 @@ function HudUpgrades:draw()
 
   local u, v = ctx.hud.u, ctx.hud.v
 
+  local p = ctx.players:get(ctx.id)
+
 	if self.alpha > .001 then
 		local mx, my = love.mouse.getPosition()
 		
@@ -141,7 +145,7 @@ function HudUpgrades:draw()
 		g.draw(circles, u * .5, v * .5, 0, 1, 1, circles:getWidth() / 2, circles:getHeight() / 2)
 
 		g.setColor(0, 0, 0, self.alpha * 250)
-		local str = tostring(math.floor(ctx.player.juju))
+		local str = tostring(math.floor(p.juju))
     g.setFont(ctx.hud.boldFont)
 		g.print(str, u * .5 - ctx.hud.boldFont:getWidth(str) / 2, 65)
 
@@ -172,7 +176,7 @@ function HudUpgrades:draw()
 		end
 
 		if self.tooltip then
-			if ctx.player.gamepad then
+			if p.gamepad then
 				mx, my = math.lerp(self.prevCursorX, self.cursorX, tickDelta / tickRate), math.lerp(self.prevCursorY, self.cursorY, tickDelta / tickRate)
 				mx, my = math.round(mx), math.round(my)
 			end
@@ -188,7 +192,7 @@ function HudUpgrades:draw()
 		end
 	end
 
-	if self.active and ctx.player.gamepad then
+	if self.active and p.gamepad then
     local xx, yy = math.lerp(self.prevCursorX, self.cursorX, tickDelta / tickRate), math.lerp(self.prevCursorY, self.cursorY, tickDelta / tickRate)
     g.setColor(255, 255, 255)
     g.draw(data.media.graphics.cursor, xx, yy)
@@ -196,7 +200,9 @@ function HudUpgrades:draw()
 end
 
 function HudUpgrades:keypressed(key)
-	if (key == 'tab' or key == 'e') and ctx.player:atShrine() and not ctx.ded then
+  local p = ctx.players:get(ctx.id)
+
+	if (key == 'tab' or key == 'e') and p:atShrine() and not ctx.ded then
 		self.active = not self.active
 	end
 
@@ -208,6 +214,8 @@ end
 function HudUpgrades:mousereleased(x, y, button)
   if ctx.ded then return end
 
+  local p = ctx.players:get(ctx.id)
+
 	if self.active and button == 'l' then
 		for who in pairs(self.geometry) do
 			for what, geometry in pairs(self.geometry[who]) do
@@ -216,9 +224,9 @@ function HudUpgrades:mousereleased(x, y, button)
 					local nextLevel = upgrade.level + 1
 					local cost = upgrade.costs[nextLevel]
 
-					if ctx.upgrades:canBuy(who, what) and ctx.player:spend(cost) then
+					if ctx.upgrades:canBuy(who, what) and p:spend(cost) then
 						ctx.upgrades[who][what].level = nextLevel
-						ctx.sound:play({sound = 'menuClick'})
+            ctx.event:emit('sound.play', {sound = 'menuClick'})
 						for i = 1, 80 do
 							ctx.hud.particles:add('upgrade', {x = x, y = y})
 						end
@@ -228,9 +236,9 @@ function HudUpgrades:mousereleased(x, y, button)
 			end
 		end
 
-		if not table.has(ctx.player.minions, 'vuju') and math.distance(x, y, 560, 140) < 38 and ctx.player:spend(80) then
-			table.insert(ctx.player.minions, 'vuju')
-			table.insert(ctx.player.minioncds, 0)
+		if not table.has(p.minions, 'vuju') and math.distance(x, y, 560, 140) < 38 and p:spend(80) then
+			table.insert(p.minions, 'vuju')
+			table.insert(p.minioncds, 0)
 			for i = 1, 100 do
 				ctx.hud.particles:add('upgrade', {x = x, y = y})
 			end
@@ -248,7 +256,9 @@ function HudUpgrades:gamepadpressed(gamepad, button)
 
   local u, v = ctx.hud.u, ctx.hud.v
 
-	if gamepad == ctx.player.gamepad then
+  local p = ctx.players:get(ctx.id)
+
+	if gamepad == p.gamepad then
     if button == 'b' and self.active then
       self.active = false
       self.cursorX = u * .5
@@ -258,7 +268,7 @@ function HudUpgrades:gamepadpressed(gamepad, button)
       return true
     end
 
-		if (button == 'x' or button == 'y') and ctx.player:atShrine() then
+		if (button == 'x' or button == 'y') and p:atShrine() then
 			self.active = not self.active
 			self.cursorX = u * .5
 			self.cursorY = v * .5

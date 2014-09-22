@@ -20,29 +20,30 @@ function HudTutorial:init()
 end
 
 function HudTutorial:update()
+  local p = ctx.players:get(ctx.id)
 	if self.enabled and (not ctx.hud.upgrades.active) and (not ctx.paused) then
 		self.timer = timer.rot(self.timer)
-		if self.timer == 0 and tick > 2 / tickRate and not ctx.player.hasMoved and not self.dirty[1] then
+		if self.timer == 0 and tick > 2 / tickRate and not p.hasMoved and not self.dirty[1] then
 			self.index = 1
 			self.timer = 2 * math.pi
 			self.dirty[1] = true
 		end
-		if self.timer == 0 and ctx.player.dead and ctx.player.ghost.first and not self.dirty[2] then
+		if self.timer == 0 and p.dead and p.ghost.first and not self.dirty[2] then
 			self.index = 3
 			self.timer = 2 * math.pi
 			self.dirty[2] = true
 		end
-		if self.timer == 0 and tick > 8 / tickRate and ctx.player.summonedMinions == 0 and not ctx.player.dead and not self.dirty[3] then
+		if self.timer == 0 and tick > 8 / tickRate and p.summonedMinions == 0 and not p.dead and not self.dirty[3] then
 			self.index = 2
 			self.timer = 2 * math.pi
 			self.dirty[3] = true
 		end
-		if self.timer == 0 and ctx.hud.upgrades.bought == 0 and tick > 35 / tickRate and ctx.player.juju >= 45 and not ctx.player.dead and not self.dirty[4] then
+		if self.timer == 0 and ctx.hud.upgrades.bought == 0 and tick > 35 / tickRate and p.juju >= 45 and not p.dead and not self.dirty[4] then
 			self.index = 4
 			self.timer = 2 * math.pi
 			self.dirty[4] = true
 		end
-		if self.timer == 0 and #ctx.player.minions > 1 and not ctx.player.dead and not self.dirty[5] then
+		if self.timer == 0 and #p.minions > 1 and not p.dead and not self.dirty[5] then
 			self.index = 5
 			self.timer = 2 * math.pi
 			self.dirty[5] = true
@@ -50,16 +51,17 @@ function HudTutorial:update()
 
 		-- Tutorial unhooks
 		local decay = function() while self.timer > math.pi / 2 do self.timer = self.timer - math.pi / 2 end end
-		if self.index == 1 and ctx.player.hasMoved then decay() end
-		if self.index == 2 and (ctx.player.summonedMinions > 0 or ctx.player.dead) then decay() end
-		if self.index == 3 and not ctx.player.dead then decay() end
+		if self.index == 1 and p.hasMoved then decay() end
+		if self.index == 2 and (p.summonedMinions > 0 or p.dead) then decay() end
+		if self.index == 3 and not p.dead then decay() end
 		if self.index == 4 and ctx.hud.upgrades.bought > 0 then decay() end
-		if self.index == 5 and ctx.player.selectedMinion == 2 then decay() end
+		if self.index == 5 and p.selectedMinion == 2 then decay() end
 	end
 end
 
 function HudTutorial:draw()
   if ctx.ded then return end
+  local p = cxt.players:get(ctx.id)
   if self.enabled and self.timer > 0 then
     g.setColor(255, 255, 255, 255 * math.abs(math.sin(self.timer)))
     local x, y
@@ -67,7 +69,7 @@ function HudTutorial:draw()
     local scale
     local img = self.images[self.index]
     if self.index == 1 then
-      x, y = math.lerp(ctx.player.prevx, ctx.player.x, tickDelta / tickRate), math.lerp(ctx.player.prevy, ctx.player.y, tickDelta / tickRate) - 50
+      x, y = math.lerp(p.prevx, p.x, tickDelta / tickRate), math.lerp(p.prevy, p.y, tickDelta / tickRate) - 50
       x, y = ctx.view:screenPoint(x, y)
       ox, oy = img:getWidth() / 2, img:getHeight() / 2
       scale = .4
@@ -76,9 +78,9 @@ function HudTutorial:draw()
       ox, oy = 1, 56
       scale = .4
     elseif self.index == 3 then
-      if not ctx.player.ghost then x, y = -1000, -1000
+      if not p.ghost then x, y = -1000, -1000
       else
-        x, y = math.lerp(ctx.player.ghost.prevx, ctx.player.ghost.x, tickDelta / tickRate), math.lerp(ctx.player.ghost.prevy, ctx.player.ghost.y, tickDelta / tickRate) - 80
+        x, y = math.lerp(p.ghost.prevx, p.ghost.x, tickDelta / tickRate), math.lerp(p.ghost.prevy, p.ghost.y, tickDelta / tickRate) - 80
         x, y = ctx.view:screenPoint(x, y)
         ox, oy = img:getWidth() / 2, img:getHeight() / 2
         scale = .3

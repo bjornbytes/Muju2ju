@@ -19,15 +19,14 @@ function Shrine:init()
 end
 
 function Shrine:update()
-	if self.health <= 0 then
-		ctx.ded = true
-	end
+	if self.health <= 0 then ctx.ded = true end
 
 	self.health = math.min(self.maxHealth, self.health + (self.maxHealth * ctx.upgrades.muju.imbue.level * .005 * tickRate))
 
-	self.color = table.interpolate(self.color, ctx.player.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
+  local p = ctx.players:get(ctx.id)
+	self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
-	self.highlight = math.lerp(self.highlight, ctx.player:atShrine() and 128 or 0, 5 * tickRate)
+	self.highlight = math.lerp(self.highlight, p:atShrine() and 128 or 0, 5 * tickRate)
 end
 
 function Shrine:draw()
@@ -48,7 +47,7 @@ end
 function Shrine:hurt(value)
 	self.health = self.health - value
 	if self.health < 0 then
-		ctx.sound:play({sound = 'youlose'})
+    ctx.event:emit('sound.play', {sound = 'youlose'})
 		backgroundSound:stop()
 		return true
 	end

@@ -1,6 +1,6 @@
 Menu = class()
 
-function Menu:init()
+function Menu:load()
 	self.sound = Sound()
 	self.menuSounds = self.sound:loop({sound = 'menu'})
 	self.font = love.graphics.newFont('media/fonts/pixel.ttf', 8)

@@ -32,8 +32,7 @@ end
 function Enemy:update()
 
   -- Rots and Lerps
-	self.timeScale = 1 / (1 + ctx.upgrades.muju.distort.level * (ctx.player.dead and 1 or 0))
-	self.fireTimer = self.fireTimer - math.min(self.fireTimer, tickRate * self.timeScale)
+	self.fireTimer = self.fireTimer - math.min(self.fireTimer, tickRate)
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 	self.damageReductionDuration = timer.rot(self.damageReductionDuration, function() self.damageReduction = 0 end)
 	self.damageAmplificationDuration = timer.rot(self.damageAmplificationDuration, function() self.damageAmplification = 0 end)
@@ -47,7 +46,7 @@ end
 
 function Enemy:move()
   if not self.target or self:inRange() then return end
-  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate * self.timeScale * (1 - self.slow)
+  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate * (1 - self.slow)
 end
 
 function Enemy:hurt(amount)

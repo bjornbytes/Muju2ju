@@ -1,15 +1,18 @@
 Game = class()
 
+Game.tag = 'client'
+
 function Game:load()
 	self.paused = false
 	self.ded = false
   self.timer = 0
 
   self.event = Event()
+  self.net = NetClient()
 	self.view = View()
   self.input = Input()
   self.map = Map()
-	self.player = Player()
+	self.player = PlayerMain()
 	self.shrine = Shrine()
 	self.enemies = Enemies()
 	self.minions = Manager('minion')
@@ -36,6 +39,7 @@ function Game:update()
 	end
 
   self.timer = self.timer + 1
+  self.net:update()
 	self.player:update()
 	self.shrine:update()
 	self.enemies:update()

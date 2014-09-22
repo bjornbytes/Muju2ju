@@ -6,8 +6,10 @@ local getEntries = {
     table.insert(t, {ctx.shrine, math.abs(ctx.shrine.x - source.x)})
   end,
   player = function(source, t)
-    if ctx.player.dead or ctx.player.invincible > 0 or source == ctx.player then return end
-    table.insert(t, {ctx.player, math.abs(ctx.player.x - source.x)})
+    ctx.players:each(function(player)
+      if player.dead or player.invincible > 0 or source == player then return end
+      table.insert(t, {player, math.abs(player.x - source.x)})
+    end)
   end,
   enemy = function(source, t)
     ctx.enemies:each(function(enemy)

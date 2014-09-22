@@ -2,7 +2,7 @@ require 'require'
 
 function love.load()
   data.load()
-	Context:add(Menu)
+	Context:add(arg[2] == 'server' and Server or Menu)
 end
 
 love.update = Context.update

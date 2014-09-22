@@ -27,8 +27,10 @@ function love.run()
 			love.update()
 		end
 
-		love.graphics.clear()
-		love.draw()
-		love.graphics.present()
+    if love.window.isCreated() then
+      love.graphics.clear()
+      love.draw()
+      love.graphics.present()
+    end
 	end
 end

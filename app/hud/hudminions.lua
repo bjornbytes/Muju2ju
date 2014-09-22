@@ -14,11 +14,13 @@ function HudMinions:init()
 end
 
 function HudMinions:update()
+  local p = ctx.players:get(ctx.id)
+
 	for i = 1, #self.factor do
-		self.factor[i] = math.lerp(self.factor[i], ctx.player.selectedMinion == i and 1 or 0, 18 * tickRate)
+		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 18 * tickRate)
 		self.extra[i] = math.lerp(self.extra[i], 0, 5 * tickRate)
-		if ctx.player.minions[i] then
-			local y = self.bg[i]:getHeight() * (ctx.player.minioncds[i] / data.minion[ctx.player.minions[i]].cooldown)
+		if p.minions[i] then
+			local y = self.bg[i]:getHeight() * (p.minioncds[i] / data.minion[p.minions[i]].cooldown)
 			self.quad[i]:setViewport(0, y, self.bg[i]:getWidth(), self.bg[i]:getHeight() - y)
 		end
 	end
@@ -27,15 +29,16 @@ end
 function HudMinions:draw()
   if ctx.ded then return end
 
+  local p = ctx.players:get(ctx.id)
   local yy = 135
   local font = ctx.hud.boldFont
 
-  for i = 1, #ctx.player.minions do
+  for i = 1, #p.minions do
     local bg = self.bg[i]
     local w, h = bg:getDimensions()
     local scale = .75 + (.15 * self.factor[i]) + (.1 * self.extra[i])
     local xx = 48 - 10 * (1 - self.factor[i])
-    local f, cost = font, tostring(data.minion[ctx.player.minions[i]]:getCost())
+    local f, cost = font, tostring(data.minion[p.minions[i]]:getCost())
     local tx, ty = xx - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35
 
@@ -45,7 +48,7 @@ function HudMinions:draw()
 
     -- Cooldown
     local _, qy = self.quad[i]:getViewport()
-    g.setColor(255, 255, 255, (150 + (100 * (ctx.player.minioncds[i] == 0 and 1 or 0))) * alpha)
+    g.setColor(255, 255, 255, (150 + (100 * (p.minioncds[i] == 0 and 1 or 0))) * alpha)
     g.draw(bg, self.quad[i], xx, yy + qy * scale, 0, scale, scale, w / 2, h / 2)
 
     -- Juice

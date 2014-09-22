@@ -10,7 +10,7 @@ local function load(dir)
 end
 
 require 'spine-love.spine'
-require 'socket'
+require 'enet'
 
 load 'lib/deps/lutil'
 load 'lib/deps/slam'

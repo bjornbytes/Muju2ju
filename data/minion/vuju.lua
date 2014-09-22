@@ -27,7 +27,7 @@ function Vuju:activate()
 
   -- Animation
   self.animation = data.animation.vuju(self)
-	self.animation.flipX = not ctx.player.animation.flipX
+	self.animation.flipX = not self.owner.animation.flipX
 end
 
 function Vuju:update()

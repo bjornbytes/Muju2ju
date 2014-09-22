@@ -1,27 +1,29 @@
 Map = class()
 
-Map.width, Map.height = love.graphics.getDimensions()
+Map.width, Map.height = 800, 600
 
 local function drawBackground(self)
-  local g  = love.graphics
+  local g = love.graphics
+  local p = ctx.players:get(ctx.id)
 
   g.setColor(255, 255, 255)
   g.draw(data.media.graphics.bg)
 
   local alpha = ctx.map.spiritAlpha * 255
-  alpha = math.lerp(alpha, (1 - (ctx.player.healthDisplay / ctx.player.maxHealth)) * 255, .5)
+  alpha = math.lerp(alpha, (1 - (p.healthDisplay / p.maxHealth)) * 255, .5)
   g.setColor(255, 255, 255, alpha)
   g.draw(data.media.graphics.bgSpirit)
 end
 
 local function drawForeground(self)
 	local g = love.graphics
+  local p = ctx.players:get(ctx.id)
 
 	g.setColor(200, 200, 200)
 	g.draw(data.media.graphics.grass, 0, 32)
 
 	local alpha = ctx.map.spiritAlpha * 255
-	alpha = math.lerp(alpha, (1 - (ctx.player.healthDisplay / ctx.player.maxHealth)) * 255, .5)
+	alpha = math.lerp(alpha, (1 - (p.healthDisplay / p.maxHealth)) * 255, .5)
 	g.setColor(200, 200, 200, alpha)
 	g.draw(data.media.graphics.spiritGrass, 0, 32)
 end
@@ -46,5 +48,5 @@ function Map:init()
 end
 
 function Map:update()
-	self.spiritAlpha = math.lerp(self.spiritAlpha, ctx.player.dead and 1 or 0, .6 * tickRate)
+	self.spiritAlpha = math.lerp(self.spiritAlpha, ctx.players:get(ctx.id).dead and 1 or 0, .6 * tickRate)
 end

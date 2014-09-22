@@ -14,7 +14,7 @@ function Enemies:update()
 	self.nextEnemy = timer.rot(self.nextEnemy, function()
 		if table.count(self.objects) < 1 + self.level / 2 then
 			local spawnType
-			local x = love.math.random() > .5 and 0 or love.graphics.getWidth()
+			local x = love.math.random() > .5 and 0 or ctx.map.width
 
 			spawnType = 'puju'
 			if self.maxEnemyRate < 8 then

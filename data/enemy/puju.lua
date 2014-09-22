@@ -50,7 +50,7 @@ end
 function Puju:attack()
 	self.fireTimer = self.fireRate
 
-	if self.buttTimer == 0 and self.target ~= ctx.player and self.target ~= ctx.shrine and love.math.random() < .6 then
+	if self.buttTimer == 0 and self.target.code ~= 'player' and self.target ~= ctx.shrine and love.math.random() < .6 then
 		return self:butt()
 	end
 
@@ -58,8 +58,7 @@ function Puju:attack()
 	if self.target:hurt(damage, self) then self.target = false end
 	self:hurt(damage * .25 * ctx.upgrades.muju.mirror.level)
   if not self.target then self.target = ctx.shrine end
-	local sound = ctx.sound:play({sound = 'combat'})
-	if sound then sound:setVolume(.5) end
+  ctx.event:emit('sound.play', {sound = 'combat', volume = .5})
 	self.attackAnimation = 1
 end
 
@@ -76,8 +75,7 @@ function Puju:butt()
 	end)
 	self.buttTimer = self.buttRate
 	self.animation:set('headbutt')
-	local sound = ctx.sound:play({sound = 'combat'})
-	if sound then sound:setVolume(.5) end
+  ctx.event:emit('sound.play', {sound = 'combat', with = function(sound) sound:setVolume(.5) end})
   if not self.target then self.target = ctx.shrine end
 end
 

@@ -21,12 +21,13 @@ end
 function HudHealth:draw()
   if ctx.ded then return end
 
-  local px, py = math.lerp(ctx.player.prevx, ctx.player.x, tickDelta / tickRate), math.lerp(ctx.player.prevy, ctx.player.y, tickDelta / tickRate)
+  local p = ps:get(ctx.id)
+  local px, py = math.lerp(p.prevx, p.x, tickDelta / tickRate), math.lerp(p.prevy, p.y, tickDelta / tickRate)
   local green = {50, 230, 50}
   local red = {255, 0, 0}
   local purple = {200, 80, 255}
 
-  bar(px - 40, py - 15, ctx.player.healthDisplay / ctx.player.maxHealth, purple, 80, 3)
+  bar(px - 40, py - 15, p.healthDisplay / p.maxHealth, purple, 80, 3)
   bar(ctx.shrine.x - 60, ctx.shrine.y - 65, ctx.shrine.healthDisplay / ctx.shrine.maxHealth, green, 120, 4)
 
   local t = {}

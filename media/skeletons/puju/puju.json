@@ -1,5 +1,5 @@
 {
-"skeleton": { "spine": "1.9.17", "hash": "9+nHJVm6REu15Dt75ZMKXq3iKLY", "width": 94.79, "height": 53.97 },
+"skeleton": { "spine": "1.9.17", "hash": "A5k8z8sNHqYfxmM3MWTysH1Mf94", "width": 94.79, "height": 53.97 },
 "bones": [
 	{ "name": "root" },
 	{ "name": "body", "parent": "root", "length": 29.36, "x": -14.2, "y": 4.52, "rotation": 5.39 },
@@ -175,7 +175,10 @@
 					{ "time": 0.2666, "angle": 14.98 }
 				]
 			}
-		}
+		},
+		"events": [
+			{ "time": 0.2333, "name": "pujuAttack" }
+		]
 	},
 	"headbutt": {
 		"bones": {

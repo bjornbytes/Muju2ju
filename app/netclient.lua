@@ -48,6 +48,7 @@ function NetClient:connect(event)
   self.server = event.peer
   self:send(msgJoin)
   event.peer:ping()
+  print('connected')
 end
 
 function NetClient:disconnect(event)

@@ -48,5 +48,7 @@ function Map:init()
 end
 
 function Map:update()
-	self.spiritAlpha = math.lerp(self.spiritAlpha, ctx.players:get(ctx.id).dead and 1 or 0, .6 * tickRate)
+  if ctx.id then
+    self.spiritAlpha = math.lerp(self.spiritAlpha, ctx.players:get(ctx.id).dead and 1 or 0, .6 * tickRate)
+  end
 end

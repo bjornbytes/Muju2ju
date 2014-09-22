@@ -10,13 +10,15 @@ function Server:load()
   self.event = Event()
   self.net = NetServer()
   self.map = Map()
-	self.player = Player()
+	self.players = Players()
 	self.shrine = Shrine()
 	self.enemies = Enemies()
 	self.minions = Manager('minion')
   self.spells = Manager('spell')
 	self.upgrades = Upgrades()
 	self.target = Target()
+
+  self.players:add(1)
 end
 
 function Server:update()
@@ -28,7 +30,7 @@ function Server:update()
   self.net:update()
 
   self.timer = self.timer + 1
-	self.player:update()
+	self.players:update()
 	self.shrine:update()
 	self.enemies:update()
 	self.minions:update()

@@ -23,10 +23,12 @@ function Shrine:update()
 
 	self.health = math.min(self.maxHealth, self.health + (self.maxHealth * ctx.upgrades.muju.imbue.level * .005 * tickRate))
 
-  local p = ctx.players:get(ctx.id)
-	self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
-	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
-	self.highlight = math.lerp(self.highlight, p:atShrine() and 128 or 0, 5 * tickRate)
+  if ctx.id then
+    local p = ctx.players:get(ctx.id)
+    self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
+    self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
+    self.highlight = math.lerp(self.highlight, p:atShrine() and 128 or 0, 5 * tickRate)
+  end
 end
 
 function Shrine:draw()

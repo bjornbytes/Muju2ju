@@ -14,9 +14,10 @@ NetClient.receive = {}
 NetClient.receive['default'] = function(self, event) ctx.event:emit(event.msg, event.data) end
 
 NetClient.receive[msgJoin] = function(self, event)
+  print(event.data.id)
   ctx.id = event.data.id
   ctx.tick = event.data.tick + math.floor(((event.peer:round_trip_time() / 2) / 1000) / tickRate)
-  setmetatable(ctx.players:get(ctx.id), {__index = PlayerMain})
+  ctx.players:add(ctx.id)
 end
 
 function NetClient:init()

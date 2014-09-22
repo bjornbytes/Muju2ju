@@ -1,9 +1,9 @@
 PlayerDummy = extend(Player)
 
-function PlayerDummy:init()
+function PlayerDummy:activate()
   self.history = {}
 
-  Player.init(self)
+  Player.activate(self)
 
   self.animation:set('summon')
 end

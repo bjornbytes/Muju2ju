@@ -24,14 +24,13 @@ function Game:load()
 	self.target = Target()
 	self.sound = Sound()
 
-  self.id = 1
-  self.players:add(1)
-
 	backgroundSound = self.sound:loop({sound = 'background'})
 	love.keyboard.setKeyRepeat(false)
 end
 
 function Game:update()
+  if not self.id then return end
+
   self.input:update()
 
 	if self.hud.upgrades.active or self.paused or self.ded then
@@ -60,6 +59,7 @@ function Game:unload()
 end
 
 function Game:draw()
+  if not self.id then return end
 	self.view:draw()
 end
 
@@ -70,6 +70,8 @@ function Game:resize()
 end
 
 function Game:keypressed(key)
+  if not self.id then return end
+
   self.hud:keypressed(key)
 
   -- Try to move elsewhere.
@@ -83,14 +85,20 @@ function Game:keypressed(key)
 end
 
 function Game:mousereleased(...)
+  if not self.id then return end
+
   self.hud:mousereleased(...)
 end
 
 function Game:textinput(char)
+  if not self.id then return end
+
 	self.hud:textinput(char)
 end
 
 function Game:gamepadpressed(gamepad, button)
+  if not self.id then return end
+
   self.hud:gamepadpressed(gamepad, button)
 
   if button == 'b' and self.paused then self.paused = not self.paused end
@@ -102,9 +110,13 @@ function Game:gamepadpressed(gamepad, button)
 end
 
 function Game:joystickadded(...)
+  if not self.id then return end
+
   return self.input:joystickadded(...)
 end
 
 function Game:joystickremoved(...)
+  if not self.id then return end
+
   return self.input:joystickremoved(...)
 end

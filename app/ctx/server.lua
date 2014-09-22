@@ -17,8 +17,6 @@ function Server:load()
   self.spells = Manager('spell')
 	self.upgrades = Upgrades()
 	self.target = Target()
-
-  self.players:add(1)
 end
 
 function Server:update()

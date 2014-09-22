@@ -1,11 +1,11 @@
 PlayerMain = extend(Player)
 
-function PlayerMain:init()
+function PlayerMain:activate()
   self.gamepadSelectDirty = false
   self.prev = setmetatable({}, self.meta)
   self.inputs = {}
 
-  Player.init(self)
+  Player.activate(self)
 end
 
 function PlayerMain:get(t)
@@ -31,6 +31,8 @@ function PlayerMain:update()
   local input = self:readInput()
   self:move(input)
   self:slot(input)
+
+  ctx.net:send(msgInput, input)
 
   Player.update(self)
 end

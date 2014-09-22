@@ -9,7 +9,7 @@ Player.maxHealth = 100
 
 Player.depth = -10
 
-function Player:init()
+function Player:activate()
   self.meta = {__index = self}
 
 	self.health = 100

@@ -21,6 +21,8 @@ NetServer.receive['default'] = f.empty
 NetServer.receive[msgJoin] = function(self, event)
   local pid = self.peerToPlayer[event.peer]
   self:send(msgJoin, event.peer, {id = pid, tick = tick})
+  ctx.players:add(pid)
+  print('player ' .. pid .. ' connected')
   --[[
   if everyoneHasConnected then
     self:emit(evtReady)

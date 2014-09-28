@@ -38,6 +38,11 @@ function NetClient:init()
 
   ctx.event:on(evtReady, function(data)
     self.state = 'playing'
+    for i = 1, 2 do
+      if i ~= ctx.id then
+        ctx.players:add(i)
+      end
+    end
   end)
 
   Net.init(self)

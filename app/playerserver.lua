@@ -50,6 +50,7 @@ function PlayerServer:trace(data)
   local msg = {}
   msg.x = math.round(self.x)
   msg.y = math.round(self.y)
+  msg.speed = self.speed
   msg.health = math.round(self.health)
   msg.minion = self.selectedMinion
 

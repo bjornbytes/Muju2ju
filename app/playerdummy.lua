@@ -6,6 +6,11 @@ function PlayerDummy:activate()
   Player.activate(self)
 end
 
+function PlayerDummy:update()
+	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
+	self:animate()
+end
+
 function PlayerDummy:get(t)
   if t == tick then return self end
 
@@ -43,7 +48,7 @@ function PlayerDummy:draw()
   Player.draw(lerpd)
 end
 
-function PlayerDummy:trace()
+function PlayerDummy:trace(data)
   table.insert(self.history, setmetatable({
     x = data.x,
     y = data.y,
@@ -51,6 +56,7 @@ function PlayerDummy:trace()
   }, self.meta))
 
   self.x, self.y = data.x, data.y
+  self.speed = data.speed
   self.health = data.health or self.health
   self.selectedMinion = data.selectedMinion or self.selectedMinion
 end

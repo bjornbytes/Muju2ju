@@ -8,6 +8,7 @@ NetServer.signatures[evtSync] = {
   {'tick', '16bits'},
   {'ack', '16bits'},
   {'x', '16bits'}, {'y', '16bits'},
+  {'speed', 'float'},
   {'health', '10bits'},
   {'minion', '3bits'},
   delta = {'x', 'y', 'health', 'minion'}
@@ -22,7 +23,7 @@ NetServer.handlers = {
     self:send(msgJoin, event.peer, {id = pid, tick = tick})
     ctx.players:add(pid)
     print('player ' .. pid .. ' connected')
-    if true --[[numberOfPlayers == expectedNumberOfPlayers]] then
+    if table.count(ctx.players.players) == 2 and true --[[numberOfPlayers == expectedNumberOfPlayers]] then
       self:emit(evtReady)
     end
   end,

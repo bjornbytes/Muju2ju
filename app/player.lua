@@ -29,6 +29,8 @@ function Player:init()
 	self.selectedMinion = 1
 	self.invincible = 0
 
+  self.depth = self.depth + love.math.random()
+
 	self.summonedMinions = 0
 	self.hasMoved = false
 end

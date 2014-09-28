@@ -3,7 +3,7 @@ Net = class()
 evtReady = 1
 evtLeave = 2
 evtSync = 3
-evtFire = 4
+evtSummon = 4
 evtDeath = 5
 evtSpawn = 6
 

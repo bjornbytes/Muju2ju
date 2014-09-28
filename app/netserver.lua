@@ -13,6 +13,7 @@ NetServer.signatures[evtSync] = {
   {'minion', '3bits'},
   delta = {'x', 'y', 'health', 'minion'}
 }
+NetServer.signatures[evtSummon] = {{'id', '4bits'}, {'index', '2bits'}, important = true}
 NetServer.signatures[evtDeath] = {{'id', '4bits'}, important = true}
 NetServer.signatures[evtSpawn] = {{'id', '4bits'}, important = true}
 NetServer.signatures[msgJoin] = {{'id', '4bits'}, {'tick', '16bits'}, important = true}

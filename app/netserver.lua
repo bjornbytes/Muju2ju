@@ -1,6 +1,7 @@
 NetServer = extend(Net)
 
 NetServer.signatures = {}
+NetServer.signatures[evtReady] = {important = true}
 NetServer.signatures[evtLeave] = {{'id', '4bits'}, {'reason', 'string'}, important = true}
 NetServer.signatures[evtSync] = {
   {'id', '4bits'},
@@ -15,26 +16,21 @@ NetServer.signatures[evtDead] = {{'id', '4bits'}, important = true}
 NetServer.signatures[evtSpawn] = {{'id', '4bits'}, important = true}
 NetServer.signatures[msgJoin] = {{'id', '4bits'}, {'tick', '16bits'}, important = true}
 
-NetServer.receive = {}
-NetServer.receive['default'] = f.empty
+NetServer.handlers = {
+  [msgJoin] = function(self, event)
+    local pid = self.peerToPlayer[event.peer]
+    self:send(msgJoin, event.peer, {id = pid, tick = tick})
+    ctx.players:add(pid)
+    print('player ' .. pid .. ' connected')
+    if true --[[numberOfPlayers == expectedNumberOfPlayers]] then
+      self:emit(evtReady)
+    end
+  end,
 
-NetServer.receive[msgJoin] = function(self, event)
-  local pid = self.peerToPlayer[event.peer]
-  self:send(msgJoin, event.peer, {id = pid, tick = tick})
-  ctx.players:add(pid)
-  print('player ' .. pid .. ' connected')
-  --[[
-  if everyoneHasConnected then
-    self:emit(evtReady)
-  end
-  ]]
-end
-
-NetServer.receive[msgLeave] = function(self, event) self:disconnect(event) end
-
-NetServer.receive[msgInput] = function(self, event)
-  ctx.players:get(self.peerToPlayer[event.peer]):trace(event.data, event.peer:round_trip_time())
-end
+  [msgLeave] = function(self, event) self:disconnect(event) end,
+  [msgInput] = function(self, event) ctx.players:get(self.peerToPlayer[event.peer]):trace(event.data) end,
+  default = f.empty
+}
 
 function NetServer:init()
   self.other = NetClient
@@ -44,9 +40,7 @@ function NetServer:init()
   self.eventBuffer = {}
   self.importantEventBuffer = {}
 
-  ctx.event:on('game.quit', function(data)
-    self:quit()
-  end)
+  ctx.event:on('game.quit', f.cur(self.quit, self))
 
   Net.init(self)
 end
@@ -62,7 +56,7 @@ function NetServer:quit()
 end
 
 function NetServer:connect(event)
-  self.peerToPlayer[event.peer] = #ctx.players.players
+  self.peerToPlayer[event.peer] = #ctx.players.players + 1
   event.peer:timeout(0, 0, 3000)
   event.peer:ping()
 end

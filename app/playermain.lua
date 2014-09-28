@@ -59,7 +59,7 @@ function PlayerMain:readInput()
   return t
 end
 
-function PlayerMain:trace()
+function PlayerMain:trace(data)
   self.x, self.y = data.x, data.y
   self.health = data.health
   

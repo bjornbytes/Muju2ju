@@ -37,10 +37,11 @@ function Net:update()
       self.inStream:clear()
       self.inStream.str = event.data
 
-      repeat
+      while true do
         event.msg, event.data = self:unpack()
-        ;(self.receive[event.msg] or self.receive.default)(self, event)
-      until not event.msg
+        if not event.msg then break end
+        ;(self.handlers[event.msg] or self.handlers.default)(self, event)
+      end
     else
       f.exe(self[event.type], self, event)
     end

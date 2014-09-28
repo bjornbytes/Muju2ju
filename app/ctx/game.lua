@@ -29,7 +29,9 @@ function Game:load()
 end
 
 function Game:update()
-  if not self.id then return end
+  self.net:update()
+
+  if self.net.state == 'connecting' or self.net.state == 'waiting' then return end
 
   self.input:update()
 
@@ -41,7 +43,6 @@ function Game:update()
 	end
 
   self.timer = self.timer + 1
-  self.net:update()
 	self.players:update()
 	self.shrine:update()
 	self.enemies:update()
@@ -59,7 +60,7 @@ function Game:unload()
 end
 
 function Game:draw()
-  if not self.id then return end
+  if not self.id then return self.hud:gui() end
 	self.view:draw()
 end
 

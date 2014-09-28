@@ -33,4 +33,6 @@ function Server:update()
 	self.enemies:update()
 	self.minions:update()
   self.spells:update()
+
+  self.net:sync()
 end

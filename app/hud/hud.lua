@@ -39,6 +39,15 @@ function Hud:update()
 end
 
 function Hud:gui()
+  if ctx.net.state == 'connecting' then
+    g.setColor(255, 255, 255)
+    g.print('connecting', g.getWidth() / 2 - g.getFont():getWidth('connecting') / 2, g.getHeight() / 2)
+    return
+  elseif ctx.net.state == 'waiting' then
+    g.setColor(255, 255, 255)
+    g.print('waiting for players', g.getWidth() / 2 - g.getFont():getWidth('waiting for players') / 2, g.getHeight() / 2)
+    return
+  end
   self.health:draw()
   self.protect:draw()
   self.juju:draw()

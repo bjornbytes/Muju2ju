@@ -28,6 +28,8 @@ end
 function PlayerServer:update()
   -- spawn timer decays here and only here, for example
 
+  print(self.x)
+
   Player.update(self)
 end
 
@@ -56,5 +58,6 @@ function PlayerServer:trace(data)
   msg.id = self.id
   msg.tick = tick
   msg.ack = self.ack
+
   ctx.net:emit(evtSync, msg)
 end

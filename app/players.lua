@@ -8,17 +8,26 @@ function Players:init()
   end)
 
   ctx.event:on(evtDead, function(data)
-    self:get(data.id):die()
+    local p = self:get(data.id)
+    if not p then return end
+    p:die()
   end)
 
   ctx.event:on(evtSpawn, function(data)
-    self:get(data.id):spawn()
+    local p = self:get(data.id)
+    if not p then return end
+    p:spawn()
   end)
+end
+
+function Players:update()
+  table.with(self.players, 'update')
 end
 
 function Players:add(id, vars)
   local kind = ctx.tag == 'server' and PlayerServer or (id == ctx.id and PlayerMain or PlayerDummy)
   local player = kind()
+  player.id = id
   table.merge(vars, player, true)
   f.exe(player.activate, player)
   self.players[id] = player
@@ -27,6 +36,7 @@ end
 
 function Players:remove(id)
   local player = self.players[id]
+  if not player then return end
   f.exe(player.deactivate, player)
   self.players[id] = nil
   return player
@@ -40,8 +50,4 @@ function Players:each(fn)
   table.each(self.players, function(player, id)
     fn(self:get(id))
   end)
-end
-
-function Players:update()
-  table.with(self.players, 'update')
 end

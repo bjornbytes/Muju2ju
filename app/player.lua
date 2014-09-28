@@ -44,10 +44,6 @@ function Player:update()
   -- Global behavior
 	self.invincible = timer.rot(self.invincible)
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
-	self.jujuTimer = timer.rot(self.jujuTimer, function()
-		self.juju = self.juju + 1
-		return 1
-	end)
 	self:animate()
 	
   -- Dead behavior
@@ -139,9 +135,7 @@ function Player:animate()
 end
 
 function Player:spend(amount)
-  if self.juju < amount then return false end
-  self.juju = self.juju - amount
-  return true
+  return false
 end
 
 function Player:summon(code)

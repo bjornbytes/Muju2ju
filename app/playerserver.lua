@@ -27,6 +27,10 @@ end
 
 function PlayerServer:update()
   -- spawn timer decays here and only here, for example
+	self.jujuTimer = timer.rot(self.jujuTimer, function()
+		self.juju = self.juju + 1
+		return 1
+	end)
 
 	--self:hurt(self.maxHealth * .033 * tickRate)
   self.animation:tick(tickRate)
@@ -59,6 +63,7 @@ function PlayerServer:trace(data)
   end
   msg.speed = self.speed
   msg.health = math.round(self.health)
+  msg.juju = math.round(self.juju)
   msg.minion = self.selectedMinion
 
   msg.id = self.id
@@ -66,4 +71,10 @@ function PlayerServer:trace(data)
   msg.ack = self.ack
 
   ctx.net:emit(evtSync, msg)
+end
+
+function PlayerServer:spend(amount)
+  if self.juju < amount then return false end
+  self.juju = self.juju - amount
+  return true
 end

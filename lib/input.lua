@@ -28,16 +28,15 @@ function Input:init()
   self.gamepad = nil
   self.axes = {}
   self.actions = {}
+  self.dirtyActions = {}
 end
 
 function Input:update()
   for action in pairs(actionMap) do
-    if self.actions[action] then
-      self.actions[action] = false
-    else
-      self.actions[action] = self:keyboardAction(actionMap[action].keyboard)
-      self.actions[action] = self.actions[action] or self:gamepadAction(actionMap[action].gamepad)
-    end
+    local pressed = self:keyboardAction(actionMap[action].keyboard)
+    pressed = pressed or self:gamepadAction(actionMap[action].gamepad)
+    self.actions[action] = not self.dirtyActions[action] and pressed
+    self.dirtyActions[action] = pressed
   end
 
   local p = ctx.players:get(ctx.id)

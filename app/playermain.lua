@@ -67,6 +67,7 @@ end
 function PlayerMain:trace(data)
   self.x, self.y = data.x, data.y
   self.health = data.health
+  self.juju = data.juju
   
   -- Discard inputs before the ack.
   while #self.inputs > 0 and self.inputs[1].tick < data.ack + 1 do

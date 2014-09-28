@@ -10,6 +10,7 @@ NetServer.signatures[evtSync] = {
   {'x', 'float'}, {'y', 'float'},
   {'speed', 'float'},
   {'health', '10bits'},
+  {'juju', '16bits'},
   {'minion', '3bits'},
   delta = {'x', 'y', 'health', 'minion'}
 }

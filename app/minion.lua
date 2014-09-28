@@ -44,7 +44,7 @@ function Minion:update()
 end
 
 function Minion:draw()
-  self.animation:draw()
+  self.animation:draw(self.x, self.y)
 end
 
 function Minion:inRange()

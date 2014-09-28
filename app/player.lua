@@ -91,7 +91,7 @@ function Player:move(input)
     return
   end
 
-  self.speed = self.walkSpeed * input.x--math.lerp(self.speed, self.walkSpeed * input.x, math.min(10 * tickRate, 1))
+  self.speed = self.walkSpeed * input.x
   if self.speed ~= 0 then self.hasMoved = true end
   self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
 end

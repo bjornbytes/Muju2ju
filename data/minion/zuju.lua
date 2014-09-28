@@ -32,7 +32,6 @@ function Zuju:update()
 		self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
 		self.knockBackDisplay = math.lerp(self.knockBackDisplay, math.abs(self.knockBack), 20 * tickRate)
 		self.animation.offsety = self.height + 8 - math.abs(self.knockBackDisplay * 200)
-		self.animation:update()
 		self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 		return
 	end
@@ -59,7 +58,6 @@ function Zuju:update()
 	end
 
   self.animation.offsety = self.height + 8 - math.abs(self.knockBackDisplay * 200)
-	self.animation:update()
 end
 
 function Zuju:attack()

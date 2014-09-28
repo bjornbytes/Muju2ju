@@ -29,6 +29,7 @@ function PlayerServer:update()
   -- spawn timer decays here and only here, for example
 
 	--self:hurt(self.maxHealth * .033 * tickRate)
+  self.animation:tick(tickRate)
 
   Player.update(self)
 end

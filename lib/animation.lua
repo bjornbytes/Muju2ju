@@ -48,19 +48,9 @@ function Animation:init(owner, vars)
   if self.initial then self:set(self.initial) end
 end
 
-function Animation:update()
-  self.skeleton.x = self.owner.x + self.offsetx
-  self.skeleton.y = self.owner.y + self.offsety
-  self.skeleton.flipX = self.flipX
-
-  local current = self:current()
-  if not current then return end
-  self.state:update(tickRate * (f.exe(current.speed, self, self.owner) or 1))
-  self.state:apply(self.skeleton)
-  self.skeleton:updateWorldTransform()
-end
-
-function Animation:draw()
+function Animation:draw(x, y)
+  self:reposition(x, y)
+  self:tick(delta)
   self.skeleton:draw()
 end
 
@@ -80,4 +70,22 @@ end
 function Animation:blocking()
   local current = self:current()
   return current and current.blocking
+end
+
+function Animation:reposition(x, y)
+  x = x or self.owner.x
+  y = y or self.owner.y
+  self.skeleton.x = x + self.offsetx
+  self.skeleton.y = y + self.offsety
+  self.skeleton.flipX = self.flipX
+end
+
+function Animation:tick(delta)
+  delta = delta or tickRate
+
+  local current = self:current()
+  if not current then return end
+  self.state:update(delta * (f.exe(current.speed, self, self.owner) or 1))
+  self.state:apply(self.skeleton)
+  self.skeleton:updateWorldTransform()
 end

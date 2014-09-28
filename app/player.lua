@@ -65,7 +65,7 @@ end
 function Player:draw()
 	if math.floor(self.invincible * 4) % 2 == 0 then
 		love.graphics.setColor(255, 255, 255)
-		self.animation:draw()
+		self.animation:draw(self.x, self.y)
 	end
 end
 
@@ -136,7 +136,6 @@ function Player:animate()
   end
 
 	if self.speed ~= 0 then self.animation.flipX = self.speed > 0 end
-	self.animation:update()
 end
 
 function Player:spend(amount)

@@ -178,7 +178,7 @@ function Stream:pack(data, signature)
         self:write(#data[sig[1]], '4bits')
         for i = 1, #data[sig[1]] do self:pack(data[sig[1]][i], sig[2]) end
       else
-        assert(data[sig[1]], 'stream: nil value for ' .. sig[1])
+        assert(data[sig[1]] ~= nil, 'stream: nil value for ' .. sig[1])
         self:write(data[sig[1]], sig[2])
       end
     end

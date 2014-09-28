@@ -43,6 +43,7 @@ function Players:remove(id)
 end
 
 function Players:get(id, t)
+  if not id or not self.players[id] then return nil end
   return self.players[id]:get(t or tick)
 end
 

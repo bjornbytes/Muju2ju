@@ -10,21 +10,24 @@ function Game:load()
   self.event = Event()
   self.net = NetClient()
 	self.view = View()
-  self.input = Input()
   self.map = Map()
-	self.players = Players()
-	self.shrine = Shrine()
-	self.enemies = Enemies()
-	self.minions = Manager('minion')
-  self.spells = Manager('spell')
-	self.particles = Manager('particle')
-	self.effects = Effects()
+  self.players = Players()
 	self.hud = Hud()
-	self.upgrades = Upgrades()
-	self.target = Target()
-	self.sound = Sound()
 
-	backgroundSound = self.sound:loop({sound = 'background'})
+  self.event:on(evtReady, function()
+    self.input = Input()
+    self.shrine = Shrine()
+    self.enemies = Enemies()
+    self.minions = Manager('minion')
+    self.spells = Manager('spell')
+    self.particles = Manager('particle')
+    self.effects = Effects()
+    self.upgrades = Upgrades()
+    self.target = Target()
+    self.sound = Sound()
+    backgroundSound = self.sound:loop({sound = 'background'})
+  end)
+
 	love.keyboard.setKeyRepeat(false)
 end
 
@@ -60,7 +63,6 @@ function Game:unload()
 end
 
 function Game:draw()
-  if not self.id then return self.hud:gui() end
 	self.view:draw()
 end
 

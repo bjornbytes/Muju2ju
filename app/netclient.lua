@@ -6,6 +6,7 @@ NetClient.signatures[msgLeave] = {important = true}
 NetClient.signatures[msgInput] = {
   {'tick', '16bits'},
   {'x', 'float'}, {'y', 'float'},
+  {'summon', 'bool'},
   {'minion', '3bits'},
   delta = {{'x', 'y'}, 'minion'}
 }
@@ -16,11 +17,6 @@ NetClient.handlers = {
     ctx.id = event.data.id
     ctx.tick = event.data.tick + math.floor(((event.peer:round_trip_time() / 2) / 1000) / tickRate)
     ctx.players:add(ctx.id)
-  end,
-
-  [evtReady] = function(self, event)
-    self.state = 'playing'
-    print('we are ready')
   end,
 
   default = function(self, event) ctx.event:emit(event.msg, event.data) end
@@ -38,6 +34,10 @@ function NetClient:init()
     local p = ctx.players:get(data.id)
     if not p then return end
     p:trace(data)
+  end)
+
+  ctx.event:on(evtReady, function(data)
+    self.state = 'playing'
   end)
 
   Net.init(self)

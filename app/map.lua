@@ -6,6 +6,8 @@ local function drawBackground(self)
   local g = love.graphics
   local p = ctx.players:get(ctx.id)
 
+  if not p then return end
+
   g.setColor(255, 255, 255)
   g.draw(data.media.graphics.bg)
 
@@ -18,6 +20,8 @@ end
 local function drawForeground(self)
 	local g = love.graphics
   local p = ctx.players:get(ctx.id)
+
+  if not p then return end
 
 	g.setColor(200, 200, 200)
 	g.draw(data.media.graphics.grass, 0, 32)

@@ -28,8 +28,6 @@ end
 function PlayerServer:update()
   -- spawn timer decays here and only here, for example
 
-  print(self.x)
-
   Player.update(self)
 end
 

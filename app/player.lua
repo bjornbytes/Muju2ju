@@ -9,7 +9,7 @@ Player.maxHealth = 100
 
 Player.depth = -10
 
-function Player:activate()
+function Player:init()
   self.meta = {__index = self}
 
 	self.health = 100
@@ -31,7 +31,9 @@ function Player:activate()
 
 	self.summonedMinions = 0
 	self.hasMoved = false
+end
 
+function Player:activate()
   self.animation = data.animation.muju(self)
 
   ctx.event:emit('view.register', {object = self})
@@ -59,7 +61,6 @@ function Player:update()
   end
 
   -- Alive behavior
-  --if ctx.input:getAction('summon') then self:summon() end
 	self:hurt(self.maxHealth * .033 * tickRate)
 end
 
@@ -101,7 +102,7 @@ function Player:move(input)
     return
   end
 
-  self.speed = math.lerp(self.speed, self.walkSpeed * input.x, math.min(10 * tickRate, 1))
+  self.speed = self.walkSpeed * input.x --math.lerp(self.speed, self.walkSpeed * input.x, math.min(10 * tickRate, 1))
   if self.speed ~= 0 then self.hasMoved = true end
   self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
 end

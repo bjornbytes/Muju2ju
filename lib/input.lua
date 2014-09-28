@@ -6,7 +6,7 @@ local function strunpack(val)
   return val
 end
 
-local axes = {
+local axisMap = {
   x = {
     keyboard = {{'left', 'a'}, {'right', 'd'}},
     gamepad = 'leftx'
@@ -17,7 +17,7 @@ local axes = {
   }
 }
 
-local actions = {
+local actionMap = {
   summon = {
     keyboard = ' ',
     gamepad = 'a'
@@ -26,25 +26,23 @@ local actions = {
 
 function Input:init()
   self.gamepad = nil
-  self.dirtyActions = {
-    keyboard = {},
-    gamepad = {}
-  }
+  self.actions = {}
 end
 
 function Input:update()
-  for action in pairs(self.dirtyActions.keyboard) do
-    if not self:keyboardAction(actions[action].keyboard) then self.dirtyActions.keyboard[action] = nil end
-  end
-
-  for action in pairs(self.dirtyActions.gamepad) do
-    if not self.gamepadAction(actions[action].gamepad) then self.dirtyActions.gamepad[action] = nil end
+  for action in pairs(actionMap) do
+    if self.actions[action] then
+      self.actions[action] = false
+    else
+      self.actions[action] = self:keyboardAction(actionMap[action].keyboard)
+      self.actions[action] = self.actions[action] or self:gamepadAction(actionMap[action].gamepad)
+    end
   end
 end
 
 -- Axis
 function Input:getAxis(axis)
-  return self:keyboardAxis(unpack(axes[axis].keyboard)) or self:gamepadAxis(axes[axis].gamepad)
+  return self:keyboardAxis(unpack(axisMap[axis].keyboard)) or self:gamepadAxis(axisMap[axis].gamepad)
 end
 
 function Input:keyboardAxis(neg, pos)
@@ -61,19 +59,7 @@ end
 
 -- Action
 function Input:getAction(action)
-  local keyboard = not self.dirtyActions.keyboard[action] and self:keyboardAction(actions[action].keyboard)
-  if keyboard then
-    self.dirtyActions.keyboard[action] = true
-    return true
-  end
-
-  local gamepad = not self.dirtyActions.gamepad[action] and self:gamepadAction(actions[action].gamepad)
-  if gamepad then
-    self.dirtyActions.gamepad[action] = true
-    return true
-  end
-
-  return false
+  return self.actions[action] == true
 end
 
 function Input:keyboardAction(buttons)

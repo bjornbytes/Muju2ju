@@ -4,8 +4,6 @@ function PlayerDummy:activate()
   self.history = {}
 
   Player.activate(self)
-
-  self.animation:set('summon')
 end
 
 function PlayerDummy:get(t)
@@ -43,10 +41,6 @@ function PlayerDummy:draw()
   local t = tick - (interp / tickRate)
   local lerpd = table.interpolate(self:get(t), self:get(t + 1), tickDelta / tickRate)
   Player.draw(lerpd)
-
-  if love.math.random() < .03 then
-    self.animation:set('summon')
-  end
 end
 
 function PlayerDummy:trace()

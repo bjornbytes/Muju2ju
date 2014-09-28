@@ -23,7 +23,7 @@ function Enemies:update()
 				end
 			end
 
-			self:add(spawnType, {x = x})
+			--self:add(spawnType, {x = x})
 			self.minEnemyRate = math.max(self.minEnemyRate - .055 * math.clamp(self.minEnemyRate / 5, .1, 1), 1.4)
 			self.maxEnemyRate = math.max(self.maxEnemyRate - .03 * math.clamp(self.maxEnemyRate / 4, .5, 1), 2.75)
 		end

@@ -37,6 +37,10 @@ function PlayerMain:update()
   Player.update(self)
 end
 
+function PlayerMain:draw()
+  Player.draw(table.interpolate(self.prev, self, tickDelta / tickRate))
+end
+
 function PlayerMain:keypressed(key)
 	for i = 1, #self.minions do
 		if tonumber(key) == i then
@@ -52,6 +56,7 @@ function PlayerMain:readInput()
 
   t.x = ctx.input:getAxis('x')
   t.y = ctx.input:getAxis('y')
+  t.summon = ctx.input:getAction('summon')
   t.minion = self.selectedMinion
 
   table.insert(self.inputs, t)

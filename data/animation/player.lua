@@ -38,7 +38,10 @@ Muju.animations.summon = {
   mix = {
     walk = .2,
     idle = .2
-  }
+  },
+  complete = function(self, owner)
+    if ctx.input then ctx.input:clearAxis('x') end
+  end
 }
 
 Muju.animations.death = {

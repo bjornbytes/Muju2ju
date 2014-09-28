@@ -8,7 +8,6 @@ NetClient.signatures[msgInput] = {
   {'x', 'float'}, {'y', 'float'},
   {'summon', 'bool'},
   {'minion', '3bits'},
-  {'blocking', 'bool'},
   delta = {{'x', 'y'}, 'minion'}
 }
 

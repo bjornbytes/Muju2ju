@@ -81,11 +81,6 @@ function Player:move(input)
     return self.ghost:move(input)
   end
 
-  if input.blocking then
-    self.speed = 0
-    return
-  end
-
   self.speed = self.walkSpeed * input.x
   if self.speed ~= 0 then self.hasMoved = true end
   self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)

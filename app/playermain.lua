@@ -58,7 +58,11 @@ function PlayerMain:readInput()
   t.y = ctx.input:getAxis('y')
   t.summon = ctx.input:getAction('summon')
   t.minion = self.selectedMinion
-  t.blocking = self.animation:blocking() == true
+
+  local current = self.animation:current()
+  if current and current.name == 'summon' then
+    t.x = 0
+  end
 
   table.insert(self.inputs, t)
 

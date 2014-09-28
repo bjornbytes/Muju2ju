@@ -32,7 +32,7 @@ function PlayerServer:update()
 		return 1
 	end)
 
-	--self:hurt(self.maxHealth * .033 * tickRate)
+	self:hurt(self.maxHealth * .1 * tickRate)
   self.animation:tick(tickRate)
 
   Player.update(self)
@@ -55,20 +55,20 @@ function PlayerServer:trace(data)
 
   -- sync
   local msg = {}
-  msg.x = self.x
-  msg.y = self.y
-  if self.dead then
-    msg.x = math.round(self.ghost.x)
-    msg.y = math.round(self.ghost.y)
-  end
-  msg.speed = self.speed
-  msg.health = math.round(self.health)
-  msg.juju = math.round(self.juju)
-  msg.minion = self.selectedMinion
-
   msg.id = self.id
   msg.tick = tick
   msg.ack = self.ack
+
+  msg.x = self.dead and self.ghost.x or self.x
+  msg.y = self.dead and self.ghost.y or self.y
+  msg.dead = self.dead
+  msg.juju = math.round(self.juju)
+  msg.health = self.dead and self.deathTimer or self.health
+
+  if not self.dead then
+    msg.speed = self.speed
+    msg.minion = self.selectedMinion
+  end
 
   ctx.net:emit(evtSync, msg)
 end

@@ -70,10 +70,18 @@ function PlayerMain:readInput()
 end
 
 function PlayerMain:trace(data)
-  self.x, self.y = data.x, data.y
-  self.health = data.health
   self.juju = data.juju
-  
+
+  if data.dead then
+    if self.ghost then
+      self.ghost.x, self.ghost.y = data.x, data.y
+      self.deathTimer = data.health
+    end
+  else
+    self.health = data.health
+    self.x, self.y = data.x, data.y
+  end
+
   -- Discard inputs before the ack.
   while #self.inputs > 0 and self.inputs[1].tick < data.ack + 1 do
     table.remove(self.inputs, 1)
@@ -82,5 +90,9 @@ function PlayerMain:trace(data)
   -- Server reconciliation: Apply inputs that occurred after the ack.
   for i = 1, #self.inputs do
     self:move(self.inputs[i])
+  end
+
+  if self.dead then
+    self.ghost:contain()
   end
 end

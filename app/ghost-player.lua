@@ -8,7 +8,8 @@ function GhostPlayer:init(owner)
 	self.x = self.owner.x
 	self.y = self.owner.y + self.owner.height
 	self.vx = 0
-	self.vy = -600
+	self.vy = 0
+  self.boost = -750
 	self.prevx = self.x
 	self.prevy = self.y
 
@@ -22,9 +23,6 @@ function GhostPlayer:init(owner)
 end
 
 function GhostPlayer:update()
-	self.prevx = self.x
-	self.prevy = self.y
-
 	local scale = math.min(self.owner.deathTimer, 2) / 2
 	if self.owner.deathDuration - self.owner.deathTimer < 1 then
 		scale = self.owner.deathDuration - self.owner.deathTimer
@@ -35,6 +33,13 @@ function GhostPlayer:update()
 	if ctx.upgrades.muju.diffuse.level == 1 and self.owner.deathTimer < 5 and math.distance(self.x, self.y, px, py) < self.radius * 2 then
 		self.owner.deathTimer = math.min(self.owner.deathTimer, .1)
 	end
+
+	local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
+  self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
+
+  self.boost = math.lerp(self.boost, 0, 2 * tickRate)
+	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
+  self:contain()
 end
 
 function GhostPlayer:draw()
@@ -59,7 +64,7 @@ function GhostPlayer:draw()
 	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, self.maxDis)
 end
 
-function GhostPlayer:move(input)
+function GhostPlayer:move(input, state)
 	local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
 	local px, py = self.owner.x, self.owner.y + self.owner.height
   local x, y = input.x, input.y
@@ -69,20 +74,14 @@ function GhostPlayer:move(input)
     y = y / len
   end
 
+	self.prevx = self.x
+	self.prevy = self.y
+
   self.vx = speed * x
   self.vy = speed * y
-  self.vy = self.vy - 75 * math.max(self.owner.deathTimer - (self.owner.deathDuration - 1), 0) -- initial boost
+  self.vy = self.vy + self.boost
 	self.x = self.x + self.vx * tickRate
 	self.y = self.y + self.vy * tickRate
-
-  self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
-
-	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
-	if math.distance(self.x, self.y, px, py) > self.maxDis then
-		local angle = math.direction(px, py, self.x, self.y)
-		self.x = math.lerp(self.x, px + math.dx(self.maxDis, angle), 8 * tickRate)
-		self.y = math.lerp(self.y, py + math.dy(self.maxDis, angle), 8 * tickRate)
-	end
 
 	self.x = math.clamp(self.x, self.radius, ctx.map.width - self.radius)
 	self.y = math.clamp(self.y, self.radius, ctx.map.height - self.radius - ctx.map.groundHeight)
@@ -93,3 +92,12 @@ function GhostPlayer:despawn()
   ctx.event:emit('view.unregister', {object = self})
 end
 
+function GhostPlayer:contain()
+	local px, py = self.owner.x, self.owner.y + self.owner.height
+
+	if math.distance(self.x, self.y, px, py) > self.maxDis then
+		local angle = math.direction(px, py, self.x, self.y)
+		self.x = px + math.dx(self.maxDis, angle)--math.lerp(self.x, px + math.dx(self.maxDis, angle), 8 * tickRate)
+		self.y = py + math.dy(self.maxDis, angle)--math.lerp(self.y, py + math.dy(self.maxDis, angle), 8 * tickRate)
+	end
+end

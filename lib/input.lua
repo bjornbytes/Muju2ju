@@ -40,7 +40,7 @@ function Input:update()
   end
 
   local p = ctx.players:get(ctx.id)
-  local smooth = p.dead and 3 or 10
+  local smooth = p.dead and 4 or 10
   for axis in pairs(axisMap) do
     local value = self:keyboardAxis(unpack(axisMap[axis].keyboard)) or self:gamepadAxis(axisMap[axis].gamepad)
     self.axes[axis] = math.lerp(self.axes[axis] or 0, value, math.min(smooth * tickRate, 1))

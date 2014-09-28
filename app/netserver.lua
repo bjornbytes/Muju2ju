@@ -8,11 +8,12 @@ NetServer.signatures[evtSync] = {
   {'tick', '16bits'},
   {'ack', '16bits'},
   {'x', 'float'}, {'y', 'float'},
-  {'speed', 'float'},
-  {'health', '10bits'},
+  {'dead', 'bool'},
   {'juju', '16bits'},
+  {'health', 'float'},
+  {'speed', 'float'},
   {'minion', '3bits'},
-  delta = {'x', 'y', 'health', 'minion'}
+  delta = {{'speed', 'minion'}}
 }
 NetServer.signatures[evtSummon] = {{'id', '4bits'}, {'index', '2bits'}, important = true}
 NetServer.signatures[evtDeath] = {{'id', '4bits'}, important = true}

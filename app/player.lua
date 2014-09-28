@@ -81,8 +81,7 @@ function Player:move(input)
     return self.ghost:move(input)
   end
 
-  local current = self.animation:current()
-  if current and current.blocking then
+  if input.blocking then
     self.speed = 0
     return
   end

@@ -52,6 +52,10 @@ function Input:getAxis(axis)
   return self.axes[axis]
 end
 
+function Input:clearAxis(axis)
+  self.axes[axis] = 0
+end
+
 function Input:keyboardAxis(neg, pos)
   neg = lk.isDown(strunpack(neg))
   pos = lk.isDown(strunpack(pos))

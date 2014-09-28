@@ -7,13 +7,13 @@ NetServer.signatures[evtSync] = {
   {'id', '4bits'},
   {'tick', '16bits'},
   {'ack', '16bits'},
-  {'x', '16bits'}, {'y', '16bits'},
+  {'x', 'float'}, {'y', 'float'},
   {'speed', 'float'},
   {'health', '10bits'},
   {'minion', '3bits'},
   delta = {'x', 'y', 'health', 'minion'}
 }
-NetServer.signatures[evtDead] = {{'id', '4bits'}, important = true}
+NetServer.signatures[evtDeath] = {{'id', '4bits'}, important = true}
 NetServer.signatures[evtSpawn] = {{'id', '4bits'}, important = true}
 NetServer.signatures[msgJoin] = {{'id', '4bits'}, {'tick', '16bits'}, important = true}
 
@@ -25,6 +25,7 @@ NetServer.handlers = {
     print('player ' .. pid .. ' connected')
     if table.count(ctx.players.players) == 2 and true --[[numberOfPlayers == expectedNumberOfPlayers]] then
       self:emit(evtReady)
+      self.state = 'playing'
     end
   end,
 
@@ -35,6 +36,7 @@ NetServer.handlers = {
 
 function NetServer:init()
   self.other = NetClient
+  self.state = 'waiting'
 
   self:listen(6061)
   self.peerToPlayer = {}

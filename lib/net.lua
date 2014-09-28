@@ -4,7 +4,7 @@ evtReady = 1
 evtLeave = 2
 evtSync = 3
 evtFire = 4
-evtDead = 5
+evtDeath = 5
 evtSpawn = 6
 
 msgJoin = 7

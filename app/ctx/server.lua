@@ -27,6 +27,8 @@ function Server:update()
 
   self.net:update()
 
+  if self.net.state == 'waiting' then return self.net:sync() end
+
   self.timer = self.timer + 1
 	self.players:update()
 	self.shrine:update()

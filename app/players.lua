@@ -7,7 +7,7 @@ function Players:init()
     self:remove(data.id)
   end)
 
-  ctx.event:on(evtDead, function(data)
+  ctx.event:on(evtDeath, function(data)
     local p = self:get(data.id)
     if not p then return end
     p:die()

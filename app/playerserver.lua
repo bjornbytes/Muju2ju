@@ -28,6 +28,8 @@ end
 function PlayerServer:update()
   -- spawn timer decays here and only here, for example
 
+	--self:hurt(self.maxHealth * .033 * tickRate)
+
   Player.update(self)
 end
 
@@ -48,8 +50,12 @@ function PlayerServer:trace(data)
 
   -- sync
   local msg = {}
-  msg.x = math.round(self.x)
-  msg.y = math.round(self.y)
+  msg.x = self.x
+  msg.y = self.y
+  if self.dead then
+    msg.x = math.round(self.ghost.x)
+    msg.y = math.round(self.ghost.y)
+  end
   msg.speed = self.speed
   msg.health = math.round(self.health)
   msg.minion = self.selectedMinion

@@ -21,13 +21,14 @@ end
 function HudHealth:draw()
   if ctx.ded then return end
 
-  local p = ctx.players:get(ctx.id)
-  local px, py = math.lerp(p.prevx, p.x, tickDelta / tickRate), math.lerp(p.prevy, p.y, tickDelta / tickRate)
   local green = {50, 230, 50}
   local red = {255, 0, 0}
   local purple = {200, 80, 255}
 
-  bar(px - 40, py - 15, p.healthDisplay / p.maxHealth, purple, 80, 3)
+  ctx.players:each(function(player)
+    bar(player.x - 40, player.y - 15, player.healthDisplay / player.maxHealth, purple, 80, 3)
+  end)
+
   bar(ctx.shrine.x - 60, ctx.shrine.y - 65, ctx.shrine.healthDisplay / ctx.shrine.maxHealth, green, 120, 4)
 
   local t = {}

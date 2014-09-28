@@ -16,8 +16,6 @@ function Player:init()
 	self.healthDisplay = self.health
 	self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
-	self.prevx = self.x
-	self.prevy = self.y
 	self.speed = 0
 	self.juju = 30
 	self.jujuTimer = 1
@@ -42,8 +40,6 @@ function Player:activate()
 end
 
 function Player:update()
-	self.prevx = self.x
-	self.prevy = self.y
 
   -- Global behavior
 	self.invincible = timer.rot(self.invincible)
@@ -58,21 +54,13 @@ function Player:update()
   -- Dead behavior
   if self.dead then
     self.ghost:update()
-    self.deathTimer = timer.rot(self.deathTimer, function() self:spawn() end)
+    self.deathTimer = timer.rot(self.deathTimer, function() ctx.event:emit(evtSpawn, {id = self.id}) end)
     return
   end
-
-  -- Alive behavior
-	self:hurt(self.maxHealth * .033 * tickRate)
 end
 
 function Player:paused()
-  self.prevx = self.x
-  self.prevy = self.y
-  if self.ghost then
-    self.ghost.prevx = self.ghost.x
-    self.ghost.prevy = self.ghost.y
-  end
+  --
 end
 
 function Player:draw()
@@ -104,7 +92,7 @@ function Player:move(input)
     return
   end
 
-  self.speed = self.walkSpeed * input.x --math.lerp(self.speed, self.walkSpeed * input.x, math.min(10 * tickRate, 1))
+  self.speed = self.walkSpeed * input.x--math.lerp(self.speed, self.walkSpeed * input.x, math.min(10 * tickRate, 1))
   if self.speed ~= 0 then self.hasMoved = true end
   self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
 end
@@ -113,6 +101,13 @@ function Player:slot(input)
   for i = 1, #self.minioncds do
 		self.minioncds[i] = timer.rot(self.minioncds[i], function() ctx.hud.minions.extra[i] = 1 end)
 	end
+end
+
+function Player:die()
+  self.deathTimer = self.deathDuration
+  self.dead = true
+  self.ghost = GhostPlayer(self)
+  self.animation:set('death')
 end
 
 function Player:spawn()
@@ -183,11 +178,8 @@ function Player:hurt(amount, source)
 
 	-- Death
 	if self.health <= 0 and self.deathTimer == 0 then
-		self.deathTimer = self.deathDuration
-		self.dead = true
-		self.ghost = GhostPlayer(self)
-		self.animation:set('death')
-		return true
+    ctx.net:emit(evtDeath, {id = self.id})
+    return true
 	end
 end
 

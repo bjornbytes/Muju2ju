@@ -69,7 +69,7 @@ function HudTutorial:draw()
     local scale
     local img = self.images[self.index]
     if self.index == 1 then
-      x, y = math.lerp(p.prevx, p.x, tickDelta / tickRate), math.lerp(p.prevy, p.y, tickDelta / tickRate) - 50
+      x, y = math.lerp(p.prev.x, p.x, tickDelta / tickRate), math.lerp(p.prev.y, p.y, tickDelta / tickRate) - 50
       x, y = ctx.view:screenPoint(x, y)
       ox, oy = img:getWidth() / 2, img:getHeight() / 2
       scale = .4

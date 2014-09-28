@@ -26,6 +26,7 @@ local actionMap = {
 
 function Input:init()
   self.gamepad = nil
+  self.axes = {}
   self.actions = {}
 end
 
@@ -38,11 +39,18 @@ function Input:update()
       self.actions[action] = self.actions[action] or self:gamepadAction(actionMap[action].gamepad)
     end
   end
+
+  local p = ctx.players:get(ctx.id)
+  local smooth = p.dead and 3 or 10
+  for axis in pairs(axisMap) do
+    local value = self:keyboardAxis(unpack(axisMap[axis].keyboard)) or self:gamepadAxis(axisMap[axis].gamepad)
+    self.axes[axis] = math.lerp(self.axes[axis] or 0, value, math.min(smooth * tickRate, 1))
+  end
 end
 
 -- Axis
 function Input:getAxis(axis)
-  return self:keyboardAxis(unpack(axisMap[axis].keyboard)) or self:gamepadAxis(axisMap[axis].gamepad)
+  return self.axes[axis]
 end
 
 function Input:keyboardAxis(neg, pos)

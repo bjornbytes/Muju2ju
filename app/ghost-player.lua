@@ -64,13 +64,13 @@ function GhostPlayer:move(input)
 	local px, py = self.owner.x, self.owner.y + self.owner.height
   local x, y = input.x, input.y
   local len = math.distance(0, 0, x, y)
-  if len > 0 then
+  if len > 1 then
     x = x / len
     y = y / len
   end
 
-  self.vx = math.lerp(self.vx, speed * x, 8 * tickRate)
-  self.vy = math.lerp(self.vy, speed * y, 8 * tickRate)
+  self.vx = speed * x
+  self.vy = speed * y
   self.vy = self.vy - 75 * math.max(self.owner.deathTimer - (self.owner.deathDuration - 1), 0) -- initial boost
 	self.x = self.x + self.vx * tickRate
 	self.y = self.y + self.vy * tickRate

@@ -84,7 +84,7 @@ end
 function NetServer:emit(evt, data)
   if not self.host then return end
   local buffer = self.signatures[evt].important and self.importantEventBuffer or self.eventBuffer
-  table.insert(buffer, {evt, data})
+  table.insert(buffer, {evt, data, tick})
   ctx.event:emit(evt, data)
 end
 
@@ -93,7 +93,7 @@ function NetServer:sync()
   
   if #self.importantEventBuffer > 0 then
     self.outStream:clear()
-    while #self.importantEventBuffer > 0 do
+    while #self.importantEventBuffer > 0 and (tick - self.importantEventBuffer[1][3]) * tickRate >= .000 do
       self:pack(unpack(self.importantEventBuffer[1]))
       table.remove(self.importantEventBuffer, 1)
     end
@@ -103,7 +103,7 @@ function NetServer:sync()
 
   if #self.eventBuffer > 0 then
     self.outStream:clear()
-    while #self.eventBuffer > 0 do
+    while #self.eventBuffer > 0 and (tick - self.eventBuffer[1][3]) * tickRate >= .000 do
       self:pack(unpack(self.eventBuffer[1]))
       table.remove(self.eventBuffer, 1)
     end

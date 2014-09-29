@@ -68,7 +68,11 @@ function Stream:writeBool(bool)
 end
 
 function Stream:writeFloat(float)
-  self:writeString(float)
+  local negative = float < 0
+  float = math.abs(float)
+  self:writeBool(negative)
+  self:writeBits(math.floor(float), 14)
+  self:writeBits(math.round((float - math.floor(float)) * 1000), 10)
 end
 
 function Stream:writeBits(x, n)
@@ -122,7 +126,12 @@ function Stream:readBool()
 end
 
 function Stream:readFloat()
-  return tonumber(self:readString())
+  local negative = self:readBool()
+  local number = self:readBits(14)
+  local decimal = self:readBits(10)
+  number = number + decimal / 1000
+  if negative then number = -number end
+  return number
 end
 
 function Stream:readBits(n)

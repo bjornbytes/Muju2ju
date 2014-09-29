@@ -15,7 +15,7 @@ NetClient.handlers = {
   [msgJoin] = function(self, event)
     print('my id is ' .. event.data.id)
     ctx.id = event.data.id
-    ctx.tick = event.data.tick + math.floor(((event.peer:round_trip_time() / 2) / 1000) / tickRate)
+    ctx.tick = event.data.tick + 1-- + math.floor(((event.peer:round_trip_time() / 2) / 1000) / tickRate)
     ctx.players:add(ctx.id)
   end,
 

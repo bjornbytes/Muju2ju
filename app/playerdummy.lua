@@ -8,6 +8,7 @@ end
 
 function PlayerDummy:update()
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
+  self.speed = self:get(tick - (interp / tickRate)).speed
 	self:animate()
 
   if self.dead then
@@ -27,7 +28,7 @@ function PlayerDummy:get(t)
     }, self.meta)
   end
 
-  while self.history[1].tick < tick - 1 / tickRate and #self.history > 2 do
+  while self.history[1].tick < tick - 2 / tickRate and #self.history > 2 do
     table.remove(self.history, 1)
   end
 
@@ -49,6 +50,7 @@ end
 
 function PlayerDummy:draw()
   local t = tick - (interp / tickRate)
+  --print(t, self.history[1] and self.history[1].tick, self.history[#self.history] and self.history[#self.history].tick)
   local lerpd = table.interpolate(self:get(t), self:get(t + 1), tickDelta / tickRate)
   Player.draw(lerpd)
 end
@@ -76,6 +78,7 @@ function PlayerDummy:trace(data)
   table.insert(self.history, setmetatable({
     x = self.x,
     y = self.y,
+    speed = self.speed,
     tick = data.tick
   }, self.meta))
 end

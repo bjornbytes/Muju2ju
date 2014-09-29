@@ -26,7 +26,7 @@ NetServer.handlers = {
     self:send(msgJoin, event.peer, {id = pid, tick = tick})
     ctx.players:add(pid)
     print('player ' .. pid .. ' connected')
-    if table.count(ctx.players.players) == 1 then
+    if table.count(ctx.players.players) == 2 then
       self:emit(evtReady)
       self.state = 'playing'
     end

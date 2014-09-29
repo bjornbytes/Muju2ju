@@ -60,7 +60,7 @@ function HudTutorial:update()
 end
 
 function HudTutorial:draw()
-  if ctx.ded then return end
+  if true or ctx.ded then return end
   local p = ctx.players:get(ctx.id)
   if self.enabled and self.timer > 0 then
     g.setColor(255, 255, 255, 255 * math.abs(math.sin(self.timer)))
@@ -80,7 +80,7 @@ function HudTutorial:draw()
     elseif self.index == 3 then
       if not p.ghost then x, y = -1000, -1000
       else
-        x, y = math.lerp(p.ghost.prevx, p.ghost.x, tickDelta / tickRate), math.lerp(p.ghost.prevy, p.ghost.y, tickDelta / tickRate) - 80
+        x, y = math.lerp(p.ghostx, p.ghost.x, tickDelta / tickRate), math.lerp(p.ghost.prevy, p.ghost.y, tickDelta / tickRate) - 80
         x, y = ctx.view:screenPoint(x, y)
         ox, oy = img:getWidth() / 2, img:getHeight() / 2
         scale = .3

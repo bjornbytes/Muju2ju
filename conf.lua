@@ -10,5 +10,6 @@ function love.conf(t)
     if arg[2] ~= 'local' then
       t.window.fullscreen = true
     end
+    t.window.vsync = false
   end
 end

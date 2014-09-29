@@ -49,7 +49,7 @@ function Player:update()
   -- Dead behavior
   if self.dead then
     self.ghost:update()
-    self.deathTimer = timer.rot(self.deathTimer, function() ctx.event:emit(evtSpawn, {id = self.id}) end)
+    self.deathTimer = timer.rot(self.deathTimer, function() ctx.net:emit(evtSpawn, {id = self.id}) end)
     return
   end
 end
@@ -61,8 +61,13 @@ end
 function Player:draw()
 	if math.floor(self.invincible * 4) % 2 == 0 then
 		love.graphics.setColor(255, 255, 255)
+    --love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 		self.animation:draw(self.x, self.y)
 	end
+
+  if self.dead then
+    self.ghost:draw()
+  end
 end
 
 function Player:keypressed(key)
@@ -106,7 +111,7 @@ end
 function Player:die()
   self.deathTimer = self.deathDuration
   self.dead = true
-  self.ghost = GhostPlayer(self)
+  self.ghost = Ghost(self)
   self.animation:set('death')
 end
 
@@ -167,7 +172,7 @@ function Player:hurt(amount, source)
 	end
 
 	-- Death
-	if self.health <= 0 and self.deathTimer == 0 then
+	if self.health <= 0 and self.deathTimer == 0 and self.id == 1 then
     ctx.net:emit(evtDeath, {id = self.id})
     return true
 	end

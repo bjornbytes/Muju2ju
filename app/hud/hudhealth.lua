@@ -27,7 +27,7 @@ function HudHealth:draw()
 
   ctx.players:each(function(player)
     local prev, cur = player:get(tick - 1), player:get(tick)
-    local x, y = math.lerp(prev.x, cur.x, tickDelta / tickRate), math.lerp(prev.y, cur.y, tickDelta / tickRate)
+    local x, y = player:drawPosition()
     bar(x - 40, y - 15, player.healthDisplay / player.maxHealth, purple, 80, 3)
   end)
 

@@ -1,17 +1,17 @@
-GhostPlayer = class()
+Ghost = class()
 
-GhostPlayer.radius = 48
-GhostPlayer.first = true
+Ghost.radius = 48
+Ghost.first = true
 
-function GhostPlayer:init(owner)
+function Ghost:init(owner)
   self.owner = owner
 	self.x = self.owner.x
 	self.y = self.owner.y + self.owner.height
+  self.prevx = self.x
+  self.prevy = self.y
 	self.vx = 0
 	self.vy = 0
   self.boost = -750
-	self.prevx = self.x
-	self.prevy = self.y
 
 	self.angle = -math.pi / 2
 	self.maxRange = 500
@@ -19,10 +19,9 @@ function GhostPlayer:init(owner)
 	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
 
   ctx.event:emit('sound.play', {sound = 'spirit', volume = .12})
-  ctx.event:emit('view.register', {object = self})
 end
 
-function GhostPlayer:update()
+function Ghost:update(dummy)
 	local scale = math.min(self.owner.deathTimer, 2) / 2
 	if self.owner.deathDuration - self.owner.deathTimer < 1 then
 		scale = self.owner.deathDuration - self.owner.deathTimer
@@ -30,29 +29,28 @@ function GhostPlayer:update()
 	scale = .4 + scale * .4
 	self.radius = 40 * scale
 	
-	if ctx.upgrades.muju.diffuse.level == 1 and self.owner.deathTimer < 5 and math.distance(self.x, self.y, px, py) < self.radius * 2 then
-		self.owner.deathTimer = math.min(self.owner.deathTimer, .1)
-	end
+  if not dummy then
+    local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
+    self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
 
-	local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
-  self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
-
-  self.boost = math.lerp(self.boost, 0, 2 * tickRate)
-	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
-  self:contain()
+    self.boost = math.lerp(self.boost, 0, 2 * tickRate)
+    self.y = self.y + self.boost * tickRate
+    self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
+    self:contain()
+  end
 end
 
-function GhostPlayer:draw()
+function Ghost:draw()
 	local g = love.graphics
-	local x, y = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
   local image = data.media.graphics.spiritMuju
+  local x, y = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
 
 	local scale = math.min(self.owner.deathTimer, 2) / 2
 	if self.owner.deathDuration - self.owner.deathTimer < 1 then
 		scale = self.owner.deathDuration - self.owner.deathTimer
 	end
 	scale = .4 + scale * .4
-	local alphaScale = math.min(self.owner.deathTimer * 6 / self.owner.deathDuration, 1)
+	local alphaScale = math.min(self.owner.deathTimer * 6 / self.owner.deathDuration, 1) * (ctx.id == self.owner.id and 1 or .5)
 	g.setColor(255, 255, 255, 30 * alphaScale)
 	g.draw(image, x, y, self.angle, 1 * scale, 1 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 75 * alphaScale)
@@ -64,7 +62,7 @@ function GhostPlayer:draw()
 	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, self.maxDis)
 end
 
-function GhostPlayer:move(input, state)
+function Ghost:move(input)
 	local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
 	local px, py = self.owner.x, self.owner.y + self.owner.height
   local x, y = input.x, input.y
@@ -74,12 +72,11 @@ function GhostPlayer:move(input, state)
     y = y / len
   end
 
-	self.prevx = self.x
-	self.prevy = self.y
+  self.prevx = self.x
+  self.prevy = self.y
 
   self.vx = speed * x
   self.vy = speed * y
-  self.vy = self.vy + self.boost
 	self.x = self.x + self.vx * tickRate
 	self.y = self.y + self.vy * tickRate
 
@@ -87,12 +84,11 @@ function GhostPlayer:move(input, state)
 	self.y = math.clamp(self.y, self.radius, ctx.map.height - self.radius - ctx.map.groundHeight)
 end
 
-function GhostPlayer:despawn()
-	GhostPlayer.first = false
-  ctx.event:emit('view.unregister', {object = self})
+function Ghost:despawn()
+	Ghost.first = false
 end
 
-function GhostPlayer:contain()
+function Ghost:contain()
 	local px, py = self.owner.x, self.owner.y + self.owner.height
 
 	if math.distance(self.x, self.y, px, py) > self.maxDis then

@@ -41,6 +41,10 @@ function PlayerMain:draw()
   Player.draw(table.interpolate(self.prev, self, tickDelta / tickRate))
 end
 
+function PlayerMain:drawPosition()
+  return math.lerp(self.prev.x, self.x, tickDelta / tickRate), math.lerp(self.prev.y, self.y, tickDelta / tickRate)
+end
+
 function PlayerMain:keypressed(key)
 	for i = 1, #self.minions do
 		if tonumber(key) == i then

@@ -1,33 +1,47 @@
 NetServer = extend(Net)
 
 NetServer.signatures = {}
-NetServer.signatures[evtReady] = {important = true}
+NetServer.signatures[evtReady] = {{'tick', '16bits'}, important = true}
 NetServer.signatures[evtLeave] = {{'id', '4bits'}, {'reason', 'string'}, important = true}
-NetServer.signatures[evtSync] = {
-  {'id', '4bits'},
-  {'tick', '16bits'},
-  {'ack', '16bits'},
-  {'x', 'float'}, {'y', 'float'},
-  {'dead', 'bool'},
-  {'juju', '16bits'},
-  {'health', 'float'},
-  {'speed', 'float'},
-  {'minion', '3bits'},
-  delta = {{'speed', 'minion'}}
-}
 NetServer.signatures[evtSummon] = {{'id', '4bits'}, {'index', '2bits'}, important = true}
 NetServer.signatures[evtDeath] = {{'id', '4bits'}, important = true}
 NetServer.signatures[evtSpawn] = {{'id', '4bits'}, important = true}
-NetServer.signatures[msgJoin] = {{'id', '4bits'}, {'tick', '16bits'}, important = true}
+NetServer.signatures[msgJoin] = {{'id', '4bits'}, important = true}
+NetServer.signatures[msgSyncMain] = {
+  {'ack', '16bits'},
+  {'x', 'float'},
+  {'juju', '12bits'},
+  {'health', '8bits'},
+  {'ghostX', 'float'},
+  {'ghostY', 'float'},
+  delta = {{'x', 'health'}, {'ghostX', 'ghostY'}}
+}
+NetServer.signatures[msgSyncDummy] = {
+  {'id', '2bits'},
+  {'tick', '16bits'},
+  {'x', 'float'},
+  {'health', '8bits'},
+  {'animationIndex', '3bits'},
+  {'animationPrev', '3bits'},
+  {'animationTime', 'float'},
+  {'animationPrevTime', 'float'},
+  {'animationAlpha', 'float'},
+  {'animationFlip', 'bool'},
+  {'ghostX', 'float'},
+  {'ghostY', 'float'},
+  {'ghostAngle', '9bits'},
+  delta = {{'x', 'health', 'animationIndex', 'animationPrev', 'animationTime', 'animationPrevTime', 'animationAlpha', 'animationFlip'}, {'ghostX', 'ghostY', 'ghostAngle'}}
+}
 
 NetServer.handlers = {
   [msgJoin] = function(self, event)
     local pid = self.peerToPlayer[event.peer]
-    self:send(msgJoin, event.peer, {id = pid, tick = tick})
+    self:send(msgJoin, event.peer, {id = pid})
     ctx.players:add(pid)
+    ctx.players:get(pid).peer = event.peer
     print('player ' .. pid .. ' connected')
     if table.count(ctx.players.players) == 2 then
-      self:emit(evtReady)
+      self:emit(evtReady, {tick = tick})
       self.state = 'playing'
     end
   end,

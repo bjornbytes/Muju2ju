@@ -15,9 +15,11 @@ NetClient.handlers = {
   [msgJoin] = function(self, event)
     print('my id is ' .. event.data.id)
     ctx.id = event.data.id
-    ctx.tick = event.data.tick + 1-- + math.floor(((event.peer:round_trip_time() / 2) / 1000) / tickRate)
     ctx.players:add(ctx.id)
   end,
+
+  [msgSyncMain] = function(self, event) ctx.players:get(ctx.id):trace(event.data) end,
+  [msgSyncDummy] = function(self, event) ctx.players:get(event.data.id):trace(event.data) end,
 
   default = function(self, event) ctx.event:emit(event.msg, event.data) end
 }
@@ -30,13 +32,8 @@ function NetClient:init()
 
   ctx.event:on('game.quit', f.cur(self.quit, self))
 
-  ctx.event:on(evtSync, function(data)
-    local p = ctx.players:get(data.id)
-    if not p then return end
-    p:trace(data)
-  end)
-
   ctx.event:on(evtReady, function(data)
+    ctx.tick = data.tick
     self.state = 'playing'
     for i = 1, 2 do
       if i ~= ctx.id then

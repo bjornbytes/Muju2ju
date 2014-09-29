@@ -39,7 +39,7 @@ function PlayerServer:update()
 end
 
 function PlayerServer:trace(data)
-  if data.tick <= self.ack then return end -- Bail if we've processed data more recent than this data.
+  if data.tick <= self.ack then return end
 
   self.ack = data.tick
 
@@ -54,23 +54,65 @@ function PlayerServer:trace(data)
   }, self.meta))
 
   -- sync
-  local msg = {}
-  msg.id = self.id
-  msg.tick = tick
-  msg.ack = self.ack
+  if self.peer then
+    local msg = {
+      ack = self.ack,
+      juju = math.round(self.juju)
+    }
 
-  msg.x = self.dead and self.ghost.x or self.x
-  msg.y = self.dead and self.ghost.y or self.y
-  msg.dead = self.dead
-  msg.juju = math.round(self.juju)
-  msg.health = self.dead and self.deathTimer or self.health
+    if self.dead then
+      msg.ghostX = self.ghostX
+      msg.ghostY = self.ghostY
+    else
+      msg.x = self.x
+      msg.health = math.round(self.health)
+    end
 
-  if not self.dead then
-    msg.speed = self.speed
-    msg.minion = self.selectedMinion
+    ctx.net:send(msgSyncMain, self.peer, msg)
   end
 
-  ctx.net:emit(evtSync, msg)
+  for i = 1, 2 do
+    if i ~= self.id then
+      local p = ctx.players:get(i)
+      if p and p.peer then
+        local animationMap = {
+          idle = 1,
+          walk = 2,
+          summon = 3,
+          death = 4,
+          resurrect = 5
+        }
+
+        local msg = {
+          id = self.id,
+          tick = tick
+        }
+
+        if self.dead then
+          msg.ghostX = self.ghostX
+          msg.ghostY = self.ghostY
+
+          local angle = math.round(math.deg(self.ghost.angle))
+          while angle < 0 do angle = angle + 360 end
+          msg.ghostAngle = angle
+        else
+          msg.x = self.x
+          msg.health = math.round(self.health)
+          
+          local track = self.animation.state:getCurrent(0)
+          msg.animationIndex = (track and animationMap[track.animation.name]) or 0
+          msg.animationPrev = (track.previous and animationMap[track.previous.animation.name]) or 0
+          msg.animationTime = track and track.time or 0
+          msg.animationPrevTime = (track.previous and track.previous.time) or 0
+          if track.mixDuration == 0 then msg.animationAlpha = 0
+          else msg.animationAlpha = math.min(track.mixTime / track.mixDuration * track.mix, 1) end
+          msg.animationFlip = self.animation.flipX == true
+        end
+
+        ctx.net:send(msgSyncDummy, p.peer, msg)
+      end
+    end
+  end
 end
 
 function PlayerServer:spend(amount)

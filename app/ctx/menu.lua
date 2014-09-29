@@ -6,6 +6,10 @@ function Menu:load()
 	self.font = love.graphics.newFont('media/fonts/pixel.ttf', 8)
 	self.creditsAlpha = 0
 	love.mouse.setCursor(love.mouse.newCursor('media/graphics/cursor.png'))
+  
+  if self.menuSounds then self.menuSounds:stop() end
+  Context:remove(ctx)
+  Context:add(Game)
 end
 
 function Menu:update()
@@ -30,7 +34,7 @@ end
 
 function Menu:mousepressed(x, y, b)
 	if math.inside(x, y, 435, 220, 190, 90) then
-		self.menuSounds:stop()
+		if self.menuSounds then self.menuSounds:stop() end
 		Context:remove(ctx)
 		Context:add(Game)
 	elseif math.inside(x, y, 425, 335, 210, 90) then

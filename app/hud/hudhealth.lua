@@ -26,9 +26,8 @@ function HudHealth:draw()
   local purple = {200, 80, 255}
 
   ctx.players:each(function(player)
-    local prev, cur = player:get(tick - 1), player:get(tick)
-    local x, y = player:drawPosition()
-    bar(x - 40, y - 15, player.healthDisplay / player.maxHealth, purple, 80, 3)
+    local x, y, amt = player:getHealthbar()
+    bar(x - 40, y - 15, amt, purple, 80, 3)
   end)
 
   bar(ctx.shrine.x - 60, ctx.shrine.y - 65, ctx.shrine.healthDisplay / ctx.shrine.maxHealth, green, 120, 4)

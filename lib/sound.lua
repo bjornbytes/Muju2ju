@@ -15,6 +15,7 @@ function Sound:update()
 end
 
 function Sound:play(options)
+  do return false end
   local name = options.sound
   if self.muted or not data.media.sounds[name] then return end
   local sound = data.media.sounds[name]:play()

@@ -54,6 +54,27 @@ function Animation:draw(x, y)
   self.skeleton:draw()
 end
 
+function Animation:drawRaw(name, time, prev, prevTime, alpha, flip, x, y)
+  local animation, previous
+  if name then animation = self.skeletonData:findAnimation(name) end
+  if prev then previous = self.skeletonData:findAnimation(prev) end
+
+  self.skeleton.flipX = flip
+  self.skeleton.x = x + self.offsetx
+  self.skeleton.y = y + self.offsety
+  if previous then
+    previous:apply(self.skeleton, prevTime, prevTime, self.animations[prev].loop, nil)
+    if animation then
+      animation:mix(self.skeleton, time, time, self.animations[name].loop, nil, alpha)
+    end
+  elseif animation then
+    animation:apply(self.skeleton, time, time, self.animations[name].loop, nil)
+  end
+
+  self.skeleton:updateWorldTransform()
+  self.skeleton:draw()
+end
+
 function Animation:set(name)
   local current = self:current()
   if current and (current.name == name or self.animations[name].priority < current.priority) then return end

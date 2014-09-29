@@ -2,14 +2,15 @@ Net = class()
 
 evtReady = 1
 evtLeave = 2
-evtSync = 3
-evtSummon = 4
-evtDeath = 5
-evtSpawn = 6
+evtSummon = 3
+evtDeath = 4
+evtSpawn = 5
 
-msgJoin = 7
-msgLeave = 8
-msgInput = 9
+msgJoin = 6
+msgLeave = 7
+msgInput = 8
+msgSyncMain = 9
+msgSyncDummy = 10
 
 function Net:init()
   self.inStream = Stream()

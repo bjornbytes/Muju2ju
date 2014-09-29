@@ -27,6 +27,8 @@ function PlayerMain:update()
 
   self.prev.x = self.x
   self.prev.y = self.y
+  self.prev.ghostX = self.ghostX
+  self.prev.ghostY = self.ghostY
 
   local input = self:readInput()
   self:move(input)
@@ -41,8 +43,9 @@ function PlayerMain:draw()
   Player.draw(table.interpolate(self.prev, self, tickDelta / tickRate))
 end
 
-function PlayerMain:drawPosition()
-  return math.lerp(self.prev.x, self.x, tickDelta / tickRate), math.lerp(self.prev.y, self.y, tickDelta / tickRate)
+function PlayerMain:getHealthbar()
+  local lerpd = table.interpolate(self.prev, self, tickDelta / tickRate)
+  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
 end
 
 function PlayerMain:keypressed(key)
@@ -76,15 +79,10 @@ end
 function PlayerMain:trace(data)
   self.juju = data.juju
 
-  if data.dead then
-    if self.ghost then
-      self.ghost.x, self.ghost.y = data.x, data.y
-      self.deathTimer = data.health
-    end
-  else
-    self.health = data.health
-    self.x, self.y = data.x, data.y
-  end
+  self.x = data.x or self.x
+  self.health = data.health or self.health
+  self.ghostX = data.ghostX or self.ghostX
+  self.ghostY = data.ghostY or self.ghostY
 
   -- Discard inputs before the ack.
   while #self.inputs > 0 and self.inputs[1].tick < data.ack + 1 do
@@ -96,7 +94,5 @@ function PlayerMain:trace(data)
     self:move(self.inputs[i])
   end
 
-  if self.dead then
-    self.ghost:contain()
-  end
+  if self.dead then self.ghost:contain() end
 end

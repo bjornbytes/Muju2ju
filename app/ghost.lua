@@ -5,13 +5,13 @@ Ghost.first = true
 
 function Ghost:init(owner)
   self.owner = owner
-	self.x = self.owner.x
-	self.y = self.owner.y + self.owner.height
-  self.prevx = self.x
-  self.prevy = self.y
+	self.owner.ghostX = self.owner.x
+	self.owner.ghostY = self.owner.y + self.owner.height
 	self.vx = 0
 	self.vy = 0
   self.boost = -750
+  self.boosts = {}
+  self.radius = 40 * .8
 
 	self.angle = -math.pi / 2
 	self.maxRange = 500
@@ -21,29 +21,26 @@ function Ghost:init(owner)
   ctx.event:emit('sound.play', {sound = 'spirit', volume = .12})
 end
 
-function Ghost:update(dummy)
+function Ghost:update()
 	local scale = math.min(self.owner.deathTimer, 2) / 2
 	if self.owner.deathDuration - self.owner.deathTimer < 1 then
 		scale = self.owner.deathDuration - self.owner.deathTimer
 	end
 	scale = .4 + scale * .4
 	self.radius = 40 * scale
-	
-  if not dummy then
-    local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
-    self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
 
-    self.boost = math.lerp(self.boost, 0, 2 * tickRate)
-    self.y = self.y + self.boost * tickRate
-    self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
-    self:contain()
-  end
+  local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
+  self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
+
+  self.boost = math.lerp(self.boost, 0, 2 * tickRate)
+  self.boosts[tick] = self.boost
+  self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
+  self:contain()
 end
 
-function Ghost:draw()
+function Ghost:draw(x, y)
 	local g = love.graphics
   local image = data.media.graphics.spiritMuju
-  local x, y = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
 
 	local scale = math.min(self.owner.deathTimer, 2) / 2
 	if self.owner.deathDuration - self.owner.deathTimer < 1 then
@@ -72,16 +69,16 @@ function Ghost:move(input)
     y = y / len
   end
 
-  self.prevx = self.x
-  self.prevy = self.y
-
   self.vx = speed * x
   self.vy = speed * y
-	self.x = self.x + self.vx * tickRate
-	self.y = self.y + self.vy * tickRate
+	self.owner.ghostX = self.owner.ghostX + self.vx * tickRate
+	self.owner.ghostY = self.owner.ghostY + self.vy * tickRate
 
-	self.x = math.clamp(self.x, self.radius, ctx.map.width - self.radius)
-	self.y = math.clamp(self.y, self.radius, ctx.map.height - self.radius - ctx.map.groundHeight)
+	self.owner.ghostX = math.clamp(self.owner.ghostX, self.radius, ctx.map.width - self.radius)
+	self.owner.ghostY = math.clamp(self.owner.ghostY, self.radius, ctx.map.height - self.radius - ctx.map.groundHeight)
+
+  local boost = self.boosts[input.tick] or self.boost
+  self.owner.ghostY = self.owner.ghostY + boost * tickRate
 end
 
 function Ghost:despawn()
@@ -91,9 +88,9 @@ end
 function Ghost:contain()
 	local px, py = self.owner.x, self.owner.y + self.owner.height
 
-	if math.distance(self.x, self.y, px, py) > self.maxDis then
-		local angle = math.direction(px, py, self.x, self.y)
-		self.x = px + math.dx(self.maxDis, angle)--math.lerp(self.x, px + math.dx(self.maxDis, angle), 8 * tickRate)
-		self.y = py + math.dy(self.maxDis, angle)--math.lerp(self.y, py + math.dy(self.maxDis, angle), 8 * tickRate)
+	if math.distance(self.owner.ghostX, self.owner.ghostY, px, py) > self.maxDis then
+		local angle = math.direction(px, py, self.owner.ghostX, self.owner.ghostY)
+		self.owner.ghostX = px + math.dx(self.maxDis, angle)--math.lerp(self.x, px + math.dx(self.maxDis, angle), 8 * tickRate)
+		self.owner.ghostY = py + math.dy(self.maxDis, angle)--math.lerp(self.y, py + math.dy(self.maxDis, angle), 8 * tickRate)
 	end
 end

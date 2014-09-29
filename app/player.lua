@@ -16,6 +16,8 @@ function Player:init()
 	self.healthDisplay = self.health
 	self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
+  self.ghostX = self.x
+  self.ghostY = self.y
 	self.speed = 0
 	self.juju = 30
 	self.jujuTimer = 1
@@ -66,7 +68,7 @@ function Player:draw()
 	end
 
   if self.dead then
-    self.ghost:draw()
+    self.ghost:draw(self.ghostX, self.ghostY)
   end
 end
 
@@ -112,7 +114,7 @@ function Player:die()
   self.deathTimer = self.deathDuration
   self.dead = true
   self.ghost = Ghost(self)
-  self.animation:set('death')
+  --self.animation:set('death')
 end
 
 function Player:spawn()
@@ -122,7 +124,7 @@ function Player:spawn()
   self.ghost:despawn()
   self.ghost = nil
 
-  self.animation:set('resurrect')
+  --self.animation:set('resurrect')
 end
 
 function Player:animate()
@@ -150,7 +152,7 @@ function Player:summon(code)
 
   self.summonedMinions = self.summonedMinions + 1
 
-  self.animation:set('summon')
+  --self.animation:set('summon')
 
   -- Juice
   --for i = 1, 15 do ctx.particles:add('dirt', {x = self.x, y = self.y + self.height}) end
@@ -172,7 +174,7 @@ function Player:hurt(amount, source)
 	end
 
 	-- Death
-	if self.health <= 0 and self.deathTimer == 0 and self.id == 1 then
+	if self.health <= 0 and self.deathTimer == 0 then
     ctx.net:emit(evtDeath, {id = self.id})
     return true
 	end

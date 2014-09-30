@@ -1,7 +1,7 @@
 function love.conf(t)
 	t.title = 'Muju Juju'
 	t.console = false
-  if false and arg[2] == 'server' then
+  if arg[2] == 'server' then
     t.window = nil
   else
     t.window.width = 800

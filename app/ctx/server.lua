@@ -9,7 +9,7 @@ function Server:load()
 
   self.event = Event()
   self.net = NetServer()
-  self.view = View()
+  --self.view = View()
   self.map = Map()
 	self.players = Players()
 	self.shrine = Shrine()
@@ -17,7 +17,7 @@ function Server:load()
   self.spells = Manager('spell')
 	self.upgrades = Upgrades()
 	self.target = Target()
-  self.hud = Hud()
+  --self.hud = Hud()
 end
 
 function Server:update()
@@ -35,11 +35,11 @@ function Server:update()
 	self.shrine:update()
   self.units:update()
   self.spells:update()
-  self.view:update()
+  --self.view:update()
 
   self.net:sync()
 end
 
-function Server:draw()
+--[[function Server:draw()
   self.view:draw()
-end
+end]]

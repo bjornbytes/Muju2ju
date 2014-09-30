@@ -203,7 +203,7 @@ function HudUpgrades:keypressed(key)
   local p = ctx.players:get(ctx.id)
 
 	if (key == 'tab' or key == 'e') and p:atShrine() and not ctx.ded then
-		self.active = not self.active
+		--self.active = not self.active
 	end
 
 	if key == 'escape' and self.active and not ctx.ded then
@@ -224,6 +224,7 @@ function HudUpgrades:mousereleased(x, y, button)
 					local nextLevel = upgrade.level + 1
 					local cost = upgrade.costs[nextLevel]
 
+          ctx.net:send(msgUpgrade, {who = who, what = what})
 					if ctx.upgrades:canBuy(who, what) and p:spend(cost) then
 						ctx.upgrades[who][what].level = nextLevel
             ctx.event:emit('sound.play', {sound = 'menuClick'})
@@ -269,7 +270,7 @@ function HudUpgrades:gamepadpressed(gamepad, button)
     end
 
 		if (button == 'x' or button == 'y') and p:atShrine() then
-			self.active = not self.active
+			--self.active = not self.active
 			self.cursorX = u * .5
 			self.cursorY = v * .5
 			self.prevCursorX = self.cursorX

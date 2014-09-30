@@ -7,14 +7,12 @@ evtDeath = 4
 evtSpawn = 5
 evtUnitSync = 6
 evtUnitSpawn = 7
-evtUpgrade = 8
 
-msgJoin = 9
-msgLeave = 10
-msgInput = 11
-msgUpgrade = 12
-msgSyncMain = 13
-msgSyncDummy = 14
+msgJoin = 8
+msgLeave = 9
+msgInput = 10
+msgSyncMain = 11
+msgSyncDummy = 12
 
 function Net:init()
   self.inStream = Stream()

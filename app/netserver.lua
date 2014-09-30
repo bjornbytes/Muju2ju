@@ -36,7 +36,7 @@ NetServer.signatures[msgSyncDummy] = {
   {'ghostX', 'float'},
   {'ghostY', 'float'},
   {'ghostAngle', '9bits'},
-  delta = {{'x', 'health', 'animationIndex', 'animationPrev', 'animationTime', 'animationPrevTime', 'animationAlpha', 'animationFlip'}, {'ghostX', 'ghostY', 'ghostAngle'}}
+  delta = {{'x', 'health'}, {'ghostX', 'ghostY', 'ghostAngle'}}
 }
 
 NetServer.handlers = {

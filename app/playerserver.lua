@@ -102,16 +102,16 @@ function PlayerServer:trace(data)
         else
           msg.x = self.x
           msg.health = math.round(self.health)
-          
-          local track = self.animation.state:getCurrent(0)
-          msg.animationIndex = (track and animationMap[track.animation.name]) or 0
-          msg.animationPrev = (track.previous and animationMap[track.previous.animation.name]) or 0
-          msg.animationTime = track and track.time or 0
-          msg.animationPrevTime = (track.previous and track.previous.time) or 0
-          if track.mixDuration == 0 then msg.animationAlpha = 0
-          else msg.animationAlpha = math.min(track.mixTime / track.mixDuration * track.mix, 1) end
-          msg.animationFlip = self.animation.flipX == true
         end
+
+        local track = self.animation.state:getCurrent(0)
+        msg.animationIndex = (track and animationMap[track.animation.name]) or 0
+        msg.animationPrev = (track and track.previous and animationMap[track.previous.animation.name]) or 0
+        msg.animationTime = track and track.time or 0
+        msg.animationPrevTime = (track and track.previous and track.previous.time) or 0
+        if not track or track.mixDuration == 0 then msg.animationAlpha = 0
+        else msg.animationAlpha = math.min(track.mixTime / track.mixDuration * track.mix, 1) end
+        msg.animationFlip = self.animation.flipX == true
 
         ctx.net:send(msgSyncDummy, p.peer, msg)
       end

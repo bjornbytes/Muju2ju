@@ -114,7 +114,7 @@ function Player:die()
   self.deathTimer = self.deathDuration
   self.dead = true
   self.ghost = Ghost(self)
-  --self.animation:set('death')
+  self.animation:set('death')
 end
 
 function Player:spawn()
@@ -124,7 +124,7 @@ function Player:spawn()
   self.ghost:despawn()
   self.ghost = nil
 
-  --self.animation:set('resurrect')
+  self.animation:set('resurrect')
 end
 
 function Player:animate()
@@ -155,7 +155,7 @@ function Player:summon(code)
   --self.animation:set('summon')
 
   -- Juice
-  --for i = 1, 15 do ctx.particles:add('dirt', {x = self.x, y = self.y + self.height}) end
+  for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end
   ctx.event:emit('sound.play', {sound = 'summon' .. (love.math.random(1, 3))})
 end
 

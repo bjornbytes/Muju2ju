@@ -12,16 +12,9 @@ local getEntries = {
     end)
   end,
   enemy = function(source, t)
-    ctx.enemies:each(function(enemy)
-      if source ~= enemy and not enemy.dead then
-        table.insert(t, {enemy, math.abs(enemy.x - source.x)})
-      end
-    end)
-  end,
-  minion = function(source, t)
-    ctx.minions:each(function(minion)
-      if source ~= minion and not minion.dead then
-        table.insert(t, {minion, math.abs(minion.x - source.x)})
+    ctx.units:each(function(unit)
+      if source ~= unit and not unit.dead and unit.owner ~= source.owner then
+        table.insert(t, {unit, math.abs(unit.x - source.x)})
       end
     end)
   end

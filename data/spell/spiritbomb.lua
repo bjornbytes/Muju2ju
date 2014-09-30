@@ -7,7 +7,7 @@ SpiritBomb.radius = 40
 
 function SpiritBomb:activate()
 	local dx = math.abs(self.targetx - self.x)
-	local dy = -data.enemy.spuju.height
+	local dy = -data.unit.spuju.height
 	local g = self.gravity
 	local v = self.velocity
 	local root = math.sqrt(v ^ 4 - (g * ((g * dx ^ 2) + (2 * dy * v ^ 2))))

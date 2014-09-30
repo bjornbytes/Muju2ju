@@ -1,4 +1,4 @@
-local Spuju = extend(Enemy)
+local Spuju = extend(Unit)
 Spuju.code = 'spuju'
 
 Spuju.width = 60
@@ -12,25 +12,25 @@ Spuju.speed = 18
 Spuju.image = love.graphics.newImage('media/skeletons/spuju/spuju.png')
 
 function Spuju:activate()
-	Enemy.activate(self)
+	Unit.activate(self)
 
   self.scale = self.scale - .2
 
   -- Stats
-	self.maxHealth = self.maxHealth + 5 * ctx.enemies.level ^ .9
+	self.maxHealth = self.maxHealth + 5 * ctx.units.enemyLevel ^ .9
 	self.health = self.maxHealth
-	self.damage = self.damage + 1.1 * ctx.enemies.level ^ .9
-	self.attackRange = self.attackRange + math.min(math.max(ctx.enemies.level - 20, 0) * 2, 100)
+	self.damage = self.damage + 1.1 * ctx.units.enemyLevel ^ .9
+	self.attackRange = self.attackRange + math.min(math.max(ctx.units.enemyLevel - 20, 0) * 2, 100)
 	self.clip = 3
-	if ctx.enemies.level > 50 then self.clip = self.clip + 1 end
-	if ctx.enemies.level > 80 then self.clip = self.clip + 1 end
+	if ctx.units.enemyLevel > 50 then self.clip = self.clip + 1 end
+	if ctx.units.enemyLevel > 80 then self.clip = self.clip + 1 end
 	self.maxClip = self.clip
 end
 
 function Spuju:update()
-	Enemy.update(self)
+	Unit.update(self)
 
-	self.target = ctx.target:closest(self, 'shrine', 'minion')
+	self.target = ctx.target:closest(self, 'shrine', 'enemy')
   if self:inRange() and self.fireTimer == 0 then self:attack() end
 	self:move()
 end

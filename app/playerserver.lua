@@ -38,6 +38,10 @@ function PlayerServer:update()
   Player.update(self)
 end
 
+function PlayerServer:getHealthbar()
+  return self.x, self.y, self.health / self.maxHealth
+end
+
 function PlayerServer:trace(data)
   if data.tick <= self.ack then return end
 

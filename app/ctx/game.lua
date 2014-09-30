@@ -17,8 +17,7 @@ function Game:load()
   self.event:on(evtReady, function()
     self.input = Input()
     self.shrine = Shrine()
-    self.enemies = Enemies()
-    self.minions = Manager('minion')
+    self.units = Units()
     self.spells = Manager('spell')
     self.particles = Manager('particle')
     self.effects = Effects()
@@ -26,6 +25,10 @@ function Game:load()
     self.target = Target()
     self.sound = Sound()
     backgroundSound = self.sound:loop({sound = 'background'})
+  end)
+
+  self.event:on('particles.add', function(data)
+    self.particles:add(data.kind, data)
   end)
 
 	love.keyboard.setKeyRepeat(false)
@@ -38,8 +41,7 @@ function Game:update()
 
   self.input:update()
 
-	if self.hud.upgrades.active or self.paused or self.ded then
-    self.player:paused()
+	if self.paused or self.ded then
     self.effects:paused()
     self.hud:update()
 		return
@@ -48,8 +50,7 @@ function Game:update()
   self.timer = self.timer + 1
 	self.players:update()
 	self.shrine:update()
-	self.enemies:update()
-	self.minions:update()
+  self.units:update()
   self.spells:update()
 	self.particles:update()
 

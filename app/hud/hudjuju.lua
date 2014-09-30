@@ -14,6 +14,9 @@ end
 function HudJuju:draw()
   if ctx.ded then return end
 
+  local p = ctx.players:get(ctx.id)
+  if not p then return end
+
   local image = data.media.graphics.juju
 
   g.setFont(self.font)

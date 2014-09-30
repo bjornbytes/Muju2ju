@@ -101,7 +101,7 @@ function Player:slot(input)
 	end
 
   if input.summon then
-    local minion = data.minion[self.minions[input.minion]]
+    local minion = data.unit[self.minions[input.minion]]
     local cooldown = self.minioncds[self.selectedMinion]
 
     if cooldown == 0 and self:spend(minion:getCost()) then
@@ -142,10 +142,10 @@ end
 function Player:summon(code)
   if self.dead then return end
 
-  ctx.minions:add(code, {x = self.x + love.math.random(-20, 20), owner = self})
+  ctx.net:emit(evtUnitSpawn, {id = ctx.units.nextId, owner = self.id, kind = code, x = self.x, y = self.y})
 
   -- Set cooldown
-  self.minioncds[self.selectedMinion] = data.minion[code].cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
+  self.minioncds[self.selectedMinion] = data.unit[code].cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
   if ctx.upgrades.muju.refresh.level == 1 and love.math.random() < .15 then
     self.minioncds[self.selectedMinion] = 0
   end

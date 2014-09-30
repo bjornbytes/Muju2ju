@@ -29,7 +29,7 @@ Vuju.animations.death = {
   blocking = true,
   speed = .8,
   complete = function(self, owner)
-    ctx.minions:remove(owner)
+    ctx.units:remove(owner)
   end
 }
 

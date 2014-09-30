@@ -42,6 +42,17 @@ function NetClient:init()
     end
   end)
 
+  ctx.event:on(evtUnitSync, function(data)
+    local units = ctx.units.objects
+    table.each(data.units, function(unit)
+      if units[unit.id] then
+        units[unit.id].x = unit.x
+        units[unit.id].y = unit.y
+        units[unit.id].health = unit.health
+      end
+    end)
+  end)
+
   Net.init(self)
 end
 

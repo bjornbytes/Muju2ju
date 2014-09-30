@@ -33,16 +33,11 @@ function HudHealth:draw()
   bar(ctx.shrine.x - 60, ctx.shrine.y - 65, ctx.shrine.healthDisplay / ctx.shrine.maxHealth, green, 120, 4)
 
   local t = {}
-  ctx.enemies:each(function(enemy)
-    local location = math.floor(enemy.x)
-    stack(t, location, enemy.width * 2, .5)
-    bar(enemy.x - 25, ctx.map.height - ctx.map.groundHeight - enemy.height - 15 - 15 * t[location], enemy.healthDisplay / enemy.maxHealth, red, 50, 2)
-  end)
-
-  t = {}
-  ctx.minions:each(function(minion)
-    local location = math.floor(minion.x)
-    stack(t, math.floor(minion.x), minion.width * 2, .5)
-    bar(minion.x - 25, ctx.map.height - ctx.map.groundHeight - minion.height - 15 * t[location], minion.healthDisplay / minion.maxHealth, green, 50, 2)
+  ctx.units:each(function(unit)
+    local location = math.floor(unit.x)
+    stack(t, location, unit.width * 2, .5)
+    local color = green
+    -- if enemy.team ~= p.team then color = red end
+    bar(unit.x - 25, ctx.map.height - ctx.map.groundHeight - unit.height - 15 - 15 * t[location], unit.healthDisplay / unit.maxHealth, color, 50, 2)
   end)
 end

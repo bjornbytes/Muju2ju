@@ -1,6 +1,7 @@
 local Puju = extend(Animation)
 Puju.code = 'puju'
 
+Puju.scale = 1
 Puju.initial = 'attack'
 Puju.animations = {}
 

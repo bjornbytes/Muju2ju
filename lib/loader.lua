@@ -49,8 +49,7 @@ data.load = function()
     halp(dir, data[type])
   end
 
-  load('data/enemy', 'enemy')
-  load('data/minion', 'minion')
+  load('data/unit', 'unit')
   load('data/spell', 'spell')
   load('data/animation', 'animation')
   load('data/particle', 'particle')

@@ -1,6 +1,7 @@
 local Zuju = extend(Animation)
 Zuju.code = 'zuju'
 
+Zuju.scale = .5
 Zuju.initial = 'spawn'
 Zuju.animations = {}
 

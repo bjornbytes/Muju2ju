@@ -6,6 +6,12 @@ NetServer.signatures[evtLeave] = {{'id', '4bits'}, {'reason', 'string'}, importa
 NetServer.signatures[evtSummon] = {{'id', '4bits'}, {'index', '2bits'}, important = true}
 NetServer.signatures[evtDeath] = {{'id', '4bits'}, important = true}
 NetServer.signatures[evtSpawn] = {{'id', '4bits'}, important = true}
+NetServer.signatures[evtUnitSpawn] = {{'id', '10bits'}, {'owner', '3bits'}, {'kind', 'string'}, {'x', 'float'}, {'y', 'float'}}
+NetServer.signatures[evtUnitSync] = {{'tick', '16bits'},
+  {'units', {
+    {'id', '10bits'}, {'x', 'float'}, {'y', 'float'}, {'health', '10bits'}}
+  }
+}
 NetServer.signatures[msgJoin] = {{'id', '4bits'}, important = true}
 NetServer.signatures[msgSyncMain] = {
   {'ack', '16bits'},

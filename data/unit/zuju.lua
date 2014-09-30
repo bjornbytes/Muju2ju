@@ -1,5 +1,8 @@
-local Zuju = extend(Minion)
+local Zuju = extend(Unit)
 Zuju.code = 'zuju'
+
+Zuju.width = 48
+Zuju.height = 48
 
 Zuju.cost = 12
 Zuju.cooldown = 3
@@ -11,10 +14,10 @@ Zuju.attackRange = Zuju.width / 2
 Zuju.maxHealth = 80
 
 function Zuju:activate()
-	Minion.activate(self)
+	Unit.activate(self)
 
   -- Stats
-	self.speed = self.speed + love.math.random(-10, 10)
+	self.speed = self.speed + self.rng:random(-10, 10)
 	local healths = {[0] = 80, 125, 175, 235, 300, 400}
 	self.maxHealth = healths[ctx.upgrades.zuju.fortify.level]
 	self.health = self.maxHealth
@@ -36,7 +39,7 @@ function Zuju:update()
 		return
 	end
 
-	Minion.update(self)
+	Unit.update(self)
 
   -- Target Acquired
 	self.target = ctx.target:closest(self, 'enemy') or ctx.shrine
@@ -95,12 +98,11 @@ function Zuju:die()
     ctx.spells:add('burst', {x = self.x, y = self.y})
 	end
 
-  Minion.die(self)
+  Unit.die(self)
 end
 
 function Zuju:damage()
 	local damage = 20 + (5 + ctx.upgrades.zuju.empower.level) * ctx.upgrades.zuju.empower.level
-	damage = damage + love.math.random(-3, 3)
 	return damage
 end
 

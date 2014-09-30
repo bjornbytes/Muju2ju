@@ -1,5 +1,8 @@
-local Vuju = extend(Minion)
+local Vuju = extend(Unit)
 Vuju.code = 'vuju'
+
+Vuju.width = 48
+Vuju.height = 48
 
 Vuju.cost = 20
 Vuju.cooldown = 6
@@ -11,7 +14,7 @@ Vuju.fireRate = 1.7
 Vuju.attackRange = 125
 
 function Vuju:activate()
-	Minion.activate(self)
+	Unit.activate(self)
 
   -- Stats
 	self.attackRange = 125 + ctx.upgrades.vuju.surge.level * 25
@@ -42,7 +45,7 @@ function Vuju:update()
 		return
 	end
 
-	Minion.update(self)
+	Unit.update(self)
 
   -- Target Acquired
 	self.target = ctx.target:closest(self, 'enemy')

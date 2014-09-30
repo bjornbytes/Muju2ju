@@ -19,7 +19,7 @@ function Juju:activate()
   self.collectedBy = nil
 
 	for i = 1, 15 do
-		ctx.particles:add('jujuSex', {x = self.x, y = self.y})
+    ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y})
 	end
 
   ctx.event:emit('view.register', {object = self})
@@ -42,11 +42,11 @@ function Juju:update()
 			self.collectedBy.juju = self.collectedBy.juju + self.amount
 			ctx.hud.jujuIconScale = 1
 			for i = 1, 20 do
-				ctx.particles:add('jujuSex', {x = tx, y = ty})
+        ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
 			end
 		end
 		for i = 1, 2 do
-			ctx.particles:add('jujuSex', {x = self.x, y = self.y})
+      ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y})
 		end
 		return
 	end
@@ -60,7 +60,7 @@ function Juju:update()
 	end
 	
 	if love.math.random() < 2 * tickRate then
-		ctx.particles:add('jujuSex', {x = self.x, y = self.y, vy = love.math.random(-150, -75), vx = love.math.random(-100, 100), alpha = .35})
+    ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y, vx = love.math.random(-150, -75), vy = love.math.random(-100, 100), alpha = .35})
 	end
 
   ctx.players:each(function(player)
@@ -75,7 +75,7 @@ function Juju:update()
         self.y = self.y + math.dy(speed, direction)
       end
 
-      if math.distance(ghost.x, ghost.y, self.x, self.y) < self.amount + ghost.radius then
+      if math.distance(player.ghostX, player.ghostY, self.x, self.y) < self.amount + ghost.radius then
         ctx.event:emit('sound.play', {sound = 'juju'})
         self.dead = true
         self.collectedBy = ghost.owner

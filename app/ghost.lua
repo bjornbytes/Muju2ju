@@ -79,6 +79,8 @@ function Ghost:move(input)
 
   local boost = self.boosts[input.tick] or self.boost
   self.owner.ghostY = self.owner.ghostY + boost * tickRate
+
+  self:contain()
 end
 
 function Ghost:despawn()

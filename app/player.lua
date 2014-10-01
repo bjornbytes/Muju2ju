@@ -51,7 +51,8 @@ function Player:update()
   -- Dead behavior
   if self.dead then
     self.ghost:update()
-    self.deathTimer = timer.rot(self.deathTimer, function() ctx.net:emit(evtSpawn, {id = self.id}) end)
+    -- server only does this?
+    --self.deathTimer = timer.rot(self.deathTimer, function() ctx.net:emit(evtSpawn, {id = self.id}) end)
     return
   end
 end
@@ -100,14 +101,14 @@ function Player:slot(input)
     end)
 	end
 
-  if input.summon then
+  --[=[if input.summon then
     local minion = data.unit[self.minions[input.minion]]
     local cooldown = self.minioncds[self.selectedMinion]
 
     if cooldown == 0 and self:spend(minion:getCost()) then
       ctx.net:emit(evtSummon, {id = self.id, index = input.minion})
     end
-  end
+  end]=]
 end
 
 function Player:die()
@@ -142,7 +143,7 @@ end
 function Player:summon(code)
   if self.dead then return end
 
-  ctx.net:emit(evtUnitSpawn, {id = ctx.units.nextId, owner = self.id, kind = code, x = self.x, y = self.y})
+  --ctx.net:emit(evtUnitSpawn, {id = ctx.units.nextId, owner = self.id, kind = code, x = self.x, y = self.y})
 
   -- Set cooldown
   self.minioncds[self.selectedMinion] = data.unit[code].cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
@@ -175,7 +176,7 @@ function Player:hurt(amount, source)
 
 	-- Death
 	if self.health <= 0 and self.deathTimer == 0 then
-    ctx.net:emit(evtDeath, {id = self.id})
+    --ctx.net:emit(evtDeath, {id = self.id})
     return true
 	end
 end

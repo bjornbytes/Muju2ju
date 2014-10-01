@@ -14,7 +14,7 @@ function Game:load()
   self.players = Players()
 	self.hud = Hud()
 
-  self.event:on(evtReady, function()
+  self.event:on('ready', function()
     self.input = Input()
     self.shrine = Shrine()
     self.units = Units()

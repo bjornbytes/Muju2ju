@@ -72,7 +72,7 @@ function PlayerServer:trace(data)
       msg.health = math.round(self.health)
     end
 
-    ctx.net:send(msgSyncMain, self.peer, msg)
+    ctx.net:send('input', self.peer, msg)
   end
 
   for i = 1, 2 do
@@ -113,7 +113,8 @@ function PlayerServer:trace(data)
         else msg.animationAlpha = math.min(track.mixTime / track.mixDuration * track.mix, 1) end
         msg.animationFlip = self.animation.flipX == true
 
-        ctx.net:send(msgSyncDummy, p.peer, msg)
+        --ctx.net:send(msgSyncDummy, p.peer, msg)
+        -- somehow gets moved into a msgSnapshot.
       end
     end
   end

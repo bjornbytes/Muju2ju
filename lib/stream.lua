@@ -45,13 +45,10 @@ function Stream:clear()
 end
 
 function Stream:write(x, sig)
-  if sig == 'string' then self:writeString(x)
+  if type(sig) == 'number' then self:writeBits(x, sig)
+  elseif sig == 'string' then self:writeString(x)
   elseif sig == 'bool' then self:writeBool(x)
-  elseif sig == 'float' then self:writeFloat(x)
-  else
-    local n = sig:match('(%d+)bit')
-    self:writeBits(x, n)
-  end
+  elseif sig == 'float' then self:writeFloat(x) end
   
   return self
 end
@@ -96,13 +93,10 @@ function Stream:writeBits(x, n)
 end
 
 function Stream:read(kind)
-  if kind == 'string' then return self:readString()
+  if type(kind) == 'number' then return self:readBits(kind)
+  elseif kind == 'string' then return self:readString()
   elseif kind == 'bool' then return self:readBool()
-  elseif kind == 'float' then return self:readFloat()
-  else
-    local n = tonumber(kind:match('(%d+)bit'))
-    return self:readBits(n)
-  end
+  elseif kind == 'float' then return self:readFloat() end
 end
 
 function Stream:readString()
@@ -157,68 +151,88 @@ function Stream:readBits(n)
 end
 
 function Stream:pack(data, signature)
-  local keys
-  if signature.delta then
-    keys = {}
-    for _, key in ipairs(signature.delta) do
-      if type(key) == 'table' then
-        local has = 0
-        for i = 1, #key do
-          if data[key[i]] ~= nil then
-            keys[key[i]] = true
-            has = has + 1
-          else
-            keys[key[i]] = false
+  if not signature.data then return end
+
+  local function halp(data, signature, order, delta)
+    local keys
+    if delta then
+      keys = {}
+      for _, key in ipairs(delta) do
+        if type(key) == 'table' then
+          local has = 0
+          for i = 1, #key do
+            if data[key[i]] ~= nil then
+              keys[key[i]] = true
+              has = has + 1
+            else
+              keys[key[i]] = false
+            end
           end
+          if has == 0 then self:write(0, 1)
+          elseif has == #key then self:write(1, 1)
+          else error('only part of message delta group "' .. table.concat(key, ', ') .. '" was provided.') end
+        else
+          self:write(data[key] ~= nil and 1 or 0, 1)
+          keys[key] = data[key] ~= nil and true or false
         end
-        if has == 0 then self:write(0, '1bit')
-        elseif has == #key then self:write(1, '1bit')
-        else error('Only part of message delta group "' .. table.concat(key, ', ') .. '" was provided.') end
-      else
-        self:write(data[key] ~= nil and 1 or 0, '1bit')
-        keys[key] = data[key] ~= nil and true or false
+      end
+    end
+
+    for _, key in ipairs(order) do
+      local format = signature[key]
+      if not keys or keys[key] ~= false then
+        if type(format) == 'table' then
+          self:write(#data[key], 8)
+          for i = 1, #data[key] do halp(data[key][i], format, order[key], delta and delta[key]) end
+        else
+          assert(data[key] ~= nil, 'stream: nil value for ' .. key)
+          self:write(data[key], format)
+        end
       end
     end
   end
 
-  for _, sig in ipairs(signature) do
-    if not keys or keys[sig[1]] ~= false then
-      if type(sig[2]) == 'table' then
-        self:write(#data[sig[1]], '4bits')
-        for i = 1, #data[sig[1]] do self:pack(data[sig[1]][i], sig[2]) end
-      else
-        assert(data[sig[1]] ~= nil, 'stream: nil value for ' .. sig[1])
-        self:write(data[sig[1]], sig[2])
-      end
-    end
-  end
+  halp(data, signature.data, signature.order, signature.delta)
 end
 
 function Stream:unpack(signature)
-  local keys
-  if signature.delta then
-    keys = {}
-    for i = 1, #signature.delta do
-      local val = self:read('1bit') > 0
-      if type(signature.delta[i]) == 'table' then
-        for j = 1, #signature.delta[i] do keys[signature.delta[i][j]] = val end
-      else
-        keys[signature.delta[i]] = val
+  if not signature.data then return end
+
+  local function halp(signature, order, delta)
+    local keys
+    if delta then
+      keys = {}
+      for i = 1, #delta do
+        local val = self:read(1) > 0
+        if type(delta[i]) == 'table' then
+          for j = 1, #delta[i] do keys[delta[i][j]] = val end
+        else
+          keys[delta[i]] = val
+        end
       end
     end
+
+    local data = {}
+    for _, key in ipairs(order) do
+      local format = signature[key]
+      if not keys or keys[key] ~= false then
+        if type(format) == 'table' then
+          local ct = self:read(8)
+          data[key] = {}
+          table.print(signature[key])
+          table.print(order[key])
+          for i = 1, ct do
+            local entry = halp(signature[key], order[key], delta and delta[key])
+            table.insert(data[key], entry)
+          end
+        else
+          data[key] = self:read(format)
+        end
+      end
+    end
+    
+    return data
   end
 
-  local data = {}
-  for _, sig in ipairs(signature) do
-    if not keys or keys[sig[1]] ~= false then
-      if type(sig[2]) == 'table' then
-        local ct = self:read('4bits')
-        data[sig[1]] = {}
-        for i = 1, ct do table.insert(data[sig[1]], self:unpack(sig[2])) end
-      else
-        data[sig[1]] = self:read(sig[2])
-      end
-    end
-  end
-  return data
+  return halp(signature.data, signature.order, signature.delta)
 end

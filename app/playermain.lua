@@ -34,7 +34,7 @@ function PlayerMain:update()
   self:move(input)
   self:slot(input)
 
-  ctx.net:send(msgInput, input)
+  ctx.net:send('input', input)
 
   Player.update(self)
 end

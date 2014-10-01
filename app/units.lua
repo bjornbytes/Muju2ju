@@ -10,11 +10,6 @@ function Units:init()
 	self.enemyTimerMax = 9
 
   self.nextId = 1
-
-  ctx.event:on(evtUnitSpawn, function(info)
-    self:add(info.kind, {id = info.id, owner = ctx.players:get(info.owner), x = info.x, y = info.y})
-  end)
-
 end
 
 function Units:update()
@@ -29,7 +24,7 @@ function Units:update()
       end
     end
 
-    ctx.net:emit(evtUnitSpawn, {id = self.nextId, tick = tick, owner = 0, kind = spawnType, x = x, y = 400})
+    --ctx.net:emit(evtUnitSpawn, {id = self.nextId, tick = tick, owner = 0, kind = spawnType, x = x, y = 400})
     self.enemyTimerMin = math.max(self.enemyTimerMin - .055 * math.clamp(self.enemyTimerMin / 5, .1, 1), 1.4)
     self.enemyTimerMax = math.max(self.enemyTimerMax - .03 * math.clamp(self.enemyTimerMax / 4, .5, 1), 2.75)
 		return self.enemyTimerMin + love.math.random() * (self.enemyTimerMax - self.enemyTimerMin)
@@ -50,7 +45,7 @@ function Units:update()
       health = math.round(unit.health)
     })
   end)
-  ctx.net:emit(evtUnitSync, msg)
+  --ctx.net:emit(evtUnitSync, msg)
 
 	self.enemyLevel = self.enemyLevel + tickRate / (16 + self.enemyLevel / 2)
 end

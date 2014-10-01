@@ -1,18 +1,18 @@
 Net = class()
 
-evtReady = 1
-evtLeave = 2
-evtSummon = 3
-evtDeath = 4
-evtSpawn = 5
-evtUnitSync = 6
-evtUnitSpawn = 7
+Net.messageMap = {
+  'join',
+  'leave',
+  'ready',
+  'input',
+  'snapshot',
+  'unitCreate',
+  'unitDestroy',
+  'jujuCreate',
+  'jujuDestroy'
+}
 
-msgJoin = 8
-msgLeave = 9
-msgInput = 10
-msgSyncMain = 11
-msgSyncDummy = 12
+table.each(Net.messageMap, function(message, i) Net.messageMap[message] = i end)
 
 function Net:init()
   self.inStream = Stream()
@@ -42,8 +42,8 @@ function Net:update()
 
       while true do
         event.msg, event.data = self:unpack()
-        if not event.msg then break end
-        ;(self.handlers[event.msg] or self.handlers.default)(self, event)
+        if not event.msg or not self.messages[event.msg] then break end
+        f.exe(self.messages[event.msg].receive, self, event)
       end
     else
       f.exe(self[event.type], self, event)
@@ -52,12 +52,14 @@ function Net:update()
 end
 
 function Net:pack(msg, data)
-  self.outStream:write(msg, '5bits')
-  self.outStream:pack(data, self.signatures[msg])
+  assert(type(msg) == 'string' and self.messages[msg])
+  self.outStream:write(self.messageMap[msg], 5)
+  self.outStream:pack(data, self.messages[msg])
 end
 
 function Net:unpack()
-  local msg = self.inStream:read('5bits')
-  if not self.other.signatures[msg] then return false end
-  return msg, self.inStream:unpack(self.other.signatures[msg])
+  local msg = self.inStream:read(5)
+  msg = self.messageMap[msg]
+  if not self.other.messages[msg] then return false end
+  return msg, self.inStream:unpack(self.other.messages[msg])
 end

@@ -1,5 +1,7 @@
 require 'require'
 
+playerCount = 1
+
 function love.load()
   data.load()
 	Context:add(arg[2] == 'server' and Server or Menu)

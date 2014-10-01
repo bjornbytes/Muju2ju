@@ -224,7 +224,6 @@ function HudUpgrades:mousereleased(x, y, button)
 					local nextLevel = upgrade.level + 1
 					local cost = upgrade.costs[nextLevel]
 
-          ctx.net:send(msgUpgrade, {who = who, what = what})
 					if ctx.upgrades:canBuy(who, what) and p:spend(cost) then
 						ctx.upgrades[who][what].level = nextLevel
             ctx.event:emit('sound.play', {sound = 'menuClick'})

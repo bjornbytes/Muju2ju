@@ -2,28 +2,6 @@ Players = class()
 
 function Players:init()
   self.players = {}
-
-  ctx.event:on(evtLeave, function(data)
-    self:remove(data.id)
-  end)
-
-  ctx.event:on(evtSummon, function(data)
-    local p = self:get(data.id)
-    if not p then return end
-    p:summon(p.minions[data.index])
-  end)
-
-  ctx.event:on(evtDeath, function(data)
-    local p = self:get(data.id)
-    if not p then return end
-    p:die()
-  end)
-
-  ctx.event:on(evtSpawn, function(data)
-    local p = self:get(data.id)
-    if not p then return end
-    p:spawn()
-  end)
 end
 
 function Players:update()

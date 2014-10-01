@@ -1,63 +1,91 @@
 NetClient = extend(Net)
 
-NetClient.signatures = {}
-NetClient.signatures[msgJoin] = {important = true}
-NetClient.signatures[msgLeave] = {important = true}
-NetClient.signatures[msgInput] = {
-  {'tick', '16bits'},
-  {'x', 'float'}, {'y', 'float'},
-  {'summon', 'bool'},
-  {'minion', '3bits'},
-  delta = {{'x', 'y'}, 'minion'}
-}
-
-NetClient.handlers = {
-  [msgJoin] = function(self, event)
-    print('my id is ' .. event.data.id)
+NetClient.messages = {}
+NetClient.messages.join = {
+  important = true,
+  receive = function(self, event)
     ctx.id = event.data.id
     ctx.players:add(ctx.id)
-  end,
+  end
+}
 
-  [msgSyncMain] = function(self, event) ctx.players:get(ctx.id):trace(event.data) end,
-  [msgSyncDummy] = function(self, event) ctx.players:get(event.data.id):trace(event.data) end,
+NetClient.messages.leave = {
+  important = true
+}
 
-  default = function(self, event) ctx.event:emit(event.msg, event.data) end
+NetClient.messages.ready = {
+  receive = function(self, event)
+    ctx.tick = event.data.tick
+    self.state = 'playing'
+    for i = 1, playerCount do
+      if i ~= ctx.id then
+        ctx.players:add(i)
+      end
+    end
+
+    ctx.event:emit('ready')
+  end
+}
+
+NetClient.messages.input = {
+  data = {
+    tick = 16,
+    x = 'float',
+    y = 'float',
+    summon = 'bool',
+    minion = '3bits'
+  },
+  delta = {{'x', 'y'}, 'minion'},
+  order = {'tick', 'x', 'y', 'summon', 'minion'},
+  receive = function(self, event)
+    ctx.players:get(ctx.id):trace(event.data)
+  end
+}
+
+NetClient.messages.snapshot = {
+  receive = function(self, event)
+    --print('snapshot')
+  end
+}
+
+NetClient.messages.unitCreate = {
+  receive = function(self, event)
+
+  end
+}
+
+NetClient.messages.unitDestroy = {
+  receive = function(self, event)
+
+  end
+}
+
+NetClient.messages.jujuCreate = {
+  receive = function(self, event)
+
+  end
+}
+
+NetClient.messages.jujuDestroy = {
+  receive = function(self, event)
+
+  end
 }
 
 function NetClient:init()
   self.other = NetServer
   self.state = 'connecting'
-  self:connectTo('127.0.0.1', 6061)
+  local ip = arg[2] == 'local' and '127.0.0.1' or '123.123.123.123'
+  self:connectTo(ip, 6061)
   self.messageBuffer = {}
 
   ctx.event:on('game.quit', f.cur(self.quit, self))
-
-  ctx.event:on(evtReady, function(data)
-    ctx.tick = data.tick
-    self.state = 'playing'
-    for i = 1, 2 do
-      if i ~= ctx.id then
-        ctx.players:add(i)
-      end
-    end
-  end)
-
-  ctx.event:on(evtUnitSync, function(data)
-    local units = ctx.units.objects
-    table.each(data.units, function(unit)
-      if units[unit.id] then
-        units[unit.id].x = unit.x
-        units[unit.id].y = unit.y
-        units[unit.id].health = unit.health
-      end
-    end)
-  end)
 
   Net.init(self)
 end
 
 function NetClient:quit()
-  self:send(msgLeave)
+  self:send('leave')
   if self.host then self.host:flush() end
   if self.server then self.server:disconnect() end
 end
@@ -65,7 +93,7 @@ end
 function NetClient:connect(event)
   self.state = 'waiting'
   self.server = event.peer
-  self:send(msgJoin)
+  self:send('join')
   event.peer:ping()
 end
 
@@ -79,7 +107,7 @@ function NetClient:send(msg, data)
   self.outStream:clear()
   self:pack(msg, data)
 
-  local important = self.signatures[msg].important
+  local important = self.messages[msg].important
   local channel = important and 0 or 1
   local reliability = important and 'reliable' or 'unreliable'
   self.server:send(tostring(self.outStream), channel, reliability)

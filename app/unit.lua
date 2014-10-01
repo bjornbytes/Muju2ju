@@ -3,6 +3,8 @@ Unit = class()
 Unit.depth = -10
 
 function Unit:activate()
+  self.history = NetHistory(self)
+
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
 	self.target = nil
 	self.fireTimer = 0
@@ -48,12 +50,6 @@ function Unit:update()
 	if isaminion then
     self:hurt(self.maxHealth * .02 * tickRate)
     self.speed = math.max(self.speed - .5 * tickRate, 20)
-  end
-end
-
-function Unit:draw()
-  if self.animation then
-    self.animation:draw(self.x, self.y)
   end
 end
 

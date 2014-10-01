@@ -82,11 +82,17 @@ end
 function Puju:draw()
 	local g = love.graphics
 	local sign = -math.sign(self.target.x - self.x)
+
+  local t = tick - (interp / tickRate)
+  local prev = self.history:get(t)
+  local cur = self.history:get(t + 1)
+  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
+
 	g.setColor(255, 255, 255)
-	self.animation:draw(self.x, self.y)
+	self.animation:draw(lerpd.x, lerpd.y)
 	if self.damageReduction > 0 then
 		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
-		g.draw(data.media.graphics.curseIcon, self.x, self.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
+		g.draw(data.media.graphics.curseIcon, lerpd.x, lerpd.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
 	end
 end
 

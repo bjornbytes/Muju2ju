@@ -56,6 +56,12 @@ NetClient.messages.snapshot = {
       data.tick = event.data.tick
       local unit = ctx.units.objects[data.id]
       if unit then
+        unit.history:add({
+          tick = data.tick,
+          x = data.x,
+          y = data.y,
+          health = data.health
+        })
         unit.x = data.x
         unit.y = data.y
         unit.health = data.health

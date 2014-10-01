@@ -22,7 +22,6 @@ end
 
 function Server:update()
 	if self.paused or self.ded then
-    self.player:paused()
 		return
 	end
 
@@ -36,6 +35,57 @@ function Server:update()
   self.units:update()
   self.spells:update()
   --self.view:update()
+
+  -- send a snapshot
+  local snapshot = {tick = tick, players = {}, units = {}}
+  self.players:each(function(player)
+    local animationMap = {
+      idle = 1,
+      walk = 2,
+      summon = 3,
+      death = 4,
+      resurrect = 5
+    }
+
+    local track = player.animation.state:getCurrent(0)
+
+    local entry = {
+      id = player.id,
+      animationIndex = (track and animationMap[track.animation.name]) or 0,
+      animationPrev = (track and track.previous and animationMap[track.previous.animation.name]) or 0,
+      animationTime = track and track.time or 0,
+      animationPrevTime = (track and track.previous and track.previous.time) or 0,
+      animationFlip = player.animation.flipX == true
+    }
+
+    if not track or track.mixDuration == 0 then entry.animationAlpha = 0
+    else entry.animationAlpha = math.min(track.mixTime / track.mixDuration * track.mix, 1) end
+
+    if player.dead then
+      entry.ghostX = player.ghostX
+      entry.ghostY = player.ghostY
+      
+      local angle = math.round(math.deg(player.ghost.angle))
+      while angle < 0 do angle = angle + 360 end
+      entry.ghostAngle = angle
+    else
+      entry.x = player.x
+      entry.health = math.round(player.health)
+    end
+
+    table.insert(snapshot.players, entry)
+  end)
+
+  self.units:each(function(unit)
+    table.insert(snapshot.units, {
+      id = unit.id,
+      x = math.round(unit.x),
+      y = math.round(unit.y),
+      health = math.round(unit.health)
+    })
+  end)
+
+  self.net:emit('snapshot', snapshot)
 
   self.net:sync()
 end

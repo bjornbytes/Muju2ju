@@ -44,31 +44,46 @@ NetClient.messages.input = {
 
 NetClient.messages.snapshot = {
   receive = function(self, event)
-    --print('snapshot')
+    table.each(event.data.players, function(data)
+      if data.id ~= ctx.id then
+        data.tick = event.data.tick
+        ctx.players:get(data.id):trace(data)
+      end
+    end)
+
+    table.each(event.data.units, function(data)
+      data.tick = event.data.tick
+      local unit = ctx.units.objects[data.id]
+      if unit then
+        unit.x = data.x
+        unit.y = data.y
+        unit.health = data.health
+      end
+    end)
   end
 }
 
 NetClient.messages.unitCreate = {
   receive = function(self, event)
-
+    ctx.event:emit('unitCreate', event.data)
   end
 }
 
 NetClient.messages.unitDestroy = {
   receive = function(self, event)
-
+    ctx.event:emit('unitDestroy', event.data)
   end
 }
 
 NetClient.messages.jujuCreate = {
   receive = function(self, event)
-
+    ctx.event:emit('jujuCreate', event.data)
   end
 }
 
 NetClient.messages.jujuDestroy = {
   receive = function(self, event)
-
+    ctx.event:emit('jujuDestroy', event.data)
   end
 }
 

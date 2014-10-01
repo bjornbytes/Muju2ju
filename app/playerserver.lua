@@ -57,7 +57,7 @@ function PlayerServer:trace(data)
     tick = data.tick
   }, self.meta))
 
-  -- sync
+  -- reply with state
   if self.peer then
     local msg = {
       ack = self.ack,
@@ -73,50 +73,6 @@ function PlayerServer:trace(data)
     end
 
     ctx.net:send('input', self.peer, msg)
-  end
-
-  for i = 1, 2 do
-    if i ~= self.id then
-      local p = ctx.players:get(i)
-      if p and p.peer then
-        local animationMap = {
-          idle = 1,
-          walk = 2,
-          summon = 3,
-          death = 4,
-          resurrect = 5
-        }
-
-        local msg = {
-          id = self.id,
-          tick = tick
-        }
-
-        if self.dead then
-          msg.ghostX = self.ghostX
-          msg.ghostY = self.ghostY
-
-          local angle = math.round(math.deg(self.ghost.angle))
-          while angle < 0 do angle = angle + 360 end
-          msg.ghostAngle = angle
-        else
-          msg.x = self.x
-          msg.health = math.round(self.health)
-        end
-
-        local track = self.animation.state:getCurrent(0)
-        msg.animationIndex = (track and animationMap[track.animation.name]) or 0
-        msg.animationPrev = (track and track.previous and animationMap[track.previous.animation.name]) or 0
-        msg.animationTime = track and track.time or 0
-        msg.animationPrevTime = (track and track.previous and track.previous.time) or 0
-        if not track or track.mixDuration == 0 then msg.animationAlpha = 0
-        else msg.animationAlpha = math.min(track.mixTime / track.mixDuration * track.mix, 1) end
-        msg.animationFlip = self.animation.flipX == true
-
-        --ctx.net:send(msgSyncDummy, p.peer, msg)
-        -- somehow gets moved into a msgSnapshot.
-      end
-    end
   end
 end
 

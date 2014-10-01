@@ -219,8 +219,6 @@ function Stream:unpack(signature)
         if type(format) == 'table' then
           local ct = self:read(8)
           data[key] = {}
-          table.print(signature[key])
-          table.print(order[key])
           for i = 1, ct do
             local entry = halp(signature[key], order[key], delta and delta[key])
             table.insert(data[key], entry)

@@ -68,6 +68,7 @@ function Unit:move()
 end
 
 function Unit:hurt(amount)
+  if ctx.tag ~= 'server' then return end
 	self.health = self.health - (amount + (amount * self.damageAmplification))
 	if self.health <= 0 then
     self:die()

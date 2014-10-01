@@ -35,7 +35,7 @@ function Puju:update()
   -- Targeting
 	self.target = ctx.target:closest(self, 'shrine', 'player', 'enemy')
 	if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
-	self:move()
+	if ctx.tag == 'server' then self:move() end
 
   -- Rots
 	self.buttTimer = timer.rot(self.buttTimer)

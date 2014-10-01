@@ -47,7 +47,7 @@ function Zuju:update()
 	if self.target ~= ctx.shrine and self.fireTimer == 0 and self:inRange() then self:attack() end
 
   -- Movement
-  self:move()
+  if ctx.tag == 'server' then self:move() end
 
   -- Animations
   if not self:inRange() then

@@ -47,7 +47,8 @@ NetClient.messages.snapshot = {
     table.each(event.data.players, function(data)
       if data.id ~= ctx.id then
         data.tick = event.data.tick
-        ctx.players:get(data.id):trace(data)
+        local p = ctx.players:get(data.id)
+        if p then p:trace(data) end
       end
     end)
 

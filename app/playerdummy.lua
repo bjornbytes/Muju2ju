@@ -1,25 +1,7 @@
 PlayerDummy = extend(Player)
 
-local function historySearch(history, t)
-  while history[1].tick < tick - 2 / tickRate and #history > 2 do
-    table.remove(history, 1)
-  end
-
-  if history[#history].tick < t then
-    local h1, h2 = history[#history - 1], history[#history]
-    local factor = math.min(1 + ((t - h2.tick) / (h2.tick - h1.tick)), .25 / tickRate)
-    return table.interpolate(h1, h2, factor)
-  end
-
-  for i = #history, 1, -1 do
-    if history[i].tick <= t then return history[i] end
-  end
-
-  return history[1]
-end
-
 function PlayerDummy:activate()
-  self.history = {}
+  self.history = NetHistory(self)
   self.animationIndex = nil
   self.animationPrev = nil
   self.animationTime = 0
@@ -32,20 +14,11 @@ end
 
 function PlayerDummy:update()
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
-  self.speed = self:get(tick - (interp / tickRate)).speed
   self.deathTimer = timer.rot(self.deathTimer)
 end
 
 function PlayerDummy:get(t)
-  if t == tick then return self end
-
-  if #self.history < 2 then
-    return setmetatable({
-      tick = tick
-    }, self.meta)
-  end
-
-  return historySearch(self.history, t)
+  return self.history:get(t)
 end
 
 function PlayerDummy:draw()
@@ -83,7 +56,7 @@ function PlayerDummy:trace(data)
   self.ghostY = data.ghostY or self.ghostY
   if self.ghost and data.ghostAngle then self.ghost.angle = math.rad(data.ghostAngle) end
 
-  table.insert(self.history, setmetatable({
+  self.history:add({
     tick = data.tick,
     x = self.x,
     y = self.y,
@@ -96,5 +69,5 @@ function PlayerDummy:trace(data)
     animationFlip = self.animationFlip,
     ghostX = self.ghostX,
     ghostY = self.ghostY
-  }, self.meta))
+  })
 end

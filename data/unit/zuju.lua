@@ -18,8 +18,7 @@ function Zuju:activate()
 
   -- Stats
 	self.speed = self.speed + self.rng:random(-10, 10)
-	local healths = {[0] = 80, 125, 175, 235, 300, 400}
-	self.maxHealth = healths[ctx.upgrades.zuju.fortify.level]
+  self.maxHealth = 80
 	self.health = self.maxHealth
 	self.healthDisplay = self.health
 
@@ -76,13 +75,6 @@ end
 function Zuju:attack()
   local damage = self:damage()
 
-  -- Lifesteal
-  local heal = math.min(damage, self.target.health) * .1 * ctx.upgrades.zuju.siphon.level
-  self.health = math.min(self.health + heal, self.maxHealth)
-  for i = 1, ctx.upgrades.zuju.siphon.level do
-    ctx.particles:add(Lifesteal, {x = self.x, y = self.y})
-  end
-
   -- The Works
   self.target:hurt(damage)
   self.fireTimer = self.fireRate
@@ -104,21 +96,16 @@ function Zuju:hurt(amount)
 end
 
 function Zuju:die()
-	if ctx.upgrades.zuju.burst.level > 0 then
-    ctx.spells:add('burst', {x = self.x, y = self.y})
-	end
-
   Unit.die(self)
 end
 
 function Zuju:damage()
-	local damage = 20 + (5 + ctx.upgrades.zuju.empower.level) * ctx.upgrades.zuju.empower.level
+	local damage = 20
 	return damage
 end
 
 function Zuju:getCost()
-	local upgradeCount = ctx.upgrades.zuju.empower.level + ctx.upgrades.zuju.fortify.level + ctx.upgrades.zuju.burst.level + ctx.upgrades.zuju.siphon.level + ctx.upgrades.zuju.sanctuary.level
-	return self.cost + upgradeCount * 3
+  return 12
 end
 
 return Zuju

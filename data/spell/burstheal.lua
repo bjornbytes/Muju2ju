@@ -2,9 +2,9 @@ local BurstHeal = class()
 BurstHeal.code = 'burstHeal'
 
 function BurstHeal:activate()
-	self.health = 2 + ctx.upgrades.zuju.sanctuary.level
+	self.health = 2 + self.level
 	self.maxHealth = self.health
-	self.amount = (ctx.upgrades.zuju.sanctuary.level * 10) * tickRate
+	self.amount = (self.level * 10) * tickRate
 	self.depth = 0 + love.math.random()
   ctx.event:emit('view.register', {object = self})
 end

@@ -14,6 +14,7 @@ function Ghost:activate()
 	self.owner.ghostY = self.owner.y + self.owner.height
 	self.vx = 0
 	self.vy = 0
+  self.speed = 140
   self.boost = -650
   self.boosts = {}
   self.bounds = {}
@@ -41,8 +42,7 @@ function Ghost:update()
 	scale = .4 + scale * .4
 	self.radius = 40 * scale
 
-  local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
-  self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
+  self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / self.speed)), 12 * tickRate)
 
   self.boost = math.lerp(self.boost, 0, 3 * tickRate)
   self.boosts[tick] = self.boost
@@ -74,7 +74,6 @@ function Ghost:draw(x, y, angle)
 end
 
 function Ghost:move(input)
-	local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
 	local px, py = self.owner.x, self.owner.y + self.owner.height
   local x, y = input.x, input.y
   local len = math.distance(0, 0, x, y)
@@ -83,8 +82,8 @@ function Ghost:move(input)
     y = y / len
   end
 
-  self.vx = speed * x
-  self.vy = speed * y
+  self.vx = self.speed * x
+  self.vy = self.speed * y
 	self.owner.ghostX = self.owner.ghostX + self.vx * tickRate
 	self.owner.ghostY = self.owner.ghostY + self.vy * tickRate
 

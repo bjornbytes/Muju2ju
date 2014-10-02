@@ -21,8 +21,6 @@ end
 function Shrine:update()
 	if self.health <= 0 then ctx.ded = true end
 
-	self.health = math.min(self.maxHealth, self.health + (self.maxHealth * ctx.upgrades.muju.imbue.level * .005 * tickRate))
-
   if ctx.id then
     local p = ctx.players:get(ctx.id)
     self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)

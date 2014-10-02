@@ -28,12 +28,9 @@ function Burst:draw()
 end
 
 function Burst:damage()
-  local damage = 20 * ctx.upgrades.zuju.burst.level
-  self.radius = (data.unit.zuju.width / 2) + 50 + 5 * ctx.upgrades.zuju.burst.level
+  local damage = 20 * self.level
+  self.radius = (data.unit.zuju.width / 2) + 50 + 5 * self.level
   table.each(ctx.target:inRange(self, self.radius, 'enemy', 'player'), f.ego('hurt', damage))
-  if ctx.upgrades.zuju.sanctuary.level > 0 then
-    ctx.spells:add('burstHeal', {x = self.x, y = self.y, radius = self.radius})
-  end
 end
 
 return Burst

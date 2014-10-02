@@ -6,8 +6,6 @@ Juju.moveSpeed = 10
 Juju.depth = -6
 
 function Juju:activate()
-	-- Data = ({amount, x, y, velocity,speed})
-	--self.amount = 20
 	self.prevx = self.x
 	self.prevy = self.y
 	self.angle = love.math.random() * 2 * math.pi
@@ -66,14 +64,6 @@ function Juju:update()
   ctx.players:each(function(player)
     if player.dead then
       local ghost = player.ghost
-      if ctx.upgrades.muju.absorb.level > 0 then
-        local distance, direction = math.vector(self.x, self.y, ghost.x, ghost.y)
-        local threshold = self.amount + 75 + 50 * ctx.upgrades.muju.absorb.level
-        local factor = math.clamp((threshold - distance) / threshold, 0, 1)
-        local speed = threshold * factor * tickRate
-        self.x = self.x + math.dx(speed, direction)
-        self.y = self.y + math.dy(speed, direction)
-      end
 
       if math.distance(player.ghostX, player.ghostY, self.x, self.y) < self.amount + ghost.radius then
         ctx.event:emit('sound.play', {sound = 'juju'})

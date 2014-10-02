@@ -56,7 +56,6 @@ function Puju:attack()
 
 	local damage = self.damage * (1 - self.damageReduction)
 	if self.target:hurt(damage, self) then self.target = false end
-	self:hurt(damage * .25 * ctx.upgrades.muju.mirror.level)
   if not self.target then self.target = ctx.shrine end
   ctx.event:emit('sound.play', {sound = 'combat', volume = .5})
 	self.attackAnimation = 1

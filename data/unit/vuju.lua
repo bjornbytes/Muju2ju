@@ -17,15 +17,10 @@ function Vuju:activate()
 	Unit.activate(self)
 
   -- Stats
-	self.attackRange = 125 + ctx.upgrades.vuju.surge.level * 25
+	self.attackRange = 125
 	self.damage = 30
-	local inc = 7
-	for i = 1, ctx.upgrades.vuju.charge.level do
-		self.damage = self.damage + inc
-		inc = inc + 3
-	end
 
-	self.curseRate = 8 - ctx.upgrades.vuju.condemn.level
+	self.curseRate = 8
 	self.curseTimer = 0
 
   -- Animation
@@ -57,34 +52,27 @@ function Vuju:update()
 end
 
 function Vuju:attack()
-	if ctx.upgrades.vuju.condemn.level > 0 and self.curseTimer == 0 then
-		self.target.damageReduction = .4 + (ctx.upgrades.vuju.condemn.level * .1)
-		self.target.damageReductionDuration = 5
-		self.target.damageAmplification = .33 * ctx.upgrades.vuju.soak.level
-		self.target.damageAmplificationDuration = 5
-		self.curseTimer = self.curseRate
-  else
-		local targets = {self.target}
-		local damage = self.damage
-		local ox, oy = self.target.x, 0
-		for i = 1, math.max(1, 2 * ctx.upgrades.vuju.arc.level) do
-			if i > #targets then break end
-			targets[1]:hurt(damage)
-			ctx.spells:add('lightning', {x = ox, y = oy, target = targets[1]})
-			ox, oy = targets[1].x, targets[1].y
-			damage = math.max(damage / 2, self.damage / 4)
-			local newTargets = ctx.target:inRange(targets[1], 25 + (25 * ctx.upgrades.vuju.arc.level), 'enemy')
-			if not newTargets then break end
-			for j = 1, #newTargets do
-				if not table.has(targets, newTargets[j]) then
-					table.insert(targets, 1, newTargets[j])
-					break
-				end
-			end
-		end
+  local targets = {self.target}
+  local damage = self.damage
+  local ox, oy = self.target.x, 0
+  local bounces = 0
+  for i = 1, math.max(1, 2 * bounces) do
+    if i > #targets then break end
+    targets[1]:hurt(damage)
+    ctx.spells:add('lightning', {x = ox, y = oy, target = targets[1]})
+    ox, oy = targets[1].x, targets[1].y
+    damage = math.max(damage / 2, self.damage / 4)
+    local newTargets = ctx.target:inRange(targets[1], 25 + (25 * bounces), 'enemy')
+    if not newTargets then break end
+    for j = 1, #newTargets do
+      if not table.has(targets, newTargets[j]) then
+        table.insert(targets, 1, newTargets[j])
+        break
+      end
+    end
+  end
 
-		self.fireTimer = self.fireRate
-	end
+  self.fireTimer = self.fireRate
 
   self.animation:set('cast')
 end
@@ -98,8 +86,7 @@ function Vuju:hurt(amount)
 end
 
 function Vuju:getCost()
-	local upgradeCount = ctx.upgrades.vuju.surge.level + ctx.upgrades.vuju.charge.level + ctx.upgrades.vuju.condemn.level + ctx.upgrades.vuju.arc.level + ctx.upgrades.vuju.soak.level
-	return self.cost + upgradeCount * 4
+  return 12
 end
 
 return Vuju

@@ -33,7 +33,7 @@ function Units:update()
         end
       end
 
-      ctx.net:emit('unitCreate', {id = self.nextId, owner = 0, kind = spawnType, x = x, y = 400})
+      --ctx.net:emit('unitCreate', {id = self.nextId, owner = 0, kind = spawnType, x = x, y = 400})
       
       self.enemyTimerMin = math.max(self.enemyTimerMin - .055 * math.clamp(self.enemyTimerMin / 5, .1, 1), 1.4)
       self.enemyTimerMax = math.max(self.enemyTimerMax - .03 * math.clamp(self.enemyTimerMax / 4, .5, 1), 2.75)

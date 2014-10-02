@@ -64,6 +64,7 @@ NetServer.messages.snapshot = {
       id = 3,
       x = 'float',
       health = 8,
+      dead = 'bool',
       animationIndex = 3,
       animationPrev = 3,
       animationTime = 'float',
@@ -91,7 +92,7 @@ NetServer.messages.snapshot = {
   order = {
     'tick', 'players', 'units',
     players = {
-      'id', 'x', 'health',
+      'id', 'x', 'health', 'dead',
       'animationIndex', 'animationPrev', 'animationTime', 'animationPrevTime', 'animationAlpha', 'animationFlip',
       'ghostX', 'ghostY', 'ghostAngle'
     },

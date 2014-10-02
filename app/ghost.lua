@@ -9,22 +9,25 @@ function Ghost:init(owner)
 	self.owner.ghostY = self.owner.y + self.owner.height
 	self.vx = 0
 	self.vy = 0
-  self.boost = -750
+  self.boost = -700
   self.boosts = {}
   self.radius = 40 * .8
+
+  self.health = self.owner.deathDuration
+  self.maxHealth = self.health
 
 	self.angle = -math.pi / 2
 	self.maxRange = 500
 
-	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
+	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
 
   ctx.event:emit('sound.play', {sound = 'spirit', volume = .12})
 end
 
 function Ghost:update()
-	local scale = math.min(self.owner.deathTimer, 2) / 2
-	if self.owner.deathDuration - self.owner.deathTimer < 1 then
-		scale = self.owner.deathDuration - self.owner.deathTimer
+	local scale = math.min(self.health, 2) / 2
+	if self.maxHealth - self.health < 1 then
+		scale = self.maxHealth - self.health
 	end
 	scale = .4 + scale * .4
 	self.radius = 40 * scale
@@ -32,9 +35,10 @@ function Ghost:update()
   local speed = 140 + (28 * ctx.upgrades.muju.zeal.level)
   self.angle = math.anglerp(self.angle, -math.pi / 2 + (math.pi / 7 * (self.vx / speed)), 12 * tickRate)
 
-  self.boost = math.lerp(self.boost, 0, 2 * tickRate)
+  self.boost = math.lerp(self.boost, 0, 3 * tickRate)
   self.boosts[tick] = self.boost
-  self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.owner.deathTimer / self.owner.deathDuration)) ^ 3)
+  self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
+  self.health = timer.rot(self.health)
   self:contain()
 end
 
@@ -42,12 +46,12 @@ function Ghost:draw(x, y)
 	local g = love.graphics
   local image = data.media.graphics.spiritMuju
 
-	local scale = math.min(self.owner.deathTimer, 2) / 2
-	if self.owner.deathDuration - self.owner.deathTimer < 1 then
-		scale = self.owner.deathDuration - self.owner.deathTimer
+	local scale = math.min(self.health, 2) / 2
+	if self.maxHealth - self.health < 1 then
+		scale = self.maxHealth - self.health
 	end
 	scale = .4 + scale * .4
-	local alphaScale = math.min(self.owner.deathTimer * 6 / self.owner.deathDuration, 1) * (ctx.id == self.owner.id and 1 or .5)
+	local alphaScale = math.min(self.health * 6 / self.maxHealth, 1) * (ctx.id == self.owner.id and 1 or .5)
 	g.setColor(255, 255, 255, 30 * alphaScale)
 	g.draw(image, x, y, self.angle, 1 * scale, 1 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 75 * alphaScale)
@@ -79,7 +83,6 @@ function Ghost:move(input)
 
   local boost = self.boosts[input.tick] or self.boost
   self.owner.ghostY = self.owner.ghostY + boost * tickRate
-
   self:contain()
 end
 
@@ -92,7 +95,7 @@ function Ghost:contain()
 
 	if math.distance(self.owner.ghostX, self.owner.ghostY, px, py) > self.maxDis then
 		local angle = math.direction(px, py, self.owner.ghostX, self.owner.ghostY)
-		self.owner.ghostX = px + math.dx(self.maxDis, angle)--math.lerp(self.x, px + math.dx(self.maxDis, angle), 8 * tickRate)
-		self.owner.ghostY = py + math.dy(self.maxDis, angle)--math.lerp(self.y, py + math.dy(self.maxDis, angle), 8 * tickRate)
+		self.owner.ghostX = px + math.dx(self.maxDis, angle)
+		self.owner.ghostY = py + math.dy(self.maxDis, angle)
 	end
 end

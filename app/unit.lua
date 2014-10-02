@@ -1,9 +1,11 @@
 Unit = class()
 
 Unit.depth = -10
+Unit.syncRate = 3
 
 function Unit:activate()
   self.history = NetHistory(self)
+  self.syncCounter = 0
 
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
 	self.target = nil

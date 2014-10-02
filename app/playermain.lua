@@ -27,8 +27,6 @@ function PlayerMain:update()
 
   self.prev.x = self.x
   self.prev.y = self.y
-  self.prev.ghostX = self.ghostX
-  self.prev.ghostY = self.ghostY
 
   local input = self:readInput()
   self:move(input)
@@ -40,7 +38,8 @@ function PlayerMain:update()
 end
 
 function PlayerMain:draw()
-  Player.draw(table.interpolate(self.prev, self, tickDelta / tickRate))
+  local lerpd = table.interpolate(self.prev, self, tickDelta / tickRate)
+  Player.draw(lerpd)
 end
 
 function PlayerMain:getHealthbar()
@@ -81,6 +80,9 @@ function PlayerMain:trace(data)
 
   self.x = data.x or self.x
   self.health = data.health or self.health
+
+  self.prev.ghostX = self.ghostX
+  self.prev.ghostY = self.ghostY
   self.ghostX = data.ghostX or self.ghostX
   self.ghostY = data.ghostY or self.ghostY
 
@@ -93,6 +95,4 @@ function PlayerMain:trace(data)
   for i = 1, #self.inputs do
     self:move(self.inputs[i])
   end
-
-  if self.dead then self.ghost:contain() end
 end

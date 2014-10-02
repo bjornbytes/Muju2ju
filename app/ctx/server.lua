@@ -51,6 +51,7 @@ function Server:update()
 
     local entry = {
       id = player.id,
+      dead = player.dead,
       animationIndex = (track and animationMap[track.animation.name]) or 0,
       animationPrev = (track and track.previous and animationMap[track.previous.animation.name]) or 0,
       animationTime = track and track.time or 0,
@@ -77,12 +78,17 @@ function Server:update()
   end)
 
   self.units:each(function(unit)
-    table.insert(snapshot.units, {
-      id = unit.id,
-      x = math.round(unit.x),
-      y = math.round(unit.y),
-      health = math.round(unit.health)
-    })
+    unit.syncCounter = unit.syncCounter + 1
+    if unit.syncCounter >= unit.syncRate then
+      table.insert(snapshot.units, {
+        id = unit.id,
+        x = math.round(unit.x),
+        y = math.round(unit.y),
+        health = math.round(unit.health)
+      })
+
+      unit.syncCounter = 0
+    end
   end)
 
   self.net:emit('snapshot', snapshot)

@@ -28,7 +28,12 @@ function NetHistory:get(t)
   end
 
   for i = #history, 1, -1 do
-    if history[i].tick <= t then return history[i] end
+    if history[i].tick <= t then
+      if history[i].tick < t and history[i + 1] then
+        return table.interpolate(history[i], history[i + 1], (t - history[i].tick) / (history[i + 1].tick - history[i].tick))
+      end
+      return history[i]
+    end
   end
 
   return history[1]

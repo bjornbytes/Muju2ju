@@ -45,10 +45,21 @@ NetClient.messages.input = {
 NetClient.messages.snapshot = {
   receive = function(self, event)
     table.each(event.data.players, function(data)
-      if data.id ~= ctx.id then
-        data.tick = event.data.tick
-        local p = ctx.players:get(data.id)
-        if p then p:trace(data) end
+      local p = ctx.players:get(data.id)
+      
+      if p then
+        if p.id ~= ctx.id then
+          data.tick = event.data.tick
+          p:trace(data)
+        end
+
+        if data.dead then
+          print('i should be dead')
+          if not p.dead then p:die() end
+        elseif p.dead then
+          print('i should not be dead')
+          p:spawn()
+        end
       end
     end)
 

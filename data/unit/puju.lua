@@ -81,11 +81,10 @@ end
 
 function Puju:draw()
 	local g = love.graphics
-	local sign = -math.sign(self.target.x - self.x)
 
   local t = tick - (interp / tickRate)
-  local prev = self.history:get(t)
-  local cur = self.history:get(t + 1)
+  local prev = self.history:get(t - 1)
+  local cur = self.history:get(t)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
 
 	g.setColor(255, 255, 255)

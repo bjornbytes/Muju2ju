@@ -51,8 +51,9 @@ function Player:update()
   -- Dead behavior
   if self.dead then
     self.ghost:update()
-    -- server only does this?
-    --self.deathTimer = timer.rot(self.deathTimer, function() ctx.net:emit(evtSpawn, {id = self.id}) end)
+    self.deathTimer = timer.rot(self.deathTimer, function()
+      self:spawn()
+    end)
     return
   end
 end
@@ -158,27 +159,6 @@ function Player:summon(code)
   -- Juice
   for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end
   ctx.event:emit('sound.play', {sound = 'summon' .. (love.math.random(1, 3))})
-end
-
-function Player:hurt(amount, source)
-	if self.invincible == 0 then
-		self.health = math.max(self.health - amount, 0)
-		if self.gamepad and self.gamepad:isVibrationSupported() then
-			local l, r = .25, .25
-			if source then
-				if source.x > self.x then r = .5
-				elseif source.x < self.x then l = .5 end
-			end
-
-			self.gamepad:setVibration(l, r, .25)
-		end
-	end
-
-	-- Death
-	if self.health <= 0 and self.deathTimer == 0 then
-    --ctx.net:emit(evtDeath, {id = self.id})
-    return true
-	end
 end
 
 function Player:atShrine()

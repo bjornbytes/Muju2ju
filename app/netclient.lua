@@ -52,12 +52,12 @@ NetClient.messages.snapshot = {
           data.tick = event.data.tick
           p:trace(data)
         end
+      end
 
-        if data.dead then
-          if not p.dead then p:die() end
-        elseif p.dead then
-          p:spawn()
-        end
+      if data.dead then
+        if not p.dead then p:die() end
+      elseif p.dead then
+        p:spawn()
       end
     end)
 

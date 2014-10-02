@@ -5,6 +5,11 @@ Ghost.first = true
 
 function Ghost:init(owner)
   self.owner = owner
+  self.active = false
+end
+
+function Ghost:activate()
+  self.active = true
 	self.owner.ghostX = self.owner.x
 	self.owner.ghostY = self.owner.y + self.owner.height
 	self.vx = 0
@@ -22,6 +27,10 @@ function Ghost:init(owner)
 	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
 
   ctx.event:emit('sound.play', {sound = 'spirit', volume = .12})
+end
+
+function Ghost:deactivate()
+  self.active = false
 end
 
 function Ghost:update()

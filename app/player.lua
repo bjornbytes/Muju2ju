@@ -16,6 +16,7 @@ function Player:init()
 	self.healthDisplay = self.health
 	self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
+  self.ghost = Ghost(self)
   self.ghostX = self.x
   self.ghostY = self.y
 	self.speed = 0
@@ -115,7 +116,7 @@ end
 function Player:die()
   self.deathTimer = self.deathDuration
   self.dead = true
-  self.ghost = Ghost(self)
+  self.ghost:activate()
   self.animation:set('death')
 end
 
@@ -123,8 +124,7 @@ function Player:spawn()
   self.invincible = 2
   self.health = self.maxHealth
   self.dead = false
-  self.ghost:despawn()
-  self.ghost = nil
+  self.ghost:deactivate()
 
   self.animation:set('resurrect')
 end

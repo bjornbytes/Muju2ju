@@ -15,6 +15,7 @@ end
 function PlayerDummy:update()
 	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
   self.deathTimer = timer.rot(self.deathTimer)
+  if self.dead then self.ghost:update() end
 end
 
 function PlayerDummy:get(t, raw)
@@ -23,8 +24,8 @@ end
 
 function PlayerDummy:draw()
   local t = tick - (interp / tickRate)
-  local prev = self:get(t - 1, true)
-  local cur = self:get(t, true)
+  local prev = self:get(t, true)
+  local cur = self:get(t + 1, true)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
   
   if prev.animationAlpha and cur.animationAlpha and cur.animationAlpha < prev.animationAlpha then
@@ -41,7 +42,7 @@ function PlayerDummy:draw()
 
   self.animation:drawRaw(lerpd.animationIndex, lerpd.animationTime, lerpd.animationPrev, lerpd.animationPrevTime, lerpd.animationAlpha, lerpd.animationFlip, lerpd.x, lerpd.y)
 
-  if self.dead then
+  if lerpd.dead then
     local angle = math.anglerp(prev.ghostAngle, cur.ghostAngle, tickDelta / tickRate)
     self.ghost:draw(lerpd.ghostX, lerpd.ghostY, angle)
   end

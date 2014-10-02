@@ -28,7 +28,7 @@ function Units:update()
 
       spawnType = 'puju'
       if self.enemyTimerMax < 8 then
-        if love.math.random() < math.min(8 - self.enemyMaxTimer, 2) * .06 then
+        if love.math.random() < math.min(8 - self.enemyTimerMax, 2) * .06 then
           spawnType = 'spuju'
         end
       end

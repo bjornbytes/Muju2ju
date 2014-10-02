@@ -65,6 +65,14 @@ function Zuju:update()
   if not ctx.id then self.animation:tick(tickRate) end
 end
 
+function Zuju:draw()
+  local t = tick - (interp / tickRate)
+  local prev = self.history:get(t - 1)
+  local cur = self.history:get(t)
+  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
+  self.animation:draw(lerpd.x, lerpd.y)
+end
+
 function Zuju:attack()
   local damage = self:damage()
 

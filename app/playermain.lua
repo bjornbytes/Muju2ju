@@ -68,8 +68,12 @@ function PlayerMain:readInput()
   t.minion = self.selectedMinion
 
   local current = self.animation:current()
-  if current and current.name == 'summon' then
-    t.x = 0
+  if current then
+    if current.name == 'summon' then
+      t.x = 0
+    elseif current.name == 'resurrect' then
+      t.summon = false
+    end
   end
 
   table.insert(self.inputs, t)

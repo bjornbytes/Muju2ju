@@ -103,14 +103,20 @@ function Player:slot(input)
     end)
 	end
 
-  --[=[if input.summon then
+  if not self.dead and not self.animation:blocking() and input.summon then
     local minion = data.unit[self.minions[input.minion]]
-    local cooldown = self.minioncds[self.selectedMinion]
+    local cooldown = self.minioncds[input.minion]
 
     if cooldown == 0 and self:spend(minion:getCost()) then
-      ctx.net:emit(evtSummon, {id = self.id, index = input.minion})
+      ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = self.x, y = ctx.map.height - ctx.map.groundHeight - minion.height})
+      self.minioncds[input.minion] = minion.cooldown
+
+      -- Juice
+      for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end
+      ctx.event:emit('sound.play', {sound = 'summon' .. (love.math.random(1, 3))})
+      self.animation:set('summon')
     end
-  end]=]
+  end
 end
 
 function Player:die()
@@ -138,27 +144,7 @@ function Player:animate()
 end
 
 function Player:spend(amount)
-  return false
-end
-
-function Player:summon(code)
-  if self.dead then return end
-
-  --ctx.net:emit(evtUnitSpawn, {id = ctx.units.nextId, owner = self.id, kind = code, x = self.x, y = self.y})
-
-  -- Set cooldown
-  self.minioncds[self.selectedMinion] = data.unit[code].cooldown * (1 - (.1 * ctx.upgrades.muju.flow.level))
-  if ctx.upgrades.muju.refresh.level == 1 and love.math.random() < .15 then
-    self.minioncds[self.selectedMinion] = 0
-  end
-
-  self.summonedMinions = self.summonedMinions + 1
-
-  --self.animation:set('summon')
-
-  -- Juice
-  for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end
-  ctx.event:emit('sound.play', {sound = 'summon' .. (love.math.random(1, 3))})
+  return self.juju >= amount
 end
 
 function Player:atShrine()

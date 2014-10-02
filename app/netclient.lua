@@ -33,9 +33,9 @@ NetClient.messages.input = {
     x = 'float',
     y = 'float',
     summon = 'bool',
-    minion = '3bits'
+    minion = 3
   },
-  delta = {{'x', 'y'}, 'minion'},
+  delta = {{'x', 'y'}},
   order = {'tick', 'x', 'y', 'summon', 'minion'},
   receive = function(self, event)
     ctx.players:get(ctx.id):trace(event.data)

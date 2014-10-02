@@ -17,21 +17,34 @@ function PlayerDummy:update()
   self.deathTimer = timer.rot(self.deathTimer)
 end
 
-function PlayerDummy:get(t)
-  return self.history:get(t)
+function PlayerDummy:get(t, raw)
+  return self.history:get(t, raw)
 end
 
 function PlayerDummy:draw()
   local t = tick - (interp / tickRate)
-  local prev = self:get(t)
-  local cur = self:get(t + 1)
+  local prev = self:get(t - 1, true)
+  local cur = self:get(t, true)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
   
-  if prev.animationAlpha and cur.animationAlpha and cur.animationAlpha < prev.animationAlpha then lerpd.animationAlpha = prev.animationAlpha end
-  if cur.animationTime < prev.animationTime then lerpd.animationTime = prev.animationTime end
+  if prev.animationAlpha and cur.animationAlpha and cur.animationAlpha < prev.animationAlpha then
+    lerpd.animationAlpha = prev.animationAlpha
+  end
+
+  if cur.animationTime < prev.animationTime then
+    lerpd.animationTime = prev.animationTime
+  end
+
+  if cur.animationPrevTime < prev.animationPrevTime then
+    lerpd.animationPrevTime = prev.animationPrevTime
+  end
+
   self.animation:drawRaw(lerpd.animationIndex, lerpd.animationTime, lerpd.animationPrev, lerpd.animationPrevTime, lerpd.animationAlpha, lerpd.animationFlip, lerpd.x, lerpd.y)
 
-  if self.dead then self.ghost:draw(lerpd.ghostX, lerpd.ghostY) end
+  if self.dead then
+    local angle = math.anglerp(prev.ghostAngle, cur.ghostAngle, tickDelta / tickRate)
+    self.ghost:draw(lerpd.ghostX, lerpd.ghostY, angle)
+  end
 end
 
 function PlayerDummy:getHealthbar()
@@ -54,7 +67,7 @@ function PlayerDummy:trace(data)
   self.animationFlip = data.animationFlip
   self.ghostX = data.ghostX or self.ghostX
   self.ghostY = data.ghostY or self.ghostY
-  if self.ghost and data.ghostAngle then self.ghost.angle = math.rad(data.ghostAngle) end
+  self.ghostAngle = data.ghostAngle and math.rad(data.ghostAngle) or self.ghostAngle
 
   self.history:add({
     tick = data.tick,
@@ -68,6 +81,7 @@ function PlayerDummy:trace(data)
     animationAlpha = data.animationAlpha,
     animationFlip = self.animationFlip,
     ghostX = self.ghostX,
-    ghostY = self.ghostY
+    ghostY = self.ghostY,
+    ghostAngle = self.ghostAngle
   })
 end

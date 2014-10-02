@@ -42,9 +42,10 @@ function Ghost:update()
   self.health = timer.rot(self.health)
 end
 
-function Ghost:draw(x, y)
+function Ghost:draw(x, y, angle)
 	local g = love.graphics
   local image = data.media.graphics.spiritMuju
+  angle = angle or self.angle
 
 	local scale = math.min(self.health, 2) / 2
 	if self.maxHealth - self.health < 1 then
@@ -53,11 +54,11 @@ function Ghost:draw(x, y)
 	scale = .4 + scale * .4
 	local alphaScale = math.min(self.health * 6 / self.maxHealth, 1) * (ctx.id == self.owner.id and 1 or .5)
 	g.setColor(255, 255, 255, 30 * alphaScale)
-	g.draw(image, x, y, self.angle, 1 * scale, 1 * scale, image:getWidth() / 2, image:getHeight() / 2)
+	g.draw(image, x, y, angle, 1 * scale, 1 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 75 * alphaScale)
-	g.draw(image, x, y, self.angle, .75 * scale, .75 * scale, image:getWidth() / 2, image:getHeight() / 2)
+	g.draw(image, x, y, angle, .75 * scale, .75 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 200 * alphaScale)
-	g.draw(image, x, y, self.angle, .6 * scale, .6 * scale, image:getWidth() / 2, image:getHeight() / 2)
+	g.draw(image, x, y, angle, .6 * scale, .6 * scale, image:getWidth() / 2, image:getHeight() / 2)
 
 	g.setColor(255, 255, 255, 10)
 	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, self.maxDis)

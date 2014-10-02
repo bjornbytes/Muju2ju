@@ -1,6 +1,6 @@
 require 'require'
 
-playerCount = 1
+playerCount = 2
 
 function love.load()
   data.load()

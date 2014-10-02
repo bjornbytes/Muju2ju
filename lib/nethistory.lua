@@ -6,7 +6,7 @@ function NetHistory:init(owner)
   self.meta = {__index = self.owner}
 end
 
-function NetHistory:get(t)
+function NetHistory:get(t, raw)
   if t == tick then return self.owner end
 
   local history = self.entries
@@ -21,7 +21,7 @@ function NetHistory:get(t)
     table.remove(history, 1)
   end
 
-  if history[#history].tick < t then
+  if not raw and history[#history].tick < t then
     local h1, h2 = history[#history - 1], history[#history]
     local factor = math.min(1 + ((t - h2.tick) / (h2.tick - h1.tick)), .25 / tickRate)
     return table.interpolate(h1, h2, factor)
@@ -29,7 +29,7 @@ function NetHistory:get(t)
 
   for i = #history, 1, -1 do
     if history[i].tick <= t then
-      if history[i].tick < t and history[i + 1] then
+      if not raw and history[i].tick < t and history[i + 1] then
         return table.interpolate(history[i], history[i + 1], (t - history[i].tick) / (history[i + 1].tick - history[i].tick))
       end
       return history[i]

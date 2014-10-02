@@ -124,9 +124,12 @@ NetServer.messages.jujuCreate = {
   data = {
     id = 12,
     x = 16,
-    y = 16
+    y = 16,
+    amount = 8,
+    vx = 'float',
+    vy = 'float'
   },
-  order = {'id', 'x', 'y'},
+  order = {'id', 'x', 'y', 'amount', 'vx', 'vy'},
   important = true
 }
 

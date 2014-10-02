@@ -1,8 +1,5 @@
-local Juju = class()
-Juju.code = 'juju'
+Juju = class()
 
-Juju.maxHealth = 100
-Juju.moveSpeed = 10
 Juju.depth = -6
 
 function Juju:activate()
@@ -10,7 +7,6 @@ function Juju:activate()
 	self.prevy = self.y
 	self.angle = love.math.random() * 2 * math.pi
 	self.depth = self.depth + love.math.random()
-	self.vy = love.math.random(-300, -100)
 	self.scale = 0
 	self.alpha = 0
 	self.dead = false
@@ -36,8 +32,10 @@ function Juju:update()
 		self.x, self.y = math.lerp(self.x, tx, 10 * tickRate), math.lerp(self.y, ty, 10 * tickRate)
 		self.scale = math.lerp(self.scale, .1, 5 * tickRate)
 		if math.distance(self.x, self.y, tx, ty) < 16 then
-			ctx.spells:remove(self)
-			self.collectedBy.juju = self.collectedBy.juju + self.amount
+			ctx.jujus:remove(self.id)
+      if ctx.tag == 'server' then
+        self.collectedBy.juju = self.collectedBy.juju + self.amount
+      end
 			ctx.hud.jujuIconScale = 1
 			for i = 1, 20 do
         ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
@@ -98,5 +96,3 @@ function Juju:draw()
 	g.setColor(255, 255, 255, 255 * self.alpha)
 	g.draw(image, self.x, self.y + 5 * wave, self.angle, self.scale, self.scale, image:getWidth() / 2, image:getHeight() / 2)
 end
-
-return Juju

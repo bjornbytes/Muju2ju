@@ -75,16 +75,7 @@ function Unit:hurt(amount)
 end
 
 function Unit:die()
-  
-  -- Juju!
-	local x = 10--love.math.random(14 + (ctx.enemies.level ^ .85) * .75, 20 + (ctx.enemies.level ^ .85))
-	if love.math.random() > .5 then
-		ctx.spells:add('juju', {amount = x, x = self.x, y = self.y, vx = love.math.random(-35, 35)})
-	else
-		ctx.spells:add('juju', {amount = x / 2, x = self.x, y = self.y, vx = love.math.random(0, 45)})
-		ctx.spells:add('juju', {amount = x / 2, x = self.x, y = self.y, vx = love.math.random(-45, 0)})
-	end
-
+  ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = self.x, y = self.y, amount = 10, vx = love.math.random(-35, 35), vy = love.math.random(-300, -100)})
   ctx.net:emit('unitDestroy', {id = self.id})
 end
 

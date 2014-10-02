@@ -52,6 +52,7 @@ function Game:update()
 	self.players:update()
 	self.shrine:update()
   self.units:update()
+  self.jujus:update()
   self.spells:update()
 	self.particles:update()
 

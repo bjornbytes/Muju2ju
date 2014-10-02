@@ -4,7 +4,7 @@ function Jujus:init()
   Manager.init(self)
 
   ctx.event:on('jujuCreate', function(data)
-    self:add({id = data.id, x = data.x, y = data.y})
+    self:add(data)
   end)
 
   ctx.event:on('jujuDestroy', function(data)

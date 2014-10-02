@@ -54,10 +54,8 @@ NetClient.messages.snapshot = {
         end
 
         if data.dead then
-          print('i should be dead')
           if not p.dead then p:die() end
         elseif p.dead then
-          print('i should not be dead')
           p:spawn()
         end
       end

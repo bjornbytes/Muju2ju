@@ -27,6 +27,8 @@ function PlayerMain:update()
 
   self.prev.x = self.x
   self.prev.y = self.y
+  self.prev.ghostX = self.ghostX
+  self.prev.ghostY = self.ghostY
 
   local input = self:readInput()
   self:move(input)
@@ -81,10 +83,9 @@ function PlayerMain:trace(data)
   self.x = data.x or self.x
   self.health = data.health or self.health
 
-  self.prev.ghostX = self.ghostX
-  self.prev.ghostY = self.ghostY
   self.ghostX = data.ghostX or self.ghostX
   self.ghostY = data.ghostY or self.ghostY
+  if self.ghost then self.ghost.health = data.ghostHealth or self.ghost.health end
 
   -- Discard inputs before the ack.
   while #self.inputs > 0 and self.inputs[1].tick < data.ack + 1 do

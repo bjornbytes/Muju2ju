@@ -48,11 +48,10 @@ NetServer.messages.input = {
     juju = 12, 
     health = 8,
     ghostX = 'float',
-    ghostY = 'float',
-    ghostHealth = 'float'
+    ghostY = 'float'
   },
-  delta = {{'x', 'health'}, {'ghostX', 'ghostY', 'ghostHealth'}},
-  order = {'ack', 'x', 'juju', 'health', 'ghostX', 'ghostY', 'ghostHealth'},
+  delta = {{'x', 'health'}, {'ghostX', 'ghostY'}},
+  order = {'ack', 'x', 'juju', 'health', 'ghostX', 'ghostY'},
   receive = function(self, event)
     ctx.players:get(self.peerToPlayer[event.peer]):trace(event.data)
   end

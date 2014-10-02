@@ -67,7 +67,6 @@ function PlayerServer:trace(data)
     if self.dead then
       msg.ghostX = self.ghostX
       msg.ghostY = self.ghostY
-      msg.ghostHealth = self.ghost.health
     else
       msg.x = self.x
       msg.health = math.round(self.health)

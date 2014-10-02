@@ -67,8 +67,8 @@ end
 
 function Zuju:draw()
   local t = tick - (interp / tickRate)
-  local prev = self.history:get(t - 1)
-  local cur = self.history:get(t)
+  local prev = self.history:get(t)
+  local cur = self.history:get(t + 1)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
   self.animation:draw(lerpd.x, lerpd.y)
 end

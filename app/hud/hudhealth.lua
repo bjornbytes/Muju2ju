@@ -38,6 +38,7 @@ function HudHealth:draw()
     stack(t, location, unit.width * 2, .5)
     local color = green
     -- if enemy.team ~= p.team then color = red end
-    bar(unit.x - 25, ctx.map.height - ctx.map.groundHeight - unit.height - 15 - 15 * t[location], unit.healthDisplay / unit.maxHealth, color, 50, 2)
+    local x, y, amt = unit:getHealthbar()
+    bar(x - 25, y - 15 * t[location], amt, color, 50, 2)
   end)
 end

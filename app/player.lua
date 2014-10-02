@@ -119,6 +119,8 @@ function Player:slot(input)
   end
 end
 
+Player.hurt = f.empty
+
 function Player:die()
   self.deathTimer = self.deathDuration
   self.dead = true

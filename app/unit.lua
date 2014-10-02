@@ -85,6 +85,13 @@ function Unit:die()
 		ctx.spells:add('juju', {amount = x / 2, x = self.x, y = self.y, vx = love.math.random(-45, 0)})
 	end
 
-  ctx.units:remove(self)
+  ctx.net:emit('unitDestroy', {id = self.id})
 end
 
+function Unit:getHealthbar()
+  local t = tick - (interp / tickRate)
+  local prev = self.history:get(t)
+  local cur = self.history:get(t + 1)
+  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
+  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
+end

@@ -45,7 +45,7 @@ function Unit:update()
 	self.damageReductionDuration = timer.rot(self.damageReductionDuration, function() self.damageReduction = 0 end)
 	self.damageAmplificationDuration = timer.rot(self.damageAmplificationDuration, function() self.damageAmplification = 0 end)
 	self.slow = math.lerp(self.slow, 0, 1 * tickRate)
-	self.x = self.x + self.knockBack * tickRate * 3000
+	if ctx.tag == 'server' then self.x = self.x + self.knockBack * tickRate * 3000 end
 	self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
 	self.knockBackDisplay = math.lerp(self.knockBackDisplay, math.abs(self.knockBack), 20 * tickRate)
 

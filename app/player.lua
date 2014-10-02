@@ -51,6 +51,7 @@ function Player:update()
 	
   -- Dead behavior
   if self.dead then
+    self.health = 0
     self.ghost:update()
     self.deathTimer = timer.rot(self.deathTimer, function()
       self:spawn()

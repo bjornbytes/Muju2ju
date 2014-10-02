@@ -16,13 +16,13 @@ Puju.buttRange = Puju.attackRange * 1.25
 function Puju:activate()
 	Unit.activate(self)
 
-  -- Stats
-	self.maxHealth = self.maxHealth + 4 * ctx.units.enemyLevel ^ 1.1
-	self.health = self.maxHealth
-  self.healthDispaly = self.health
-	self.damage = self.damage + .5 * ctx.units.enemyLevel
-	self.buttDamage = self.damage * 1.5
-	self.buttTimer = 1
+  if ctx.tag == 'server' then
+    self.maxHealth = self.maxHealth + 4 * ctx.units.enemyLevel ^ 1.1
+    self.health = self.maxHealth
+    self.damage = self.damage + .5 * ctx.units.enemyLevel
+    self.buttDamage = self.damage * 1.5
+    self.buttTimer = 1
+  end
 
   -- Animation
   self.animation = data.animation.puju(self, {scale = self.scale})
@@ -33,18 +33,18 @@ function Puju:update()
 	Unit.update(self)
 
   -- Targeting
-	self.target = ctx.target:closest(self, 'shrine', 'player', 'enemy')
-	if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
-	if ctx.tag == 'server' then self:move() end
+  if ctx.tag == 'server' then
+    self.target = ctx.target:closest(self, 'shrine', 'player', 'enemy')
+    if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
+    self:move()
 
-  -- Rots
-	self.buttTimer = timer.rot(self.buttTimer)
+    self.buttTimer = timer.rot(self.buttTimer)
+    self.animation.flipX = (self.target.x - self.x) > 0
+    self.attackAnimation = timer.rot(self.attackAnimation)
+  end
 
   -- Animation
-	self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
-  self.animation.flipX = (self.target.x - self.x) > 0
-	--self.animation:update()
-	self.attackAnimation = timer.rot(self.attackAnimation)
+	--self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
 end
 
 function Puju:attack()
@@ -87,11 +87,15 @@ function Puju:draw()
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
 
 	g.setColor(255, 255, 255)
-	self.animation:draw(lerpd.x, lerpd.y)
-	if self.damageReduction > 0 then
+	--self.animation:draw(lerpd.x, lerpd.y)
+	--[[if self.damageReduction > 0 then
 		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
 		g.draw(data.media.graphics.curseIcon, lerpd.x, lerpd.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
-	end
+	end]]
+
+  local g = love.graphics
+  g.setColor(255, 0, 0)
+  g.rectangle('fill', lerpd.x - self.width / 2, lerpd.y, self.width, self.height)
 end
 
 return Puju

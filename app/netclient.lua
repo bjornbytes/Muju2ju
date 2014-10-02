@@ -94,6 +94,10 @@ NetClient.messages.unitDestroy = {
 NetClient.messages.jujuCreate = {
   receive = function(self, event)
     ctx.event:emit('jujuCreate', event.data)
+    local juju = ctx.jujus.objects[event.data.id]
+    for i = 1, (self.server:round_trip_time() / 1000) / tickRate do
+      juju:update()
+    end
   end
 }
 

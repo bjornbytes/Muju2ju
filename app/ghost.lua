@@ -35,7 +35,7 @@ function Ghost:deactivate()
 end
 
 function Ghost:update()
-	local scale = math.min(self.health, 2) / 2
+	local scale = math.min(self.health, 3) / 2
 	if self.maxHealth - self.health < 1 then
 		scale = self.maxHealth - self.health
 	end

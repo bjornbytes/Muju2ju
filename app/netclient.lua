@@ -46,18 +46,18 @@ NetClient.messages.snapshot = {
   receive = function(self, event)
     table.each(event.data.players, function(data)
       local p = ctx.players:get(data.id)
+
+      if data.dead then
+        if not p.dead then p:die() end
+      elseif p.dead then
+        p:spawn()
+      end
       
       if p then
         if p.id ~= ctx.id then
           data.tick = event.data.tick
           p:trace(data)
         end
-      end
-
-      if data.dead then
-        if not p.dead then p:die() end
-      elseif p.dead then
-        p:spawn()
       end
     end)
 
@@ -68,11 +68,9 @@ NetClient.messages.snapshot = {
         unit.history:add({
           tick = data.tick,
           x = data.x,
-          y = data.y,
           health = data.health
         })
         unit.x = data.x
-        unit.y = data.y
         unit.health = data.health
       end
     end)

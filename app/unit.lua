@@ -26,8 +26,6 @@ function Unit:activate()
     self.scale = (data.animation[self.code] and data.animation[self.code].scale or 1) + (r / 210)
     self.y = self.y + r
     self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
-
-    self.healthDisplay = self.health
   end
 
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
@@ -49,12 +47,12 @@ function Unit:update()
     self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
 
     self.x = self.x + self.knockBack * tickRate * 3000
-    if isaminion then
+    if self.code == 'zuju' then
       self:hurt(self.maxHealth * .02 * tickRate)
       self.speed = math.max(self.speed - .5 * tickRate, 20)
     end
   else
-    -- healthDisplay, maybe animation stuff
+    --
   end
 end
 

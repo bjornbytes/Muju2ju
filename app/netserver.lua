@@ -65,12 +65,7 @@ NetServer.messages.snapshot = {
       x = 'float',
       health = 8,
       dead = 'bool',
-      animationIndex = 3,
-      animationPrev = 3,
-      animationTime = 'float',
-      animationPrevTime = 'float',
-      animationAlpha = 'float',
-      animationFlip = 'bool',
+      animationData = 'animation',
       ghostX = 'float',
       ghostY = 'float',
       ghostAngle = 9
@@ -78,25 +73,22 @@ NetServer.messages.snapshot = {
     units = {
       id = 12,
       x = 16,
-      y = 16,
-      health = 10
+      health = 10,
+      animationData = 'animation'
     }
   },
   delta = {
     players = {
       {'x', 'health'},
-      {'ghostX', 'ghostY', 'ghostAngle'}
+      {'ghostX', 'ghostY', 'ghostAngle'},
+      'animationData'
     },
-    units = {'x', 'y', 'health'}
+    units = {'animationData'}
   },
   order = {
     'tick', 'players', 'units',
-    players = {
-      'id', 'x', 'health', 'dead',
-      'animationIndex', 'animationPrev', 'animationTime', 'animationPrevTime', 'animationAlpha', 'animationFlip',
-      'ghostX', 'ghostY', 'ghostAngle'
-    },
-    units = {'id', 'x', 'y', 'health'}
+    players = {'id', 'x', 'health', 'dead', 'animationData', 'ghostX', 'ghostY', 'ghostAngle' },
+    units = {'id', 'x', 'health', 'animationData'}
   }
 }
 

@@ -48,7 +48,8 @@ function Stream:write(x, sig)
   if type(sig) == 'number' then self:writeBits(x, sig)
   elseif sig == 'string' then self:writeString(x)
   elseif sig == 'bool' then self:writeBool(x)
-  elseif sig == 'float' then self:writeFloat(x) end
+  elseif sig == 'float' then self:writeFloat(x)
+  elseif sig == 'animation' then self:writeAnimation(x) end
   
   return self
 end
@@ -92,11 +93,24 @@ function Stream:writeBits(x, n)
   until n == 0
 end
 
+function Stream:writeAnimation(animation)
+  self:writeBits(animation.index, 4)
+  self:writeBits(math.round(animation.time * 255), 8)
+  self:writeBool(animation.flipped)
+  self:writeBool(animation.mixing)
+  if animation.mixing then
+    self:writeBits(animation.mixWith, 4)
+    self:writeBits(math.round(animation.mixTime * 255), 8)
+    self:writeBits(math.round(animation.mixAlpha * 255), 8)
+  end
+end
+
 function Stream:read(kind)
   if type(kind) == 'number' then return self:readBits(kind)
   elseif kind == 'string' then return self:readString()
   elseif kind == 'bool' then return self:readBool()
-  elseif kind == 'float' then return self:readFloat() end
+  elseif kind == 'float' then return self:readFloat()
+  elseif kind == 'animation' then return self:readAnimation() end
 end
 
 function Stream:readString()
@@ -150,6 +164,21 @@ function Stream:readBits(n)
   return x
 end
 
+function Stream:readAnimation()
+  local animation = {}
+  animation.index = self:readBits(4)
+  animation.time = self:readBits(8) / 255
+  animation.flipped = self:readBool()
+  animation.mixing = self:readBool()
+  if animation.mixing then
+    animation.mixWith = self:readBits(4)
+    animation.mixTime = self:readBits(8) / 255
+    animation.mixAlpha = self:readBits(8) / 255
+  end
+
+  return animation
+end
+
 function Stream:pack(data, signature)
   if not signature.data then return end
 
@@ -186,6 +215,7 @@ function Stream:pack(data, signature)
           for i = 1, #data[key] do halp(data[key][i], format, order[key], delta and delta[key]) end
         else
           assert(data[key] ~= nil, 'stream: nil value for ' .. key)
+          assert(type(format) ~= 'number' or type(data[key]) == 'number', 'stream: expected numeric value for ' .. key)
           self:write(data[key], format)
         end
       end

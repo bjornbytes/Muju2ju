@@ -41,28 +41,12 @@ function Server:update()
   -- send a snapshot
   local snapshot = {tick = tick, players = {}, units = {}}
   self.players:each(function(player)
-    local animationMap = {
-      idle = 1,
-      walk = 2,
-      summon = 3,
-      death = 4,
-      resurrect = 5
-    }
-
-    local track = player.animation.state:getCurrent(0)
 
     local entry = {
       id = player.id,
       dead = player.dead,
-      animationIndex = (track and animationMap[track.animation.name]) or 0,
-      animationPrev = (track and track.previous and animationMap[track.previous.animation.name]) or 0,
-      animationTime = track and track.time or 0,
-      animationPrevTime = (track and track.previous and track.previous.time) or 0,
-      animationFlip = player.animation.flipX == true
+      animationData = player.animation:pack()
     }
-
-    if not track or track.mixDuration == 0 then entry.animationAlpha = 0
-    else entry.animationAlpha = math.min(track.mixTime / track.mixDuration * track.mix, 1) end
 
     if player.dead then
       entry.ghostX = player.ghostX

@@ -21,13 +21,18 @@ function Animation:init(owner, vars)
 
   self.stateData = spine.AnimationStateData.new(self.skeletonData)
 
+  local i = 0 -- 0-indexed because it gets sent over the network.
+  self.animationMap = {}
   table.each(self.animations, function(animation, name)
     animation.name = name
+    animation.index = i
     if animation.mix then
       table.each(animation.mix, function(time, to)
         self.stateData:setMix(name, to, time)
       end)
     end
+    self.animationMap[i] = animation
+    i = i + 1
   end)
 
   self.state = spine.AnimationState.new(self.stateData)
@@ -54,23 +59,28 @@ function Animation:draw(x, y)
   self.skeleton:draw()
 end
 
-function Animation:drawRaw(name, time, prev, prevTime, alpha, flip, x, y)
-  local animation, previous
-  if name then animation = self.skeletonData:findAnimation(name) end
-  if prev then previous = self.skeletonData:findAnimation(prev) end
+function Animation:drawRaw(data, x, y)
+  local animation = self.animationMap[data.index]
+  if not animation then print('draw: no animation') return end
 
-  self.skeleton.flipX = flip
-  self.skeleton.x = x + self.offsetx
-  self.skeleton.y = y + self.offsety
-  if previous then
-    previous:apply(self.skeleton, prevTime, prevTime, self.animations[prev].loop, nil)
-    if animation then
-      animation:mix(self.skeleton, time, time, self.animations[name].loop, nil, alpha)
+  local spine = self.skeletonData:findAnimation(animation.name)
+  local time = data.time * spine.duration
+
+  if not data.mixing then
+    spine:apply(self.skeleton, time, time, animation.loop, nil)
+  else
+    local previous = self.animationMap[data.mixWith]
+    if previous then
+      local prevSpine = self.skeletonData:findAnimation(previous.name)
+      local prevTime = data.mixTime * prevSpine.duration
+      prevSpine:apply(self.skeleton, prevTime, prevTime, previous.loop, nil)
+      spine:mix(self.skeleton, time, time, animation.loop, nil, data.mixAlpha)
     end
-  elseif animation then
-    animation:apply(self.skeleton, time, time, self.animations[name].loop, nil)
   end
 
+  self.skeleton.flipX = data.flipped
+  self.skeleton.x = x + self.offsetx
+  self.skeleton.y = y + self.offsety
   self.skeleton:updateWorldTransform()
   self.skeleton:draw()
 end
@@ -109,4 +119,29 @@ function Animation:tick(delta)
   self.state:update(delta * (f.exe(current.speed, self, self.owner) or 1))
   self.state:apply(self.skeleton)
   self.skeleton:updateWorldTransform()
+end
+
+function Animation:pack()
+  local result = {}
+
+  local track = self.state:getCurrent(0)
+  if not track then return end
+
+  local animation = self.animations[track.animation.name]
+  if not animation then return end
+
+  local mixing = track.previous
+  if mixing and not self.animations[mixing.animation.name] then return end
+
+  result.index = animation.index
+  result.time = math.clamp(track.time % track.animation.duration / track.animation.duration, 0, 1)
+  result.flipped = self.flipX == true
+  result.mixing = mixing
+  if mixing then
+    result.mixWith = self.animations[mixing.animation.name].index
+    result.mixTime = math.clamp(mixing.time % mixing.animation.duration / mixing.animation.duration, 0, 1)
+    result.mixAlpha = math.clamp(track.mixTime / track.mixDuration * track.mix, 0, 1)
+  end
+
+  return result
 end

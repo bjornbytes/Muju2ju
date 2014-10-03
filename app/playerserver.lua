@@ -32,7 +32,7 @@ function PlayerServer:update()
 		return 1
 	end)
 
-	self:hurt(self.maxHealth * .1 * tickRate)
+	self:hurt(self.maxHealth * .033 * tickRate)
   self.animation:tick(tickRate)
 
   Player.update(self)

@@ -78,24 +78,4 @@ function Puju:butt()
   if not self.target then self.target = ctx.shrine end
 end
 
-function Puju:draw()
-	local g = love.graphics
-
-  local t = tick - (interp / tickRate)
-  local prev = self.history:get(t)
-  local cur = self.history:get(t + 1)
-  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-
-	g.setColor(255, 255, 255)
-	--self.animation:draw(lerpd.x, lerpd.y)
-	--[[if self.damageReduction > 0 then
-		g.setColor(255, 255, 255, 200 * math.min(self.damageReductionDuration, 1))
-		g.draw(data.media.graphics.curseIcon, lerpd.x, lerpd.y - 55, self.damageReductionDuration * 4, .5, .5, self.curseIcon:getWidth() / 2, self.curseIcon:getHeight() / 2)
-	end]]
-
-  local g = love.graphics
-  g.setColor(255, 0, 0)
-  g.rectangle('fill', lerpd.x - self.width / 2, lerpd.y, self.width, self.height)
-end
-
 return Puju

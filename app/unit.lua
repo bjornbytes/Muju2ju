@@ -51,8 +51,36 @@ function Unit:update()
       self:hurt(self.maxHealth * .02 * tickRate)
       self.speed = math.max(self.speed - .5 * tickRate, 20)
     end
+
+    self.animation:tick(tickRate)
   else
     --
+  end
+end
+
+function Unit:draw()
+  local t = tick - (interp / tickRate)
+  local prev = self.history:get(t, true)
+  local cur = self.history:get(t + 1, true)
+
+  while cur.animationData.index == prev.animationData.index and cur.animationData.time < prev.animationData.time do
+    cur.animationData.time = cur.animationData.time + 1
+  end
+
+  if prev.animationData.mixing and cur.animationData.mixing then
+    while cur.animationData.mixTime < prev.animationData.mixTime do
+      cur.animationData.mixTime = cur.animationData.mixTime + 1
+    end
+  end
+
+  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
+
+  if lerpd.animationData then
+    if prev.animationData.index ~= cur.animationData.index then
+      lerpd.animationData = prev.animationData
+    end
+
+    self.animation:drawRaw(lerpd.animationData, lerpd.x, lerpd.y)
   end
 end
 

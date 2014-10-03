@@ -63,18 +63,6 @@ function Zuju:update()
   end
 end
 
-function Zuju:draw()
-  local t = tick - (interp / tickRate)
-  local prev = self.history:get(t)
-  local cur = self.history:get(t + 1)
-  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-  --self.animation:draw(lerpd.x, lerpd.y)
-
-  local g = love.graphics
-  g.setColor(0, 255, 0)
-  g.rectangle('fill', lerpd.x - self.width / 2, lerpd.y, self.width, self.height)
-end
-
 function Zuju:attack()
   local damage = self:damage()
 

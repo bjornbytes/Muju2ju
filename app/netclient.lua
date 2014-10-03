@@ -68,10 +68,12 @@ NetClient.messages.snapshot = {
         unit.history:add({
           tick = data.tick,
           x = data.x,
-          health = data.health
+          health = data.health,
+          animationData = data.animationData
         })
         unit.x = data.x
         unit.health = data.health
+        unit.animationData = data.animationData
       end
     end)
   end

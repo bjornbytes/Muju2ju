@@ -70,7 +70,8 @@ function Server:update()
         id = unit.id,
         x = math.round(unit.x),
         y = math.round(unit.y),
-        health = math.round(unit.health)
+        health = math.round(unit.health),
+        animationData = unit.animation:pack()
       })
 
       unit.syncCounter = 0

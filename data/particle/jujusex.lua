@@ -7,7 +7,9 @@ function JujuSex:activate()
 	self.gravity = 1000
 	self.size = love.math.random(2, 6)
 	self.alpha = .7
-  ctx.event:emit('view.unreigster', {object = self})
+  if ctx.effects and ctx.effects:get('bloom') then
+    ctx.event:emit('view.unreigster', {object = self})
+  end
 end
 
 function JujuSex:update()

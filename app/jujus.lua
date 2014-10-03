@@ -7,8 +7,11 @@ function Jujus:init()
     self:add(data)
   end)
 
-  ctx.event:on('jujuDestroy', function(data)
-    self:remove(self.objects[data.id])
+  ctx.event:on('jujuCollect', function(data)
+    local juju = self.objects[data.id]
+    if juju then
+      juju.owner = ctx.players:get(data.owner)
+    end
   end)
 end
 

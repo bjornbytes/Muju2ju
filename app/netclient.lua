@@ -101,9 +101,9 @@ NetClient.messages.jujuCreate = {
   end
 }
 
-NetClient.messages.jujuDestroy = {
+NetClient.messages.jujuCollect = {
   receive = function(self, event)
-    ctx.event:emit('jujuDestroy', event.data)
+    ctx.event:emit('jujuCollect', event.data)
   end
 }
 

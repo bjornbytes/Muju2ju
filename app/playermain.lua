@@ -87,8 +87,8 @@ function PlayerMain:trace(data)
   self.x = data.x or self.x
   self.health = data.health or self.health
 
-  --self.ghostX = data.ghostX or self.ghostX
-  --self.ghostY = data.ghostY or self.ghostY
+  self.ghostX = data.ghostX or self.ghostX
+  self.ghostY = data.ghostY or self.ghostY
 
   -- Discard inputs before the ack.
   while #self.inputs > 0 and self.inputs[1].tick < data.ack + 1 do
@@ -96,9 +96,7 @@ function PlayerMain:trace(data)
   end
 
   -- Server reconciliation: Apply inputs that occurred after the ack.
-  if not self.dead then
-    for i = 1, #self.inputs do
-      self:move(self.inputs[i])
-    end
+  for i = 1, #self.inputs do
+    self:move(self.inputs[i])
   end
 end

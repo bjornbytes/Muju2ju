@@ -133,11 +133,12 @@ NetServer.messages.jujuCreate = {
   important = true
 }
 
-NetServer.messages.jujuDestroy = {
+NetServer.messages.jujuCollect = {
   data = {
-    id = 12
+    id = 12,
+    owner = 3
   },
-  order = {'id'},
+  order = {'id', 'owner'},
   important = true
 }
 

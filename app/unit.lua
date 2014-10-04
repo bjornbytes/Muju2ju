@@ -28,6 +28,7 @@ function Unit:activate()
     self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
   end
 
+  self.team = self.owner and self.owner.team or 0
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.health = self.maxHealth
 

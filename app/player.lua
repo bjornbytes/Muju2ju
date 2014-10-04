@@ -14,7 +14,11 @@ function Player:init()
 
 	self.health = 100
 	self.healthDisplay = self.health
-	self.x = ctx.map.width / 2
+  if ctx.config.game.kind == 'survival' then
+    self.x = ctx.map.width / 2
+  else
+    self.x = ctx.map.width * .2 + (.6 * (self.team == 2 and 1 or 0))
+  end
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.ghost = Ghost(self)
   self.ghostX = self.x

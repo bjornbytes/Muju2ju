@@ -8,7 +8,11 @@ Shrine.maxHealth = 2500
 Shrine.depth = 5
 
 function Shrine:init()
-	self.x = ctx.map.width / 2
+  if ctx.config.game.kind == 'survival' then
+    self.x = ctx.map.width / 2
+  else
+    self.x = ctx.map.width * .2 + (.6 * (self.team == 2 and 1 or 0))
+  end
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height - 7
 	self.health = self.maxHealth
 	self.healthDisplay = self.health

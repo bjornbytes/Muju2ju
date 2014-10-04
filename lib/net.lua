@@ -20,7 +20,7 @@ function Net:init()
 end
 
 function Net:listen(port)
-  self.host = enet.host_create(port and '*:' .. port or nil, 16, 2)
+  self.host = enet.host_create(port and '*:' .. port or nil, port and #ctx.config.players or 1, 2)
   if not self.host then error('Error creating the connection') end
 end
 

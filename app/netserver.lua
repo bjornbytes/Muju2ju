@@ -3,17 +3,43 @@ NetServer = extend(Net)
 NetServer.messages = {}
 NetServer.messages.join = {
   data = {
-    id = 3
+    id = 3,
+    problem = 'string'
   },
-  order = {'id'},
+  order = {'id', 'problem'},
   important = true,
   receive = function(self, event)
-    local pid = self.peerToPlayer[event.peer]
-    self:send('join', event.peer, {id = pid})
-    ctx.players:add(pid)
-    ctx.players:get(pid).peer = event.peer
-    print('player ' .. pid .. ' connected')
-    if table.count(ctx.players.players) == playerCount then
+
+    local username = event.data.username
+
+    local user, id
+    for i = 1, #ctx.config.players do
+      if ctx.config.players[i].username == username then
+        id = i
+        user = ctx.config.players[i]
+        break
+      end
+    end
+
+    if not user then
+      self:send('join', event.peer, {id = 0, problem = 'username'})
+      event.peer:disconnect_later()
+      return
+    end
+
+    local ip = tostring(event.peer):sub(1, tostring(event.peer):find(':') - 1)
+    if user.ip ~= ip then
+      self:send('join', event.peer, {id = 0, problem = 'ip'})
+      event.peer:disconnect_later()
+      return
+    end
+
+    self.peerToPlayer[event.peer] = id
+    self:send('join', event.peer, {id = id, problem = ''})
+    ctx.players:add(id)
+    ctx.players:get(id).peer = event.peer
+    print('player ' .. id .. ' connected')
+    if table.count(ctx.players.players) == #ctx.config.players then
       self:emit('ready', {tick = tick})
       self.state = 'playing'
     end
@@ -28,8 +54,7 @@ NetServer.messages.leave = {
   order = {'id', 'reason'},
   important = true,
   receive = function(self, event)
-    print(self.peerToPlayer[event.peer] .. ' left')
-    -- self:emit etc.
+    self:disconnect(event)
   end
 }
 
@@ -159,15 +184,17 @@ function NetServer:quit()
 end
 
 function NetServer:connect(event)
-  self.peerToPlayer[event.peer] = #ctx.players.players + 1
   event.peer:timeout(0, 0, 3000)
   event.peer:ping()
 end
 
 function NetServer:disconnect(event)
   local pid = self.peerToPlayer[event.peer]
-  local reason = event.reason or 'left'
-  self:emit('leave', {id = pid, reason = reason})
+  if pid then
+    print('player ' .. pid .. ' disconnected')
+    local reason = event.reason or 'left'
+    self:emit('leave', {id = pid, reason = reason})
+  end
   self.peerToPlayer[event.peer] = nil
   event.peer:disconnect_now()
 end

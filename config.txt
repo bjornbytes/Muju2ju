@@ -1,0 +1,39 @@
+{
+  ip: <string>, // ip address server listens on (may not be needed.
+  port: <number>, // port server listens on.
+  players: [ // Array of players in the game.  Order matters.  Length 1-4.
+    {
+      username: <string>, // Username of the player.
+      ip: <string>, // ip address of client for verification purposes.
+      team: <number>, // team player is on.  0 is reserved.
+      color: <string>, // might be a cool way to add a drop of expression (optional).  e.g. 'red'
+      skin: {}, // table describing additional aesthetic customizations.  always empty.
+      deck: [ // Minions and runes for player.  Order matters.  Length 1-3.
+        {
+          code: 'zuju',
+          skin: {}, // always empty
+          runes: [
+            [
+              {}, {}, {}
+            ],
+            [
+              {}, {}
+            ],
+            [
+              {}
+            ]
+          ]
+        },
+        ...
+      ],
+    },
+    ...
+  ],
+  game: {
+    kind: <string>, // the basic game mode.  'coop' or 'vs'.
+    options: { // depends on `kind`.  options related to the game mode.
+      difficulty: <string>, // difficulty for co-op.
+      ... // tbd
+    }
+  }
+}

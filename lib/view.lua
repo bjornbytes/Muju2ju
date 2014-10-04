@@ -18,6 +18,9 @@ function View:init()
   self.frame.width = love.window.getWidth()
   self.frame.height = love.window.getHeight()
 
+  self.vx = 0
+  self.vy = 0
+
   self.draws = {}
   self.guis = {}
   self.effects = {}
@@ -44,8 +47,10 @@ function View:update()
   self.prevx = self.x
   self.prevy = self.y
   self.prevscale = self.scale
+
+  self.x = self.x + self.vx * tickRate
+  self.y = self.y + self.vy * tickRate
   
-  self:follow()
   self:contain()
 
   self.shake = math.lerp(self.shake, 0, 8 * tickRate)
@@ -116,7 +121,7 @@ function View:resize()
     self.frame.height = h
   end
 
-  self.sourceCanvas = love.graphics.newCanvas(w, h)
+   self.sourceCanvas = love.graphics.newCanvas(w, h)
   self.targetCanvas = love.graphics.newCanvas(w, h)
 end
 
@@ -167,21 +172,6 @@ end
 function View:contain()
   self.x = math.clamp(self.x, 0, self.xmax - self.width)
   self.y = math.clamp(self.y, 0, self.ymax - self.height)
-end
-
-function View:follow()
-  if not self.target then return end
-
-  local dis, dir = math.vector(self.target.x, self.target.y, self:worldMouseX(), self:worldMouseY())
-  local margin = 0.8
-  
-  dis = dis / 2
- 
-  self.x = math.lerp(self.x, self.target.x + math.dx(dis, dir) - (self.width / 2), math.min(25 * tickRate, 1))
-  self.y = math.lerp(self.y, self.target.y + math.dy(dis, dir) - (self.height / 2), math.min(25 * tickRate, 1))
-  
-  self.x = math.clamp(self.x, self.target.x - (self.width * margin), self.target.x + (self.width * margin) - self.width)
-  self.y = math.clamp(self.y, self.target.y - (self.height * margin), self.target.y + (self.height * margin) - self.height)
 end
 
 function View:worldPoint(x, y)

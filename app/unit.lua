@@ -63,6 +63,8 @@ function Unit:draw()
   local prev = self.history:get(t, true)
   local cur = self.history:get(t + 1, true)
 
+  if not cur.animationData or not prev.animationData then return end
+
   while cur.animationData.index == prev.animationData.index and cur.animationData.time < prev.animationData.time do
     cur.animationData.time = cur.animationData.time + 1
   end
@@ -82,6 +84,10 @@ function Unit:draw()
 
     self.animation:drawRaw(lerpd.animationData, lerpd.x, lerpd.y)
   end
+end
+
+function Unit:selectTarget()
+  self.target = ctx.target:closest(self, 'shrine', 'player', 'enemy')
 end
 
 function Unit:inRange()

@@ -83,6 +83,7 @@ function Stream:writeBits(x, n)
     self.byteLen = self.byteLen + numWrite
     
     if self.byteLen == 8 then
+      if self.byte < 0 or self.byte > 255 then print(self.byte) end
       self.str = self.str .. string.char(self.byte)
       self.byte = nil
       self.byteLen = nil
@@ -215,7 +216,6 @@ function Stream:pack(data, signature)
           for i = 1, #data[key] do halp(data[key][i], format, order[key], delta and delta[key]) end
         else
           assert(data[key] ~= nil, 'stream: nil value for ' .. key)
-          assert(type(format) ~= 'number' or type(data[key]) == 'number', 'stream: expected numeric value for ' .. key)
           self:write(data[key], format)
         end
       end

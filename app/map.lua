@@ -1,6 +1,6 @@
 Map = class()
 
-Map.width, Map.height = 800, 600
+Map.width, Map.height = 2400, 600
 
 local function drawBackground(self)
   local g = love.graphics
@@ -9,7 +9,9 @@ local function drawBackground(self)
   if not p then return end
 
   g.setColor(255, 255, 255)
-  g.draw(data.media.graphics.bg)
+  for i = 0, ctx.map.width, data.media.graphics.bg:getWidth() do
+    g.draw(data.media.graphics.bg, i, 0)
+  end
 
   local alpha = ctx.map.spiritAlpha * 255
   alpha = math.lerp(alpha, (1 - (p.healthDisplay / p.maxHealth)) * 255, .5)
@@ -46,6 +48,12 @@ function Map:init()
     depth = -50,
     draw = drawForeground
   }
+
+  if ctx.view then
+    ctx.view.xmax = self.width
+    ctx.view.ymax = self.height
+    ctx.view.x = self.width / 2 - ctx.view.width / 2
+  end
 
   ctx.event:emit('view.register', {object = self.background})
   ctx.event:emit('view.register', {object = self.foreground})

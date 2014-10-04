@@ -1,6 +1,35 @@
 require 'require'
 
-playerCount = 2
+config = {
+  ip = '127.0.0.1',
+  port = 6061,
+  players = {
+    {
+      username = 'trey',
+      ip = '127.0.0.1',
+      team = 1,
+      color = 'purple',
+      skin = {},
+      deck = {
+        {
+          code = 'vuju',
+          skin = {},
+          runes = {
+            {nil, 'general.fortify.percent', 'general.movespeed.flat'},
+            {nil, nil},
+            {nil}
+          }
+        }
+      }
+    }
+  },
+  game = {
+    kind = 'survival',
+    options = {
+      difficulty = 'hard'
+    }
+  }
+}
 
 function love.load()
   data.load()

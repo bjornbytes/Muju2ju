@@ -8,12 +8,16 @@ end
 
 local axisMap = {
   x = {
-    keyboard = {{'left', 'a'}, {'right', 'd'}},
+    keyboard = {'a', 'd'},
     gamepad = 'leftx'
   },
   y = {
     keyboard = {{'up', 'w'}, {'down ', 's'}},
     gamepad = 'lefty'
+  },
+  vx = {
+    keyboard = {'left', 'right'},
+    gamepad = 'rightx'
   }
 }
 

@@ -2,8 +2,11 @@ Target = class()
 
 local getEntries = {
   shrine = function(source, t)
-    if source == ctx.shrine then return end
-    table.insert(t, {ctx.shrine, math.abs(ctx.shrine.x - source.x)})
+    ctx.shrines:each(function(shrine)
+      if source ~= shrine and shrine.team ~= source.team then
+        table.insert(t, {shrine, math.abs(shrine.x - source.x)})
+      end
+    end)
   end,
   player = function(source, t)
     ctx.players:each(function(player)

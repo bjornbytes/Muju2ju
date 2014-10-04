@@ -28,6 +28,7 @@ end
 
 function Manager:remove(object)
   if type(object) == 'number' then object = self.objects[object] end
+  if not object then return end
   f.exe(object.deactivate, object)
   self.objects[object.id] = nil
 end

@@ -151,6 +151,8 @@ function Player:spend(amount)
 end
 
 function Player:atShrine()
-  return math.abs(self.x - ctx.shrine.x) < self.width 
+  local shrine = ctx.shrines:filter(function(shrine) return shrine.team == self.team end)[1]
+  if not shrine then return false end
+  return math.abs(self.x - shrine.x) < self.width 
 end
 

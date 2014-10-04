@@ -3,6 +3,8 @@ Game = class()
 Game.tag = 'client'
 
 function Game:load()
+  self.config = config
+
 	self.paused = false
 	self.ded = false
   self.timer = 0
@@ -16,7 +18,7 @@ function Game:load()
 
   self.event:on('ready', function()
     self.input = Input()
-    self.shrine = Shrine()
+    self.shrines = Manager()
     self.units = Units()
     self.jujus = Jujus()
     self.spells = Manager('spell')
@@ -26,13 +28,38 @@ function Game:load()
     self.target = Target()
     self.sound = Sound()
     backgroundSound = self.sound:loop({sound = 'background'})
+
+    if ctx.config.game.kind == 'survival' then
+      ctx.shrines:add(Shrine, {x = ctx.map.width / 2, team = 1})
+    elseif ctx.config.game.kind == 'vs' then
+      --
+    end
   end)
 
   self.event:on('particles.add', function(data)
     self.particles:add(data.kind, data)
   end)
 
+  self.event:on('shrine.dead', function(data)
+    if backgroundSound then backgroundSound:stop() end
+
+    local p = ctx.players:get(self.id)
+    if not p then return end
+
+    local lost = self.config.game.kind == 'survival' or data.shrine.team == p.team
+
+    if lost then
+      ctx.event:emit('sound.play', {sound = 'youlose'})
+    else
+      -- I am winrar.
+    end
+  end)
+
 	love.keyboard.setKeyRepeat(false)
+end
+
+function Game:quit()
+  self.net:quit()
 end
 
 function Game:update()
@@ -50,7 +77,7 @@ function Game:update()
 
   self.timer = self.timer + 1
 	self.players:update()
-	self.shrine:update()
+  self.shrines:update()
   self.units:update()
   self.jujus:update()
   self.spells:update()

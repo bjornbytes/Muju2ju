@@ -2,8 +2,16 @@ NetClient = extend(Net)
 
 NetClient.messages = {}
 NetClient.messages.join = {
+  data = {
+    username = 'string'
+  },
+  order = {'username'},
   important = true,
   receive = function(self, event)
+    if event.data.id == 0 then
+      error('Unable to join game because: ' .. event.data.problem)
+    end
+
     ctx.id = event.data.id
     ctx.players:add(ctx.id)
   end
@@ -17,7 +25,7 @@ NetClient.messages.ready = {
   receive = function(self, event)
     ctx.tick = event.data.tick
     self.state = 'playing'
-    for i = 1, playerCount do
+    for i = 1, #ctx.config.players do
       if i ~= ctx.id then
         ctx.players:add(i)
       end
@@ -47,13 +55,13 @@ NetClient.messages.snapshot = {
     table.each(event.data.players, function(data)
       local p = ctx.players:get(data.id)
 
-      if data.dead then
-        if not p.dead then p:die() end
-      elseif p.dead then
-        p:spawn()
-      end
-      
       if p then
+        if data.dead then
+          if not p.dead then p:die() end
+        elseif p.dead then
+          p:spawn()
+        end
+      
         if p.id ~= ctx.id then
           data.tick = event.data.tick
           p:trace(data)
@@ -128,7 +136,7 @@ end
 function NetClient:connect(event)
   self.state = 'waiting'
   self.server = event.peer
-  self:send('join')
+  self:send('join', {username = 'trey'})
   event.peer:ping()
 end
 

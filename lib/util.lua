@@ -9,3 +9,12 @@ timer.rot = function(v, fn)
 	end
 	return v
 end
+
+isa = function(instance, class)
+  while instance and type(instance) == 'table' do
+    instance = getmetatable(instance).__index
+    if instance == class then return true end
+  end
+
+  return false
+end

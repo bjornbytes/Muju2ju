@@ -89,7 +89,7 @@ function HudTutorial:draw()
       g.draw(self.images[3.5], 100, 90, 0, .45, .45)
     elseif self.index == 4 then
       ox, oy = 440, 400
-      x, y = ctx.shrine.x, ctx.shrine.y - 85
+      x, y = 0, 0 --ctx.shrine.x, ctx.shrine.y - 85
       x, y = ctx.view:screenPoint(x, y)
       scale = .4
     elseif self.index == 5 then

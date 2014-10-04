@@ -3,6 +3,8 @@ Server = class()
 Server.tag = 'server'
 
 function Server:load()
+  self.config = config
+
 	self.paused = false
 	self.ded = false
   self.timer = 0
@@ -12,13 +14,19 @@ function Server:load()
   --self.view = View()
   self.map = Map()
 	self.players = Players()
-	self.shrine = Shrine()
+  self.shrines = Manager()
   self.units = Units()
   self.jujus = Jujus()
   self.spells = Manager('spell')
 	self.upgrades = Upgrades()
 	self.target = Target()
   --self.hud = Hud()
+
+  if ctx.config.game.kind == 'survival' then
+    ctx.shrines:add(Shrine, {x = ctx.map.width / 2, team = 1})
+  elseif ctx.config.game.kind == 'vs' then
+    --
+  end
 end
 
 function Server:update()
@@ -32,7 +40,7 @@ function Server:update()
 
   self.timer = self.timer + 1
 	self.players:update()
-	self.shrine:update()
+	self.shrines:update()
   self.units:update()
   self.jujus:update()
   self.spells:update()

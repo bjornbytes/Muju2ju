@@ -12,6 +12,7 @@ function Players:add(id, vars)
   local kind = ctx.tag == 'server' and PlayerServer or (id == ctx.id and PlayerMain or PlayerDummy)
   local player = kind()
   player.id = id
+  player.team = ctx.config.players[id].team
   table.merge(vars, player, true)
   f.exe(player.activate, player)
   self.players[id] = player

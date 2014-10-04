@@ -75,6 +75,9 @@ function PlayerMain:readInput()
       t.summon = false
     end
   end
+ 
+  local vx = ctx.input:getAxis('vx')
+  ctx.view.vx = 1000 * vx
 
   table.insert(self.inputs, t)
 

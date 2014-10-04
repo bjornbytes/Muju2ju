@@ -30,7 +30,9 @@ function HudHealth:draw()
     bar(x - 40, y - 15, amt, purple, 80, 3)
   end)
 
-  bar(ctx.shrine.x - 60, ctx.shrine.y - 65, ctx.shrine.healthDisplay / ctx.shrine.maxHealth, green, 120, 4)
+  ctx.shrines:each(function(shrine)
+    bar(shrine.x - 60, shrine.y - 65, shrine.healthDisplay / shrine.maxHealth, green, 120, 4)
+  end)
 
   local t = {}
   ctx.units:each(function(unit)

@@ -43,9 +43,13 @@ function PlayerServer:getHealthbar()
 end
 
 function PlayerServer:trace(data)
-  if data.tick <= self.ack then return end
+  if data.tick <= self.ack or data.tick > tick + (.5 / tickRate) then return end
 
   self.ack = data.tick
+
+  data.x = math.clamp(data.x, -1, 1)
+  data.y = math.clamp(data.y, -1, 1)
+  data.minion = math.clamp(data.minion, 1, #self.minions)
 
   -- if not self.dead then?
   self:move(data)

@@ -57,9 +57,6 @@ function Zuju:update()
     if current and current.name == 'walk' and self.target then
       self.animation.flipX = (self.target.x - self.x) < 0
     end
-
-    --self.animation.offsety = self.height + 8 - math.abs(self.knockBackDisplay * 200)
-    self.animation:tick(tickRate)
   end
 end
 

@@ -34,12 +34,14 @@ function Puju:update()
 
   -- Targeting
   if ctx.tag == 'server' then
-    self.target = ctx.target:closest(self, 'shrine', 'player', 'enemy')
+    self:selectTarget()
     if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
     self:move()
 
     self.buttTimer = timer.rot(self.buttTimer)
-    self.animation.flipX = (self.target.x - self.x) > 0
+    if self.target then
+      self.animation.flipX = (self.target.x - self.x) > 0
+    end
     self.attackAnimation = timer.rot(self.attackAnimation)
   end
 
@@ -50,13 +52,14 @@ end
 function Puju:attack()
 	self.fireTimer = self.fireRate
 
-	if self.buttTimer == 0 and self.target.code ~= 'player' and self.target ~= ctx.shrine and self.rng:random() < .6 then
+  local buttable = isa(self.target, Unit)
+	if self.buttTimer == 0 and buttable and self.rng:random() < .6 then
 		return self:butt()
 	end
 
 	local damage = self.damage * (1 - self.damageReduction)
 	if self.target:hurt(damage, self) then self.target = false end
-  if not self.target then self.target = ctx.shrine end
+  if not self.target then self:selectTarget() end
   ctx.event:emit('sound.play', {sound = 'combat', volume = .5})
 	self.attackAnimation = 1
 end
@@ -75,7 +78,7 @@ function Puju:butt()
 	self.buttTimer = self.buttRate
 	self.animation:set('headbutt')
   ctx.event:emit('sound.play', {sound = 'combat', with = function(sound) sound:setVolume(.5) end})
-  if not self.target then self.target = ctx.shrine end
+  if not self.target then self:selectTarget() end
 end
 
 return Puju

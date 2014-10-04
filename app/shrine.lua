@@ -47,8 +47,7 @@ end
 function Shrine:hurt(value)
 	self.health = self.health - value
 	if self.health < 0 then
-    ctx.event:emit('sound.play', {sound = 'youlose'})
-		if backgroundSound then backgroundSound:stop() end
+    ctx.event:emit('shrine.dead', {shrine = self})
 		return true
 	end
 end

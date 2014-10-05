@@ -9,7 +9,7 @@ Spuju.fireRate = .3
 Spuju.reloadRate = 2.1
 Spuju.attackRange = Spuju.width * 2
 Spuju.speed = 18
-Spuju.image = love.graphics.newImage('media/skeletons/spuju/spuju.png')
+Spuju.image = love.graphics and love.graphics.newImage('media/skeletons/spuju/spuju.png')
 
 function Spuju:activate()
 	Unit.activate(self)

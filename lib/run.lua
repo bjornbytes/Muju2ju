@@ -20,14 +20,19 @@ function love.run()
 
 			love.event.pump()
 			for e, a, b, c, d in love.event.poll() do
-				if e == 'quit' then f.exe(love.quit) love.audio.stop() return
-				else love.handlers[e](a, b, c, d) end
+				if e == 'quit' then
+          f.exe(love.quit)
+          if love.audio then love.audio.stop() end
+          return
+				else
+          love.handlers[e](a, b, c, d)
+        end
 			end
 
 			love.update()
 		end
 
-    if love.window.isCreated() then
+    if love.window and love.window.isCreated() then
       love.graphics.clear()
       love.draw()
       love.graphics.present()

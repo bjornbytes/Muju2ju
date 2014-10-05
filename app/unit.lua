@@ -9,6 +9,11 @@ function Unit:activate()
   if ctx.tag == 'server' then
     self.rng = love.math.newRandomGenerator(self.id)
 
+    -- Time-based scaling
+    local minutes = ctx.timer * tickRate / 60
+    self.maxHealth = self.maxHealth + self.maxHealthPerMinute * minutes
+    self.damage = self.damage + self.damagePerMinute * minutes
+
     -- Defensive Stats
     self.armor = 0
     self.flatArmor = 0

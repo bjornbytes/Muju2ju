@@ -3,12 +3,16 @@ Puju.code = 'puju'
 
 Puju.width = 64
 Puju.height = 24
-Puju.speed = 40
-Puju.damage = 18
-Puju.fireRate = 1.1
-Puju.maxHealth = 65
-Puju.attackRange = Puju.width / 2
 
+Puju.maxHealth = 75
+Puju.maxHealthPerMinute = 8
+Puju.damage = 11
+Puju.damagePerMinute = 10
+Puju.attackRange = 32
+Puju.attackSpeed = 1.12
+Puju.speed = 65
+
+-- Spells?
 Puju.buttRate = 4
 Puju.buttDamage = 27
 Puju.buttRange = Puju.attackRange * 1.25
@@ -35,7 +39,7 @@ function Puju:update()
   -- Targeting
   if ctx.tag == 'server' then
     self:selectTarget()
-    if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
+    if self.target and self.attackTimer == 0 and self:inRange() then self:attack() end
     self:move()
 
     self.buttTimer = timer.rot(self.buttTimer)
@@ -50,14 +54,14 @@ function Puju:update()
 end
 
 function Puju:attack()
-	self.fireTimer = self.fireRate
+	self.attackTimer = self.attackSpeed
 
   local buttable = isa(self.target, Unit)
 	if self.buttTimer == 0 and buttable and self.rng:random() < .6 then
 		return self:butt()
 	end
 
-	local damage = self.damage * (1 - self.damageReduction)
+	local damage = self.damage
 	if self.target:hurt(damage, self) then self.target = false end
   if not self.target then self:selectTarget() end
   ctx.event:emit('sound.play', {sound = 'combat', volume = .5})
@@ -66,7 +70,7 @@ end
 
 function Puju:butt()
 	local targets = ctx.target:inRange(self, self.buttRange * 2, 'enemy')
-	local damage = self.buttDamage * (1 - self.damageReduction)
+	local damage = self.buttDamage
 	if #targets >= 2 then damage = damage / 2 end
 	table.each(targets, function(target)
 		if math.sign(self.target.x - self.x) == math.sign(target.x - self.x) then

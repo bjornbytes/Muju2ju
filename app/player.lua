@@ -29,7 +29,7 @@ function Player:init()
   self.deathTimer = 0
   self.deathDuration = 7
 	self.dead = false
-	self.minions = {'zuju'}
+	self.minions = {'vuju'}
 	self.minioncds = {0}
 	self.selectedMinion = 1
 	self.invincible = 0
@@ -112,7 +112,7 @@ function Player:slot(input)
     local minion = data.unit[self.minions[input.minion]]
     local cooldown = self.minioncds[input.minion]
 
-    if cooldown == 0 and self:spend(minion:getCost()) then
+    if cooldown == 0 and self:spend(minion.cost) then
       ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = self.x, y = ctx.map.height - ctx.map.groundHeight - minion.height})
       self.minioncds[input.minion] = minion.cooldown
 

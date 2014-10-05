@@ -10,13 +10,13 @@ local getEntries = {
   end,
   player = function(source, t)
     ctx.players:each(function(player)
-      if player.dead or player.invincible > 0 or source == player then return end
+      if player.dead or player.invincible > 0 or source == player or source.team == player.team then return end
       table.insert(t, {player, math.abs(player.x - source.x)})
     end)
   end,
   enemy = function(source, t)
     ctx.units:each(function(unit)
-      if source ~= unit and not unit.dead and unit.owner ~= source.owner then
+      if source ~= unit and not unit.dead and unit.owner ~= source.owner and unit.team ~= source.team then
         table.insert(t, {unit, math.abs(unit.x - source.x)})
       end
     end)

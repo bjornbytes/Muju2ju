@@ -50,7 +50,7 @@ function Lightning:update()
 	end)
 	if not self.sparked and self.health < self.maxHealth / 2 then
 		for i = 1, 12 do
-			ctx.particles:add('spark', {x = self.path[#self.path - 1], y = self.path[#self.path]})
+      ctx.event:emit('particles.add', {kind = 'spark', x = self.path[#self.path - 1], y = self.path[#self.path]})
 		end
 		self.sparked = true
 	end

@@ -72,18 +72,13 @@ function Server:update()
   end)
 
   self.units:each(function(unit)
-    unit.syncCounter = unit.syncCounter + 1
-    if unit.syncCounter >= unit.syncRate then
-      table.insert(snapshot.units, {
-        id = unit.id,
-        x = math.round(unit.x),
-        y = math.round(unit.y),
-        health = math.round(unit.health),
-        animationData = unit.animation:pack()
-      })
-
-      unit.syncCounter = 0
-    end
+    table.insert(snapshot.units, {
+      id = unit.id,
+      x = math.round(unit.x),
+      y = math.round(unit.y),
+      health = math.round(unit.health),
+      animationData = unit.animation and unit.animation:pack() or nil
+    })
   end)
 
   self.net:emit('snapshot', snapshot)

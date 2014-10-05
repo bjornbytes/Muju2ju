@@ -34,10 +34,10 @@ function SpiritBomb:update()
   self.vy = self.vy + self.gravity * tickRate
   self.angle = self.angle + math.sign(self.vx) * tickRate
   if self.y + data.media.graphics.spujuSkull:getWidth() >= ctx.map.height - ctx.map.groundHeight + love.math.random(-5, 5) then
-    table.each(ctx.target:inRange(self, self.radius, 'minion', 'shrine', 'player'), function(obj)
-      obj:hurt(self.damage)
+    table.each(ctx.target:inRange(self, self.radius, 'enemy', 'shrine', 'player'), function(obj)
+      obj:hurt(self.damage, self.owner)
     end)
-    ctx.particles:add('spiritbomb', {x = self.x, y = self.y, radius = self.radius})
+    ctx.event:emit('particles.add', {kind = 'spiritbomb', x = self.x, y = self.y, radius = self.radius})
     ctx.spells:remove(self)
   end
 end

@@ -4,14 +4,13 @@ Zuju.code = 'zuju'
 Zuju.width = 48
 Zuju.height = 48
 
-Zuju.cost = 12
-Zuju.cooldown = 3
-
-Zuju.speed = 45
-Zuju.damage = 20
-Zuju.fireRate = 1
-Zuju.attackRange = Zuju.width / 2
 Zuju.maxHealth = 80
+Zuju.maxHealthPerMinute = 10
+Zuju.damage = 9
+Zuju.damagePerMinute = 10
+Zuju.attackRange = 24
+Zuju.attackSpeed = 1
+Zuju.speed = 50
 
 function Zuju:activate()
 	Unit.activate(self)
@@ -41,7 +40,7 @@ function Zuju:update()
 
     -- Target Acquired
     self.target = ctx.target:closest(self, 'enemy') or ctx.shrine
-    if self.target ~= ctx.shrine and self.fireTimer == 0 and self:inRange() then self:attack() end
+    if self.target ~= ctx.shrine and self.attackTimer == 0 and self:inRange() then self:attack() end
 
     -- Movement
     self:move()
@@ -61,11 +60,11 @@ function Zuju:update()
 end
 
 function Zuju:attack()
-  local damage = self:damage()
+  local damage = self.damage
 
   -- The Works
-  self.target:hurt(damage)
-  self.fireTimer = self.fireRate
+  self.target:hurt(damage, self)
+  self.attackTimer = self.attackSpeed
 
   -- Sound
   ctx.event:emit('sound.play', {sound = 'combat', volume = .5, with = function(sound)
@@ -73,19 +72,6 @@ function Zuju:attack()
     if love.math.random() > .5 then pitch = 1 / pitch end
     sound:setPitch(pitch)
   end})
-end
-
-function Zuju:die()
-  Unit.die(self)
-end
-
-function Zuju:damage()
-	local damage = 20
-	return damage
-end
-
-function Zuju:getCost()
-  return 12
 end
 
 return Zuju

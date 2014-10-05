@@ -15,7 +15,7 @@ config = {
           code = 'vuju',
           skin = {},
           runes = {
-            {nil, 'general.fortify.percent', 'general.movespeed.flat'},
+            {1, 2, nil},
             {nil, nil},
             {nil}
           }

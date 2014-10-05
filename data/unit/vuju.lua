@@ -1,24 +1,19 @@
 local Vuju = extend(Unit)
 Vuju.code = 'vuju'
 
-Vuju.width = 48
+Vuju.width = 32
 Vuju.height = 48
 
-Vuju.cost = 20
-Vuju.cooldown = 6
-Vuju.maxHealth = 70
-Vuju.speed = 0
-
-Vuju.damage = 17
-Vuju.fireRate = 1.7
+Vuju.maxHealth = 65
+Vuju.maxHealthPerMinute = 7
+Vuju.damage = 5
+Vuju.damagePerMinute = 6
 Vuju.attackRange = 125
+Vuju.attackSpeed = 1.7
+Vuju.speed = 25
 
 function Vuju:activate()
 	Unit.activate(self)
-
-  -- Stats
-	self.attackRange = 125
-	self.damage = 30
 
 	self.curseRate = 8
 	self.curseTimer = 0
@@ -44,7 +39,7 @@ function Vuju:update()
 
   -- Target Acquired
 	self.target = ctx.target:closest(self, 'enemy')
-	if self.target and self.fireTimer == 0 and self:inRange() then self:attack() end
+	if self.target and self.attackTimer == 0 and self:inRange() then self:attack() end
 
   -- Animations
 	self.animation.offsety = self.height + 8
@@ -58,7 +53,7 @@ function Vuju:attack()
   local bounces = 0
   for i = 1, math.max(1, 2 * bounces) do
     if i > #targets then break end
-    targets[1]:hurt(damage)
+    targets[1]:hurt(damage, self)
     ctx.spells:add('lightning', {x = ox, y = oy, target = targets[1]})
     ox, oy = targets[1].x, targets[1].y
     damage = math.max(damage / 2, self.damage / 4)
@@ -72,21 +67,9 @@ function Vuju:attack()
     end
   end
 
-  self.fireTimer = self.fireRate
+  self.attackTimer = self.attackSpeed
 
   self.animation:set('cast')
-end
-
-function Vuju:hurt(amount)
-	self.health = math.max(self.health - amount, 0)
-	if self.health <= 0 then
-    self.animation:set('death')
-		return true
-	end
-end
-
-function Vuju:getCost()
-  return 12
 end
 
 return Vuju

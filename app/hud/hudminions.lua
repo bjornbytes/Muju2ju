@@ -40,7 +40,7 @@ function HudMinions:draw()
     local w, h = bg:getDimensions()
     local scale = .75 + (.15 * self.factor[i]) + (.1 * self.extra[i])
     local xx = 48 - 10 * (1 - self.factor[i])
-    local f, cost = font, tostring(data.unit[p.minions[i]]:getCost())
+    local f, cost = font, tostring(data.unit[p.minions[i]].cost)
     local tx, ty = xx - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35
 

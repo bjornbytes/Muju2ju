@@ -2,21 +2,34 @@ Unit = class()
 
 Unit.depth = -10
 
+Unit.cost = 5
+Unit.cooldown = 5
+
 function Unit:activate()
   if ctx.tag == 'server' then
-    self.syncCounter = 0
-    self.syncRate = 1
-
     self.rng = love.math.newRandomGenerator(self.id)
 
-    self.target = nil
-    self.fireTimer = 0
-    self.damageReduction = 0
-    self.damageReductionDuration = 0
-    self.damageAmplification = 0
-    self.damageAmplificationDuration = 0
-    self.slow = 0
+    -- Defensive Stats
+    self.armor = 0
+    self.flatArmor = 0
+    self.tenacity = 0
+    self.healAmplification = 0
+
+    -- Attack Stats
+    self.weaken = 0
+    self.lifesteal = 0
+    self.critChance = 0
+    self.cleave = 0
+    self.shred = 0
+
+    -- Utility Stats
+    self.cooldownReduction = 0
+
+    -- Debuffs
     self.knockBack = 0
+
+    self.target = nil
+    self.attackTimer = 0
     self.dead = false
   else
     self.history = NetHistory(self)
@@ -41,17 +54,13 @@ end
 
 function Unit:update()
   if ctx.tag == 'server' then
-    self.fireTimer = self.fireTimer - math.min(self.fireTimer, tickRate)
-    self.damageReductionDuration = timer.rot(self.damageReductionDuration, function() self.damageReduction = 0 end)
-    self.damageAmplificationDuration = timer.rot(self.damageAmplificationDuration, function() self.damageAmplification = 0 end)
-    self.slow = math.lerp(self.slow, 0, 1 * tickRate)
+    self.attackTimer = self.attackTimer - math.min(self.attackTimer, tickRate)
     self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
 
     self.x = self.x + self.knockBack * tickRate * 3000
-    if self.code == 'zuju' then
-      self:hurt(self.maxHealth * .02 * tickRate)
-      self.speed = math.max(self.speed - .5 * tickRate, 20)
-    end
+
+    self:hurt(self.maxHealth * .02 * tickRate)
+    self.speed = math.max(self.speed - .5 * tickRate, 20)
 
     self.animation:tick(tickRate)
   else
@@ -98,15 +107,33 @@ end
 
 function Unit:move()
   if not self.target or self:inRange() then return end
-  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate * (1 - self.slow)
+  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate
 end
 
-function Unit:hurt(amount)
-  self.health = self.health - (amount + (amount * self.damageAmplification))
+function Unit:hurt(amount, source)
+  if source then
+    amount = amount * (1 - source.weaken)
+    if love.math.random() < source.critChance then
+      amount = amount * 2
+    end
+    amount = amount + (source.shred * self.maxHealth)
+  end
+  amount = amount - self.flatArmor
+  amount = amount * (1 - self.armor)
+  self.health = self.health - amount
+  if source and source.lifesteal > 0 then
+    source:heal(amount * source.lifesteal)
+  end
+
   if self.health <= 0 then
     self:die()
     return true
   end
+end
+
+function Unit:heal(amount, source)
+  amount = amount * (1 + self.healAmplification)
+  self.health = math.min(self.health + amount, self.maxHealth)
 end
 
 function Unit:die()
@@ -121,4 +148,26 @@ function Unit:getHealthbar()
   local cur = self.history:get(t + 1)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
   return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
+end
+
+function Unit:applyUpgrades()
+  local base = data.unit[self.code]
+  local runes = table.filter(ctx.config.players[self.owner.id].deck, function(t) return t.code == self.code end)[1].runes
+  
+  table.each(runes, function(tier)
+    table.each(tier, function(rune)
+      table.each(rune.values, function(levels, stat)
+        local level = 0 --??? ctx.upgrades.something
+        if level > 0 then
+          if type(levels[level]) == 'number' then
+            self[stat] = self[stat] + levels[level]
+          elseif type(levels[level]) == 'string' and levels[level]:match('%%') then
+            local original = base[stat]
+            local percent = tonumber(levels[level]:match('%-?%d')) / 100
+            self[stat] = self[stat] + original * percent
+          end
+        end
+      end)
+    end)
+  end)
 end

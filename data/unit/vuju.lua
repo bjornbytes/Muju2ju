@@ -28,22 +28,22 @@ function Vuju:update()
 		self.dead = self.animationState == 'death'
 		self.x = self.x + self.knockBack * tickRate * 3000
 		self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
-		self.knockBackDisplay = math.lerp(self.knockBackDisplay, math.abs(self.knockBack), 20 * tickRate)
-		self.offsety = self.y + self.height + 8 - math.abs(self.knockBackDisplay * 200)
-		self.animation:update()
-		self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
+		self.animation:tick(tickRate)
 		return
 	end
 
 	Unit.update(self)
 
   -- Target Acquired
-	self.target = ctx.target:closest(self, 'enemy')
+	self:selectTarget()
 	if self.target and self.attackTimer == 0 and self:inRange() then self:attack() end
+
+  -- Movement
+  self:move()
 
   -- Animations
 	self.animation.offsety = self.height + 8
-	self.animation:update()
+	self.animation:tick(tickRate)
 end
 
 function Vuju:attack()

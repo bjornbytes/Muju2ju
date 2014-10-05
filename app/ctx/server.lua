@@ -77,7 +77,7 @@ function Server:update()
       x = math.round(unit.x),
       y = math.round(unit.y),
       health = math.round(unit.health),
-      animationData = unit.animation:pack()
+      animationData = unit.animation and unit.animation:pack() or nil
     })
   end)
 

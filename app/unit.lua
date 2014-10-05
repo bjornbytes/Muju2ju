@@ -67,7 +67,7 @@ function Unit:update()
     self:hurt(self.maxHealth * .02 * tickRate)
     self.speed = math.max(self.speed - .5 * tickRate, 20)
 
-    self.animation:tick(tickRate)
+    if self.animation then self.animation:tick(tickRate) end
   else
     --
   end
@@ -77,6 +77,15 @@ function Unit:draw()
   local t = tick - (interp / tickRate)
   local prev = self.history:get(t, true)
   local cur = self.history:get(t + 1, true)
+
+  if not self.animationData then
+    local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
+    local p = ctx.players:get(ctx.id)
+    local g = love.graphics
+
+    g.setColor(self.team == p.team and {0, 255, 0} or {255, 0, 0})
+    g.rectangle('fill', lerpd.x - lerpd.width / 2, lerpd.y, lerpd.width, lerpd.height)
+  end
 
   if not cur.animationData or not prev.animationData then return end
 

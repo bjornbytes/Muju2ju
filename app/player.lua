@@ -29,7 +29,7 @@ function Player:init()
   self.deathTimer = 0
   self.deathDuration = 7
 	self.dead = false
-	self.minions = {'zuju'}
+	self.minions = {'vuju'}
 	self.minioncds = {0}
 	self.selectedMinion = 1
 	self.invincible = 0

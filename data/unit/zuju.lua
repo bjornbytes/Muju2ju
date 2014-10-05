@@ -15,13 +15,6 @@ Zuju.speed = 50
 function Zuju:activate()
 	Unit.activate(self)
 
-  if ctx.tag == 'server' then
-    self.speed = self.speed + self.rng:random(-10, 10)
-    self.maxHealth = 80
-    self.health = self.maxHealth
-    self.healthDisplay = self.health
-  end
-
   self.animation = data.animation.zuju(self, {scale = self.scale})
   self.animation.flipX = not self.owner.animation.flipX
 end
@@ -39,8 +32,8 @@ function Zuju:update()
     Unit.update(self)
 
     -- Target Acquired
-    self.target = ctx.target:closest(self, 'enemy') or ctx.shrine
-    if self.target ~= ctx.shrine and self.attackTimer == 0 and self:inRange() then self:attack() end
+    self:selectTarget()
+    if self.target and self.attackTimer == 0 and self:inRange() then self:attack() end
 
     -- Movement
     self:move()

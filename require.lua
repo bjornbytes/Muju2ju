@@ -13,7 +13,9 @@ require 'spine-love.spine'
 require 'enet'
 
 load 'lib/deps/lutil'
-load 'lib/deps/slam'
+if love.audio then
+  load 'lib/deps/slam'
+end
 load 'lib'
 
 load 'app/particles'

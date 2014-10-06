@@ -1,6 +1,6 @@
 local Spuju = extend(Unit)
 Spuju.code = 'spuju'
-Spuju.image = love.graphics.newImage('media/skeletons/spuju/spuju.png')
+Spuju.image = love.graphics and love.graphics.newImage('media/skeletons/spuju/spuju.png')
 
 Spuju.width = 60
 Spuju.height = 60

@@ -119,7 +119,7 @@ function NetClient:init()
   self.other = NetServer
   self.state = 'connecting'
   local ip = arg[2] == 'local' and '127.0.0.1' or '123.123.123.123'
-  self:connectTo(ip, 6061)
+  self:connectTo(ctx.config.ip, 6061)
   self.messageBuffer = {}
 
   ctx.event:on('game.quit', f.cur(self.quit, self))

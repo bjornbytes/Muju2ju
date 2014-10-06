@@ -8,6 +8,42 @@ function Menu:load()
 	love.mouse.setCursor(love.mouse.newCursor('media/graphics/cursor.png'))
   
   if self.menuSounds then self.menuSounds:stop() end
+
+  local http = require('socket.http')
+  local json = require('spine-love/dkjson')
+  local token = http.request('http://96.126.101.55:7000/login', 'username=trey&password=test')
+  print('logged in.  token is ' .. token)
+  self.hub = require('socket').tcp()
+  local success, e = self.hub:connect('96.126.101.55', 7001)
+  if e then print('could not connect to hub')
+  else print('connected to hub') end
+
+  local str = json.encode({token = token, cmd = 'connect', payload = {token = token}}) .. '\n'
+  print('sending ' .. str)
+
+  self.hub:send(str)
+
+  str = json.encode({token = token, cmd = 'lobbyCreate', payload = {}}) .. '\n'
+  print('sending ' .. str)
+
+  self.hub:send(str)
+
+  local data = self.hub:receive('*l')
+  print('received ' .. data)
+  table.print(json.decode(data))
+
+  str = json.encode({token = token, cmd = 'lobbyQueue', payload = {}}) .. '\n'
+  print('sending ' .. str)
+
+  self.hub:send(str)
+
+  local data = self.hub:receive('*l')
+  print('received ' .. data)
+  local config = json.decode(data).payload
+
+  table.print(config)
+  _G['config'] = config
+
   Context:remove(ctx)
   Context:add(Game)
 end

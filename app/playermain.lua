@@ -62,6 +62,12 @@ end
 function PlayerMain:readInput()
   local t = {tick = tick}
 
+  for i = 1, #self.minions do -- todo
+    if love.keyboard.isDown(tostring(i)) then
+      self.selectedMinion = i
+    end
+  end
+
   t.x = ctx.input:getAxis('x')
   t.y = ctx.input:getAxis('y')
   t.summon = ctx.input:getAction('summon')

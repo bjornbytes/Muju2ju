@@ -45,6 +45,5 @@ end
 
 function Target:inRange(source, range, teamFilter, ...)
   local targets = halp(source, teamFilter, {...})
-  targets = table.filter(targets, function(t) return t[1].team ~= source.team end)
   return table.map(table.filter(targets, function(t) return t[2] <= range + t[1].width / 2 end), function(t) return t[1] end)
 end

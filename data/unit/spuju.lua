@@ -32,16 +32,9 @@ end
 function Spuju:update()
 	Unit.update(self)
 
-	self.target = ctx.target:closest(self, 'shrine', 'enemy')
+  self:selectTarget()
   if self:inRange() and self.attackTimer == 0 then self:attack() end
 	self:move()
-end
-
-function Spuju:draw()
-	local g = love.graphics
-	--[[local sign = -math.sign(self.target.x - self.x)
-	g.setColor(255, 255, 255)
-	g.draw(self.image, self.x, self.y + 2 * math.sin(tick * tickRate * 4 + math.pi / 2), 0, self.scale * sign, self.scale, self.image:getWidth() / 2, self.image:getHeight() / 2)]]
 end
 
 function Spuju:attack()

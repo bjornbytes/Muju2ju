@@ -3,15 +3,16 @@ Target = class()
 local getEntries = {
   shrine = function(source, t)
     ctx.shrines:each(function(shrine)
-      if source ~= shrine and shrine.team ~= source.team then
+      if source ~= shrine then
         table.insert(t, {shrine, math.abs(shrine.x - source.x)})
       end
     end)
   end,
   player = function(source, t)
     ctx.players:each(function(player)
-      if player.dead or player.invincible > 0 or source == player or source.team == player.team then return end
-      table.insert(t, {player, math.abs(player.x - source.x)})
+      if source ~= player and not player.dead and player.invincible == 0 then
+        table.insert(t, {player, math.abs(player.x - source.x)})
+      end
     end)
   end,
   enemy = function(source, t)
@@ -29,13 +30,28 @@ local function halp(source, arg)
   return targets
 end
 
-function Target:closest(source, ...)
-  local targets = halp(source, {...})
+function Target:closestEnemy(source, ...)
+  local targets = halp(source, false, {...})
+  targets = table.filter(targets, function(t) return t[1].team ~= source.team end)
   table.sort(targets, function(a, b) return a[2] < b[2] end)
   return targets[1] and unpack(targets[1])
 end
 
-function Target:inRange(source, range, ...)
-  local targets = halp(source, {...})
+function Target:closestAlly(source, ...)
+  local targets = halp(source, true, {...})
+  targets = table.filter(targets, function(t) return t[1].team == source.team end)
+  table.sort(targets, function(a, b) return a[2] < b[2] end)
+  return targets[1] and unpack(targets[1])
+end
+
+function Target:enemiesInRange(source, range, ...)
+  local targets = halp(source, false, {...})
+  targets = table.filter(targets, function(t) return t[1].team ~= source.team end)
+  return table.map(table.filter(targets, function(t) return t[2] <= range + t[1].width / 2 end), function(t) return t[1] end)
+end
+
+function Target:alliesInRange(source, range, ...)
+  local targets = halp(source, true, {...})
+  targets = table.filter(targets, function(t) return t[1].team == source.team end)
   return table.map(table.filter(targets, function(t) return t[2] <= range + t[1].width / 2 end), function(t) return t[1] end)
 end

@@ -69,7 +69,7 @@ function Puju:attack()
 end
 
 function Puju:butt()
-	local targets = ctx.target:inRange(self, self.buttRange * 2, 'enemy')
+	local targets = ctx.target:enemiesInRange(self, self.buttRange * 2, 'enemy')
 	local damage = self.buttDamage
 	if #targets >= 2 then damage = damage / 2 end
 	table.each(targets, function(target)

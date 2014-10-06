@@ -14,11 +14,11 @@ function BurstHeal:deactivate()
 end
 
 function BurstHeal:update()
-	local minions = ctx.target:inRange(self, self.radius, 'minion')
-	table.each(minions, function(minion)
-		local heal = (not minion.lastSanctuary or minion.lastSanctuary ~= tick) and self.amount or self.amount / 2
-		minion.health = math.min(minion.health + heal, minion.maxHealth)
-		minion.lastSanctuary = tick
+	local allies = ctx.target:alliesInRange(self, self.radius, 'unit')
+	table.each(allies, function(ally)
+		local heal = (not ally.lastSanctuary or ally.lastSanctuary ~= tick) and self.amount or self.amount / 2
+		ally.health = math.min(ally.health + heal, ally.maxHealth)
+		ally.lastSanctuary = tick
 	end)
 	self.health = timer.rot(self.health, function()
 		ctx.spells:remove(self)

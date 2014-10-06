@@ -118,7 +118,7 @@ function Unit:draw()
 end
 
 function Unit:selectTarget()
-  self.target = ctx.target:closestEnemy(self, 'shrine', 'player', 'enemy')
+  self.target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
 end
 
 function Unit:inRange()

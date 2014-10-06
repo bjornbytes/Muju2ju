@@ -26,7 +26,7 @@ function Units:update()
       local spawnType
       local x = love.math.random() > .5 and 0 or ctx.map.width
 
-      spawnType = 'puju'
+      spawnType = 'duju'
       if self.enemyTimerMax < 8 then
         if love.math.random() < math.min(8 - self.enemyTimerMax, 2) * .06 then
           spawnType = 'spuju'

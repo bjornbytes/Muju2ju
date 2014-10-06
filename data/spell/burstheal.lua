@@ -14,7 +14,7 @@ function BurstHeal:deactivate()
 end
 
 function BurstHeal:update()
-	local allies = ctx.target:alliesInRange(self, self.radius, 'unit')
+	local allies = ctx.target:inRange(self, self.radius, 'ally', 'unit')
 	table.each(allies, function(ally)
 		local heal = (not ally.lastSanctuary or ally.lastSanctuary ~= tick) and self.amount or self.amount / 2
 		ally.health = math.min(ally.health + heal, ally.maxHealth)

@@ -29,7 +29,7 @@ end
 
 function Burst:damage()
   local damage = 20 * self.level
-  self.radius = (data.unit.zuju.width / 2) + 50 + 5 * self.level
+  self.radius = 50 + 5 * self.level
   table.each(ctx.target:enemiesInRange(self, self.radius, 'enemy', 'player'), f.ego('hurt', damage))
 end
 

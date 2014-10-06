@@ -1,11 +1,11 @@
-local Vuju = extend(Animation)
-Vuju.code = 'vuju'
+local Huju = extend(Animation)
+Huju.code = 'huju'
 
-Vuju.scale = .5
-Vuju.initial = 'idle'
-Vuju.animations = {}
+Huju.scale = .5
+Huju.initial = 'idle'
+Huju.animations = {}
 
-Vuju.animations.idle = {
+Huju.animations.idle = {
   priority = 1,
   loop = true,
   speed = .4,
@@ -15,7 +15,7 @@ Vuju.animations.idle = {
   }
 }
 
-Vuju.animations.cast = {
+Huju.animations.cast = {
   priority = 2,
   speed = .8,
   mix = {
@@ -24,7 +24,7 @@ Vuju.animations.cast = {
   }
 }
 
-Vuju.animations.death = {
+Huju.animations.death = {
   priority = 3,
   blocking = true,
   speed = .8,
@@ -33,4 +33,4 @@ Vuju.animations.death = {
   end
 }
 
-return Vuju
+return Huju

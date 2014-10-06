@@ -12,7 +12,7 @@ config = {
       skin = {},
       deck = {
         {
-          code = 'vuju',
+          code = 'bruju',
           skin = {},
           runes = {
             {1, 2, nil},

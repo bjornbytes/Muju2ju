@@ -1,11 +1,11 @@
-local Puju = extend(Animation)
-Puju.code = 'puju'
+local Duju = extend(Animation)
+Duju.code = 'duju'
 
-Puju.scale = 1
-Puju.initial = 'attack'
-Puju.animations = {}
+Duju.scale = 1
+Duju.initial = 'attack'
+Duju.animations = {}
 
-Puju.animations.attack = {
+Duju.animations.attack = {
   priority = 1,
   loop = true,
   speed = function(self, owner) return .8 * owner.attackAnimation end,
@@ -14,7 +14,7 @@ Puju.animations.attack = {
   }
 }
 
-Puju.animations.headbutt = {
+Duju.animations.headbutt = {
   priority = 1,
   speed = .69,
   mix = {
@@ -23,10 +23,10 @@ Puju.animations.headbutt = {
   complete = 'attack'
 }
 
-Puju.on = {
+Duju.on = {
   headbutt = function(self, owner, event)
     print('headbutt!')
   end
 }
 
-return Puju
+return Duju

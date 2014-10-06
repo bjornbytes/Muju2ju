@@ -1,70 +1,54 @@
 local Zuju = extend(Unit)
 Zuju.code = 'zuju'
 
-Zuju.width = 48
+Zuju.width = 32
 Zuju.height = 48
 
-Zuju.maxHealth = 80
-Zuju.maxHealthPerMinute = 10
-Zuju.damage = 9
-Zuju.damagePerMinute = 10
-Zuju.attackRange = 24
-Zuju.attackSpeed = 1
-Zuju.speed = 50
+Zuju.maxHealth = 65
+Zuju.maxHealthPerMinute = 7
+Zuju.damage = 8
+Zuju.damagePerMinute = 13
+Zuju.attackRange = 125
+Zuju.attackSpeed = 1.5
+Zuju.speed = 40
 
 function Zuju:activate()
 	Unit.activate(self)
-
-  self.animation = data.animation.zuju(self, {scale = self.scale})
-  self.animation.flipX = not self.owner.animation.flipX
 end
 
 function Zuju:update()
-  if ctx.tag == 'server' then
-    if self.animation:blocking() then
-      self.dead = self.animation:current().name == 'death'
-      self.x = self.x + self.knockBack * tickRate * 3000
-      self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
-      self.animation:tick(tickRate)
-      return
-    end
+	Unit.update(self)
 
-    Unit.update(self)
+  -- Target Acquired
+	self:selectTarget()
+	if self.target and self.attackTimer == 0 and self:inRange() then self:attack() end
 
-    -- Target Acquired
-    self:selectTarget()
-    if self.target and self.attackTimer == 0 and self:inRange() then self:attack() end
-
-    -- Movement
-    self:move()
-
-    -- Animations
-    if not self:inRange() then
-      self.animation:set('walk')
-    elseif self.target == ctx.shrine then
-      self.animation:set('idle')
-    end
-
-    local current = self.animation:current()
-    if current and current.name == 'walk' and self.target then
-      self.animation.flipX = (self.target.x - self.x) < 0
-    end
-  end
+  -- Movement
+  self:move()
 end
 
 function Zuju:attack()
+  local targets = {self.target}
   local damage = self.damage
+  local ox, oy = self.target.x, 0
+  local bounces = 0
+  for i = 1, math.max(1, 2 * bounces) do
+    if i > #targets then break end
+    targets[1]:hurt(damage, self)
+    ctx.spells:add('lightning', {x = ox, y = oy, target = targets[1]})
+    ox, oy = targets[1].x, targets[1].y
+    damage = math.max(damage / 2, self.damage / 4)
+    local newTargets = ctx.target:inRange(targets[1], 25 + (25 * bounces), 'enemy', 'unit')
+    if not newTargets then break end
+    for j = 1, #newTargets do
+      if not table.has(targets, newTargets[j]) then
+        table.insert(targets, 1, newTargets[j])
+        break
+      end
+    end
+  end
 
-  -- The Works
-  self.target:hurt(damage, self)
   self.attackTimer = self.attackSpeed
-
-  -- Sound
-  ctx.event:emit('sound.play', {sound = 'combat', volume = .5, with = function(sound)
-    local pitch = 1 + love.math.random() * .2
-    if love.math.random() > .5 then pitch = 1 / pitch end
-    sound:setPitch(pitch)
-  end})
 end
 
 return Zuju

@@ -1,41 +1,50 @@
 Target = class()
 
+local teamFilters = {
+  all = function() return true end,
+  enemy = function(a, b) return a.team ~= b.team end,
+  ally = function(a, b) return a.team == b.team end
+}
+
 local getEntries = {
-  shrine = function(source, t)
+  shrine = function(source, teamFilter, t)
     ctx.shrines:each(function(shrine)
-      if source ~= shrine and shrine.team ~= source.team then
+      if source ~= shrine and teamFilter(source, shrine) then
         table.insert(t, {shrine, math.abs(shrine.x - source.x)})
       end
     end)
   end,
-  player = function(source, t)
+  player = function(source, teamFilter, t)
     ctx.players:each(function(player)
-      if player.dead or player.invincible > 0 or source == player or source.team == player.team then return end
-      table.insert(t, {player, math.abs(player.x - source.x)})
+      if source ~= player and not player.dead and player.invincible == 0 and teamFilter(source, player) then
+        table.insert(t, {player, math.abs(player.x - source.x)})
+      end
     end)
   end,
-  enemy = function(source, t)
+  unit = function(source, teamFilter, t)
     ctx.units:each(function(unit)
-      if source ~= unit and not unit.dead and unit.owner ~= source.owner and unit.team ~= source.team then
+      if source ~= unit and not unit.dead and unit.owner ~= source.owner and teamFilter(source, unit) then
         table.insert(t, {unit, math.abs(unit.x - source.x)})
       end
     end)
   end
 }
 
-local function halp(source, arg)
+local function halp(source, teamFilter, arg)
   local targets = {}
-  table.each(arg, function(kind) getEntries[kind](source, targets) end)
+  teamFilter = teamFilters[teamFilter]
+  table.each(arg, function(kind) getEntries[kind](source, teamFilter, targets) end)
   return targets
 end
 
-function Target:closest(source, ...)
-  local targets = halp(source, {...})
+function Target:closest(source, teamFilter, ...)
+  local targets = halp(source, teamFilter, {...})
   table.sort(targets, function(a, b) return a[2] < b[2] end)
   return targets[1] and unpack(targets[1])
 end
 
-function Target:inRange(source, range, ...)
-  local targets = halp(source, {...})
+function Target:inRange(source, range, teamFilter, ...)
+  local targets = halp(source, teamFilter, {...})
+  targets = table.filter(targets, function(t) return t[1].team ~= source.team end)
   return table.map(table.filter(targets, function(t) return t[2] <= range + t[1].width / 2 end), function(t) return t[1] end)
 end

@@ -29,7 +29,7 @@ function Player:init()
   self.deathTimer = 0
   self.deathDuration = 7
 	self.dead = false
-	self.minions = {'vuju'}
+	self.minions = {'bruju'}
 	self.minioncds = {0}
 	self.selectedMinion = 1
 	self.invincible = 0
@@ -71,7 +71,7 @@ end
 function Player:draw()
 	if math.floor(self.invincible * 4) % 2 == 0 then
 		love.graphics.setColor(255, 255, 255)
-    --love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
+    --love.graphics.rectangle('fill', self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
 		self.animation:draw(self.x, self.y)
 	end
 
@@ -112,9 +112,9 @@ function Player:slot(input)
     local minion = data.unit[self.minions[input.minion]]
     local cooldown = self.minioncds[input.minion]
 
-    if cooldown == 0 and self:spend(minion.cost) then
+    if cooldown == 0 and self:spend(5) then
       ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = self.x, y = ctx.map.height - ctx.map.groundHeight - minion.height})
-      self.minioncds[input.minion] = minion.cooldown
+      self.minioncds[input.minion] = 5
 
       -- Juice
       for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end

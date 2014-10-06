@@ -1,12 +1,12 @@
-local Zuju = extend(Animation)
-Zuju.code = 'zuju'
+local Bruju = extend(Animation)
+Bruju.code = 'bruju'
 
-Zuju.scale = .5
-Zuju.offsety = 48
-Zuju.initial = 'spawn'
-Zuju.animations = {}
+Bruju.scale = .5
+Bruju.offsety = 48
+Bruju.initial = 'spawn'
+Bruju.animations = {}
 
-Zuju.animations.spawn = {
+Bruju.animations.spawn = {
   priority = 3,
   blocking = true,
   speed = .85,
@@ -15,7 +15,7 @@ Zuju.animations.spawn = {
   }
 }
 
-Zuju.animations.idle = {
+Bruju.animations.idle = {
   priority = 1,
   loop = true,
   speed = .3,
@@ -25,7 +25,7 @@ Zuju.animations.idle = {
   }
 }
 
-Zuju.animations.walk = {
+Bruju.animations.walk = {
   priority = 1,
   loop = true,
   speed = .73,
@@ -34,7 +34,7 @@ Zuju.animations.walk = {
   }
 }
 
-Zuju.animations.death = {
+Bruju.animations.death = {
   priority = 3,
   blocking = true,
   speed = .8,
@@ -43,4 +43,4 @@ Zuju.animations.death = {
   end
 }
 
-return Zuju
+return Bruju

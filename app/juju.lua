@@ -12,7 +12,7 @@ function Juju:activate()
     self.prev = {}
   end
 
-  self.radius = math.clamp(self.amount / 100, .25, .75) * data.media.graphics.juju:getWidth() / 2
+  self.radius = math.clamp(self.amount / 100, .25, .75) * 48
 
 	for i = 1, 15 do
     ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y})

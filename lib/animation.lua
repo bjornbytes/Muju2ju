@@ -13,7 +13,7 @@ function Animation:init(owner, vars)
 	self.skeletonData = json:readSkeletonDataFile('media/skeletons/' .. name .. '/' .. name .. '.json')
 	self.skeleton = spine.Skeleton.new(self.skeletonData)
 	self.skeleton.createImage = function(_, attachment)
-		return love.graphics.newImage('media/skeletons/' .. name .. '/' .. attachment.name .. '.png')
+		return love.graphics and love.graphics.newImage('media/skeletons/' .. name .. '/' .. attachment.name .. '.png')
 	end
 	self.skeleton:setToSetupPose()
 

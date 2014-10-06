@@ -36,6 +36,7 @@ function Unit:activate()
     self.target = nil
     self.attackTimer = 0
     self.dead = false
+    self.buffs = {}
   else
     self.history = NetHistory(self)
     
@@ -61,6 +62,12 @@ function Unit:update()
   if ctx.tag == 'server' then
     self.attackTimer = self.attackTimer - math.min(self.attackTimer, tickRate)
     self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
+
+    table.each(self.buffs, function(entries, stat)
+      table.each(entries, function(entry, i)
+        entry.timer = timer.rot(entry.timer, function() table.remove(entries, i) end)
+      end)
+    end)
 
     self.x = self.x + self.knockBack * tickRate * 3000
 
@@ -111,7 +118,7 @@ function Unit:draw()
 end
 
 function Unit:selectTarget()
-  self.target = ctx.target:closest(self, 'shrine', 'player', 'enemy')
+  self.target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
 end
 
 function Unit:inRange()
@@ -184,4 +191,20 @@ function Unit:applyUpgrades()
       end)
     end)
   end)
+end
+
+function Unit:addBuff(stat, amount, timer, source)
+  self.buffs[stat] = self.buffs[stat] or {}
+  table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source})
+end
+
+function Unit:getStat(key)
+  local base = self[stat]
+  if type(base) ~= 'number' then return base end
+  local val = base
+  table.each(self.buffs[key], function(buff)
+    val = val + buff.amount
+  end)
+
+  return val
 end

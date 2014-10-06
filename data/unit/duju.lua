@@ -1,23 +1,23 @@
-local Puju = extend(Unit)
-Puju.code = 'puju'
+local Duju = extend(Unit)
+Duju.code = 'duju'
 
-Puju.width = 64
-Puju.height = 24
+Duju.width = 64
+Duju.height = 24
 
-Puju.maxHealth = 75
-Puju.maxHealthPerMinute = 8
-Puju.damage = 11
-Puju.damagePerMinute = 10
-Puju.attackRange = 32
-Puju.attackSpeed = 1.12
-Puju.speed = 65
+Duju.maxHealth = 75
+Duju.maxHealthPerMinute = 8
+Duju.damage = 11
+Duju.damagePerMinute = 10
+Duju.attackRange = 32
+Duju.attackSpeed = 1.12
+Duju.speed = 65
 
 -- Spells?
-Puju.buttRate = 4
-Puju.buttDamage = 27
-Puju.buttRange = Puju.attackRange * 1.25
+Duju.buttRate = 4
+Duju.buttDamage = 27
+Duju.buttRange = Duju.attackRange * 1.25
 
-function Puju:activate()
+function Duju:activate()
 	Unit.activate(self)
 
   if ctx.tag == 'server' then
@@ -29,11 +29,11 @@ function Puju:activate()
   end
 
   -- Animation
-  self.animation = data.animation.puju(self, {scale = self.scale})
+  --self.animation = data.animation.duju(self, {scale = self.scale})
 	self.attackAnimation = 0
 end
 
-function Puju:update()
+function Duju:update()
 	Unit.update(self)
 
   -- Targeting
@@ -44,7 +44,7 @@ function Puju:update()
 
     self.buttTimer = timer.rot(self.buttTimer)
     if self.target then
-      self.animation.flipX = (self.target.x - self.x) > 0
+      --self.animation.flipX = (self.target.x - self.x) > 0
     end
     self.attackAnimation = timer.rot(self.attackAnimation)
   end
@@ -53,7 +53,7 @@ function Puju:update()
 	--self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
 end
 
-function Puju:attack()
+function Duju:attack()
 	self.attackTimer = self.attackSpeed
 
   local buttable = isa(self.target, Unit)
@@ -68,8 +68,8 @@ function Puju:attack()
 	self.attackAnimation = 1
 end
 
-function Puju:butt()
-	local targets = ctx.target:inRange(self, self.buttRange * 2, 'enemy')
+function Duju:butt()
+	local targets = ctx.target:inRange(self, self.buttRange * 2, 'enemy', 'unit')
 	local damage = self.buttDamage
 	if #targets >= 2 then damage = damage / 2 end
 	table.each(targets, function(target)
@@ -80,9 +80,9 @@ function Puju:butt()
 		end
 	end)
 	self.buttTimer = self.buttRate
-	self.animation:set('headbutt')
+	--self.animation:set('headbutt')
   ctx.event:emit('sound.play', {sound = 'combat', with = function(sound) sound:setVolume(.5) end})
   if not self.target then self:selectTarget() end
 end
 
-return Puju
+return Duju

@@ -101,7 +101,7 @@ function spine.Skeleton.new (skeletonData, group)
 						attachment.originX = imageWidth / 2
 						attachment.originY = imageHeight / 2
 					else
-						print("Error creating image: " .. attachment.name)
+						--print("Error creating image: " .. attachment.name)
 						image = spine.Skeleton.failed
 					end
 					images[slot] = image

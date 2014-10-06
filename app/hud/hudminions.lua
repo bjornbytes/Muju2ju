@@ -20,7 +20,7 @@ function HudMinions:update()
 		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 18 * tickRate)
 		self.extra[i] = math.lerp(self.extra[i], 0, 5 * tickRate)
 		if p.minions[i] then
-			local y = self.bg[i]:getHeight() * (p.minioncds[i] / data.unit[p.minions[i]].cooldown)
+			local y = self.bg[i]:getHeight() * (p.minioncds[i] / 5)
 			self.quad[i]:setViewport(0, y, self.bg[i]:getWidth(), self.bg[i]:getHeight() - y)
 		end
 	end
@@ -40,7 +40,7 @@ function HudMinions:draw()
     local w, h = bg:getDimensions()
     local scale = .75 + (.15 * self.factor[i]) + (.1 * self.extra[i])
     local xx = 48 - 10 * (1 - self.factor[i])
-    local f, cost = font, tostring(data.unit[p.minions[i]].cost)
+    local f, cost = font, tostring('5')
     local tx, ty = xx - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35
 

@@ -18,7 +18,6 @@ function Server:load()
   self.units = Units()
   self.jujus = Jujus()
   self.spells = Manager('spell')
-	self.upgrades = Upgrades()
 	self.target = Target()
   --self.hud = Hud()
 

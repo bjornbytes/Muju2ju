@@ -6,8 +6,8 @@ Zuju.height = 48
 
 Zuju.maxHealth = 65
 Zuju.maxHealthPerMinute = 7
-Zuju.damage = 5
-Zuju.damagePerMinute = 6
+Zuju.damage = 8
+Zuju.damagePerMinute = 13
 Zuju.attackRange = 125
 Zuju.attackSpeed = 1.5
 Zuju.speed = 40
@@ -28,7 +28,26 @@ function Zuju:update()
 end
 
 function Zuju:attack()
-  self.target.weaken = .5
+  local targets = {self.target}
+  local damage = self.damage
+  local ox, oy = self.target.x, 0
+  local bounces = 0
+  for i = 1, math.max(1, 2 * bounces) do
+    if i > #targets then break end
+    targets[1]:hurt(damage, self)
+    ctx.spells:add('lightning', {x = ox, y = oy, target = targets[1]})
+    ox, oy = targets[1].x, targets[1].y
+    damage = math.max(damage / 2, self.damage / 4)
+    local newTargets = ctx.target:inRange(targets[1], 25 + (25 * bounces), 'enemy', 'unit')
+    if not newTargets then break end
+    for j = 1, #newTargets do
+      if not table.has(targets, newTargets[j]) then
+        table.insert(targets, 1, newTargets[j])
+        break
+      end
+    end
+  end
+
   self.attackTimer = self.attackSpeed
 end
 

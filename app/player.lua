@@ -71,7 +71,7 @@ end
 function Player:draw()
 	if math.floor(self.invincible * 4) % 2 == 0 then
 		love.graphics.setColor(255, 255, 255)
-    --love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
+    --love.graphics.rectangle('fill', self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
 		self.animation:draw(self.x, self.y)
 	end
 

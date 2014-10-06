@@ -26,7 +26,6 @@ function PlayerServer:get(t)
 end
 
 function PlayerServer:update()
-  -- spawn timer decays here and only here, for example
 	self.jujuTimer = timer.rot(self.jujuTimer, function()
 		self.juju = self.juju + 1
 		return 1

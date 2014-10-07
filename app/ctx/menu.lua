@@ -9,7 +9,7 @@ function Menu:load()
   
   if self.menuSounds then self.menuSounds:stop() end
 
-  local http = require('socket.http')
+  --[[local http = require('socket.http')
   local json = require('spine-love/dkjson')
   local token = http.request('http://96.126.101.55:7000/login', 'username=trey&password=test')
   print('logged in.  token is ' .. token)
@@ -45,7 +45,7 @@ function Menu:load()
   _G['config'] = config
 
   Context:remove(ctx)
-  Context:add(Game)
+  Context:add(Game)]]
 end
 
 function Menu:update()

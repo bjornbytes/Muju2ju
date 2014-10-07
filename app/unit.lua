@@ -121,6 +121,10 @@ function Unit:selectTarget()
   self.target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
 end
 
+function Unit:isTargetable(other)
+  return true
+end
+
 function Unit:inRange()
   if not self.target then return false end
   return math.abs(self.target.x - self.x) <= self.attackRange + self.target.width / 2

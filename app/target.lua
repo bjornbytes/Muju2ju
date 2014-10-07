@@ -23,7 +23,7 @@ local getEntries = {
   end,
   unit = function(source, teamFilter, t)
     ctx.units:each(function(unit)
-      if source ~= unit and not unit.dead and teamFilter(source, unit) then
+      if source ~= unit and not unit.dead and teamFilter(source, unit) and unit:isTargetable(source) then
         table.insert(t, {unit, math.abs(unit.x - source.x)})
       end
     end)

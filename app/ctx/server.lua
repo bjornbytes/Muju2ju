@@ -17,7 +17,7 @@ function Server:load()
   self.shrines = Manager()
   self.units = Units()
   self.jujus = Jujus()
-  self.spells = Manager('spell')
+  self.spells = Spells()
 	self.target = Target()
   --self.hud = Hud()
 

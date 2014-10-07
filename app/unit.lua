@@ -132,7 +132,7 @@ end
 
 function Unit:move()
   if not self.target or self:inRange() then return end
-  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate
+  self.x = self.x + self:getStat('speed') * math.sign(self.target.x - self.x) * tickRate
 end
 
 function Unit:hurt(amount, source)
@@ -207,7 +207,14 @@ function Unit:getStat(key)
   if type(base) ~= 'number' then return base end
   local val = base
   table.each(self.buffs[key], function(buff)
-    val = val + buff.amount
+    local amount = buff.amount
+
+    if type(amount) == 'string' and amount:match('%%') then
+      local percent = tonumber(amount:match('%-?%d')) / 100
+      amount = base * percent
+    end
+
+    val = val + amount
   end)
 
   return val

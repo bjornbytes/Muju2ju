@@ -9,7 +9,8 @@ Net.messageMap = {
   'unitCreate',
   'unitDestroy',
   'jujuCreate',
-  'jujuCollect'
+  'jujuCollect',
+  'spellCreate'
 }
 
 table.each(Net.messageMap, function(message, i) Net.messageMap[message] = i end)

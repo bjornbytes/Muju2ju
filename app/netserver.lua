@@ -159,6 +159,16 @@ NetServer.messages.jujuCollect = {
   important = true
 }
 
+NetServer.messages.spellCreate = {
+  data = {
+    code = 'string',
+    x = 16,
+    y = 16,
+    aux = 'string',
+  },
+  order = {'code', 'x', 'y', 'aux'}
+}
+
 function NetServer:init()
   self.other = NetClient
   self.state = 'waiting'

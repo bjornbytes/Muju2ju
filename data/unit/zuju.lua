@@ -12,6 +12,17 @@ Zuju.attackRange = 125
 Zuju.attackSpeed = 1.5
 Zuju.speed = 40
 
+Zuju.arcBounces = 1
+Zuju.arcFalloff = .33
+
+Zuju.warpCooldown = 5
+Zuju.warpDistance = 80
+Zuju.warpStun = 0
+
+Zuju.powerSurgeMax = .5
+Zuju.powerSurgeDamageSpeed = .01
+Zuju.powerSurgeeRangeSpeed = 0
+
 function Zuju:activate()
 	Unit.activate(self)
 end

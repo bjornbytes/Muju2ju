@@ -34,7 +34,7 @@ function Kuju:attack()
 
   -- The Works
   self.target:hurt(damage, self)
-  self.target:addBuff('slow', '-10%', 1, self)
+  self.target:addBuff('slow', '-10%', 1, self, 'kujuSlow')
   self.attackTimer = self.attackSpeed
 
   -- Sound

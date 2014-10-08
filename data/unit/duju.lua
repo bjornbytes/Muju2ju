@@ -12,10 +12,20 @@ Duju.attackRange = 32
 Duju.attackSpeed = 1.12
 Duju.speed = 65
 
--- Spells?
-Duju.buttRate = 4
-Duju.buttDamage = 27
-Duju.buttRange = Duju.attackRange * 1.25
+-- Spells
+Duju.chargeRate = 30
+Duju.chargeMax = 150
+Duju.chargeRegen = 0
+Duju.chargeDamage = 0
+
+Duju.buttCooldown = 5
+Duju.buttKnockback = .25
+Duju.buttStun = 0
+Duju.buttDamageMultiplier = 1
+
+Duju.impaleDuration = .75
+Duju.impaleArmorReduction = .1
+Duju.impaleWeaken = 0
 
 function Duju:activate()
 	Unit.activate(self)

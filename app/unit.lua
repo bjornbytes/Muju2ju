@@ -137,7 +137,7 @@ end
 
 function Unit:hurt(amount, source)
   if source then
-    amount = amount * (1 - source.weaken)
+    amount = amount * (1 - source:getStat('weaken'))
     if love.math.random() < source.critChance then
       amount = amount * 2
     end
@@ -197,9 +197,18 @@ function Unit:applyUpgrades()
   end)
 end
 
-function Unit:addBuff(stat, amount, timer, source)
+function Unit:addBuff(stat, amount, timer, source, tag)
   self.buffs[stat] = self.buffs[stat] or {}
-  table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source})
+  local tag = next(table.filter(self.buffs[stat], function(buff) return buff.tag == tag end))
+
+  if tag and tag.amount > amount then
+    tag.amout = amount
+    tag.timer = timer
+    tag.source = source
+    return
+  end
+
+  table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source, tag = tag})
 end
 
 function Unit:getStat(key)

@@ -11,7 +11,7 @@ Spuju.damage = 6
 Spuju.damagePerMinute = 8
 Spuju.attackRange = 300
 Spuju.attackSpeed = .3
-Spuju.speed = 25
+Spuju.speed = 40
 
 function Spuju:activate()
 	Unit.activate(self)

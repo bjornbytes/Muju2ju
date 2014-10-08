@@ -12,6 +12,18 @@ Thuju.attackRange = 32
 Thuju.attackSpeed = 1.5
 Thuju.speed = 42
 
+Thuju.tauntDuration = 2
+Thuju.tauntMaxEnemies = 2
+Thuju.tauntArmor = 0
+
+Thuju.smashRange = 128
+Thuju.smashStun = .75
+Thuju.smashDamage = 10
+
+Thuju.thornsAmount = .25
+Thuju.thornsReduce = 0
+Thuju.thornsArmorReduce = 0
+
 function Thuju:activate()
 	Unit.activate(self)
 end

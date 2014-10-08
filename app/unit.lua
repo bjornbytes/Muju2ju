@@ -177,23 +177,22 @@ end
 
 function Unit:applyUpgrades()
   local base = data.unit[self.code]
-  local runes = table.filter(ctx.config.players[self.owner.id].deck, function(t) return t.code == self.code end)[1].runes
+  local runes = self.owner.deck[self.code].runes
   
-  table.each(runes, function(tier)
-    table.each(tier, function(rune)
+  table.each(runes, function(rune)
+    local level = rune.level
+    if level > 0 then
       table.each(rune.values, function(levels, stat)
-        local level = 0 --??? ctx.upgrades.something
-        if level > 0 then
-          if type(levels[level]) == 'number' then
-            self[stat] = self[stat] + levels[level]
-          elseif type(levels[level]) == 'string' and levels[level]:match('%%') then
-            local original = base[stat]
-            local percent = tonumber(levels[level]:match('%-?%d')) / 100
-            self[stat] = self[stat] + original * percent
-          end
+        local value = levels[level]
+        if type(value) == 'number' then
+          self[stat] = self[stat] + value
+        elseif type(value) == 'string' and value:match('%%') then
+          local original = base[stat]
+          local percent = tonumber(value:match('%-?%d')) / 100
+          self[stat] = self[stat] + original * percent
         end
       end)
-    end)
+    end
   end)
 end
 

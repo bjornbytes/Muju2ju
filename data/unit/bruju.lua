@@ -12,6 +12,21 @@ Bruju.attackRange = 24
 Bruju.attackSpeed = 1
 Bruju.speed = 50
 
+Bruju.burstDamage = 10
+Bruju.burstRange = 90
+Bruju.burstHeal = 0
+
+Bruju.safeguardThreshold = .25
+Bruju.safeguardAmount = .25
+Bruju.safeguardDuration = 3
+Bruju.safeguardThorns = 0
+Bruju.safeguardHeal = 0
+
+Bruju.retaliationDamage = 10
+Bruju.retaliationLifesteal = 0
+Bruju.retaliationAttackSpeed = 0
+Bruju.retaliationSpeed = 0
+
 function Bruju:activate()
 	Unit.activate(self)
 

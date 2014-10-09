@@ -210,7 +210,7 @@ function Unit:addBuff(stat, amount, timer, source, tag)
   table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source, tag = tag})
 end
 
-function Unit:getStat(key)
+function Unit:getStat(stat)
   local base = self[stat]
   if type(base) ~= 'number' then return base end
   local val = base

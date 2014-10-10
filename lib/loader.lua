@@ -54,5 +54,6 @@ data.load = function()
   load('data/animation', 'animation')
   load('data/particle', 'particle')
   load('data/effect', 'effect')
+  load('data/gooey', 'gooey')
 end
 

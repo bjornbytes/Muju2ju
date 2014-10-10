@@ -6,8 +6,20 @@ function Menu:load()
 	self.font = love.graphics.newFont('media/fonts/pixel.ttf', 8)
 	self.creditsAlpha = 0
 	love.mouse.setCursor(love.mouse.newCursor('media/graphics/cursor.png'))
+
+  love.keyboard.setKeyRepeat(true)
   
   if self.menuSounds then self.menuSounds:stop() end
+
+  self.hub = MenuHub()
+
+  self.pages = {}
+  self.pages.login = MenuLogin()
+  self.pages.main = MenuMain()
+
+  self.gooey = Gooey(data.gooey.menu.background)
+
+  self.page = 'login'
 
   --[[local http = require('socket.http')
   local json = require('spine-love/dkjson')
@@ -26,6 +38,8 @@ function Menu:load()
   str = json.encode({token = token, cmd = 'lobbyCreate', payload = {}}) .. '\n'
   print('sending ' .. str)
 
+  print('k')
+  print('k')
   self.hub:send(str)
 
   local data = self.hub:receive('*l')
@@ -49,7 +63,12 @@ function Menu:load()
 end
 
 function Menu:update()
+  local page = self.pages[self.page]
 	self.creditsAlpha = timer.rot(self.creditsAlpha)
+  
+  self.hub:update()
+
+  f.exe(page.update, page)
 end
 
 function Menu:draw()
@@ -58,14 +77,19 @@ function Menu:draw()
 	love.graphics.setFont(self.font)
 	love.graphics.setColor(255, 255, 255, math.min(self.creditsAlpha * 255, 255))
 	love.graphics.print('We do not mind who gets the credit.', 2, 0)
+
+  local page = self.pages[self.page]
+  f.exe(page.draw, page)
+
+  self.gooey:draw()
 end
 
 function Menu:keypressed(key)
-	
+	self.gooey:keypressed(key)
 end
 
 function Menu:keyreleased(key)
-
+  self.gooey:keyreleased(key)
 end
 
 function Menu:mousepressed(x, y, b)
@@ -79,4 +103,14 @@ function Menu:mousepressed(x, y, b)
 	elseif math.inside(x, y, 455, 445, 160, 90) then
 		love.event.quit()
 	end
+
+  self.gooey:mousepressed(x, y, b)
+end
+
+function Menu:mousereleased(x, y, b)
+  self.gooey:mousereleased(x, y, b)
+end
+
+function Menu:textinput(char)
+  self.gooey:textinput(char)
 end

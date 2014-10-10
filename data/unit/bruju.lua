@@ -44,6 +44,10 @@ function Bruju:update()
       return
     end]]
 
+    if self.owner.deck[self.code].upgrades.retaliation then
+      --
+    end
+
     Unit.update(self)
 
     -- Target Acquired

@@ -198,9 +198,9 @@ end
 
 function Unit:addBuff(stat, amount, timer, source, tag)
   self.buffs[stat] = self.buffs[stat] or {}
-  local tag = next(table.filter(self.buffs[stat], function(buff) return buff.tag == tag end))
 
-  if tag and tag.amount > amount then
+  tag = tag and self:getBuff(tag)
+  if tag then
     tag.amout = amount
     tag.timer = timer
     tag.source = source
@@ -208,6 +208,10 @@ function Unit:addBuff(stat, amount, timer, source, tag)
   end
 
   table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source, tag = tag})
+end
+
+function Unit:getBuff(tag)
+  return next(table.filter(self.buffs[stat], function(buff) return buff.tag == tag end))
 end
 
 function Unit:getStat(stat)

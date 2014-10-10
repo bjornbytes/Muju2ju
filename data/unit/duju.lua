@@ -79,7 +79,7 @@ function Duju:attack()
 end
 
 function Duju:butt()
-	local targets = ctx.target:inRange(self, self.buttRange * 2, 'enemy', 'unit')
+	local targets = ctx.target:inRange(self, self.attackRange * 2, 'enemy', 'unit')
 	local damage = self.buttDamage
 	if #targets >= 2 then damage = damage / 2 end
 	table.each(targets, function(target)

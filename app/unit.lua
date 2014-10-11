@@ -50,6 +50,7 @@ function Unit:activate()
   self.team = self.owner and self.owner.team or 0
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.health = self.maxHealth
+  self.createdAt = tick
 
   ctx.event:emit('view.register', {object = self})
 end
@@ -82,10 +83,11 @@ end
 
 function Unit:draw()
   local t = tick - (interp / tickRate)
+  if t < self.createdAt then return end
   local prev = self.history:get(t, true)
   local cur = self.history:get(t + 1, true)
 
-  if not self.animationData then
+  if not self.animation then
     local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
     local p = ctx.players:get(ctx.id)
     local g = love.graphics

@@ -78,6 +78,7 @@ function PlayerMain:readInput()
     if current.name == 'summon' then
       t.x = 0
     elseif current.name == 'resurrect' then
+      t.x = 0
       t.summon = false
     end
   end

@@ -148,6 +148,7 @@ end
 
 function NetClient:disconnect(event)
   ctx.event:emit('game.quit')
+  error('lost connection')
 end
 
 function NetClient:send(msg, data)

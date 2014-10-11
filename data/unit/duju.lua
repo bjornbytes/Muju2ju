@@ -39,7 +39,7 @@ function Duju:activate()
   end
 
   -- Animation
-  --self.animation = data.animation.duju(self, {scale = self.scale})
+  self.animation = data.animation.duju(self, {scale = self.scale})
 	self.attackAnimation = 0
 end
 
@@ -54,13 +54,13 @@ function Duju:update()
 
     self.buttTimer = timer.rot(self.buttTimer)
     if self.target then
-      --self.animation.flipX = (self.target.x - self.x) > 0
+      self.animation.flipX = (self.target.x - self.x) > 0
     end
     self.attackAnimation = timer.rot(self.attackAnimation)
   end
 
   -- Animation
-	--self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
+	self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
 end
 
 function Duju:attack()
@@ -90,7 +90,7 @@ function Duju:butt()
 		end
 	end)
 	self.buttTimer = self.buttRate
-	--self.animation:set('headbutt')
+	self.animation:set('headbutt')
   ctx.event:emit('sound.play', {sound = 'combat', with = function(sound) sound:setVolume(.5) end})
   if not self.target then self:selectTarget() end
 end

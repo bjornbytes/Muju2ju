@@ -30,23 +30,23 @@ Bruju.retaliationSpeed = 0
 function Bruju:activate()
 	Unit.activate(self)
 
-  --[[self.animation = data.animation.bruju(self, {scale = self.scale})
-  self.animation.flipX = not self.owner.animation.flipX]]
+  self.animation = data.animation.bruju(self, {scale = self.scale})
+  self.animation.flipX = not self.owner.animation.flipX
 end
 
 function Bruju:update()
   if ctx.tag == 'server' then
-    --[[if self.animation:blocking() then
+    if self.animation:blocking() then
       self.dead = self.animation:current().name == 'death'
       self.x = self.x + self.knockBack * tickRate * 3000
       self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
       self.animation:tick(tickRate)
       return
-    end]]
-
-    if self.owner.deck[self.code].upgrades.retaliation then
-      --
     end
+
+    --if self.owner.deck[self.code].upgrades.retaliation then
+      --
+    --end
 
     Unit.update(self)
 
@@ -58,7 +58,7 @@ function Bruju:update()
     self:move()
 
     -- Animations
-    --[[if not self:inRange() then
+    if self.target and not self:inRange() then
       self.animation:set('walk')
     elseif self.target == ctx.shrine then
       self.animation:set('idle')
@@ -67,7 +67,7 @@ function Bruju:update()
     local current = self.animation:current()
     if current and current.name == 'walk' and self.target then
       self.animation.flipX = (self.target.x - self.x) < 0
-    end]]
+    end
   end
 end
 

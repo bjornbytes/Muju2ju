@@ -5,6 +5,9 @@ Animation.offsety = 0
 
 function Animation:init(owner, vars)
   local name = self.code
+  if name == 'zuju' then name = 'vuju' end
+  if name == 'bruju' then name = 'zuju' end
+  if name == 'duju' then nane = 'puju' end
   table.merge(vars, self, true)
 
 	local json = spine.SkeletonJson.new()

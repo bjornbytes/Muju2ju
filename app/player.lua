@@ -166,3 +166,17 @@ function Player:atShrine()
   return math.abs(self.x - shrine.x) < self.width 
 end
 
+function Player:initDeck()
+  self.deck = {}
+  for i = 1, #ctx.config.players[self.id].deck do
+    local entry = ctx.config.players[self.id].deck[i]
+
+    self.deck[entry.code] = {}
+    self.deck[entry.code].runes = entry.runes
+    self.deck[entry.code].upgrades = {}
+
+    table.each(self.deck[entry.code].runes, function(rune)
+      rune.level = 0
+    end)
+  end
+end

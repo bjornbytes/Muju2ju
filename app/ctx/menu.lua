@@ -17,8 +17,6 @@ function Menu:load()
   self.pages.login = MenuLogin()
   self.pages.main = MenuMain()
 
-  self.gooey = Gooey(data.gooey.menu.background)
-
   self.page = 'login'
 
   --[[local http = require('socket.http')
@@ -38,8 +36,6 @@ function Menu:load()
   str = json.encode({token = token, cmd = 'lobbyCreate', payload = {}}) .. '\n'
   print('sending ' .. str)
 
-  print('k')
-  print('k')
   self.hub:send(str)
 
   local data = self.hub:receive('*l')
@@ -80,16 +76,14 @@ function Menu:draw()
 
   local page = self.pages[self.page]
   f.exe(page.draw, page)
-
-  self.gooey:draw()
 end
 
 function Menu:keypressed(key)
-	self.gooey:keypressed(key)
+  --
 end
 
 function Menu:keyreleased(key)
-  self.gooey:keyreleased(key)
+  --
 end
 
 function Menu:mousepressed(x, y, b)
@@ -103,14 +97,5 @@ function Menu:mousepressed(x, y, b)
 	elseif math.inside(x, y, 455, 445, 160, 90) then
 		love.event.quit()
 	end
-
-  self.gooey:mousepressed(x, y, b)
 end
 
-function Menu:mousereleased(x, y, b)
-  self.gooey:mousereleased(x, y, b)
-end
-
-function Menu:textinput(char)
-  self.gooey:textinput(char)
-end

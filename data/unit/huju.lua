@@ -22,7 +22,7 @@ Huju.empowerDamage = 10
 Huju.empowerPersist = 0
 Huju.empowerAttackSpeed = 0
 
-Huju.resurrectCooldown = 10
+Huju.salvationCooldown = 10
 
 function Huju:activate()
 	Unit.activate(self)

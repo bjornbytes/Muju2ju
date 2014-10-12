@@ -71,6 +71,12 @@ function Bruju:update()
   end
 end
 
+function Bruju:die()
+  if self.owner.deck[self.code].upgrades.burst then
+    --
+  end
+end
+
 function Bruju:attack()
   local damage = self.damage
 

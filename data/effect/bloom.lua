@@ -55,10 +55,8 @@ function Bloom:applyEffect(source, target)
 
   ctx.view:worldPush()
 	if p.dead then
-		p.ghost:draw()
-		ctx.spells:each(function(spell)
-      if spell.code == 'juju' then spell:draw() end
-    end)
+		p:draw()
+		ctx.jujus:each(f.ego('draw'))
 	end
   g.pop()
 

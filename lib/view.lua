@@ -51,6 +51,7 @@ function View:update()
   self.x = self.x + self.vx * tickRate
   self.y = self.y + self.vy * tickRate
   
+  self:follow()
   self:contain()
 
   self.shake = math.lerp(self.shake, 0, 8 * tickRate)
@@ -167,6 +168,24 @@ end
 
 function View:threeDepth(x, y, z)
   return math.clamp(math.distance(x, y, self.x + self.width / 2, self.y + self.height / 2) * self.scale - 1000 - z, -4096, -16)
+end
+
+function View:follow()
+  local p = ctx.players:get(ctx.id)
+  if p then
+    local tx, ty
+    if p.dead then 
+      tx, ty = p.ghostX, p.ghostY
+    else
+      tx, ty = p.x, p.y
+    end
+
+    tx = tx - self.width / 2
+    ty = ty - self.height / 2
+
+    self.x = math.lerp(self.x, tx, math.min(6 * tickRate, 1))
+    self.y = math.lerp(self.y, ty, math.min(6 * tickRate, 1))
+  end
 end
 
 function View:contain()

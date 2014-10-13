@@ -165,7 +165,8 @@ end
 
 function Unit:die()
   local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
-  ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = self.x, y = self.y, amount = 10, vx = vx, vy = vy})
+  print(ctx.jujus.nextId, self.x, self.y)
+  ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), amount = 10, vx = vx, vy = vy})
   ctx.net:emit('unitDestroy', {id = self.id})
 end
 

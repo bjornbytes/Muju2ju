@@ -47,7 +47,7 @@ function Target:inRange(source, range, teamFilter, ...)
   local targets = halp(source, teamFilter, {...})
 
   local i = 1
-  while i < #targets do
+  while i <= #targets do
     if targets[i][2] > range + targets[i][1].width / 2 then table.remove(targets, i)
     else i = i + 1 end
   end

@@ -45,10 +45,10 @@ function Bruju:update()
     end
 
     if self.owner.deck[self.code].upgrades.retaliation then
-      self:addBuff('damage', (1 - (self.maxHealth / self.health)) * Bruju.retaliationDamage, 1, self, 'retaliationDamage')
-      self:addBuff('lifesteal', (1 - (self.maxHealth / self.health)) * Bruju.retaliationLifesteal, 1, self, 'retaliationLifesteal')
-      self:addBuff('attackSpeed', (1 - (self.maxHealth / self.health)) * Bruju.retaliationAttackSpeed, 1, self, 'retaliationAttackSpeed')
-      self:addBuff('speed', (1 - (self.maxHealth / self.health)) * Bruju.retaliationSpeed, 1, self, 'retaliationSpeed')
+      self:addBuff('damage', (1 - (self.health / self.maxHealth)) * Bruju.retaliationDamage, 1, self, 'retaliationDamage')
+      self:addBuff('lifesteal', (1 - (self.health / self.maxHealth)) * Bruju.retaliationLifesteal, 1, self, 'retaliationLifesteal')
+      self:addBuff('attackSpeed', (1 - (self.health / self.maxHealth)) * Bruju.retaliationAttackSpeed, 1, self, 'retaliationAttackSpeed')
+      self:addBuff('speed', (1 - (self.health / self.maxHealth)) * Bruju.retaliationSpeed, 1, self, 'retaliationSpeed')
     end
 
     Unit.update(self)

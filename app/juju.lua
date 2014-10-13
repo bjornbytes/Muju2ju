@@ -3,7 +3,6 @@ Juju = class()
 Juju.depth = -6
 
 function Juju:activate()
-
   if ctx.tag ~= 'server' then
     self.angle = love.math.random() * 2 * math.pi
     self.depth = self.depth + love.math.random()
@@ -54,11 +53,31 @@ function Juju:update(noHistory)
 		return
 	end]]
   if self.owner then
-    if ctx.tag == 'server' then
+    if ctx.tag == 'server' or (self.owner ~= ctx.players:get(ctx.id)) then
+      if ctx.tag == 'client' then
+        for i = 1, 20 do
+          ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
+        end
+      end
       self.owner.juju = self.owner.juju + self.amount
+      ctx.jujus:remove(self.id)
+    else
+      local tx, ty = ctx.view.x + 52, ctx.view.y + 52
+      self.x, self.y = math.lerp(self.x, tx, 10 * tickRate), math.lerp(self.y, ty, 10 * tickRate)
+      self.scale = math.lerp(self.scale, .1, 5 * tickRate)
+      if math.distance(self.x, self.y, tx, ty) < 16 then
+        ctx.jujus:remove(self.id)
+        ctx.hud.jujuIconScale = 1
+        for i = 1, 20 do
+          ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
+        end
+      end
+      for i = 1, 2 do
+        ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y})
+      end
     end
 
-    ctx.jujus:remove(self.id)
+    return
   end
 
 	self.vx = math.lerp(self.vx, 0, tickRate)
@@ -83,7 +102,7 @@ function Juju:update(noHistory)
     local p = ctx.players:get(ctx.id)
     if p and p.dead then
       if math.distance(p.ghostX, p.ghostY, self.x, self.y) < self.radius + p.ghost.radius then
-        ctx.jujus:remove(self.id)
+        self.owner = p
       end
     end
 
@@ -97,8 +116,6 @@ function Juju:update(noHistory)
       local vx, vy = love.math.random(-150, -75), love.math.random(-100, 100)
       ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y, vx = vx, vy = vy, alpha = .35})
     end
-
-    -- History entry (noHistory is for when it needs to be fastforwarded in NetClient.
   end
 end
 

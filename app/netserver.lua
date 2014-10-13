@@ -226,6 +226,7 @@ function NetServer:sync()
   if #self.importantEventBuffer > 0 then
     self.outStream:clear()
     while #self.importantEventBuffer > 0 and (tick - self.importantEventBuffer[1][3]) * tickRate >= .000 do
+      print('sending ' .. self.importantEventBuffer[1][1])
       self:pack(unpack(self.importantEventBuffer[1]))
       table.remove(self.importantEventBuffer, 1)
    end

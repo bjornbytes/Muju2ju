@@ -201,26 +201,31 @@ end
 function Unit:addBuff(stat, amount, timer, source, tag)
   self.buffs[stat] = self.buffs[stat] or {}
 
-  tag = tag and self:getBuff(tag)
   if tag then
-    tag.amout = amount
-    tag.timer = timer
-    tag.source = source
-    return
+    local buff = self:getBuff(stat, tag)
+    if buff then
+      buff.amount = amount
+      buff.timer = timer
+      buff.source = source
+      return
+    end
   end
 
   table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source, tag = tag})
 end
 
-function Unit:getBuff(tag)
-  return next(table.filter(self.buffs[stat], function(buff) return buff.tag == tag end))
+function Unit:getBuff(stat, tag)
+  if not self.buffs[stat] then return end
+  for _, buff in pairs(self.buffs[stat]) do 
+    if buff.tag == tag then return buff end
+  end
 end
 
 function Unit:getStat(stat)
   local base = self[stat]
   if type(base) ~= 'number' then return base end
   local val = base
-  table.each(self.buffs[key], function(buff)
+  table.each(self.buffs[stat], function(buff)
     local amount = buff.amount
 
     if type(amount) == 'string' and amount:match('%%') then

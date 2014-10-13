@@ -118,7 +118,6 @@ NetClient.messages.jujuCollect = {
 NetClient.messages.burst = {
   receive = function(self, event)
     local unit = ctx.units.objects[event.data.owner]
-    print(event.data.owner, unit)
     if unit then unit:burst({tick = event.data.tick}) end
   end
 }

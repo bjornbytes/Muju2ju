@@ -53,5 +53,19 @@ function Thuju:attack()
   end})
 end
 
+function Thuju:hurt(amount, source)
+  if self.owner.deck[self.code].upgrades.thorns then
+    if source then
+      amount = amount * (1 - self.thornsReduce)
+      source:hurt(amount * self.thornsAmount, self)
+      if self.thornsArmorReduce > 0 then
+        source:addBuff('armor', self.thornsArmorReduce, 1, self, 'thornsArmorReduction')
+      end
+    end
+  end
+
+  Unit.hurt(self, amount, source)
+end
+
 return Thuju
 

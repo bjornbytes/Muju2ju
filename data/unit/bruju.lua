@@ -72,9 +72,8 @@ function Bruju:update()
 end
 
 function Bruju:die()
-  if self.owner.deck[self.code].upgrades.burst then
-    --
-  end
+  self:burst()
+  Unit.die(self)
 end
 
 function Bruju:attack()
@@ -90,6 +89,27 @@ function Bruju:attack()
     if love.math.random() > .5 then pitch = 1 / pitch end
     sound:setPitch(pitch)
   end})
+end
+
+function Bruju:burst(data)
+  if self.owner.deck[self.code].upgrades.burst then
+    data = table.merge(data, {
+      tick = tick,
+      owner = self,
+      x = self.x,
+      y = self.y,
+      radius = self.burstRange,
+      damage = self.burstDamage,
+      heal = self.burstHeal
+    })
+
+    ctx.spells:add('burst', data)
+
+    ctx.net:emit('burst', {
+      tick = tick,
+      owner = self.id
+    })
+  end
 end
 
 return Bruju

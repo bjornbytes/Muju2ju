@@ -14,11 +14,7 @@ config = {
         {
           code = 'bruju',
           skin = {},
-          runes = {
-            {1, 2, nil},
-            {nil, nil},
-            {nil}
-          }
+          runes = {1, 1, nil, nil, nil, nil}
         }
       }
     }
@@ -27,6 +23,18 @@ config = {
     kind = 'survival',
     options = {
       difficulty = 'hard'
+    }
+  }
+}
+
+runes = {
+  {
+    id = 1,
+    name = 'Fortitude Rune',
+    description = 'Put it towards health.',
+    tier = 1,
+    values = {
+      maxHealth = {10, 20, 30, 40, 50}
     }
   }
 }

@@ -45,5 +45,12 @@ end
 
 function Target:inRange(source, range, teamFilter, ...)
   local targets = halp(source, teamFilter, {...})
-  return table.map(table.filter(targets, function(t) return t[2] <= range + t[1].width / 2 end), function(t) return t[1] end)
+
+  local i = 1
+  while i < #targets do
+    if targets[i][2] > range + targets[i][1].width / 2 then table.remove(targets, i)
+    else i = i + 1 end
+  end
+
+  return table.map(targets, function(t) return t[1] end)
 end

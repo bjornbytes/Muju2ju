@@ -106,3 +106,6 @@ function PlayerServer:hurt(amount, source)
 	end
 end
 
+function PlayerServer:heal(amount, source)
+  self.health = math.min(self.health + amount, self.maxHealth)
+end

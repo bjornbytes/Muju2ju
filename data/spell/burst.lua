@@ -7,7 +7,8 @@ function Burst:activate()
 	self.health = self.maxHealth
 	self.angle = love.math.random() * 2 * math.pi
 	self.scale = 0
-  self:damage()
+  table.each(ctx.target:inRange(self.owner, self.radius, 'enemy', 'unit', 'player'), f.ego('hurt', self.damage))
+  table.each(ctx.target:inRange(self.owner, self.radius, 'ally', 'unit', 'player'), f.ego('heal', self.heal))
   ctx.event:emit('view.register', {object = self})
 end
 
@@ -17,7 +18,7 @@ end
 
 function Burst:update()
 	self.health = timer.rot(self.health, function() ctx.spells:remove(self) end)
-	self.scale = math.lerp(self.scale, self.radius / data.media.graphics.explosion:getWidth(), 20 * tickRate)
+	self.scale = math.lerp(self.scale, self.radius / 328, 20 * tickRate)
 end
 
 function Burst:draw()
@@ -27,11 +28,4 @@ function Burst:draw()
 	g.draw(image, self.x, self.y, self.angle, self.scale + .2, self.scale + .2, image:getWidth() / 2, image:getHeight() / 2)
 end
 
-function Burst:damage()
-  local damage = 20 * self.level
-  self.radius = 50 + 5 * self.level
-  table.each(ctx.target:inRange(self, self.radius, 'enemy', 'unit', 'player'), f.ego('hurt', damage))
-end
-
 return Burst
-

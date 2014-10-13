@@ -43,6 +43,8 @@ end
 function Player:activate()
   self.animation = data.animation.muju(self)
 
+  self:initDeck()
+
   ctx.event:emit('view.register', {object = self})
 end
 
@@ -131,6 +133,7 @@ function Player:slot(input)
 end
 
 Player.hurt = f.empty
+Player.heal = f.empty
 
 function Player:die()
   self.deathTimer = self.deathDuration
@@ -171,12 +174,10 @@ function Player:initDeck()
   for i = 1, #ctx.config.players[self.id].deck do
     local entry = ctx.config.players[self.id].deck[i]
 
-    self.deck[entry.code] = {}
-    self.deck[entry.code].runes = entry.runes
-    self.deck[entry.code].upgrades = {}
-
-    table.each(self.deck[entry.code].runes, function(rune)
-      rune.level = 0
-    end)
+    self.deck[entry.code] = {
+      runes = table.map(entry.runes, function(rune) return setmetatable({level = 0}, runes[rune]) end),
+      upgrades = {burst = true},
+      cooldown = 0
+    }
   end
 end

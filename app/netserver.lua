@@ -159,19 +159,12 @@ NetServer.messages.jujuCollect = {
   important = true
 }
 
-NetServer.messages.spellCreate = {
+NetServer.messages.burst = {
   data = {
     tick = 16,
-    kind = 4,
-    x = 16,
-    y = 16,
-    owner = 3,
-    target = 12,
-    seed = 8,
-    other = 'string'
+    owner = 12
   },
-  order = {'tick', 'kind', 'x', 'y', 'owner', 'target', 'seed', 'other'},
-  delta = {'x', 'y', 'owner', 'target', 'seed', 'other'}
+  order = {'tick', 'owner'}
 }
 
 function NetServer:init()

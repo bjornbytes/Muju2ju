@@ -115,9 +115,11 @@ NetClient.messages.jujuCollect = {
   end
 }
 
-NetClient.messages.spellCreate = {
+NetClient.messages.burst = {
   receive = function(self, event)
-    ctx.event:emit('spellCreate', event.data)
+    local unit = ctx.units.objects[event.data.owner]
+    print(event.data.owner, unit)
+    if unit then unit:burst({tick = event.data.tick}) end
   end
 }
 

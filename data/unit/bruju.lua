@@ -44,9 +44,9 @@ function Bruju:update()
       return
     end
 
-    --if self.owner.deck[self.code].upgrades.retaliation then
-      --
-    --end
+    if self.owner.deck[self.code].upgrades.retaliation then
+      self:addBuff('damage', self.maxHealth - self.health, 1, self, 'retaliation')
+    end
 
     Unit.update(self)
 
@@ -80,7 +80,7 @@ function Bruju:attack()
   local damage = self.damage
 
   -- The Works
-  self.target:hurt(damage, self)
+  self.target:hurt(self:getStat('damage'), self)
   self.attackTimer = self.attackSpeed
 
   -- Sound

@@ -46,8 +46,8 @@ function Bloom:applyEffect(source, target)
   love.graphics.setColor(255, 255, 255, self.alpha * 100 * factor)
   g.setBlendMode('additive')
 	g.draw(self.canvas, 0, 0, 0, 4, 4)
-	local x = p.dead and math.clamp(p.ghost.x, 300, 500) or 400
-	local y = p.dead and math.clamp(p.ghost.y, 0, 600) or 300
+	local x = p.dead and math.clamp(p.ghostX, 300, 500) or 400
+	local y = p.dead and math.clamp(p.ghostY, 0, 600) or 300
 	for i = 6, 1, -1 do
 		g.draw(self.canvas, x, y, 0, 4 + i * 1.25 * factor, 4 + i * 1.25 * factor, self.canvas:getWidth() / 2, self.canvas:getHeight() / 2)
 	end

@@ -5,6 +5,9 @@ function PlayerMain:activate()
   self.prev = setmetatable({}, self.meta)
   self.inputs = {}
 
+  ctx.view.x = self.x - ctx.view.width / 2
+  ctx.view.y = self.y - ctx.view.height / 2
+
   Player.activate(self)
 end
 

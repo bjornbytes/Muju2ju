@@ -50,20 +50,6 @@ function Menu:mousepressed(...) return self:with('mousepressed', ...) end
 function Menu:mousereleased(...) return self:with('mousereleased', ...) end
 function Menu:textinput(...) return self:with('textinput', ...) end
 
---[[function Menu:mousepressed(x, y, b)
-	if math.inside(x, y, 435, 220, 190, 90) then
-		if self.menuSounds then self.menuSounds:stop() end
-		Context:remove(ctx)
-		Context:add(Game)
-	elseif math.inside(x, y, 425, 335, 210, 90) then
-		print('Harry Truman bitch!')
-		self.creditsAlpha = 2
-	elseif math.inside(x, y, 455, 445, 160, 90) then
-		love.event.quit()
-	end
-
-  self.gooey:mousepressed(x, y, b)
-end]]
 
 function Menu:with(key, ...)
   local page = self.pages[self.page]

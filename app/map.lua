@@ -1,6 +1,6 @@
 Map = class()
 
-Map.width, Map.height = 1280, 960
+Map.width, Map.height = 1500, 600
 
 local function drawBackground(self)
   local g = love.graphics

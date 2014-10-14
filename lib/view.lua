@@ -51,7 +51,6 @@ function View:update()
   self.x = self.x + self.vx * tickRate
   self.y = self.y + self.vy * tickRate
   
-  self:follow()
   self:contain()
 
   self.shake = math.lerp(self.shake, 0, 8 * tickRate)
@@ -108,7 +107,13 @@ end
 function View:resize()
   local w, h = love.graphics.getDimensions()
   self.frame.x, self.frame.y, self.frame.width, self.frame.height = 0, 0, self.width, self.height
-  if (self.width / self.height) > (w / h) then
+  local ratio = w / h
+  self.width = self.height * ratio
+  self.scale = h / self.height
+  self.frame.width = w
+  self.frame.height = h
+
+  --[[if (self.width / self.height) > (w / h) then
     self.scale = w / self.width
     local margin = math.max(math.round(((h - w * (self.height / self.width)) / 2)), 0)
     self.frame.y = margin
@@ -120,7 +125,7 @@ function View:resize()
     self.frame.x = margin
     self.frame.width = w - 2 * margin
     self.frame.height = h
-  end
+  end]]
 
    self.sourceCanvas = love.graphics.newCanvas(w, h)
   self.targetCanvas = love.graphics.newCanvas(w, h)
@@ -168,24 +173,6 @@ end
 
 function View:threeDepth(x, y, z)
   return math.clamp(math.distance(x, y, self.x + self.width / 2, self.y + self.height / 2) * self.scale - 1000 - z, -4096, -16)
-end
-
-function View:follow()
-  local p = ctx.players:get(ctx.id)
-  if p then
-    local tx, ty
-    if p.dead then 
-      tx, ty = p.ghostX, p.ghostY
-    else
-      tx, ty = p.x, p.y
-    end
-
-    tx = tx - self.width / 2
-    ty = ty - self.height / 2
-
-    self.x = math.lerp(self.x, tx, math.min(6 * tickRate, 1))
-    self.y = math.lerp(self.y, ty, math.min(6 * tickRate, 1))
-  end
 end
 
 function View:contain()

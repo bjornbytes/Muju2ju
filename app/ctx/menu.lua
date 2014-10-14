@@ -7,6 +7,9 @@ function Menu:load()
 	self.creditsAlpha = 0
 	love.mouse.setCursor(love.mouse.newCursor('media/graphics/cursor.png'))
 
+  self.hubThread = love.thread.newThread('app/hub/hub.lua')
+  self.hubThread:start()
+
   love.keyboard.setKeyRepeat(true)
   
   if self.menuSounds then self.menuSounds:stop() end
@@ -18,44 +21,6 @@ function Menu:load()
   self.pages.main = MenuMain()
 
   self.page = 'login'
-
-  --[[local http = require('socket.http')
-  local json = require('spine-love/dkjson')
-  local token = http.request('http://96.126.101.55:7000/login', 'username=trey&password=test')
-  print('logged in.  token is ' .. token)
-  self.hub = require('socket').tcp()
-  local success, e = self.hub:connect('96.126.101.55', 7001)
-  if e then print('could not connect to hub')
-  else print('connected to hub') end
-
-  local str = json.encode({token = token, cmd = 'connect', payload = {token = token}}) .. '\n'
-  print('sending ' .. str)
-
-  self.hub:send(str)
-
-  str = json.encode({token = token, cmd = 'lobbyCreate', payload = {}}) .. '\n'
-  print('sending ' .. str)
-
-  self.hub:send(str)
-
-  local data = self.hub:receive('*l')
-  print('received ' .. data)
-  table.print(json.decode(data))
-
-  str = json.encode({token = token, cmd = 'lobbyQueue', payload = {}}) .. '\n'
-  print('sending ' .. str)
-
-  self.hub:send(str)
-
-  local data = self.hub:receive('*l')
-  print('received ' .. data)
-  local config = json.decode(data).payload
-
-  table.print(config)
-  _G['config'] = config
-
-  Context:remove(ctx)
-  Context:add(Game)]]
 end
 
 function Menu:update()
@@ -63,6 +28,7 @@ function Menu:update()
 	self.creditsAlpha = timer.rot(self.creditsAlpha)
   
   self.hub:update()
+  if self.hubThread:getError() then error(self.hubThread:getError()) end
 
   f.exe(page.update, page)
 end
@@ -78,15 +44,13 @@ function Menu:draw()
   f.exe(page.draw, page)
 end
 
-function Menu:keypressed(key)
-  --
-end
+function Menu:keypressed(...) return self:with('keypressed', ...) end
+function Menu:keyreleased(...) return self:with('keyreleased', ...) end
+function Menu:mousepressed(...) return self:with('mousepressed', ...) end
+function Menu:mousereleased(...) return self:with('mousereleased', ...) end
+function Menu:textinput(...) return self:with('textinput', ...) end
 
-function Menu:keyreleased(key)
-  --
-end
-
-function Menu:mousepressed(x, y, b)
+--[[function Menu:mousepressed(x, y, b)
 	if math.inside(x, y, 435, 220, 190, 90) then
 		if self.menuSounds then self.menuSounds:stop() end
 		Context:remove(ctx)
@@ -97,5 +61,11 @@ function Menu:mousepressed(x, y, b)
 	elseif math.inside(x, y, 455, 445, 160, 90) then
 		love.event.quit()
 	end
-end
 
+  self.gooey:mousepressed(x, y, b)
+end]]
+
+function Menu:with(key, ...)
+  local page = self.pages[self.page]
+  f.exe(page[key], page, ...)
+end

@@ -7,8 +7,8 @@ function love.conf(t)
     t.modules.graphics = nil
     t.window = nil
   else
-    t.window.width = 0
-    t.window.height = 0
+    t.window.width = 800
+    t.window.height = 600
     t.window.resizable = true
     if false and arg[2] ~= 'local' then
       t.window.fullscreen = true

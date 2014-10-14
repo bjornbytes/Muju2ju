@@ -1,6 +1,10 @@
 MenuHub = class()
 
 MenuHub.handlers = {
+  login = function(self, data)
+    ctx.pages.login:loggedIn(data)
+  end,
+
   saveDeck = function(self, data)
     -- 
   end
@@ -17,11 +21,12 @@ function MenuHub:update()
     if not message then break end
     
     if message.cmd then
-      f.exe(self.handlers[message.cmd], self, message.payload)
+      f.exe(self.handlers[message.cmd], self, message)
     end
   end
 end
 
 function MenuHub:send(cmd, payload)
-  self.sendQueue:push({cmd = cmd, payload = payload})
+  payload.cmd = cmd
+  self.sendQueue:push(payload)
 end

@@ -176,7 +176,7 @@ function Player:initDeck()
 
     self.deck[entry.code] = {
       runes = table.map(entry.runes, function(rune) return setmetatable({level = 0}, runes[rune]) end),
-      upgrades = {retaliation = true},
+      upgrades = {burst = true},
       cooldown = 0
     }
   end

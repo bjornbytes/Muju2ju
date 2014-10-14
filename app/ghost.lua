@@ -46,9 +46,9 @@ function Ghost:update()
 
   self.boost = math.lerp(self.boost, 0, 3 * tickRate)
   self.boosts[tick] = self.boost
-  self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
-  self.bounds[tick] = self.maxDis
   self.health = timer.rot(self.health)
+  self:contain()
+  self.bounds[tick] = self.maxDis
 end
 
 function Ghost:draw(x, y, angle)
@@ -70,7 +70,8 @@ function Ghost:draw(x, y, angle)
 	g.draw(image, x, y, angle, .6 * scale, .6 * scale, image:getWidth() / 2, image:getHeight() / 2)
 
 	g.setColor(255, 255, 255, 10)
-	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, self.maxDis)
+  local bounds = math.lerp(self.bounds[tick - 1] or self.bounds[tick], self.bounds[tick], tickDelta / tickRate)
+	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, bounds)
 end
 
 function Ghost:move(input)
@@ -93,13 +94,18 @@ function Ghost:move(input)
   local boost = self.boosts[input.tick] or self.boost
   self.owner.ghostY = self.owner.ghostY + boost * tickRate
 
-	local px, py = self.owner.x, self.owner.y + self.owner.height
+  self:contain()
+end
 
-  local bounds = self.bounds[input.tick] or self.maxDis
+function Ghost:contain(t)
+	local px, py = self.owner.x, self.owner.y + self.owner.height
+  t = t or tick
+  self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
+  local bounds = t == tick and self.maxDis or self.bounds[t]
 	if math.distance(self.owner.ghostX, self.owner.ghostY, px, py) > bounds then
 		local angle = math.direction(px, py, self.owner.ghostX, self.owner.ghostY)
-		self.owner.ghostX = math.lerp(self.owner.ghostX, px + math.dx(bounds, angle), 10 * tickRate)
-		self.owner.ghostY = math.lerp(self.owner.ghostY, py + math.dy(bounds, angle), 10 * tickRate)
+		self.owner.ghostX = px + math.dx(bounds, angle)
+		self.owner.ghostY = py + math.dy(bounds, angle)
 	end
 end
 

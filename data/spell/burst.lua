@@ -7,8 +7,11 @@ function Burst:activate()
 	self.health = self.maxHealth
 	self.angle = love.math.random() * 2 * math.pi
 	self.scale = 0
-  table.each(ctx.target:inRange(self.owner, self.radius, 'enemy', 'unit', 'player'), f.ego('hurt', self.damage))
-  table.each(ctx.target:inRange(self.owner, self.radius, 'ally', 'unit', 'player'), f.ego('heal', self.heal))
+  if self.damage and self.heal then
+    self.team = self.owner.team
+    table.each(ctx.target:inRange(self, self.radius, 'enemy', 'unit', 'player'), f.ego('hurt', self.damage))
+    table.each(ctx.target:inRange(self, self.radius, 'ally', 'unit', 'player'), f.ego('heal', self.heal))
+  end
   ctx.event:emit('view.register', {object = self})
 end
 

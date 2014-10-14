@@ -12,7 +12,7 @@ Bruju.attackRange = 24
 Bruju.attackSpeed = 1
 Bruju.speed = 50
 
-Bruju.burstDamage = 10
+Bruju.burstDamage = 15
 Bruju.burstRange = 90
 Bruju.burstHeal = 0
 
@@ -94,23 +94,19 @@ function Bruju:attack()
   end})
 end
 
-function Bruju:burst(data)
+function Bruju:burst()
+  t = t or tick
   if self.owner.deck[self.code].upgrades.burst then
-    data = table.merge(data, {
-      tick = tick,
-      owner = self,
-      x = self.x,
-      y = self.y,
-      radius = self.burstRange,
-      damage = self.burstDamage,
-      heal = self.burstHeal
-    })
-
-    ctx.spells:add('burst', data)
-
-    ctx.net:emit('burst', {
-      tick = tick,
-      owner = self.id
+    ctx.net:emit('spellCreate', {
+      properties = {
+        kind = 'burst',
+        owner = self.owner,
+        x = self.x,
+        y = self.y,
+        radius = self.burstRange,
+        damage = self.burstDamage,
+        heal = self.burstHeal
+      }
     })
   end
 end

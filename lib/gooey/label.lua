@@ -1,3 +1,5 @@
+require 'lib/gooey/element'
+
 Label = extend(Element)
 
 local g = love.graphics

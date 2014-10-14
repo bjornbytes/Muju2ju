@@ -11,6 +11,7 @@ Element.padding = 0
 function Element:init(data)
   self.parent = nil
   self.children = {}
+  self.event = Event()
 
   table.merge(data, self)
 end
@@ -98,4 +99,12 @@ function Element:mouseOver()
   local x, y = self.owner.frame.x + self.x * u, self.owner.frame.y + self.y * v
   local w, h = self.width * u, self.height * v
   return math.inside(love.mouse.getX(), love.mouse.getY(), x, y, w, h)
+end
+
+function Element:on(...)
+  self.event:on(...)
+end
+
+function Element:emit(...)
+  self.event:emit(...)
 end

@@ -5,14 +5,13 @@ local g = love.graphics
 function Gooey:init(template)
   self.elements = {}
   self.stack = {}
+  self.ids = {}
+
+  self.event = Event()
 
   for i = 1, #template do
-    local el = self:createElement(template[i])
+    local el = self:createElement(template[i], template[i].class and template.classes[template[i].class])
     table.insert(self.elements, el)
-    local name = template[i].name
-    if name and not self[name] then
-      self[name] = el
-    end
   end
 
   self.focused = nil
@@ -34,14 +33,28 @@ function Gooey:mousepressed(...) self:with('mousepressed', ...) end
 function Gooey:mousereleased(...) self:with('mousereleased', ...) end
 function Gooey:textinput(...) self:with('textinput', ...) end
 
-function Gooey:createElement(data)
+function Gooey:createElement(data, base)
+  data.properties = table.merge(data.properties, base and table.copy(base) or {})
+
   local el = _G[data.kind](data.properties)
   el.owner = self
+
+  if data.id then
+    el.id = data.id
+    self.ids[data.id] = el
+  end
+
   if not data.children then return el end
   for i = 1, #data.children or {} do
     el:add(self:createElement(data.children[i]))
   end
+
   return el
+end
+
+function Gooey:find(id)
+  if type(id) ~= 'string' or not id then return end
+  return self.ids[id]
 end
 
 function Gooey:with(key, ...)
@@ -77,3 +90,4 @@ function Gooey:focus(el)
   self.focused = el
   f.exe(self.focused.focus, self.focused)
 end
+

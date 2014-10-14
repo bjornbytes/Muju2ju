@@ -50,24 +50,26 @@ function TextField:render()
 
   Element.render(self)
 
+  local text = self.renderFilter and self.renderFilter(self.text) or self.text
+
   g.setFont(self.font, self.size == 'auto' and self:autoFontSize() or self.size * v)
   local c = self.color
-  if #self.text == 0 then
+  if #text == 0 then
     g.setColor(c[1], c[2], c[3], (c[4] or 255) / 2)
     g.print(self.placeholder, x, y)
   else
     g.setColor(self.color)
-    g.print(self.text, x, y)
+    g.print(text, x, y)
   end
 
   if self.focused and self.cursor then
     local cursorx = x
     if self.cursorPosition > 0 then
-      cursorx = x + g.getFont():getWidth(self.text:sub(1, self.cursorPosition))
+      cursorx = x + g.getFont():getWidth(text:sub(1, self.cursorPosition))
     end
     cursorx = cursorx + 1
     self.cursorx = math.lerp(self.cursorx, cursorx, 8 * tickRate)
-    self.cursorx = math.clamp(self.cursorx, x, x + g.getFont():getWidth(self.text .. 'M'))
+    self.cursorx = math.clamp(self.cursorx, x, x + g.getFont():getWidth(text .. 'M'))
     g.setColor(self.color)
     g.line(self.cursorx, y, self.cursorx, y + g.getFont():getHeight())
   end
@@ -75,6 +77,7 @@ end
 
 function TextField:keypressed(key) 
   if self.focused then
+    self:emit('keypressed', {element = self, key = key})
     local os = love.system.getOS():gsub(' ', ''):gsub('%a', string.lower)
     local method = (self.binds[os] and self.binds[os][key]) or self.binds.all[key]
     if type(method) == 'function' then return method(self)
@@ -95,12 +98,14 @@ function TextField:mousepressed(mx, my, button)
   local x, y = self.x * u + self.padding, self.y * v + self.padding
   g.setFont(self.font, self.size == 'auto' and self:autoFontSize() or self.size * v)
 
+  local text = self.renderFilter and self.renderFilter(self.text) or self.text
+
   self.cursorPosition = 0
-  if x + g.getFont():getWidth(self.text) < mx then
-    self.cursorPosition = #self.text
+  if x + g.getFont():getWidth(text) < mx then
+    self.cursorPosition = #text
   else
-    local function subwidth(pos) return g.getFont():getWidth(self.text:sub(1, pos)) end
-    while x + subwidth(self.cursorPosition) < mx and self.cursorPosition < #self.text do
+    local function subwidth(pos) return g.getFont():getWidth(text:sub(1, pos)) end
+    while x + subwidth(self.cursorPosition) < mx and self.cursorPosition < #text do
       self.cursorPosition = self.cursorPosition + 1
     end
     if (x + subwidth(self.cursorPosition)) - mx > (subwidth(self.cursorPosition) - subwidth(self.cursorPosition - 1)) / 2 then

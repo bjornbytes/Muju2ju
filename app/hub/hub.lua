@@ -1,4 +1,5 @@
 local hub = require('socket').tcp()
+local http = require('socket.http')
 local json = require('spine-love/dkjson')
 
 local receiveQueue = love.thread.getChannel('hubReceiveQueue')
@@ -20,34 +21,48 @@ local function carry(line)
 end
 
 local function formatPost(data)
-  local str = ''
-  for k, v in pairs(data) do
-    str = str .. k .. '=' .. v .. '&'
-  end
-  return str:substr(0, #str - 1)
+  if not data then return '' end
+  local t = {}
+  for k, v in pairs(data) do t[#t + 1] = k .. '=' .. v end
+  return table.concat(t, '&')
 end
 
 local success, e = hub:connect(serverAddress, 7001)
 if e then error(e) end
 
-hub:settimeout(100)
+hub:settimeout(.1)
 
 while true do
 
   -- Receive stuff
-  local line, e = hub:receive('*a')
+  local line, e = hub:receive(1000)
   carry(line)
 
   -- Send stuff
-  local message = sendQueue:pop()
-  while message do
+  local data = sendQueue:pop()
+  while data do
+    local message = {cmd = data.cmd}
+    data.cmd = nil
+    message.payload = data
+
     if message.cmd == 'login' then
-      local str = http.request(serverAddress .. '/login', formatPost(message.payload))
-      receiveQueue:push(json.decode(str))
+      local str, code = http.request('http://' .. serverAddress .. ':7000/login', formatPost(message.payload))
+
+      local data
+      if code == 200 then
+        data = {cmd = 'login', token = str}
+      elseif code == 401 then
+        data = {cmd = 'login', error = 'authentication'}
+      else
+        data = {cmd = 'login', error = 'unknown'}
+      end
+
+      receiveQueue:push(data)
     else
-      line:send(json.encode(message))
+      line:send(json.encode(data))
     end
-    message = sendQueue:pop()
+
+    data = sendQueue:pop()
   end
 end
 

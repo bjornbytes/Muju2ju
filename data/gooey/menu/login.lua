@@ -48,7 +48,20 @@ return {
           text = 'Login',
           border = {255, 255, 255}
         }
-      }
+      },
+			{ id = 'exitButton',
+				kind = 'Button',
+				properties = {
+					x = .82,
+					y = .90,
+					width = .15,
+					height = .05,
+					padding = 8,
+					font = 'aeromatics',
+					text = 'Quit',
+					border = {255, 255, 255}
+				}
+			}
     }
   }
 }

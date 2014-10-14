@@ -10,6 +10,10 @@ function MenuLogin:init()
 
   self.gooey:find('loginButton'):on('clicked', f.cur(self.authenticate, self))
 
+	self.gooey:find('exitButton'):on('clicked', function() 
+		love.event.quit();	
+	end)
+
   self.username:on('keypressed', function(data)
     if data.key == 'tab' then self.gooey:focus(self.password) end
   end)

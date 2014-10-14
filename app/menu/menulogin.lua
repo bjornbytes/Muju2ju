@@ -3,7 +3,7 @@ local http = require('socket.http')
 MenuLogin = class()
 
 function MenuLogin:init()
-  self:authenticate('sophia', 'test')
+  self:authenticate('trey', 'test')
 end
 
 function MenuLogin:update()
@@ -17,6 +17,6 @@ end
 function MenuLogin:authenticate(username, password)
   local token, err = http.request('http://96.126.101.55:7000/login', 'username=' .. username .. '&password=' .. password)
   if err then print(err) end
-  -- I'm coding. Obviously.
-  self.token = token
+
+  ctx.token = token
 end

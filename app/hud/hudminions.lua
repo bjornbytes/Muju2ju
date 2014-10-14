@@ -32,16 +32,20 @@ function HudMinions:draw()
   local p = ctx.players:get(ctx.id)
   if not p then return end
 
-  local yy = 135
+  local u, v = ctx.hud.u, ctx.hud.v
+  local ct = table.count(p.deck)
+
+  local inc = u * .1
+  local xx = u * .5 - (inc * (ct - 1))
   local font = ctx.hud.boldFont
 
   for i = 1, #p.minions do
     local bg = self.bg[i]
     local w, h = bg:getDimensions()
-    local scale = .75 + (.15 * self.factor[i]) + (.1 * self.extra[i])
-    local xx = 48 - 10 * (1 - self.factor[i])
+    local scale = (.1 + (.0175 * self.factor[i]) + (.012 * self.extra[i])) * v / w
+    local yy = .08 * v
     local f, cost = font, tostring('12')
-    local tx, ty = xx - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
+    --local tx, ty = xx - w / 2 - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35
 
     -- Backdrop
@@ -60,11 +64,11 @@ function HudMinions:draw()
     g.setBlendMode('alpha')
 
     -- Cost
-    g.setFont(ctx.hud.boldFont)
+    --[[g.setFont(ctx.hud.boldFont)
     g.setColor(0, 0, 0, 200 + 55 * self.factor[i])
     g.print(cost, tx + 1, ty + 1)
     g.setColor(255, 255, 255, 200 + 55 * self.factor[i])
     g.print(cost, tx, ty)
-    yy = yy + h
+    xx = xx + inc]]
   end
 end

@@ -1,8 +1,10 @@
 Typo = {}
 Typo.fonts = {}
-local setFont = love.graphics.setFont
+local setFont = love.graphics and love.graphics.setFont
 
 Typo.font = function(name, size)
+  if not love.graphics then return nil end
+
   if not name then
     Typo.fonts.default[size] = Typo.fonts.default[size] or love.graphics.newFont(size)
     return Typo.fonts.default[size]
@@ -14,10 +16,12 @@ Typo.font = function(name, size)
   return Typo.fonts[name][size]
 end
 
-love.graphics.setFont = function(name, size)
-  if type(name) ~= 'string' then return setFont(name) end
+if love.graphics then
+  love.graphics.setFont = function(name, size)
+    if type(name) ~= 'string' then return setFont(name) end
 
-  setFont(Typo.font(name, size))
+    setFont(Typo.font(name, size))
+  end
 end
 
 Typo.resize = function()

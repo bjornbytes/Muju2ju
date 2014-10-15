@@ -233,7 +233,7 @@ function NetServer:disconnect(event)
   self.peerToPlayer[event.peer] = nil
   event.peer:disconnect_now()
 
-  if table.has(arg, 'test') then
+  if table.has(arg, 'test') and table.count(self.peerToPlayer[event.peer]) == 0 then
     self:quit()
     Context:remove(ctx)
     Context:add(Server)

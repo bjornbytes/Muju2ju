@@ -115,6 +115,15 @@ NetClient.messages.snapshot = {
   end
 }
 
+NetClient.messages.chat = {
+  data = {message = 'string'},
+  order = {'message'},
+  important = true,
+  receive = function(self, event)
+    ctx.event:emit('chat', event.data)
+  end
+}
+
 NetClient.messages.unitCreate = {
   receive = function(self, event)
     ctx.event:emit('unitCreate', event.data)
@@ -188,7 +197,7 @@ function NetClient:disconnect(event)
 end
 
 function NetClient:send(msg, data)
-  if not self.server then return end
+  if not self.server or not self.messages[msg] then return end
   
   self.outStream:clear()
   self:pack(msg, data)

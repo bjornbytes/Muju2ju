@@ -26,6 +26,7 @@ function Game:load()
     self.target = Target()
     self.sound = Sound()
     self.hud = Hud()
+    self.hud.chat:add({message = 'Welcome!'})
     backgroundSound = self.sound:loop({sound = 'background'})
 
     if ctx.config.game.kind == 'survival' then
@@ -98,6 +99,7 @@ end
 function Game:resize()
 	self.view:resize()
 	self.effects:resize()
+  self.hud:resize()
 end
 
 function Game:keypressed(key)

@@ -5,7 +5,6 @@ local g = love.graphics
 function Hud:init()
   self.particles = Manager('particle')
 
-
   self.normalFont = g.newFont('media/fonts/inglobal.ttf', 14)
   self.boldFont = g.newFont('media/fonts/inglobalb.ttf', 14)
   self.titleFont = g.newFont('media/fonts/inglobal.ttf', 24)
@@ -16,6 +15,7 @@ function Hud:init()
   self.minions = HudMinions()
   self.timer = HudTimer()
   self.tutorial = HudTutorial()
+  self.chat = HudChat()
   self.upgrades = HudUpgrades()
   self.pause = HudPause()
   self.dead = HudDead()
@@ -38,6 +38,7 @@ function Hud:update()
   self.juju:update()
   self.minions:update()
   self.tutorial:update()
+  self.chat:update()
   self.upgrades:update()
   self.pause:update()
   self.dead:update()
@@ -67,6 +68,7 @@ function Hud:gui()
   self.minions:draw()
   self.timer:draw()
   self.tutorial:draw()
+  self.chat:draw()
   self.upgrades:draw()
   self.pause:draw()
   self.dead:draw()
@@ -75,6 +77,7 @@ function Hud:gui()
 end
 
 function Hud:keypressed(key)
+  self.chat:keypressed(key)
   self.upgrades:keypressed(key)
   self.dead:keypressed(key)
 end
@@ -86,9 +89,14 @@ function Hud:mousereleased(...)
 end
 
 function Hud:textinput(char)
+  self.chat:textinput(char)
   self.dead:textinput(char)
 end
 
 function Hud:gamepadpressed(...)
   self.upgrades:gamepadpressed(...)
+end
+
+function Hud:resize()
+  self.chat:resize()
 end

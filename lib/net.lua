@@ -7,6 +7,7 @@ Net.messageMap = {
   'bootstrap',
   'input',
   'snapshot',
+  'chat',
   'unitCreate',
   'unitDestroy',
   'jujuCreate',

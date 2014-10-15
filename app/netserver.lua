@@ -92,7 +92,8 @@ NetServer.messages.bootstrap = {
     'tick', 'players', 'units',
     players = {'id', 'x'},
     units = {'id', 'owner', 'kind', 'x'}
-  }
+  },
+  important = true
 }
 
 NetServer.messages.input = {
@@ -144,6 +145,20 @@ NetServer.messages.snapshot = {
     players = {'id', 'x', 'health', 'dead', 'animationData', 'ghostX', 'ghostY', 'ghostAngle' },
     units = {'id', 'x', 'health', 'animationData'}
   }
+}
+
+NetServer.messages.chat = {
+  data = {
+    message = 'string'
+  },
+  order = {'message'},
+  important = true,
+  receive = function(self, event)
+    local id = self.peerToPlayer[event.peer]
+    if not id then return end
+    local username = ctx.config.players[id].username
+    self:emit('chat', {message = '{white}' .. username .. ': ' .. event.data.message})
+  end
 }
 
 NetServer.messages.unitCreate = {

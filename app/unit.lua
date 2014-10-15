@@ -6,6 +6,11 @@ Unit.cost = 5
 Unit.cooldown = 5
 
 function Unit:activate()
+  self.y = ctx.map.height - ctx.map.groundHeight - self.height
+  self.team = self.owner and self.owner.team or 0
+  self.health = self.maxHealth
+  self.createdAt = tick
+
   if ctx.tag == 'server' then
     self.rng = love.math.newRandomGenerator(self.id)
 
@@ -37,6 +42,7 @@ function Unit:activate()
     self.attackTimer = 0
     self.dead = false
     self.buffs = {}
+    self.shouldDestroy = false
   else
     self.history = NetHistory(self)
     
@@ -46,11 +52,6 @@ function Unit:activate()
     self.y = self.y + r
     self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
   end
-
-  self.team = self.owner and self.owner.team or 0
-  self.y = ctx.map.height - ctx.map.groundHeight - self.height
-  self.health = self.maxHealth
-  self.createdAt = tick
 
   ctx.event:emit('view.register', {object = self})
 end
@@ -165,9 +166,8 @@ end
 
 function Unit:die()
   local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
-  print(ctx.jujus.nextId, self.x, self.y)
   ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), amount = 10, vx = vx, vy = vy})
-  ctx.net:emit('unitDestroy', {id = self.id})
+  self.shouldDestroy = true
 end
 
 function Unit:getHealthbar()

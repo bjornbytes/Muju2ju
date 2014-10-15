@@ -4,6 +4,7 @@ Net.messageMap = {
   'join',
   'leave',
   'ready',
+  'bootstrap',
   'input',
   'snapshot',
   'unitCreate',
@@ -53,14 +54,35 @@ function Net:update()
 end
 
 function Net:pack(msg, data)
-  assert(type(msg) == 'string' and self.messages[msg])
-  self.outStream:write(self.messageMap[msg], 5)
-  self.outStream:pack(data, self.messages[msg])
+  if not self.messageMap[msg] then print('Tried to send invalid message ' .. msg) end
+
+  local function halp()
+    self.outStream:write(self.messageMap[msg], 5)
+    self.outStream:pack(data, self.messages[msg])
+  end
+
+  xpcall(halp, function(err)
+    print('Error sending message "' .. msg .. '"')
+    table.print(data)
+    print('\t' .. debug.traceback(err, 3):gsub('stack traceback:\n', ''))
+  end)
 end
 
 function Net:unpack()
-  local msg = self.inStream:read(5)
-  msg = self.messageMap[msg]
-  if not self.other.messages[msg] then return false end
-  return msg, self.inStream:unpack(self.other.messages[msg])
+  local success, msg = pcall(self.inStream.read, self.inStream, 5)
+
+  if not success then return end
+
+  local function halp()
+    msg = self.messageMap[msg]
+    if not self.other.messages[msg] then return false end
+    return msg, self.inStream:unpack(self.other.messages[msg])
+  end
+
+  local success, msg, data = xpcall(halp, function(err)
+    print('Error unpacking message "' .. msg .. '":')
+    print('\t' .. debug.traceback(err, 3):gsub('stack traceback:\n', ''))
+  end)
+
+  return msg, data
 end

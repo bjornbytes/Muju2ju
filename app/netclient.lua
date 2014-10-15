@@ -23,6 +23,8 @@ NetClient.messages.leave = {
 
 NetClient.messages.ready = {
   receive = function(self, event)
+    if self.state == 'playing' then return end
+
     ctx.tick = event.data.tick
     self.state = 'playing'
     for i = 1, #ctx.config.players do
@@ -32,6 +34,32 @@ NetClient.messages.ready = {
     end
 
     ctx.event:emit('ready')
+  end
+}
+
+NetClient.messages.bootstrap = {
+  receive = function(self, event)
+
+    -- Start the game if it isn't started already
+    self.messages.ready.receive(self, event)
+
+    table.each(event.data.players, function(data)
+      local p = ctx.players:add(data.id)
+      if p then p.x = data.x end
+    end)
+
+    table.each(event.data.units, function(data)
+      data.tick = event.data.tick
+      local unit = ctx.units.objects[data.id]
+      if not unit then
+        ctx.event:emit('unitCreate', data)
+        unit = ctx.units.objects[data.id]
+      end
+
+      if unit then
+        unit.x = data.x
+      end
+    end)
   end
 }
 

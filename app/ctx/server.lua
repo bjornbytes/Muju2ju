@@ -47,42 +47,7 @@ function Server:update()
   self.spells:update()
   --self.view:update()
 
-  -- send a snapshot
-  local snapshot = {tick = tick, players = {}, units = {}}
-  self.players:each(function(player)
-
-    local entry = {
-      id = player.id,
-      dead = player.dead,
-      animationData = player.animation:pack()
-    }
-
-    if player.dead then
-      entry.ghostX = player.ghostX
-      entry.ghostY = player.ghostY
-      
-      local angle = math.round(math.deg(player.ghost.angle))
-      while angle < 0 do angle = angle + 360 end
-      entry.ghostAngle = angle
-    else
-      entry.x = player.x
-      entry.health = math.round(player.health)
-    end
-
-    table.insert(snapshot.players, entry)
-  end)
-
-  self.units:each(function(unit)
-    table.insert(snapshot.units, {
-      id = unit.id,
-      x = math.round(unit.x),
-      y = math.round(unit.y),
-      health = math.round(unit.health),
-      animationData = unit.animation and unit.animation:pack() or nil
-    })
-  end)
-
-  self.net:emit('snapshot', snapshot)
+  self.net:snapshot()
 
   self.net:sync()
 end

@@ -88,7 +88,7 @@ function Game:update()
 end
 
 function Game:unload()
-	backgroundSound:stop()
+	if backgroundSound then backgroundSound:stop() end
 end
 
 function Game:draw()

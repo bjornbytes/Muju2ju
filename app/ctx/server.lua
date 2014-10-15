@@ -43,6 +43,7 @@ function Server:update()
 	self.shrines:update()
   self.units:update()
   self.jujus:update()
+  self.shrujus:update()
   self.spells:update()
   --self.view:update()
 

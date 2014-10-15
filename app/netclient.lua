@@ -124,7 +124,6 @@ NetClient.messages.spellCreate = {
 function NetClient:init()
   self.other = NetServer
   self.state = 'connecting'
-  local ip = arg[2] == 'local' and '127.0.0.1' or '123.123.123.123'
   self:connectTo(ctx.config.ip, 6061)
   self.messageBuffer = {}
 

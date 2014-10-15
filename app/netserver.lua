@@ -204,6 +204,13 @@ function NetServer:disconnect(event)
   end
   self.peerToPlayer[event.peer] = nil
   event.peer:disconnect_now()
+
+  self:quit()
+
+  if table.has(arg, 'test') then
+    Context:remove(ctx)
+    Context:add(Server)
+  end
 end
 
 function NetServer:send(msg, peer, data)

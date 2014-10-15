@@ -98,7 +98,6 @@ end
 function Game:resize()
 	self.view:resize()
 	self.effects:resize()
-  self.hud:resize()
 end
 
 function Game:keypressed(key)

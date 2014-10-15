@@ -20,7 +20,7 @@ function Menu:load()
   self.pages.login = MenuLogin()
   self.pages.main = MenuMain()
 
-  self.page = 'login'
+  self.page = 'main'
 end
 
 function Menu:update()

@@ -41,7 +41,7 @@ runes = {
 
 function love.load()
   data.load()
-	Context:add(arg[2] == 'server' and Server or Menu)
+	Context:add(table.has(arg, 'server') and Server or Menu)
 end
 
 love.update = Context.update

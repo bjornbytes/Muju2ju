@@ -146,8 +146,15 @@ function NetClient:connect(event)
 end
 
 function NetClient:disconnect(event)
-  ctx.event:emit('game.quit')
-  error('lost connection')
+  if not self.server then
+    print('Unable to connect to server')
+  else
+    ctx.event:emit('game.quit')
+    print('Lost connection to server')
+  end
+
+  Context:remove(ctx)
+  Context:add(Menu)
 end
 
 function NetClient:send(msg, data)

@@ -21,5 +21,5 @@ function Label:render()
 
   g.setFont(self.font, self.size == 'auto' and self:autoFontSize() or self.size * v)
   g.setColor(self.color)
-  g.print(self.text, x, y - (g.getFont():getHeight() - g.getFont():getAscent()))
+  g.print(self.text, x, y) 
 end

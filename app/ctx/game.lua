@@ -107,8 +107,7 @@ function Game:keypressed(key)
 
   -- Try to move elsewhere.
   if (key == 'p' or key == 'escape') and not self.hud.upgrades.active then self.paused = not self.paused
-  elseif key == 'm' then self.sound:mute()
-  elseif key == 'f' then love.window.setFullscreen(not love.window.getFullscreen()) end
+  elseif key == 'm' then self.sound:mute() end
 
   if self.hud.upgrades.active or self.paused or self.ded then return end
 

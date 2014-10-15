@@ -3,11 +3,19 @@ HudMinions = class()
 local g = love.graphics
 
 function HudMinions:init()
-	self.bg = {data.media.graphics.selectZuju, data.media.graphics.selectVuju}
-	self.factor = {0, 0}
-	self.extra = {0, 0}
-	self.quad = {}
-  for i = 1, 2 do
+  local p = ctx.players:get(ctx.id)
+
+  self.count = table.count(p.deck)
+  self.bg = {}
+  self.factor = {}
+  self.extra = {}
+  self.quad = {}
+
+  for i = 1, self.count do
+    self.bg[i] = data.media.graphics.selectZuju
+    self.factor[i] = 0
+    self.extra[i] = 0
+
     local w, h = self.bg[i]:getDimensions()
     self.quad[i] = g.newQuad(0, 0, w, h, w, h)
   end
@@ -16,8 +24,8 @@ end
 function HudMinions:update()
   local p = ctx.players:get(ctx.id)
 
-	for i = 1, #self.factor do
-		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 18 * tickRate)
+	for i = 1, self.count do
+		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 10 * tickRate)
 		self.extra[i] = math.lerp(self.extra[i], 0, 5 * tickRate)
 		if p.minions[i] then
 			local y = self.bg[i]:getHeight() * (p.minioncds[i] / 3)
@@ -36,10 +44,10 @@ function HudMinions:draw()
   local ct = table.count(p.deck)
 
   local inc = u * .1
-  local xx = u * .5 - (inc * (ct - 1))
+  local xx = u * .5 - (inc * (ct - 1) / 2)
   local font = ctx.hud.boldFont
 
-  for i = 1, #p.minions do
+  for i = 1, self.count do
     local bg = self.bg[i]
     local w, h = bg:getDimensions()
     local scale = (.1 + (.0175 * self.factor[i]) + (.012 * self.extra[i])) * v / w
@@ -68,7 +76,8 @@ function HudMinions:draw()
     g.setColor(0, 0, 0, 200 + 55 * self.factor[i])
     g.print(cost, tx + 1, ty + 1)
     g.setColor(255, 255, 255, 200 + 55 * self.factor[i])
-    g.print(cost, tx, ty)
-    xx = xx + inc]]
+    g.print(cost, tx, ty)]]
+
+    xx = xx + inc
   end
 end

@@ -52,20 +52,10 @@ function PlayerMain:getHealthbar()
   return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
 end
 
-function PlayerMain:keypressed(key)
-	for i = 1, #self.minions do
-		if tonumber(key) == i then
-			self.selectedMinion = i
-			self.recentSelect = 1
-			return
-		end
-	end
-end
-
 function PlayerMain:readInput()
   local t = {tick = tick}
 
-  for i = 1, #self.minions do -- todo
+  for i = 1, table.count(self.deck) do -- todo
     if love.keyboard.isDown(tostring(i)) then
       self.selectedMinion = i
     end

@@ -52,7 +52,6 @@ function Player:update()
 
   -- Global behavior
 	self.invincible = timer.rot(self.invincible)
-	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
 	self:animate()
 	
   -- Dead behavior

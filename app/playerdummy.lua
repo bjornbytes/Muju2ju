@@ -6,7 +6,7 @@ function PlayerDummy:activate()
 end
 
 function PlayerDummy:update()
-	self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
+  self.healthDisplay = math.lerp(self.healthDisplay, self.health, 5 * tickRate)
   self.deathTimer = timer.rot(self.deathTimer)
   if self.dead then self.ghost:update() end
 end
@@ -49,7 +49,7 @@ end
 function PlayerDummy:getHealthbar()
   local t = tick - (interp / tickRate)
   local lerpd = table.interpolate(self:get(t), self:get(t + 1), tickDelta / tickRate)
-  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
+  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth, lerpd.healthDisplay / lerpd.maxHealth
 end
 
 function PlayerDummy:trace(data)

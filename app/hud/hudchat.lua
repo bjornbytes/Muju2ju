@@ -27,6 +27,7 @@ end
 function HudChat:draw()
   local u, v = ctx.hud.u, ctx.hud.v
   local width = u * .25
+  if #self.log == 0 and not self.active then return end
 
   local offset = math.lerp(self.prevOffset, self.offset, tickDelta / tickRate)
   

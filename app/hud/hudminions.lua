@@ -2,25 +2,6 @@ HudMinions = class()
 
 local g = love.graphics
 
-function HudMinions:init()
-  local p = ctx.players:get(ctx.id)
-
-  self.count = table.count(p.deck)
-  self.bg = {}
-  self.factor = {}
-  self.extra = {}
-  self.quad = {}
-
-  for i = 1, self.count do
-    self.bg[i] = data.media.graphics.selectZuju
-    self.factor[i] = 0
-    self.extra[i] = 0
-
-    local w, h = self.bg[i]:getDimensions()
-    self.quad[i] = g.newQuad(0, 0, w, h, w, h)
-  end
-end
-
 function HudMinions:update()
   local p = ctx.players:get(ctx.id)
 
@@ -79,5 +60,24 @@ function HudMinions:draw()
     g.print(cost, tx, ty)]]
 
     xx = xx + inc
+  end
+end
+
+function HudMinions:ready()
+  local p = ctx.players:get(ctx.id)
+
+  self.count = table.count(p.deck)
+  self.bg = {}
+  self.factor = {}
+  self.extra = {}
+  self.quad = {}
+
+  for i = 1, self.count do
+    self.bg[i] = data.media.graphics.selectZuju
+    self.factor[i] = 0
+    self.extra[i] = 0
+
+    local w, h = self.bg[i]:getDimensions()
+    self.quad[i] = g.newQuad(0, 0, w, h, w, h)
   end
 end

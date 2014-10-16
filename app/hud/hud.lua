@@ -43,12 +43,14 @@ end
 
 function Hud:gui()
   if ctx.net.state == 'connecting' then
+    g.setFont('pixel', 8)
     g.setColor(255, 255, 255)
-    g.print('connecting', g.getWidth() / 2 - g.getFont():getWidth('connecting') / 2, g.getHeight() / 2)
+    g.print('connecting', g.getWidth() / 2 - g.getFont():getWidth('connecting') / 2, g.getHeight() / 2 - g.getFont():getHeight() / 2)
     return
   elseif ctx.net.state == 'waiting' then
+    g.setFont('pixel', 8)
     g.setColor(255, 255, 255)
-    g.print('waiting for players', g.getWidth() / 2 - g.getFont():getWidth('waiting for players') / 2, g.getHeight() / 2)
+    g.print('waiting for players', g.getWidth() / 2 - g.getFont():getWidth('waiting for players') / 2, g.getHeight() / 2 - g.getFont():getHeight() / 2)
     return
   end
 
@@ -89,4 +91,8 @@ function Hud:resize()
   self.u = ctx.view.frame.width
   self.v = ctx.view.frame.height
   self.chat:resize()
+end
+
+function Hud:ready()
+  self.minions:ready()
 end

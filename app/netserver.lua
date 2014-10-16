@@ -36,6 +36,7 @@ NetServer.messages.join = {
     print('player ' .. id .. ' connected')
     self.peerToPlayer[event.peer] = id
     self:send('join', event.peer, {id = id, problem = ''})
+    self:emit('chat', {message = username .. ' has joined the game!'})
 
     -- Create their player (if not created already) and associate this peer with the player.
     ctx.players:add(id)

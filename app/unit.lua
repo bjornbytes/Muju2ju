@@ -51,6 +51,8 @@ function Unit:activate()
     self.scale = (data.animation[self.code] and data.animation[self.code].scale or 1) + (r / 210)
     self.y = self.y + r
     self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
+
+    self.healthDisplay = self.health
   end
 
   ctx.event:emit('view.register', {object = self})
@@ -78,7 +80,7 @@ function Unit:update()
 
     if self.animation then self.animation:tick(tickRate) end
   else
-    --
+    self.healthDisplay = math.lerp(self.healthDisplay, self.health, 5 * tickRate)
   end
 end
 
@@ -175,7 +177,7 @@ function Unit:getHealthbar()
   local prev = self.history:get(t)
   local cur = self.history:get(t + 1)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
+  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth, self.healthDisplay / lerpd.maxHealth
 end
 
 function Unit:applyUpgrades()

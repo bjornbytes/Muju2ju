@@ -14,6 +14,7 @@ function Game:load()
 	self.view = View()
   self.map = Map()
   self.players = Players()
+  self.hud = Hud()
 
   self.event:on('ready', function()
     self.input = Input()
@@ -25,7 +26,7 @@ function Game:load()
     self.effects = Effects()
     self.target = Target()
     self.sound = Sound()
-    self.hud = Hud()
+    self.hud:ready()
     backgroundSound = self.sound:loop({sound = 'background'})
 
     if ctx.config.game.kind == 'survival' then

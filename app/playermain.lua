@@ -9,6 +9,8 @@ function PlayerMain:activate()
   ctx.view.y = self.y - ctx.view.height / 2
 
   Player.activate(self)
+
+  self.healthDisplay = self.health
 end
 
 function PlayerMain:get(t)
@@ -32,6 +34,9 @@ function PlayerMain:update()
   self.prev.y = self.y
   self.prev.ghostX = self.ghostX
   self.prev.ghostY = self.ghostY
+  self.prev.healthDisplay = self.healthDisplay
+
+  self.healthDisplay = math.lerp(self.healthDisplay, self.health, 5 * tickRate)
 
   local input = self:readInput()
   self:move(input)
@@ -49,7 +54,7 @@ end
 
 function PlayerMain:getHealthbar()
   local lerpd = table.interpolate(self.prev, self, tickDelta / tickRate)
-  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
+  return lerpd.x, lerpd.y, self.health / lerpd.maxHealth, lerpd.healthDisplay / lerpd.maxHealth
 end
 
 function PlayerMain:readInput()

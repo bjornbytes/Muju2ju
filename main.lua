@@ -15,6 +15,16 @@ config = {
           code = 'bruju',
           skin = {},
           runes = {1, 1, nil, nil, nil, nil}
+        },
+        {
+          code = 'thuju',
+          skin = {},
+          runes = {1, 1, nil, nil, nil, nil}
+        },
+        {
+          code = 'zuju',
+          skin = {},
+          runes = {1, 1, nil, nil, nil, nil}
         }
       }
     }

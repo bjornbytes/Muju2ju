@@ -71,6 +71,8 @@ function Bruju:update()
     if current and current.name == 'walk' and self.target then
       self.animation.flipX = (self.target.x - self.x) < 0
     end
+  else
+    return Unit.update(self)
   end
 end
 

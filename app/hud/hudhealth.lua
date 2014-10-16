@@ -2,7 +2,7 @@ HudHealth = class()
 
 local g = love.graphics
 
-local function bar(x, y, percent, color, width, height)
+local function bar(x, y, hard, soft, color, width, height)
 	thickness = thickness or 2
   x, y = ctx.view:screenPoint(x, y)
   width = width * ctx.view.scale
@@ -10,7 +10,9 @@ local function bar(x, y, percent, color, width, height)
 	g.setColor(0, 0, 0, 160)
 	g.rectangle('fill', x - width / 2, y, width + 1, height + 1)
 	g.setColor(color)
-	g.rectangle('fill', x - width / 2, y, percent * width, height)
+	g.rectangle('fill', x - width / 2, y, hard * width, height)
+	g.setColor(color[1], color[2], color[3], 160)
+	g.rectangle('fill', x - width / 2, y, soft * width, height)
 end
 
 local function stack(t, x, range, delta)
@@ -31,14 +33,15 @@ function HudHealth:draw()
 
   ctx.players:each(function(player)
     local color = (p and player.team == p.team) and green or red
-    local x, y, amt = player:getHealthbar()
-    bar(x, y - 15, amt, color, 80, 3)
+    local x, y, hard, soft = player:getHealthbar()
+    bar(x, y - 15, hard, soft, color, 80, 3)
   end)
 
   ctx.shrines:each(function(shrine)
     local color = (p and shrine.team == p.team) and green or red
     local x, y = shrine.x, shrine.y
-    bar(x, y - 65, shrine.healthDisplay / shrine.maxHealth, color, 120, 4)
+    local amt = shrine.healthDisplay / shrine.maxHealth
+    bar(x, y - 65, amt, amt, color, 120, 4)
   end)
 
   local t = {}
@@ -47,7 +50,7 @@ function HudHealth:draw()
     stack(t, location, unit.width * 2, .5)
     local color = green
     local color = (p and unit.team == p.team) and green or red
-    local x, y, amt = unit:getHealthbar()
-    bar(x, y - 15 * t[location], amt, color, 50, 2)
+    local x, y, hard, soft = unit:getHealthbar()
+    bar(x, y - 15 * t[location], hard, soft, color, 50, 2)
   end)
 end

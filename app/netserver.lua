@@ -157,7 +157,11 @@ NetServer.messages.chat = {
     local id = self.peerToPlayer[event.peer]
     if not id then return end
     local username = ctx.config.players[id].username
-    self:emit('chat', {message = '{white}' .. username .. ': ' .. event.data.message})
+    ctx.players:each(function(player)
+      if player and player.peer then
+        self:send('chat', player.peer, {message = '{' .. (player.team == ctx.config.players[id].team and 'green' or 'red') .. '}' .. username .. '{white}: ' .. event.data.message})
+      end
+    end)
   end
 }
 

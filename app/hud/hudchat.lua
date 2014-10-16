@@ -26,8 +26,7 @@ end
 
 function HudChat:draw()
   local u, v = ctx.hud.u, ctx.hud.v
-  local width = u * .35
-  --if not self.richText then return end
+  local width = u * .25
 
   local offset = math.lerp(self.prevOffset, self.offset, tickDelta / tickRate)
   
@@ -45,7 +44,12 @@ function HudChat:draw()
     g.setColor(255, 255, 255, 60)
     g.line(4.5 + offset, v - 4 - font:getHeight() - 6.5, 3 + width + offset, v - 4 - font:getHeight() - 6.5)
     g.setColor(255, 255, 255, 180)
-    g.printf(self.message .. (self.active and '|' or ''), 4 + 4 + offset, math.round(yy - font:getHeight() - 5.5 + 2), width, 'left')
+    g.printf(self.message, 4 + 4 + offset, math.round(yy - font:getHeight() - 5.5 + 2), width, 'left')
+    if self.active then
+      local cursorx = math.round(4 + 4 + offset + font:getWidth(self.message)) + 1
+      local cursory = math.round(yy - font:getHeight() - 5.5 + 2 + 1)
+      g.line(cursorx + .5, cursory + .5, cursorx + .5, cursory + font:getHeight() - 2 + .5)
+    end
     yy = yy - font:getHeight() - 6.5
   end
 
@@ -83,7 +87,7 @@ end
 function HudChat:add(data)
   local message = data.message
   local u, v = ctx.hud.u, ctx.hud.v
-  local width = u * .35
+  local width = u * .25
   
   if #message > 0 then
     if #self.log > 0 then self.log = self.log .. '\n' end
@@ -108,7 +112,7 @@ end
 function HudChat:refresh()
   if #self.log == 0 then return end
   local u, v = ctx.hud.u, ctx.hud.v
-  local width = u * .35
+  local width = u * .25 - 4
   g.setFont('pixel', 8)
   self.richText = rich.new({self.log, width, white = {255, 255, 255}, purple = {190, 160, 220}, orange = {240, 160, 140}, red = {255, 0, 0}, green = {0, 255, 0}})
 end

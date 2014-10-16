@@ -106,7 +106,8 @@ function HudChat:resize()
 end
 
 function HudChat:refresh()
-  local u, v = ctx.view.frame.width, ctx.view.frame.height
+  if #self.log == 0 then return end
+  local u, v = ctx.hud.u, ctx.hud.v
   local width = u * .35
   g.setFont('inglobal', .02 * v)
   self.richText = rich.new({self.log, width, white = {255, 255, 255}, purple = {190, 160, 220}, orange = {240, 160, 140}, red = {255, 0, 0}, green = {0, 255, 0}})

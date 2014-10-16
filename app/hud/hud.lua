@@ -20,20 +20,13 @@ function Hud:init()
   self.pause = HudPause()
   self.dead = HudDead()
 
-  self.u = 0
-  self.v = 0
-  self.prevu = self.u
-  self.prevv = self.v
+  self.u = ctx.view.frame.width
+  self.v = ctx.view.frame.height
 
   ctx.event:emit('view.register', {object = self, mode = 'gui'})
 end
 
 function Hud:update()
-  self.prevu = self.u
-  self.prevv = self.v
-  self.u = math.lerp(self.u, ctx.view.frame.width, 15 * tickRate)
-  self.v = math.lerp(self.v, ctx.view.frame.height, 15 * tickRate)
-
   self.protect:update()
   self.juju:update()
   self.minions:update()
@@ -59,9 +52,6 @@ function Hud:gui()
     return
   end
 
-  local u, v = self.u, self.v
-  self.u, self.v = math.lerp(self.prevu, self.u, tickDelta / tickRate), math.lerp(self.prevv, self.v, tickDelta / tickRate)
-
   self.health:draw()
   self.protect:draw()
   self.juju:draw()
@@ -72,8 +62,6 @@ function Hud:gui()
   self.upgrades:draw()
   self.pause:draw()
   self.dead:draw()
-
-  self.u, self.v = u, v
 end
 
 function Hud:keypressed(key)
@@ -98,5 +86,7 @@ function Hud:gamepadpressed(...)
 end
 
 function Hud:resize()
+  self.u = ctx.view.frame.width
+  self.v = ctx.view.frame.height
   self.chat:resize()
 end

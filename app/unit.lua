@@ -167,9 +167,13 @@ function Unit:heal(amount, source)
 end
 
 function Unit:die()
-  local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
-  ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), amount = 10, vx = vx, vy = vy})
-  self.shouldDestroy = true
+  if not self.shouldDestroy then
+    if ctx.config.game.kind == 'survival' and not self.owner or ctx.config.game.kind ~= 'survival' then
+      local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
+      ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), amount = 10, vx = vx, vy = vy})
+    end
+    self.shouldDestroy = true
+  end
 end
 
 function Unit:getHealthbar()
@@ -177,7 +181,7 @@ function Unit:getHealthbar()
   local prev = self.history:get(t)
   local cur = self.history:get(t + 1)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth, self.healthDisplay / lerpd.maxHealth
+  return lerpd.x, ctx.map.height - ctx.map.groundHeight - self.height, lerpd.health / lerpd.maxHealth, self.healthDisplay / lerpd.maxHealth
 end
 
 function Unit:applyUpgrades()

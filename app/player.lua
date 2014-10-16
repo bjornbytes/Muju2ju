@@ -152,7 +152,7 @@ end
 
 function Player:animate()
 	if not self.dead then
-    self.animation:set(math.abs(self.speed) > self.walkSpeed / 2 and 'walk' or 'idle')
+    self.animation:set(math.abs(self.speed) > self.walkSpeed / 4 and 'walk' or 'idle')
   end
 
 	if self.speed ~= 0 then self.animation.flipX = self.speed > 0 end

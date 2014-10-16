@@ -70,7 +70,7 @@ function Ghost:draw(x, y, angle)
 	g.draw(image, x, y, angle, .6 * scale, .6 * scale, image:getWidth() / 2, image:getHeight() / 2)
 
 	g.setColor(255, 255, 255, 10)
-  local bounds = math.lerp(self.bounds[tick - 1] or self.bounds[tick], self.bounds[tick], tickDelta / tickRate)
+  local bounds = math.lerp(self.bounds[tick - 1] or self.bounds[tick] or 0, self.bounds[tick] or 0, tickDelta / tickRate)
 	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, bounds)
 end
 

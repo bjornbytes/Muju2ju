@@ -65,7 +65,10 @@ end
 function Game:update()
   self.net:update()
 
-  if self.net.state == 'connecting' or self.net.state == 'waiting' then return end
+  if self.net.state == 'connecting' or self.net.state == 'waiting' then
+    self.view:update()
+    return
+  end
 
   self.input:update()
 

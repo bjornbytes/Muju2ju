@@ -137,8 +137,8 @@ function Juju:draw()
 	g.setColor(255, 255, 255, 255 * lerpd.alpha)
 	g.draw(image, lerpd.x, lerpd.y + 5 * wave, lerpd.angle, lerpd.scale, lerpd.scale, image:getWidth() / 2, image:getHeight() / 2)
 
-  g.setFont('inglobalb', 50)
+  --[[g.setFont('inglobalb', 50)
   g.setColor(0, 0, 0, 150 * lerpd.alpha)
   local str = math.round(self.amount)
-  g.print(str, lerpd.x, lerpd.y + 5 * wave, 0, lerpd.scale, lerpd.scale, g.getFont():getWidth(str) / 2, g.getFont():getHeight() / 2)
+  g.print(str, lerpd.x, lerpd.y + 5 * wave, 0, lerpd.scale, lerpd.scale, g.getFont():getWidth(str) / 2, g.getFont():getHeight() / 2)]]
 end

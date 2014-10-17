@@ -120,7 +120,7 @@ function Player:slot(input)
     local cooldown = self.minioncds[input.minion]
 
     if cooldown == 0 and self:spend(12) then
-      ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = self.x})
+      ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = math.round(self.x)})
       self.minioncds[input.minion] = 3
 
       -- Juice

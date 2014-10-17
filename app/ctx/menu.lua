@@ -22,6 +22,11 @@ function Menu:load(userState)
   self.pages.main = MenuMain()
 
   self.page = self.userState.token and 'main' or 'login'
+
+  if table.has(arg, 'test') then
+    Context:remove(self)
+    Context:add(Game)
+  end
 end
 
 function Menu:update()

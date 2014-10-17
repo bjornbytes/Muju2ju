@@ -26,15 +26,20 @@ function HudMinions:draw()
 
   local t = math.lerp(ctx.hud.upgrades.prevTime, ctx.hud.upgrades.time, tickDelta / tickRate)
   ctx.hud.upgrades.tween:set(t)
-  local inc = u * (.1 + (.1 * ctx.hud.upgrades.factor.value))
+  local upgradeFactor = ctx.hud.upgrades.factor.value
+  local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
+  local inc = u * (.1 + (.15 * upgradeFactor))
   local xx = .5 * u - (inc * (ct - 1) / 2)
   local font = ctx.hud.boldFont
+
+  g.setColor(0, 0, 0, 65 * math.clamp(upgradeFactor, 0, 1))
+  g.rectangle('fill', 0, 0, ctx.view.frame.width, ctx.view.frame.height)
 
   for i = 1, self.count do
     local bg = self.bg[i]
     local w, h = bg:getDimensions()
-    local scale = (.1 + (.0175 * self.factor[i]) + (.012 * self.extra[i])) * v / w
-    local yy = v * (.07 + (.05 * ctx.hud.upgrades.factor.value))
+    local scale = (.1 + (.0175 * self.factor[i]) + (.012 * self.extra[i]) + (.02 * upgradeFactor)) * v / w
+    local yy = v * (.07 + (.07 * upgradeFactor))
     local f, cost = font, tostring('12')
     --local tx, ty = xx - w / 2 - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35
@@ -60,6 +65,32 @@ function HudMinions:draw()
     g.print(cost, tx + 1, ty + 1)
     g.setColor(255, 255, 255, 200 + 55 * self.factor[i])
     g.print(cost, tx, ty)]]
+
+    do
+      local yy = yy + .13 * v
+      local inc = .1 * upgradeFactor * v
+
+      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
+      g.circle('fill', xx - inc, yy, .04 * v)
+      g.circle('fill', xx, yy, .04 * v)
+      g.circle('fill', xx + inc, yy, .04 * v)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+      g.circle('line', xx - inc, yy, .04 * v)
+      g.circle('line', xx, yy, .04 * v)
+      g.circle('line', xx + inc, yy, .04 * v)
+
+      --[[inc = .12 * upgradeFactor * v
+      yy = yy + .1 * v
+
+      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
+      g.circle('fill', xx - inc, yy, .05 * v)
+      g.circle('fill', xx, yy, .05 * v)
+      g.circle('fill', xx + inc, yy, .05 * v)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+      g.circle('line', xx - inc, yy, .05 * v)
+      g.circle('line', xx, yy, .05 * v)
+      g.circle('line', xx + inc, yy, .05 * v)]]
+    end
 
     xx = xx + inc
   end

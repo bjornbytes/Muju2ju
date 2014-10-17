@@ -48,10 +48,10 @@ function PlayerMain:update()
   Player.update(self)
 end
 
-function PlayerMain:draw()
+function PlayerMain:draw(onlyGhost)
   local lerpd = table.interpolate(self.prev, self, tickDelta / tickRate)
   if self.prev.ghostAngle then lerpd.ghostAngle = math.anglerp(self.prev.ghostAngle or self.ghost.angle, self.ghost.angle, tickDelta / tickRate) end
-  Player.draw(lerpd)
+  Player.draw(lerpd, onlyGhost)
 end
 
 function PlayerMain:getHealthbar()

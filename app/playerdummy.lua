@@ -15,7 +15,7 @@ function PlayerDummy:get(t, raw)
   return self.history:get(t, raw)
 end
 
-function PlayerDummy:draw()
+function PlayerDummy:draw(onlyGhost)
   local t = tick - (interp / tickRate)
   local prev = self:get(t, true)
   local cur = self:get(t + 1, true)
@@ -32,7 +32,7 @@ function PlayerDummy:draw()
 
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
 
-  if lerpd.animationData then
+  if not onlyGhost and lerpd.animationData then
     if prev.animationData.index ~= cur.animationData.index then
       lerpd.animationData = prev.animationData
     end

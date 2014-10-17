@@ -69,8 +69,8 @@ function Player:paused()
   --
 end
 
-function Player:draw()
-	if math.floor(self.invincible * 4) % 2 == 0 then
+function Player:draw(onlyGhost)
+	if not onlyGhost and math.floor(self.invincible * 4) % 2 == 0 then
 		love.graphics.setColor(255, 255, 255)
     --love.graphics.rectangle('fill', self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
 		self.animation:draw(self.x, self.y)
@@ -175,7 +175,7 @@ function Player:initDeck()
 
     self.deck[entry.code] = {
       runes = table.map(entry.runes, function(rune) return setmetatable({level = 0}, runes[rune]) end),
-      upgrades = {burst = true},
+      upgrades = {},
       cooldown = 0
     }
   end

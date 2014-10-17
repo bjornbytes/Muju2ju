@@ -56,7 +56,7 @@ function Bloom:applyEffect(source, target)
 
   ctx.view:worldPush()
 	if p.dead then
-		p:draw()
+		p:draw(true)
 		ctx.jujus:each(f.ego('draw'))
 	end
   g.pop()

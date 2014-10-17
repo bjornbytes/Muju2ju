@@ -131,6 +131,10 @@ NetServer.messages.snapshot = {
       x = 16,
       health = 10,
       animationData = 'animation'
+    },
+    shrines = {
+      id = 4,
+      health = 'float'
     }
   },
   delta = {
@@ -142,9 +146,10 @@ NetServer.messages.snapshot = {
     units = {'animationData'}
   },
   order = {
-    'tick', 'players', 'units',
+    'tick', 'players', 'units', 'shrines',
     players = {'id', 'x', 'health', 'dead', 'animationData', 'ghostX', 'ghostY', 'ghostAngle' },
-    units = {'id', 'x', 'health', 'animationData'}
+    units = {'id', 'x', 'health', 'animationData'},
+    shrines = {'id', 'health'}
   }
 }
 
@@ -305,7 +310,7 @@ function NetServer:sync()
 end
 
 function NetServer:snapshot()
-  local snapshot = {tick = tick, players = {}, units = {}}
+  local snapshot = {tick = tick, players = {}, units = {}, shrines = {}}
   ctx.players:each(function(player)
     local entry = {
       id = player.id,
@@ -335,6 +340,13 @@ function NetServer:snapshot()
       y = math.round(unit.y),
       health = math.round(unit.health),
       animationData = unit.animation and unit.animation:pack() or nil
+    })
+  end)
+
+  ctx.shrines:each(function(shrine)
+    table.insert(snapshot.shrines, {
+      id = shrine.id,
+      health = shrine.health / shrine.maxHealth
     })
   end)
 

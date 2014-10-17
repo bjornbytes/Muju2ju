@@ -41,6 +41,7 @@ function Game:load(userState)
     self.particles:add(data.kind, data)
   end)
 
+  -- Needs synchronization
   self.event:on('shrine.dead', function(data)
     if backgroundSound then backgroundSound:stop() end
 
@@ -51,7 +52,12 @@ function Game:load(userState)
 
     if lost then
       ctx.event:emit('sound.play', {sound = 'youlose'})
+      Context:remove(ctx)
+      Context:add(Menu, self.userState)
     else
+      print('you win')
+      Context:remove(ctx)
+      Context:add(Menu, self.userState)
       -- I am winrar.
     end
   end)

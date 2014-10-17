@@ -112,6 +112,18 @@ NetClient.messages.snapshot = {
         unit.animationData = data.animationData
       end
     end)
+
+    table.each(event.data.shrines, function(data)
+      local shrine = ctx.shrines.objects[data.id]
+      if shrine then
+        shrine.history:add({
+          tick = event.data.tick,
+          health = data.health * shrine.maxHealth
+        })
+        if shrine.health > data.health * shrine.maxHealth then shrine.lastHurt = tick end
+        shrine.health = data.health * shrine.maxHealth
+      end
+    end)
   end
 }
 

@@ -39,9 +39,9 @@ function HudHealth:draw()
 
   ctx.shrines:each(function(shrine)
     local color = (p and shrine.team == p.team) and green or red
-    local x, y = shrine.x, shrine.y
-    local amt = shrine.healthDisplay / shrine.maxHealth
-    bar(x, y - 65, amt, amt, color, 120, 4)
+    local x, y, hard, soft = shrine:getHealthbar()
+    local w, h = 120 + (60 * (shrine.hurtFactor)), 4 + (1 * shrine.hurtFactor)
+    bar(x, y - 65, hard, soft, color, w, h)
   end)
 
   local t = {}

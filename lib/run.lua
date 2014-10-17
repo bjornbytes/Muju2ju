@@ -13,6 +13,7 @@ function love.run()
 	while true do
 		love.timer.step()
 		delta = love.timer.getDelta()
+    if table.has(arg, 'fast') then delta = delta * 2 end
 
 		tickDelta = tickDelta + delta
 		while tickDelta >= tickRate do

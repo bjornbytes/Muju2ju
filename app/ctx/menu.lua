@@ -1,6 +1,7 @@
 Menu = class()
 
-function Menu:load()
+function Menu:load(userState)
+  self.userState = userState or {}
 	self.sound = Sound()
 	self.menuSounds = self.sound:loop({sound = 'menu'})
 	self.font = love.graphics.newFont('media/fonts/pixel.ttf', 8)
@@ -20,7 +21,7 @@ function Menu:load()
   self.pages.login = MenuLogin()
   self.pages.main = MenuMain()
 
-  self.page = 'main'
+  self.page = self.userState.token and 'main' or 'login'
 end
 
 function Menu:update()
@@ -34,7 +35,7 @@ function Menu:update()
 end
 
 function Menu:draw()
-	love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(255, 255, 255)
 	love.graphics.draw(data.media.graphics.mainMenu)
 	love.graphics.setFont(self.font)
 	love.graphics.setColor(255, 255, 255, math.min(self.creditsAlpha * 255, 255))

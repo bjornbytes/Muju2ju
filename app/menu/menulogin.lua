@@ -11,7 +11,7 @@ function MenuLogin:init()
   self.gooey:find('loginButton'):on('clicked', f.cur(self.authenticate, self))
 
 	self.gooey:find('exitButton'):on('clicked', function() 
-		love.event.quit();	
+		love.event.quit()
 	end)
 
   self.username:on('keypressed', function(data)
@@ -50,6 +50,8 @@ end
 function MenuLogin:loggedIn(data)
   if not data.error then
     ctx.page = 'main'
-    ctx.token = data.token
+    ctx.userState.token = data.token
+  else
+    print('login failed')
   end
 end

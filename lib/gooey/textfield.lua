@@ -2,7 +2,7 @@ TextField = extend(Element)
 
 local g = love.graphics
 
-TextField.font = nil
+TextField.font = 'aeromatics'
 TextField.size = 'auto'
 TextField.text = ''
 TextField.color = {255, 255, 255}
@@ -36,19 +36,19 @@ TextField.binds.osx = {
 }
 
 function TextField:init(data)
-  Element.init(self, data)
-
   self.focused = false
   self.default = self.text
   self.cursorPosition = 0
   self.cursorx = 0
+
+  Element.init(self, data)
 end
 
-function TextField:render()
-  local u, v = self.owner.frame.width, self.owner.frame.height
-  local x, y = self.x * u + self.padding, self.y * v + self.padding
+function TextField:draw()
+  local u, v = g.getDimensions()
+  local x, y, w, h = self:getRect()
 
-  Element.render(self)
+  Element.draw(self)
 
   local text = self.renderFilter and self.renderFilter(self.text) or self.text
 
@@ -56,9 +56,17 @@ function TextField:render()
   local c = self.color
   if #text == 0 then
     g.setColor(c[1], c[2], c[3], (c[4] or 255) / 2)
+    --[[if self.center then
+      xx = (x + w / 2) * u - g.getFont():getWidth(self.placeholder) / 2
+      yy = (y + h / 2) * v - g.getFont():getHeight() / 2
+    end]]
     g.print(self.placeholder, x, y)
   else
     g.setColor(self.color)
+    --[[if self.center then
+      xx = (x + w / 2) * u - g.getFont():getWidth(text) / 2
+      yy = (y + h / 2) * v - g.getFont():getHeight() / 2
+    end]]
     g.print(text, x, y)
   end
 
@@ -91,12 +99,11 @@ function TextField:keypressed(key)
 end
 
 function TextField:mousepressed(mx, my, button)
-  Element.mousepressed(self, mx, my, button)
-  if button == 'l' and not self.focused and self:mouseOver() then self.owner:focus(self) end
+  if button == 'l' and not self.focused and self:mouseOver() then self.gooey:focus(self) end
 
-  local u, v = self.owner.frame.width, self.owner.frame.height
-  local x, y = self.x * u + self.padding, self.y * v + self.padding
-  g.setFont(self.font, self.size == 'auto' and self:autoFontSize() or self.size * v)
+  local u, v = g.getDimensions()
+  local x, y = self:getX(), self:getY()
+  g.setFont(self.font, self.size == 'auto' and self:autoFontSize() or self.size)
 
   local text = self.renderFilter and self.renderFilter(self.text) or self.text
 
@@ -115,12 +122,10 @@ function TextField:mousepressed(mx, my, button)
 end
 
 function TextField:mousereleased(x, y, button)
-  Element.mousereleased(self, x, y, button)
-  if button == 'l' and self.focused and not self:mouseOver() then self.owner:unfocus() end
+  if button == 'l' and self.focused and not self:mouseOver() then self.gooey:unfocus() end
 end
 
 function TextField:textinput(char)
-  Element.textinput(self, char)
   if self.focused then
     self.text = self.text:sub(1, self.cursorPosition) .. char .. self.text:sub(self.cursorPosition + 1)
     self.cursorPosition = self.cursorPosition + 1

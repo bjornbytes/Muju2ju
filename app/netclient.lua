@@ -192,8 +192,8 @@ function NetClient:disconnect(event)
     print('Lost connection to server')
   end
 
+  Context:add(Menu, ctx.userState)
   Context:remove(ctx)
-  Context:add(Menu)
 end
 
 function NetClient:send(msg, data)

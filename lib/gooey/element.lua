@@ -6,98 +6,52 @@ Element.x = 0
 Element.y = 0
 Element.width = 1
 Element.height = 1
-Element.padding = 0
+Element.padding = {x = 0, y = 0}
 
 function Element:init(data)
-  self.parent = nil
-  self.children = {}
   self.event = Event()
 
-  table.merge(data, self)
-end
-
-function Element:update()
-  self:callChildren('update')
+  table.merge(data, self, true)
 end
 
 function Element:draw()
-  self:render()
-  self:callChildren('draw')
-end
+  local u, v = g.getDimensions()
+  local x = self.x > 1 and self.x or self.x * u
+  local y = self.y > 1 and self.y or self.y * v
+  local w = self.width > 1 and self.width or self.width * u
+  local h = self.height > 1 and self.height or self.height * v
 
-function Element:render()
-  local u, v = self.owner.frame.width, self.owner.frame.height
+  if self.anchor == 'right' then
+    x = u - x - w
+  end
 
   if self.background then
     if self.background.typeOf and self.background:typeOf('Drawable') then
       g.setColor(255, 255, 255)
-      g.draw(self.background, self.x * u, self.y * v, 0, self.width / self.background:getWidth() * u, self.height / self.background:getHeight() * v)
+      g.draw(self.background, x, y, 0, w / self.background:getWidth(), h / self.background:getHeight())
     else
       g.setColor(self.background)
-      g.rectangle('fill', self.x * u, self.y * v, self.width * u, self.height * v)
+      g.rectangle('fill', x, y, w, h)
     end
   end
 
   if self.border then
     g.setColor(self.border)
-    g.rectangle('line', math.round(self.x * u) + .5, math.round(self.y * v) + .5, self.width * u, self.height * v)
+    g.rectangle('line', x, y, w, h)
   end
-end
-
-function Element:callChildren(key, ...)
-  self.owner:push(self, key == 'draw')
-  table.with(self.children, key, ...)
-  self.owner:pop(self, key == 'draw')
-end
-
-function Element:keypressed(...)
-  self:callChildren('keypressed', ...)
-end
-
-function Element:keyreleased(...)
-  self:callChildren('keyreleased', ...)
-end
-
-function Element:mousepressed(...)
-  self:callChildren('mousepressed', ...)
-end
-
-function Element:mousereleased(...)
-  self:callChildren('mousereleased', ...)
-end
-
-function Element:textinput(...)
-  self:callChildren('textinput', ...)
-end
-
-function Element:add(child)
-  child.parent = self
-  child.owner = self.owner
-  table.insert(self.children, child)
-
-  if child.name then
-    if child.name:find('[]') then
-      child.name = child.name:sub(1, -2)
-      if not self[child.name] then
-        self[child.name] = self[child.name] or {}
-        table.insert(self[child.name], child)
-      end
-    elseif not self[child.name] then
-      self[child.name] = child
-    end
-  end
-
-  return child
 end
 
 function Element:autoFontSize()
-  return self.height * self.owner.frame.height - self.padding * 2
+  local v = g.getHeight()
+  local h = self.height > 1 and self.height or self.height * v
+  local padding = type(self.padding) == 'table' and self.padding.y or self.padding
+  if padding < 1 then padding = padding * v end
+  return h - 2 * padding
 end
 
 function Element:mouseOver()
-  local u, v = self.owner.frame.width, self.owner.frame.height
-  local x, y = self.owner.frame.x + self.x * u, self.owner.frame.y + self.y * v
-  local w, h = self.width * u, self.height * v
+  local u, v = g.getDimensions()
+  local x, y, w, h = self:getRect()
   return math.inside(love.mouse.getX(), love.mouse.getY(), x, y, w, h)
 end
 
@@ -107,4 +61,41 @@ end
 
 function Element:emit(...)
   self.event:emit(...)
+end
+
+function Element:getX()
+  local u = g.getWidth()
+  local x = self.x > 1 and self.x or self.x * u
+  local padding = type(self.padding) == 'table' and self.padding.x or self.padding
+  if padding < 1 then padding = padding * u end
+  if self.anchor == 'right' then x = u - x - self:getWidth() end
+  return x + padding
+end
+
+function Element:getY()
+  local v = g.getHeight()
+  local y = self.y > 1 and self.y or self.y * v
+  local padding = type(self.padding) == 'table' and self.padding.y or self.padding
+  if padding < 1 then padding = padding * v end
+  return y + padding
+end
+
+function Element:getWidth()
+  local u = g.getWidth()
+  local w = self.width > 1 and self.width or self.width * u
+  local padding = type(self.padding) == 'table' and self.padding.x or self.padding
+  if padding < 1 then padding = padding * u end
+  return w - 2 * padding
+end
+
+function Element:getHeight()
+  local v = g.getHeight()
+  local h = self.height > 1 and self.height or self.height * v
+  local padding = type(self.padding) == 'table' and self.padding.y or self.padding
+  if padding < 1 then padding = padding * v end
+  return h - 2 * padding
+end
+
+function Element:getRect()
+  return self:getX(), self:getY(), self:getWidth(), self:getHeight()
 end

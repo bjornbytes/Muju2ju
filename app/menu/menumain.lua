@@ -2,12 +2,14 @@ MenuMain = class()
 
 function MenuMain:init()
 	self.gooey = Gooey(data.gooey.menu.main)
+
 	self.gooey:find('exitButton'):on('clicked', function()
 		love.event.quit()
 	end)
+
 	self.gooey:find('survivalButton'):on('clicked', function()
 		Context:remove(ctx)
-		Context:add(Game)
+		Context:add(Game, self.userState)
 	end)
 end
 

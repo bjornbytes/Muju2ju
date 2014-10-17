@@ -11,7 +11,7 @@ function HudPause:update()
 end
 
 function HudPause:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local u, v = ctx.hud.u, ctx.hud.v
   local image = data.media.graphics.pauseMenu

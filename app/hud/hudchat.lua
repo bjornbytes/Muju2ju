@@ -29,7 +29,10 @@ function HudChat:draw()
   local width = u * .25
   if #self.log == 0 and not self.active then return end
 
-  local offset = math.lerp(self.prevOffset, self.offset, tickDelta / tickRate)
+  local upgradeFactor = ctx.hud.upgrades:getFactor()
+  if upgradeFactor > 1 then upgradeFactor = 1 + (upgradeFactor - 1) / 4 end
+  local offset = -(u * .35) - 4 + (u * .35 + 4) * upgradeFactor   --math.lerp(self.prevOffset, self.offset, tickDelta / tickRate)
+  --offset = -u
   
   g.setFont('pixel', 8)
   local font = g.getFont()

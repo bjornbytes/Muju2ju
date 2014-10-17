@@ -7,13 +7,15 @@ function HudDead:init()
 end
 
 function HudDead:update()
-  self.alpha = math.lerp(self.alpha, ctx.ded and 1 or 0, 12 * tickRate)
+  self.alpha = math.lerp(self.alpha, ctx.net.state == 'ending' and 1 or 0, 12 * tickRate)
 end
 
 function HudDead:draw()
-  if not ctx.ded then return end
+  if ctx.net.state ~= 'ending' then return end
 
   local u, v = ctx.hud.u, ctx.hud.v
+
+  --
 end
 
 function HudDead:keypressed(key)

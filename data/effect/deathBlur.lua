@@ -7,13 +7,13 @@ function DeathBlur:init()
 end
 
 function DeathBlur:update()
-	if ctx.ded then
+	if ctx.net.state == 'ending' then
 		self.amount = math.lerp(self.amount, 4, .25 * tickRate)
 	end
 end
 
 function DeathBlur:applyEffect(source, target)
-	if ctx.ded then
+	if ctx.net.state == 'ending' then
 		local g = love.graphics
 		self.hblur:send('amount', self.amount * .0008)
 		self.vblur:send('amount', self.amount * .0008 * (g.getWidth() / g.getHeight()))

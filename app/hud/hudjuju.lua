@@ -11,13 +11,14 @@ function HudJuju:update()
 end
 
 function HudJuju:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local p = ctx.players:get(ctx.id)
   if not p then return end
 
   local u, v = ctx.hud.u, ctx.hud.v
   local image = data.media.graphics.juju
+  local upgradeFactor = ctx.hud.upgrades:getFactor()
   local scale = self.scale * ctx.hud.v / image:getWidth()
 
   g.setFont('inglobalb', .022 * v)

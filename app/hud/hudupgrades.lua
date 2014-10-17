@@ -46,3 +46,9 @@ end
 function HudUpgrades:gamepadpressed(gamepad, button)
   --
 end
+
+function HudUpgrades:getFactor()
+  local t = math.lerp(self.prevTime, self.time, tickDelta / tickRate)
+  self.tween:set(t)
+  return self.factor.value, t
+end

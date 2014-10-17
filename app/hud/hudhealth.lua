@@ -22,7 +22,7 @@ local function stack(t, x, range, delta)
 end
 
 function HudHealth:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local green = {50, 230, 50}
   local red = {255, 0, 0}

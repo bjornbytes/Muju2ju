@@ -15,7 +15,7 @@ function Effects:update()
 end
 
 function Effects:paused()
-  if ctx.ded then
+  if ctx.net.state == 'ending' then
     local deathBlur = self:get('deathBlur')
     if deathBlur then deathBlur:update() end
   end

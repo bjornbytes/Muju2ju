@@ -27,8 +27,6 @@ function Shrine:init()
 end
 
 function Shrine:update()
-	if self.health <= 0 then ctx.ded = true end
-
   self.healthDisplay = math.lerp(self.healthDisplay, self.health, 2 * tickRate)
 
   self.hurtFactor = math.lerp(self.hurtFactor, (tick - self.lastHurt) * tickRate < 5 and 1 or 0, 4 * tickRate)

@@ -60,7 +60,7 @@ function HudTutorial:update()
 end
 
 function HudTutorial:draw()
-  if true or ctx.ded then return end
+  if true or ctx.net.state == 'ending' then return end
   local p = ctx.players:get(ctx.id)
   if self.enabled and self.timer > 0 then
     g.setColor(255, 255, 255, 255 * math.abs(math.sin(self.timer)))

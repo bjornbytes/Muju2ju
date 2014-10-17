@@ -16,7 +16,7 @@ function HudMinions:update()
 end
 
 function HudMinions:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local p = ctx.players:get(ctx.id)
   if not p then return end
@@ -24,9 +24,7 @@ function HudMinions:draw()
   local u, v = ctx.hud.u, ctx.hud.v
   local ct = table.count(p.deck)
 
-  local t = math.lerp(ctx.hud.upgrades.prevTime, ctx.hud.upgrades.time, tickDelta / tickRate)
-  ctx.hud.upgrades.tween:set(t)
-  local upgradeFactor = ctx.hud.upgrades.factor.value
+  local upgradeFactor, t = ctx.hud.upgrades:getFactor()
   local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
   local inc = u * (.1 + (.15 * upgradeFactor))
   local xx = .5 * u - (inc * (ct - 1) / 2)

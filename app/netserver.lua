@@ -74,6 +74,14 @@ NetServer.messages.ready = {
   important = true
 }
 
+NetServer.messages.over = {
+  data = {
+    winner = 2
+  },
+  order = {'winner'},
+  important = true
+}
+
 NetServer.messages.bootstrap = {
   data = {
     tick = 16,
@@ -259,15 +267,18 @@ function NetServer:disconnect(event)
   self.peerToPlayer[event.peer] = nil
   event.peer:disconnect_now()
 
-  if table.has(arg, 'test') and table.count(self.peerToPlayer[event.peer]) == 0 then
-    self:quit()
-    Context:remove(ctx)
-    Context:add(Server)
-  else
-    if ctx.config.game.kind == 'versus' then
-      --
-    elseif ctx.config.game.kind == 'survival' then
-      --
+  if table.count(self.peerToPlayer) == 0 then
+    if table.has(arg, 'test') then
+      self:quit()
+      Context:remove(ctx)
+      Context:add(Server)
+    else
+      if self.state == 'ending' then
+        self:quit()
+        love.event.quit()
+      else
+        -- Uh, guys?
+      end
     end
   end
 end

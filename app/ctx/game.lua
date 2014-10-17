@@ -41,24 +41,22 @@ function Game:load(userState)
     self.particles:add(data.kind, data)
   end)
 
-  -- Needs synchronization
-  self.event:on('shrine.dead', function(data)
+  self.event:on('over', function(data)
     if backgroundSound then backgroundSound:stop() end
 
-    local p = ctx.players:get(self.id)
+    local p = ctx.players:get(ctx.id)
     if not p then return end
 
-    local lost = self.config.game.kind == 'survival' or data.shrine.team == p.team
+    local lost = data.winner ~= p.team
 
     if lost then
-      ctx.event:emit('sound.play', {sound = 'youlose'})
+      print('you lose')
       Context:remove(ctx)
       Context:add(Menu, self.userState)
     else
       print('you win')
       Context:remove(ctx)
       Context:add(Menu, self.userState)
-      -- I am winrar.
     end
   end)
 
@@ -66,7 +64,7 @@ function Game:load(userState)
 end
 
 function Game:quit()
-  self.net:quit()
+  self:unload()
 end
 
 function Game:update()
@@ -100,6 +98,7 @@ end
 
 function Game:unload()
 	if backgroundSound then backgroundSound:stop() end
+  self.net:quit()
 end
 
 function Game:draw()

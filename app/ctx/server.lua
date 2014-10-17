@@ -11,7 +11,6 @@ function Server:load()
 
   self.event = Event()
   self.net = NetServer()
-  --self.view = View()
   self.map = Map()
 	self.players = Players()
   self.shrines = Manager()
@@ -20,23 +19,29 @@ function Server:load()
   self.shrujus = Shrujus()
   self.spells = Spells()
 	self.target = Target()
-  --self.hud = Hud()
 
   if ctx.config.game.kind == 'survival' then
     ctx.shrines:add(Shrine, {x = ctx.map.width / 2, team = 1})
   elseif ctx.config.game.kind == 'vs' then
     --
   end
+
+  self.event:on('shrine.dead', function(data)
+    self.net.state = 'ending'
+    if ctx.config.game.kind == 'survival' then
+      ctx.net:emit('over', {winner = 0})
+    else
+      ctx.net:emit('over', {winner = data.shrine.team == 1 and 2 or 1})
+    end
+  end)
 end
 
 function Server:update()
-	if self.paused or self.ded then
-		return
-	end
+	if self.paused or self.ded then return end
 
   self.net:update()
 
-  if self.net.state == 'waiting' then return self.net:sync() end
+  if self.net.state == 'waiting' or self.net.state == 'ending' then return self.net:sync() end
 
   self.timer = self.timer + 1
 	self.players:update()
@@ -45,13 +50,8 @@ function Server:update()
   self.jujus:update()
   self.shrujus:update()
   self.spells:update()
-  --self.view:update()
 
   self.net:snapshot()
 
   self.net:sync()
 end
-
---[[function Server:draw()
-  self.view:draw()
-end]]

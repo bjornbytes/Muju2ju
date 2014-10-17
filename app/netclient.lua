@@ -18,6 +18,8 @@ NetClient.messages.join = {
 }
 
 NetClient.messages.leave = {
+  data = {},
+  order = {},
   important = true
 }
 
@@ -34,6 +36,12 @@ NetClient.messages.ready = {
     end
 
     ctx.event:emit('ready')
+  end
+}
+
+NetClient.messages.over = {
+  receive = function(self, event)
+    ctx.event:emit('over', event.data)
   end
 }
 
@@ -184,7 +192,7 @@ function NetClient:init()
 end
 
 function NetClient:quit()
-  self:send('leave')
+  self:send('leave', {})
   if self.host then self.host:flush() end
   if self.server then self.server:disconnect() end
 end
@@ -199,7 +207,7 @@ end
 function NetClient:disconnect(event)
   if not self.server then
     print('Unable to connect to server')
-  else
+  elseif self.state ~= 'ending' then
     ctx.event:emit('game.quit')
     print('Lost connection to server')
   end

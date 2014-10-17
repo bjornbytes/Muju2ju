@@ -4,6 +4,7 @@ Net.messageMap = {
   'join',
   'leave',
   'ready',
+  'over',
   'bootstrap',
   'input',
   'snapshot',

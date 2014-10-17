@@ -13,13 +13,19 @@ function Label:init(data)
   Element.init(self, data)
 end
 
-function Label:render()
-  local u, v = self.owner.frame.width, self.owner.frame.height
-  local x, y = self.x * u + self.padding, self.y * v + self.padding
+function Label:draw()
+  local u, v = g.getDimensions()
+  local x, y, w, h = self:getRect()
 
-  Element.render(self)
+  Element.draw(self)
 
   g.setFont(self.font, self.size == 'auto' and self:autoFontSize() or self.size * v)
   g.setColor(self.color)
-  g.print(self.text, x, y) 
+
+  if self.center then
+    x = (x + w / 2) - g.getFont():getWidth(self.text) / 2
+    y = (y + h / 2) - g.getFont():getHeight() / 2
+  end
+
+  g.print(self.text, x, y)
 end

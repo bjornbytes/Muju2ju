@@ -2,8 +2,9 @@ Game = class()
 
 Game.tag = 'client'
 
-function Game:load()
+function Game:load(userState)
   self.config = config
+  self.userState = userState
 
 	self.paused = false
 	self.ded = false

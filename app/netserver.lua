@@ -188,13 +188,14 @@ NetServer.messages.unitDestroy = {
 NetServer.messages.jujuCreate = {
   data = {
     id = 12,
+    team = 2,
     x = 16,
     y = 16,
     amount = 8,
     vx = 'float',
     vy = 'float'
   },
-  order = {'id', 'x', 'y', 'amount', 'vx', 'vy'},
+  order = {'id', 'team', 'x', 'y', 'amount', 'vx', 'vy'},
   important = true
 }
 

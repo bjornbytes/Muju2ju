@@ -6,18 +6,18 @@ Unit.cost = 5
 Unit.cooldown = 5
 
 function Unit:activate()
+  self.createdAt = tick
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.team = self.owner and self.owner.team or 0
+
+  -- Time-based scaling
+  local minutes = ctx.timer * tickRate / 60
+  self.damage = self.damage + self.damagePerMinute * minutes
+  self.maxHealth = self.maxHealth + self.maxHealthPerMinute * minutes
   self.health = self.maxHealth
-  self.createdAt = tick
 
   if ctx.tag == 'server' then
     self.rng = love.math.newRandomGenerator(self.id)
-
-    -- Time-based scaling
-    local minutes = ctx.timer * tickRate / 60
-    self.maxHealth = self.maxHealth + self.maxHealthPerMinute * minutes
-    self.damage = self.damage + self.damagePerMinute * minutes
 
     -- Defensive Stats
     self.armor = 0
@@ -51,7 +51,6 @@ function Unit:activate()
     self.scale = (data.animation[self.code] and data.animation[self.code].scale or 1) + (r / 210)
     self.y = self.y + r
     self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
-
     self.healthDisplay = self.health
   end
 
@@ -168,10 +167,8 @@ end
 
 function Unit:die()
   if not self.shouldDestroy then
-    if ctx.config.game.kind == 'survival' and not self.owner or ctx.config.game.kind ~= 'survival' then
-      local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
-      ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), amount = 10, vx = vx, vy = vy})
-    end
+    local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
+    ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), team = self.owner and self.owner.team or 0, amount = 5 + love.math.random(0, 2), vx = vx, vy = vy})
     self.shouldDestroy = true
   end
 end

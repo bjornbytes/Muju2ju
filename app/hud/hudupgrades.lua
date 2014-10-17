@@ -4,6 +4,7 @@ HudUpgrades = class()
 
 function HudUpgrades:init()
   self.active = false
+  self.lastPress = 0
   self.time = 0
   self.prevTime = self.time
   self.maxTime = .45
@@ -12,7 +13,6 @@ function HudUpgrades:init()
 end
 
 function HudUpgrades:update()
-  self.active = love.keyboard.isDown('tab')
   self.prevTime = self.time
   if self.active then self.time = math.min(self.time + tickRate, self.maxTime)
   else self.time = math.max(self.time - tickRate, 0) end
@@ -23,11 +23,20 @@ function HudUpgrades:draw()
 end
 
 function HudUpgrades:keypressed(key)
-  --
+  if key == 'tab' then
+    self.lastPress = tick
+    self.active = not self.active
+  end
 end
 
 function HudUpgrades:keyreleased(key)
-  --
+  if key == 'tab' then
+    if (tick - self.lastPress) * tickRate > self.maxTime then
+      self.active = false
+    else
+      --
+    end
+  end
 end
 
 function HudUpgrades:mousereleased(x, y, button)

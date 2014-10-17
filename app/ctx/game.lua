@@ -120,6 +120,12 @@ function Game:keypressed(key)
 	--self.player:keypressed(key)
 end
 
+function Game:keyreleased(key)
+  if not self.id then return end
+
+  self.hud:keyreleased(key)
+end
+
 function Game:mousereleased(...)
   if not self.id then return end
 

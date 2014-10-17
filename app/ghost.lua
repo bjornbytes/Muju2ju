@@ -60,7 +60,8 @@ function Ghost:draw(x, y, angle)
   angle = angle or self.angle
 
   if self.drawX and self.drawY then
-    x, y = (self.drawX + x) / 2, (self.drawY + y) / 2
+    local d = math.clamp(math.distance(x, y, self.drawX, self.drawY) / 80, 0, 1)
+    x, y = math.lerp(self.drawX, x, d), math.lerp(self.drawY, y, d)
   end
 
 	local scale = math.min(self.health, 2) / 2
@@ -119,7 +120,7 @@ end
 function Ghost:contained(t)
   if not self.maxDis then return true end
 	local px, py = self.owner.x, self.owner.y + self.owner.height
-	return math.distance(self.owner.ghostX, self.owner.ghostY, px, py) < self.maxDis - 8
+	return math.distance(self.owner.ghostX, self.owner.ghostY, px, py) < self.maxDis - 20
 end
 
 function Ghost:despawn()

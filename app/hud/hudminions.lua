@@ -24,7 +24,9 @@ function HudMinions:draw()
   local u, v = ctx.hud.u, ctx.hud.v
   local ct = table.count(p.deck)
 
-  local inc = u * .1
+  local t = math.lerp(ctx.hud.upgrades.prevTime, ctx.hud.upgrades.time, tickDelta / tickRate)
+  ctx.hud.upgrades.tween:set(t)
+  local inc = u * (.1 + (.1 * ctx.hud.upgrades.factor.value))
   local xx = .5 * u - (inc * (ct - 1) / 2)
   local font = ctx.hud.boldFont
 
@@ -32,7 +34,7 @@ function HudMinions:draw()
     local bg = self.bg[i]
     local w, h = bg:getDimensions()
     local scale = (.1 + (.0175 * self.factor[i]) + (.012 * self.extra[i])) * v / w
-    local yy = .07 * v
+    local yy = v * (.07 + (.05 * ctx.hud.upgrades.factor.value))
     local f, cost = font, tostring('12')
     --local tx, ty = xx - w / 2 - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35

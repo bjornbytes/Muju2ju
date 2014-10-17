@@ -72,6 +72,10 @@ function Hud:keypressed(key)
   self.dead:keypressed(key)
 end
 
+function Hud:keyreleased(key)
+  self.upgrades:keyreleased(key)
+end
+
 function Hud:mousereleased(...)
   self.upgrades:mousereleased(...)
   self.dead:mousereleased(...)

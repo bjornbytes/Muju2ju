@@ -10,3 +10,6 @@
 [submodule "lib/deps/richtext"]
 	path = lib/deps/richtext
 	url = https://github.com/bjornswenson/richtext
+[submodule "lib/deps/tween"]
+	path = lib/deps/tween
+	url = https://github.com/kikito/tween.lua

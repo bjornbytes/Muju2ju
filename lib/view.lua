@@ -48,6 +48,13 @@ function View:update()
   self.prevy = self.y
   self.prevscale = self.scale
 
+  local mx = love.mouse.getX()
+  if mx < self.frame.x + (.02 * self.frame.width) then
+    self.vx = -1000
+  elseif mx > self.frame.x + (.98 * self.frame.width) then
+    self.vx = 1000
+  end
+
   self.x = self.x + self.vx * tickRate
   self.y = self.y + self.vy * tickRate
   

@@ -65,29 +65,29 @@ function HudMinions:draw()
     g.print(cost, tx, ty)]]
 
     do
-      local yy = yy + .13 * v
-      local inc = .1 * upgradeFactor * v
+      local yy = yy + (.11 * v)
+      local inc = .08 * upgradeFactor * v
+      local radius = math.max(.02 * v * upgradeFactor, .01)
 
       g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
-      g.circle('fill', xx - inc, yy, .04 * v)
-      g.circle('fill', xx, yy, .04 * v)
-      g.circle('fill', xx + inc, yy, .04 * v)
+      g.rectangle('fill', xx - inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+      g.rectangle('fill', xx + inc / 2 - radius, yy - radius, radius * 2, radius * 2)
       g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
-      g.circle('line', xx - inc, yy, .04 * v)
-      g.circle('line', xx, yy, .04 * v)
-      g.circle('line', xx + inc, yy, .04 * v)
+      g.rectangle('line', xx - inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+      g.rectangle('line', xx + inc / 2 - radius, yy - radius, radius * 2, radius * 2)
 
-      --[[inc = .12 * upgradeFactor * v
-      yy = yy + .1 * v
+      yy = yy + (.08 * v)
+      inc = .1 * upgradeFactor * v
+      radius = math.max(.035 * v * upgradeFactor, .01)
 
-      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
-      g.circle('fill', xx - inc, yy, .05 * v)
-      g.circle('fill', xx, yy, .05 * v)
-      g.circle('fill', xx + inc, yy, .05 * v)
+      g.setColor(0, 0, 0, 200 * upgradeAlphaFactor)
+      g.circle('fill', xx - inc, yy, radius)
+      g.circle('fill', xx, yy, radius)
+      g.circle('fill', xx + inc, yy, radius)
       g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
-      g.circle('line', xx - inc, yy, .05 * v)
-      g.circle('line', xx, yy, .05 * v)
-      g.circle('line', xx + inc, yy, .05 * v)]]
+      g.circle('line', xx - inc, yy, radius)
+      g.circle('line', xx, yy, radius)
+      g.circle('line', xx + inc, yy, radius)
     end
 
     xx = xx + inc

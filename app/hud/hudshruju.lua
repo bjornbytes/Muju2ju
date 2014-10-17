@@ -19,8 +19,8 @@ function HudShruju:draw()
   local ct = 3
   local inc = u * (.1 + (.05 * upgradeFactor))
   local xx = .5 * u - (inc * (ct - 1) / 2)
-  local yy = v * (.95 - .015 * upgradeFactor)
-  local radius = v * (.04 + (.015 * upgradeFactor))
+  local yy = v * (1.05 - .12 * upgradeFactor)
+  local radius = v * (.025 + .025 * upgradeFactor)
 
   for i = 1, ct do
     g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)

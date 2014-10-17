@@ -77,7 +77,7 @@ function Player:draw()
 	end
 
   if self.dead then
-    self.ghost:draw(self.ghostX, self.ghostY)
+    self.ghost:draw(self.ghostX, self.ghostY, self.ghostAngle)
   end
 end
 

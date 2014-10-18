@@ -13,10 +13,11 @@ function MenuSignup:init()
     return function(data)
       if data.key == 'tab' then
         self.gooey:focus(to)
+      end
     end
   end
 
-  self.gooey:find('signupButton'):on('clicked', f.cur(self.authenticate, self))
+  self.gooey:find('signupButton'):on('clicked', f.cur(self.signup, self))
   self.username:on('keypressed', tab(self.password))
   self.password:on('keypressed', tab(self.passwordRetype))
 end

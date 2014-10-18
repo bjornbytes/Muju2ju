@@ -9,7 +9,6 @@ NetServer.messages.join = {
   order = {'id', 'problem'},
   important = true,
   receive = function(self, event)
-
     local username = event.data.username
 
     local user, id
@@ -34,14 +33,23 @@ NetServer.messages.join = {
       return
     end
 
+    print('player ' .. id .. ' connected')
     self.peerToPlayer[event.peer] = id
     self:send('join', event.peer, {id = id, problem = ''})
+    self:emit('chat', {message = username .. ' has joined the game!'})
+
+    -- Create their player (if not created already) and associate this peer with the player.
     ctx.players:add(id)
     ctx.players:get(id).peer = event.peer
-    print('player ' .. id .. ' connected')
+
+    -- If everyone has joined, we either start the game or bootstrap this peer.
     if table.count(ctx.players.players) == #ctx.config.players then
-      self:emit('ready', {tick = tick})
-      self.state = 'playing'
+      if self.state ~= 'playing' then
+        self:emit('ready', {tick = tick})
+        self.state = 'playing'
+      else
+        self:bootstrap(event.peer)
+      end
     end
   end
 }
@@ -63,6 +71,37 @@ NetServer.messages.ready = {
     tick = 16
   },
   order = {'tick'},
+  important = true
+}
+
+NetServer.messages.over = {
+  data = {
+    winner = 2
+  },
+  order = {'winner'},
+  important = true
+}
+
+NetServer.messages.bootstrap = {
+  data = {
+    tick = 16,
+    players = {
+      color = 'string',
+      id = 3,
+      x = 'float'
+    },
+    units = {
+      id = 12,
+      owner = 3,
+      kind = 'string',
+      x = 16
+    }
+  },
+  order = {
+    'tick', 'players', 'units',
+    players = {'id', 'x'},
+    units = {'id', 'owner', 'kind', 'x'}
+  },
   important = true
 }
 
@@ -100,6 +139,10 @@ NetServer.messages.snapshot = {
       x = 16,
       health = 10,
       animationData = 'animation'
+    },
+    shrines = {
+      id = 4,
+      health = 'float'
     }
   },
   delta = {
@@ -111,10 +154,29 @@ NetServer.messages.snapshot = {
     units = {'animationData'}
   },
   order = {
-    'tick', 'players', 'units',
+    'tick', 'players', 'units', 'shrines',
     players = {'id', 'x', 'health', 'dead', 'animationData', 'ghostX', 'ghostY', 'ghostAngle' },
-    units = {'id', 'x', 'health', 'animationData'}
+    units = {'id', 'x', 'health', 'animationData'},
+    shrines = {'id', 'health'}
   }
+}
+
+NetServer.messages.chat = {
+  data = {
+    message = 'string'
+  },
+  order = {'message'},
+  important = true,
+  receive = function(self, event)
+    local id = self.peerToPlayer[event.peer]
+    if not id then return end
+    local username = ctx.config.players[id].username
+    ctx.players:each(function(player)
+      if player and player.peer then
+        self:send('chat', player.peer, {message = '{' .. (player.team == ctx.config.players[id].team and 'green' or 'red') .. '}' .. username .. '{white}: ' .. event.data.message})
+      end
+    end)
+  end
 }
 
 NetServer.messages.unitCreate = {
@@ -122,10 +184,9 @@ NetServer.messages.unitCreate = {
     id = 12,
     owner = 3,
     kind = 'string',
-    x = 16,
-    y = 16
+    x = 16
   },
-  order = {'id', 'owner', 'kind', 'x', 'y'},
+  order = {'id', 'owner', 'kind', 'x'},
   important = true
 }
 
@@ -140,13 +201,14 @@ NetServer.messages.unitDestroy = {
 NetServer.messages.jujuCreate = {
   data = {
     id = 12,
+    team = 2,
     x = 16,
     y = 16,
     amount = 8,
     vx = 'float',
     vy = 'float'
   },
-  order = {'id', 'x', 'y', 'amount', 'vx', 'vy'},
+  order = {'id', 'team', 'x', 'y', 'amount', 'vx', 'vy'},
   important = true
 }
 
@@ -157,6 +219,13 @@ NetServer.messages.jujuCollect = {
   },
   order = {'id', 'owner'},
   important = true
+}
+
+NetServer.messages.spellCreate = {
+  data = {
+    properties = 'spell'
+  },
+  order = {'properties'}
 }
 
 function NetServer:init()
@@ -197,6 +266,21 @@ function NetServer:disconnect(event)
   end
   self.peerToPlayer[event.peer] = nil
   event.peer:disconnect_now()
+
+  if table.count(self.peerToPlayer) == 0 then
+    if table.has(arg, 'test') then
+      self:quit()
+      Context:remove(ctx)
+      Context:add(Server)
+    else
+      if self.state == 'ending' then
+        self:quit()
+        love.event.quit()
+      else
+        -- Uh, guys?
+      end
+    end
+  end
 end
 
 function NetServer:send(msg, peer, data)
@@ -220,7 +304,7 @@ function NetServer:sync()
     while #self.importantEventBuffer > 0 and (tick - self.importantEventBuffer[1][3]) * tickRate >= .000 do
       self:pack(unpack(self.importantEventBuffer[1]))
       table.remove(self.importantEventBuffer, 1)
-   end
+    end
 
     self.host:broadcast(tostring(self.outStream), 0, 'reliable')
   end
@@ -234,4 +318,68 @@ function NetServer:sync()
 
     self.host:broadcast(tostring(self.outStream), 1, 'unreliable')
   end
+end
+
+function NetServer:snapshot()
+  local snapshot = {tick = tick, players = {}, units = {}, shrines = {}}
+  ctx.players:each(function(player)
+    local entry = {
+      id = player.id,
+      dead = player.dead,
+      animationData = player.animation:pack()
+    }
+
+    if player.dead then
+      entry.ghostX = player.ghostX
+      entry.ghostY = player.ghostY
+      
+      local angle = math.round(math.deg(player.ghost.angle))
+      while angle < 0 do angle = angle + 360 end
+      entry.ghostAngle = angle
+    else
+      entry.x = player.x
+      entry.health = math.round(player.health)
+    end
+
+    table.insert(snapshot.players, entry)
+  end)
+
+  ctx.units:each(function(unit)
+    table.insert(snapshot.units, {
+      id = unit.id,
+      x = math.round(unit.x),
+      y = math.round(unit.y),
+      health = math.round(unit.health),
+      animationData = unit.animation and unit.animation:pack() or nil
+    })
+  end)
+
+  ctx.shrines:each(function(shrine)
+    table.insert(snapshot.shrines, {
+      id = shrine.id,
+      health = shrine.health / shrine.maxHealth
+    })
+  end)
+
+  self:emit('snapshot', snapshot)
+
+  ctx.units:each(function(unit)
+    if unit.shouldDestroy then self:emit('unitDestroy', {id = unit.id}) end
+  end)
+end
+
+function NetServer:bootstrap(peer)
+  if not peer or not self.peerToPlayer[peer] then return end
+
+  local message = {tick = tick, players = {}, units = {}}
+  
+  ctx.players:each(function(p)
+    table.insert(message.players, {id = p.id, x = p.x})
+  end)
+
+  ctx.units:each(function(unit)
+    table.insert(message.units, {id = unit.id, owner = unit.owner and unit.owner.id or 0, kind = unit.code, x = unit.x})
+  end)
+
+  return self:send('bootstrap', peer, message)
 end

@@ -3,6 +3,7 @@ Juju = class()
 Juju.depth = -6
 
 function Juju:activate()
+  self.radius = math.clamp(self.amount / 100, .25, 1) * 48
 
   if ctx.tag ~= 'server' then
     self.angle = love.math.random() * 2 * math.pi
@@ -10,9 +11,10 @@ function Juju:activate()
     self.scale = 0
     self.alpha = 0
     self.prev = {}
-  end
 
-  self.radius = math.clamp(self.amount / 100, .25, .75) * 48
+    local p = ctx.players:get(ctx.id)
+    if p and p.team == self.team then self.amount = self.amount / 2 end
+  end
 
 	for i = 1, 15 do
     ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y})
@@ -54,11 +56,31 @@ function Juju:update(noHistory)
 		return
 	end]]
   if self.owner then
-    if ctx.tag == 'server' then
+    if ctx.tag == 'server' or (self.owner ~= ctx.players:get(ctx.id)) then
+      if ctx.tag == 'client' then
+        for i = 1, 20 do
+          ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
+        end
+      end
       self.owner.juju = self.owner.juju + self.amount
+      ctx.jujus:remove(self.id)
+    else
+      local tx, ty = ctx.view.x + 52, ctx.view.y + 52
+      self.x, self.y = math.lerp(self.x, tx, 10 * tickRate), math.lerp(self.y, ty, 10 * tickRate)
+      self.scale = math.lerp(self.scale, .1, 5 * tickRate)
+      if math.distance(self.x, self.y, tx, ty) < 16 then
+        ctx.jujus:remove(self.id)
+        ctx.hud.jujuIconScale = 1
+        for i = 1, 20 do
+          ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
+        end
+      end
+      for i = 1, 2 do
+        ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y})
+      end
     end
 
-    ctx.jujus:remove(self.id)
+    return
   end
 
 	self.vx = math.lerp(self.vx, 0, tickRate)
@@ -83,22 +105,20 @@ function Juju:update(noHistory)
     local p = ctx.players:get(ctx.id)
     if p and p.dead then
       if math.distance(p.ghostX, p.ghostY, self.x, self.y) < self.radius + p.ghost.radius then
-        ctx.jujus:remove(self.id)
+        self.owner = p
       end
     end
 
     -- Juicy lerps
     self.angle = self.angle + (math.sin(tick * tickRate) * math.cos(tick * tickRate)) / love.math.random(9, 11)
-    self.scale = math.lerp(self.scale, math.clamp(self.amount / 100, .25, .75), 2 * tickRate)
+    self.scale = math.lerp(self.scale, self.radius / 48, 2 * tickRate)
     self.alpha = math.lerp(self.alpha, 1, 2 * tickRate)
 
     -- Passive particles
     if love.math.random() < 2 * tickRate then
-      local vx, vy = love.math.random(-150, -75), love.math.random(-100, 100)
+      local vx, vy = love.math.random(-100, 100), love.math.random(-100, 100)
       ctx.event:emit('particles.add', {kind = 'jujuSex', x = self.x, y = self.y, vx = vx, vy = vy, alpha = .35})
     end
-
-    -- History entry (noHistory is for when it needs to be fastforwarded in NetClient.
   end
 end
 
@@ -116,4 +136,9 @@ function Juju:draw()
 
 	g.setColor(255, 255, 255, 255 * lerpd.alpha)
 	g.draw(image, lerpd.x, lerpd.y + 5 * wave, lerpd.angle, lerpd.scale, lerpd.scale, image:getWidth() / 2, image:getHeight() / 2)
+
+  --[[g.setFont('inglobalb', 50)
+  g.setColor(0, 0, 0, 150 * lerpd.alpha)
+  local str = math.round(self.amount)
+  g.print(str, lerpd.x, lerpd.y + 5 * wave, 0, lerpd.scale, lerpd.scale, g.getFont():getWidth(str) / 2, g.getFont():getHeight() / 2)]]
 end

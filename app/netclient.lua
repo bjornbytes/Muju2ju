@@ -18,11 +18,15 @@ NetClient.messages.join = {
 }
 
 NetClient.messages.leave = {
+  data = {},
+  order = {},
   important = true
 }
 
 NetClient.messages.ready = {
   receive = function(self, event)
+    if self.state == 'playing' then return end
+
     ctx.tick = event.data.tick
     self.state = 'playing'
     for i = 1, #ctx.config.players do
@@ -32,6 +36,38 @@ NetClient.messages.ready = {
     end
 
     ctx.event:emit('ready')
+  end
+}
+
+NetClient.messages.over = {
+  receive = function(self, event)
+    ctx.event:emit('over', event.data)
+  end
+}
+
+NetClient.messages.bootstrap = {
+  receive = function(self, event)
+
+    -- Start the game if it isn't started already
+    self.messages.ready.receive(self, event)
+
+    table.each(event.data.players, function(data)
+      local p = ctx.players:add(data.id)
+      if p then p.x = data.x end
+    end)
+
+    table.each(event.data.units, function(data)
+      data.tick = event.data.tick
+      local unit = ctx.units.objects[data.id]
+      if not unit then
+        ctx.event:emit('unitCreate', data)
+        unit = ctx.units.objects[data.id]
+      end
+
+      if unit then
+        unit.x = data.x
+      end
+    end)
   end
 }
 
@@ -84,6 +120,27 @@ NetClient.messages.snapshot = {
         unit.animationData = data.animationData
       end
     end)
+
+    table.each(event.data.shrines, function(data)
+      local shrine = ctx.shrines.objects[data.id]
+      if shrine then
+        shrine.history:add({
+          tick = event.data.tick,
+          health = data.health * shrine.maxHealth
+        })
+        if shrine.health > data.health * shrine.maxHealth then shrine.lastHurt = tick end
+        shrine.health = data.health * shrine.maxHealth
+      end
+    end)
+  end
+}
+
+NetClient.messages.chat = {
+  data = {message = 'string'},
+  order = {'message'},
+  important = true,
+  receive = function(self, event)
+    ctx.event:emit('chat', event.data)
   end
 }
 
@@ -103,8 +160,10 @@ NetClient.messages.jujuCreate = {
   receive = function(self, event)
     ctx.event:emit('jujuCreate', event.data)
     local juju = ctx.jujus.objects[event.data.id]
-    for i = 1, (self.server:round_trip_time() / 1000) / tickRate do
-      juju:update()
+    if juju then
+      for i = 1, (self.server:round_trip_time() / 1000) / tickRate do
+        juju:update()
+      end
     end
   end
 }
@@ -115,11 +174,16 @@ NetClient.messages.jujuCollect = {
   end
 }
 
+NetClient.messages.spellCreate = {
+  receive = function(self, event)
+    ctx.event:emit('spellCreate', event.data)
+  end
+}
+
 function NetClient:init()
   self.other = NetServer
   self.state = 'connecting'
-  local ip = arg[2] == 'local' and '127.0.0.1' or '123.123.123.123'
-  self:connectTo(ip, 6061)
+  self:connectTo(ctx.config.ip, 6061)
   self.messageBuffer = {}
 
   ctx.event:on('game.quit', f.cur(self.quit, self))
@@ -128,7 +192,7 @@ function NetClient:init()
 end
 
 function NetClient:quit()
-  self:send('leave')
+  self:send('leave', {})
   if self.host then self.host:flush() end
   if self.server then self.server:disconnect() end
 end
@@ -141,11 +205,19 @@ function NetClient:connect(event)
 end
 
 function NetClient:disconnect(event)
-  ctx.event:emit('game.quit')
+  if not self.server then
+    print('Unable to connect to server')
+  elseif self.state ~= 'ending' then
+    ctx.event:emit('game.quit')
+    print('Lost connection to server')
+  end
+
+  Context:add(Menu, ctx.userState)
+  Context:remove(ctx)
 end
 
 function NetClient:send(msg, data)
-  if not self.server then return end
+  if not self.server or not self.messages[msg] then return end
   
   self.outStream:clear()
   self:pack(msg, data)

@@ -2,14 +2,17 @@ HudHealth = class()
 
 local g = love.graphics
 
-local function bar(x, y, percent, color, width, thickness)
+local function bar(x, y, hard, soft, color, width, height)
 	thickness = thickness or 2
   x, y = ctx.view:screenPoint(x, y)
+  width = width * ctx.view.scale
 
 	g.setColor(0, 0, 0, 160)
-	g.rectangle('fill', x, y, width + 1, thickness + 1)
+	g.rectangle('fill', x - width / 2, y, width + 1, height + 1)
 	g.setColor(color)
-	g.rectangle('fill', x, y, percent * width, thickness)
+	g.rectangle('fill', x - width / 2, y, hard * width, height)
+	g.setColor(color[1], color[2], color[3], 160)
+	g.rectangle('fill', x - width / 2, y, soft * width, height)
 end
 
 local function stack(t, x, range, delta)
@@ -19,23 +22,26 @@ local function stack(t, x, range, delta)
 end
 
 function HudHealth:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local green = {50, 230, 50}
   local red = {255, 0, 0}
   local purple = {200, 80, 255}
 
   local p = ctx.players:get(ctx.id)
+  local vx, vy = math.lerp(ctx.view.prevx, ctx.view.x, tickDelta / tickRate), math.lerp(ctx.view.prevy, ctx.view.y, tickDelta / tickRate)
 
   ctx.players:each(function(player)
-    local x, y, amt = player:getHealthbar()
     local color = (p and player.team == p.team) and green or red
-    bar(x - 40, y - 15, amt, color, 80, 3)
+    local x, y, hard, soft = player:getHealthbar()
+    bar(x, y - 15, hard, soft, color, 80, 3)
   end)
 
   ctx.shrines:each(function(shrine)
     local color = (p and shrine.team == p.team) and green or red
-    bar(shrine.x - 60, shrine.y - 65, shrine.healthDisplay / shrine.maxHealth, color, 120, 4)
+    local x, y, hard, soft = shrine:getHealthbar()
+    local w, h = 120 + (60 * (shrine.hurtFactor)), 4 + (1 * shrine.hurtFactor)
+    bar(x, y - 65, hard, soft, color, w, h)
   end)
 
   local t = {}
@@ -44,7 +50,7 @@ function HudHealth:draw()
     stack(t, location, unit.width * 2, .5)
     local color = green
     local color = (p and unit.team == p.team) and green or red
-    local x, y, amt = unit:getHealthbar()
-    bar(x - 25, y - 15 * t[location], amt, color, 50, 2)
+    local x, y, hard, soft = unit:getHealthbar()
+    bar(x, y - 15 * t[location], hard, soft, color, 50, 2)
   end)
 end

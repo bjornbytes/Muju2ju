@@ -6,13 +6,18 @@ Unit.cost = 5
 Unit.cooldown = 5
 
 function Unit:activate()
+  self.createdAt = tick
+  self.y = ctx.map.height - ctx.map.groundHeight - self.height
+  self.team = self.owner and self.owner.team or 0
+
+  -- Time-based scaling
+  local minutes = ctx.timer * tickRate / 60
+  self.damage = self.damage + self.damagePerMinute * minutes
+  self.maxHealth = self.maxHealth + self.maxHealthPerMinute * minutes
+  self.health = self.maxHealth
+
   if ctx.tag == 'server' then
     self.rng = love.math.newRandomGenerator(self.id)
-
-    -- Time-based scaling
-    local minutes = ctx.timer * tickRate / 60
-    self.maxHealth = self.maxHealth + self.maxHealthPerMinute * minutes
-    self.damage = self.damage + self.damagePerMinute * minutes
 
     -- Defensive Stats
     self.armor = 0
@@ -37,6 +42,7 @@ function Unit:activate()
     self.attackTimer = 0
     self.dead = false
     self.buffs = {}
+    self.shouldDestroy = false
   else
     self.history = NetHistory(self)
     
@@ -45,11 +51,8 @@ function Unit:activate()
     self.scale = (data.animation[self.code] and data.animation[self.code].scale or 1) + (r / 210)
     self.y = self.y + r
     self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
+    self.healthDisplay = self.health
   end
-
-  self.team = self.owner and self.owner.team or 0
-  self.y = ctx.map.height - ctx.map.groundHeight - self.height
-  self.health = self.maxHealth
 
   ctx.event:emit('view.register', {object = self})
 end
@@ -76,16 +79,17 @@ function Unit:update()
 
     if self.animation then self.animation:tick(tickRate) end
   else
-    --
+    self.healthDisplay = math.lerp(self.healthDisplay, self.health, 5 * tickRate)
   end
 end
 
 function Unit:draw()
   local t = tick - (interp / tickRate)
+  if t < self.createdAt then return end
   local prev = self.history:get(t, true)
   local cur = self.history:get(t + 1, true)
 
-  if not self.animationData then
+  if not self.animation then
     local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
     local p = ctx.players:get(ctx.id)
     local g = love.graphics
@@ -121,6 +125,10 @@ function Unit:selectTarget()
   self.target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
 end
 
+function Unit:isTargetable(other)
+  return true
+end
+
 function Unit:inRange()
   if not self.target then return false end
   return math.abs(self.target.x - self.x) <= self.attackRange + self.target.width / 2
@@ -128,12 +136,12 @@ end
 
 function Unit:move()
   if not self.target or self:inRange() then return end
-  self.x = self.x + self.speed * math.sign(self.target.x - self.x) * tickRate
+  self.x = self.x + self:getStat('speed') * math.sign(self.target.x - self.x) * tickRate
 end
 
 function Unit:hurt(amount, source)
   if source then
-    amount = amount * (1 - source.weaken)
+    amount = amount * (1 - source:getStat('weaken'))
     if love.math.random() < source.critChance then
       amount = amount * 2
     end
@@ -158,9 +166,11 @@ function Unit:heal(amount, source)
 end
 
 function Unit:die()
-  local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
-  ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = self.x, y = self.y, amount = 10, vx = vx, vy = vy})
-  ctx.net:emit('unitDestroy', {id = self.id})
+  if not self.shouldDestroy then
+    local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
+    ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), team = self.owner and self.owner.team or 0, amount = 5 + love.math.random(0, 2), vx = vx, vy = vy})
+    self.shouldDestroy = true
+  end
 end
 
 function Unit:getHealthbar()
@@ -168,42 +178,66 @@ function Unit:getHealthbar()
   local prev = self.history:get(t)
   local cur = self.history:get(t + 1)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-  return lerpd.x, lerpd.y, lerpd.health / lerpd.maxHealth
+  return lerpd.x, ctx.map.height - ctx.map.groundHeight - self.height, lerpd.health / lerpd.maxHealth, self.healthDisplay / lerpd.maxHealth
 end
 
 function Unit:applyUpgrades()
   local base = data.unit[self.code]
-  local runes = table.filter(ctx.config.players[self.owner.id].deck, function(t) return t.code == self.code end)[1].runes
+  local runes = self.owner.deck[self.code].runes
   
-  table.each(runes, function(tier)
-    table.each(tier, function(rune)
+  table.each(runes, function(rune)
+    local level = rune.level
+    if level > 0 then
       table.each(rune.values, function(levels, stat)
-        local level = 0 --??? ctx.upgrades.something
-        if level > 0 then
-          if type(levels[level]) == 'number' then
-            self[stat] = self[stat] + levels[level]
-          elseif type(levels[level]) == 'string' and levels[level]:match('%%') then
-            local original = base[stat]
-            local percent = tonumber(levels[level]:match('%-?%d')) / 100
-            self[stat] = self[stat] + original * percent
-          end
+        local value = levels[level]
+        if type(value) == 'number' then
+          self[stat] = self[stat] + value
+        elseif type(value) == 'string' and value:match('%%') then
+          local original = base[stat]
+          local percent = tonumber(value:match('%-?%d')) / 100
+          self[stat] = self[stat] + original * percent
         end
       end)
-    end)
+    end
   end)
 end
 
-function Unit:addBuff(stat, amount, timer, source)
+function Unit:addBuff(stat, amount, timer, source, tag)
   self.buffs[stat] = self.buffs[stat] or {}
-  table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source})
+
+  if tag then
+    local buff = self:getBuff(stat, tag)
+    if buff then
+      buff.amount = amount
+      buff.timer = timer
+      buff.source = source
+      return
+    end
+  end
+
+  table.insert(self.buffs[stat], {amount = amount, timer = timer, source = source, tag = tag})
 end
 
-function Unit:getStat(key)
+function Unit:getBuff(stat, tag)
+  if not self.buffs[stat] then return end
+  for _, buff in pairs(self.buffs[stat]) do 
+    if buff.tag == tag then return buff end
+  end
+end
+
+function Unit:getStat(stat)
   local base = self[stat]
   if type(base) ~= 'number' then return base end
   local val = base
-  table.each(self.buffs[key], function(buff)
-    val = val + buff.amount
+  table.each(self.buffs[stat], function(buff)
+    local amount = buff.amount
+
+    if type(amount) == 'string' and amount:match('%%') then
+      local percent = tonumber(amount:match('%-?%d')) / 100
+      amount = base * percent
+    end
+
+    val = val + amount
   end)
 
   return val

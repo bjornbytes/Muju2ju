@@ -2,6 +2,8 @@ local Dirt = class()
 Dirt.code = 'dirt'
 
 function Dirt:activate()
+  self.prevx = self.x
+  self.prevy = self.y
 	self.vx = love.math.random(-150, 150)
 	self.vy = love.math.random(-500, -250)
 	self.alpha = .9
@@ -19,6 +21,8 @@ function Dirt:deactivate()
 end
 
 function Dirt:update()
+  self.prevx = self.x
+  self.prevy = self.y
 	self.x = self.x + self.vx * tickRate
 	if self.vy ~= math.huge then
 		self.y = self.y + self.vy * tickRate
@@ -42,8 +46,9 @@ end
 
 function Dirt:draw()
 	local g = love.graphics
+  local x, y = math.lerp(self.prevx, self.x, tickDelta / tickRate), math.lerp(self.prevy, self.y, tickDelta / tickRate)
 	g.setColor(self.r, self.g, self.b, 255 * self.alpha)
-	g.circle('fill', self.x, self.y, self.size)
+	g.circle('fill', x, y, self.size)
 end
 
 return Dirt

@@ -3,10 +3,10 @@ Effects = class()
 function Effects:init()
   self.active = love.graphics.isSupported('shader')
   self.effects = {}
-	--[[self:add('vignette')
+	self:add('vignette')
   self:add('bloom')
 	self:add('wave')
-	self:add('deathBlur')]]
+	self:add('deathBlur')
 end
 
 function Effects:update()
@@ -15,7 +15,7 @@ function Effects:update()
 end
 
 function Effects:paused()
-  if ctx.ded then
+  if ctx.net.state == 'ending' then
     local deathBlur = self:get('deathBlur')
     if deathBlur then deathBlur:update() end
   end

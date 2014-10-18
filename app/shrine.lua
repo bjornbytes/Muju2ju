@@ -15,20 +15,25 @@ function Shrine:init()
   end
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height - 7
 	self.health = self.maxHealth
-	self.healthDisplay = self.health
+  self.healthDisplay = self.health
+  self.lastHurt = -math.huge
+  self.hurtFactor = 0
 	self.color = {255, 255, 255}
 	self.highlight = 0
+
+  self.history = NetHistory(self)
 
   ctx.event:emit('view.register', {object = self})
 end
 
 function Shrine:update()
-	if self.health <= 0 then ctx.ded = true end
+  self.healthDisplay = math.lerp(self.healthDisplay, self.health, 2 * tickRate)
+
+  self.hurtFactor = math.lerp(self.hurtFactor, (tick - self.lastHurt) * tickRate < 5 and 1 or 0, 4 * tickRate)
 
   if ctx.id then
     local p = ctx.players:get(ctx.id)
     self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
-    self.healthDisplay = math.lerp(self.healthDisplay, self.health, 20 * tickRate)
     self.highlight = math.lerp(self.highlight, p:atShrine() and 128 or 0, 5 * tickRate)
   end
 end
@@ -48,8 +53,15 @@ function Shrine:draw()
 	g.setBlendMode('alpha')
 end
 
+function Shrine:getHealthbar()
+  local t = tick - (interp / tickRate)
+  local lerpd = table.interpolate(self.history:get(t), self.history:get(t + 1), tickDelta / tickRate)
+  return self.x, self.y, lerpd.health / lerpd.maxHealth, lerpd.healthDisplay / lerpd.maxHealth
+end
+
 function Shrine:hurt(value)
 	self.health = self.health - value
+  self.lastHurt = tick
 	if self.health < 0 then
     ctx.event:emit('shrine.dead', {shrine = self})
 		return true

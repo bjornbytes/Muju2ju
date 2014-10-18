@@ -3,26 +3,35 @@ HudJuju = class()
 local g = love.graphics
 
 function HudJuju:init()
-  self.font = love.graphics.newFont('media/fonts/inglobalb.ttf', 14)
-  self.scale = .75
+  self.scale = .1
 end
 
 function HudJuju:update()
-  self.scale = math.lerp(self.scale, .75, 12 * tickRate)
+  self.scale = math.lerp(self.scale, .1, 12 * tickRate)
 end
 
 function HudJuju:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local p = ctx.players:get(ctx.id)
   if not p then return end
 
+  local u, v = ctx.hud.u, ctx.hud.v
   local image = data.media.graphics.juju
+  local upgradeFactor = ctx.hud.upgrades:getFactor()
+  local scale = self.scale * ctx.hud.v / image:getWidth()
 
-  g.setFont(self.font)
+  g.setFont('inglobalb', .022 * v)
+  local font = g.getFont()
+
+  local corner = .02 * v
+
   g.setColor(255, 255, 255, 255 * 1)
-  g.draw(image, 52, 55, 0, self.scale, self.scale, image:getWidth() / 2, image:getHeight() / 2)
+  g.draw(image, corner, corner, 0, scale, scale)
   g.setColor(0, 0, 0)
-  g.printf(math.floor(ctx.players:get(ctx.id).juju), 16, 18 + image:getHeight() * .375 - (self.font:getHeight() / 2), image:getWidth() * .75, 'center')
+
+  local x, y = corner + (image:getWidth() * scale) / 2, corner + (image:getHeight() * scale) / 2
+  local str = tostring(math.floor(p.juju))
+  g.print(str, x - font:getWidth(str) / 2, y - font:getHeight() / 2)
   g.setColor(255, 255, 255)
 end

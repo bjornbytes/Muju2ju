@@ -1,10 +1,9 @@
 timer = {}
 timer.rot = function(v, fn)
-	if v > 0 then
+	if v and v > 0 then
 		v = v - tickRate
 		if v <= 0 then
-			v = 0
-			v = f.exe(fn) or 0
+			v = (fn and fn()) or 0
 		end
 	end
 	return v

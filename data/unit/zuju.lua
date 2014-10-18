@@ -12,6 +12,17 @@ Zuju.attackRange = 125
 Zuju.attackSpeed = 1.5
 Zuju.speed = 40
 
+Zuju.arcBounces = 1
+Zuju.arcFalloff = .33
+
+Zuju.warpCooldown = 5
+Zuju.warpDistance = 80
+Zuju.warpStun = 0
+
+Zuju.powerSurgeMax = .5
+Zuju.powerSurgeDamageSpeed = .01
+Zuju.powerSurgeeRangeSpeed = 0
+
 function Zuju:activate()
 	Unit.activate(self)
 end
@@ -35,7 +46,7 @@ function Zuju:attack()
   for i = 1, math.max(1, 2 * bounces) do
     if i > #targets then break end
     targets[1]:hurt(damage, self)
-    ctx.spells:add('lightning', {x = ox, y = oy, target = targets[1]})
+    ctx.net:emit('lightning', {kind = 'lightning', x = ox, y = oy, target = targets[1]})
     ox, oy = targets[1].x, targets[1].y
     damage = math.max(damage / 2, self.damage / 4)
     local newTargets = ctx.target:inRange(targets[1], 25 + (25 * bounces), 'enemy', 'unit')

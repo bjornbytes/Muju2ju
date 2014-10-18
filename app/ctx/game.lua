@@ -2,8 +2,9 @@ Game = class()
 
 Game.tag = 'client'
 
-function Game:load()
+function Game:load(userState)
   self.config = config
+  self.userState = userState
 
 	self.paused = false
 	self.ded = false
@@ -14,18 +15,19 @@ function Game:load()
 	self.view = View()
   self.map = Map()
   self.players = Players()
-	self.hud = Hud()
+  self.hud = Hud()
 
   self.event:on('ready', function()
     self.input = Input()
     self.shrines = Manager()
     self.units = Units()
     self.jujus = Jujus()
-    self.spells = Manager('spell')
+    self.spells = Spells()
     self.particles = Manager('particle')
     self.effects = Effects()
     self.target = Target()
     self.sound = Sound()
+    self.hud:ready()
     backgroundSound = self.sound:loop({sound = 'background'})
 
     if ctx.config.game.kind == 'survival' then
@@ -39,18 +41,22 @@ function Game:load()
     self.particles:add(data.kind, data)
   end)
 
-  self.event:on('shrine.dead', function(data)
+  self.event:on('over', function(data)
     if backgroundSound then backgroundSound:stop() end
 
-    local p = ctx.players:get(self.id)
+    local p = ctx.players:get(ctx.id)
     if not p then return end
 
-    local lost = self.config.game.kind == 'survival' or data.shrine.team == p.team
+    local lost = data.winner ~= p.team
 
     if lost then
-      ctx.event:emit('sound.play', {sound = 'youlose'})
+      print('you lose')
+      Context:remove(ctx)
+      Context:add(Menu, self.userState)
     else
-      -- I am winrar.
+      print('you win')
+      Context:remove(ctx)
+      Context:add(Menu, self.userState)
     end
   end)
 
@@ -58,13 +64,16 @@ function Game:load()
 end
 
 function Game:quit()
-  self.net:quit()
+  self:unload()
 end
 
 function Game:update()
   self.net:update()
 
-  if self.net.state == 'connecting' or self.net.state == 'waiting' then return end
+  if self.net.state == 'connecting' or self.net.state == 'waiting' then
+    self.view:update()
+    return
+  end
 
   self.input:update()
 
@@ -88,7 +97,8 @@ function Game:update()
 end
 
 function Game:unload()
-	backgroundSound:stop()
+	if backgroundSound then backgroundSound:stop() end
+  self.net:quit()
 end
 
 function Game:draw()
@@ -108,12 +118,17 @@ function Game:keypressed(key)
 
   -- Try to move elsewhere.
   if (key == 'p' or key == 'escape') and not self.hud.upgrades.active then self.paused = not self.paused
-  elseif key == 'm' then self.sound:mute()
-  elseif key == 'f' then love.window.setFullscreen(not love.window.getFullscreen()) end
+  elseif key == 'm' then self.sound:mute() end
 
   if self.hud.upgrades.active or self.paused or self.ded then return end
 
 	--self.player:keypressed(key)
+end
+
+function Game:keyreleased(key)
+  if not self.id then return end
+
+  self.hud:keyreleased(key)
 end
 
 function Game:mousereleased(...)

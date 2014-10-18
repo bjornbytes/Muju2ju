@@ -33,7 +33,7 @@ function SpiritBomb:update()
   self.y = self.y + self.vy * tickRate
   self.vy = self.vy + self.gravity * tickRate
   self.angle = self.angle + math.sign(self.vx) * tickRate
-  if self.y + data.media.graphics.spujuSkull:getWidth() >= ctx.map.height - ctx.map.groundHeight + love.math.random(-5, 5) then
+  if self.y + 27 >= ctx.map.height - ctx.map.groundHeight then
     table.each(ctx.target:inRange(self, self.radius, 'enemy', 'unit', 'shrine', 'player'), function(obj)
       obj:hurt(self.damage, self.owner)
     end)

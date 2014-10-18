@@ -14,11 +14,17 @@ config = {
         {
           code = 'bruju',
           skin = {},
-          runes = {
-            {1, 2, nil},
-            {nil, nil},
-            {nil}
-          }
+          runes = {1, 1, nil, nil, nil, nil}
+        },
+        {
+          code = 'thuju',
+          skin = {},
+          runes = {1, 1, nil, nil, nil, nil}
+        },
+        {
+          code = 'zuju',
+          skin = {},
+          runes = {1, 1, nil, nil, nil, nil}
         }
       }
     }
@@ -31,6 +37,18 @@ config = {
   }
 }
 
+runes = {
+  {
+    id = 1,
+    name = 'Fortitude Rune',
+    description = 'Put it towards health.',
+    tier = 1,
+    values = {
+      maxHealth = {10, 20, 30, 40, 50}
+    }
+  }
+}
+
 function love.load()
   if love.filesystem.exists('config.json') then
     local json = require('spine-love/dkjson')
@@ -39,7 +57,7 @@ function love.load()
   end
 
   data.load()
-	Context:add(arg[2] == 'server' and Server or Menu)
+	Context:add(table.has(arg, 'server') and Server or Menu)
 end
 
 love.update = Context.update

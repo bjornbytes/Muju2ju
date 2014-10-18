@@ -49,7 +49,8 @@ function Stream:write(x, sig)
   elseif sig == 'string' then self:writeString(x)
   elseif sig == 'bool' then self:writeBool(x)
   elseif sig == 'float' then self:writeFloat(x)
-  elseif sig == 'animation' then self:writeAnimation(x) end
+  elseif sig == 'animation' then self:writeAnimation(x)
+  elseif sig == 'spell' then self:writeSpell(x) end
   
   return self
 end
@@ -106,12 +107,22 @@ function Stream:writeAnimation(animation)
   end
 end
 
+function Stream:writeSpell(spell)
+  if spell.kind == 'burst' then
+    self:writeBits(1, 4)
+    self:writeBits(math.round(spell.x), 16)
+    self:writeBits(math.round(spell.y), 16)
+    self:writeBits(math.round(spell.radius), 10)
+  end
+end
+
 function Stream:read(kind)
   if type(kind) == 'number' then return self:readBits(kind)
   elseif kind == 'string' then return self:readString()
   elseif kind == 'bool' then return self:readBool()
   elseif kind == 'float' then return self:readFloat()
-  elseif kind == 'animation' then return self:readAnimation() end
+  elseif kind == 'animation' then return self:readAnimation()
+  elseif kind == 'spell' then return self:readSpell() end
 end
 
 function Stream:readString()
@@ -178,6 +189,19 @@ function Stream:readAnimation()
   end
 
   return animation
+end
+
+function Stream:readSpell()
+  local properties = {}
+  local kind = self:readBits(4)
+  if kind == 1 then
+    properties.kind = 'burst'
+    properties.x = self:readBits(16)
+    properties.y = self:readBits(16)
+    properties.radius = self:readBits(10)
+  end
+
+  return properties
 end
 
 function Stream:pack(data, signature)

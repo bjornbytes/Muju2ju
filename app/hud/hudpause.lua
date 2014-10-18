@@ -11,7 +11,7 @@ function HudPause:update()
 end
 
 function HudPause:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local u, v = ctx.hud.u, ctx.hud.v
   local image = data.media.graphics.pauseMenu
@@ -33,7 +33,7 @@ function HudPause:mousereleased(x, y, b)
   if math.inside(x, y, u * .4, v * .4, 155, 60) then
     ctx.paused = not ctx.paused
   elseif math.inside(x, y, u * .4, v * .51, 155, 60) then
+    Context:add(Menu, ctx.userState)
     Context:remove(ctx)
-    Context:add(Menu)
   end
 end

@@ -12,10 +12,20 @@ Duju.attackRange = 32
 Duju.attackSpeed = 1.12
 Duju.speed = 65
 
--- Spells?
-Duju.buttRate = 4
-Duju.buttDamage = 27
-Duju.buttRange = Duju.attackRange * 1.25
+-- Spells
+Duju.chargeRate = 30
+Duju.chargeMax = 150
+Duju.chargeRegen = 0
+Duju.chargeDamage = 0
+
+Duju.buttCooldown = 5
+Duju.buttKnockback = .25
+Duju.buttStun = 0
+Duju.buttDamageMultiplier = 1
+
+Duju.impaleDuration = .75
+Duju.impaleArmorReduction = .1
+Duju.impaleWeaken = 0
 
 function Duju:activate()
 	Unit.activate(self)
@@ -29,7 +39,7 @@ function Duju:activate()
   end
 
   -- Animation
-  --self.animation = data.animation.duju(self, {scale = self.scale})
+  self.animation = data.animation.duju(self, {scale = self.scale})
 	self.attackAnimation = 0
 end
 
@@ -44,13 +54,13 @@ function Duju:update()
 
     self.buttTimer = timer.rot(self.buttTimer)
     if self.target then
-      --self.animation.flipX = (self.target.x - self.x) > 0
+      self.animation.flipX = (self.target.x - self.x) > 0
     end
     self.attackAnimation = timer.rot(self.attackAnimation)
   end
 
   -- Animation
-	--self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
+	self.animation.offsety = self.height / 2 + 5 * math.sin(tick * tickRate * 4)
 end
 
 function Duju:attack()
@@ -69,7 +79,7 @@ function Duju:attack()
 end
 
 function Duju:butt()
-	local targets = ctx.target:inRange(self, self.buttRange * 2, 'enemy', 'unit')
+	local targets = ctx.target:inRange(self, self.attackRange, 'enemy', 'unit')
 	local damage = self.buttDamage
 	if #targets >= 2 then damage = damage / 2 end
 	table.each(targets, function(target)
@@ -80,7 +90,7 @@ function Duju:butt()
 		end
 	end)
 	self.buttTimer = self.buttRate
-	--self.animation:set('headbutt')
+	self.animation:set('headbutt')
   ctx.event:emit('sound.play', {sound = 'combat', with = function(sound) sound:setVolume(.5) end})
   if not self.target then self:selectTarget() end
 end

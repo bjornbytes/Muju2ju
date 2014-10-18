@@ -2,46 +2,44 @@ HudMinions = class()
 
 local g = love.graphics
 
-function HudMinions:init()
-	self.bg = {data.media.graphics.selectZuju, data.media.graphics.selectVuju}
-	self.factor = {0, 0}
-	self.extra = {0, 0}
-	self.quad = {}
-  for i = 1, 2 do
-    local w, h = self.bg[i]:getDimensions()
-    self.quad[i] = g.newQuad(0, 0, w, h, w, h)
-  end
-end
-
 function HudMinions:update()
   local p = ctx.players:get(ctx.id)
 
-	for i = 1, #self.factor do
-		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 18 * tickRate)
+	for i = 1, self.count do
+		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 10 * tickRate)
 		self.extra[i] = math.lerp(self.extra[i], 0, 5 * tickRate)
 		if p.minions[i] then
-			local y = self.bg[i]:getHeight() * (p.minioncds[i] / 5)
+			local y = self.bg[i]:getHeight() * (p.minioncds[i] / 3)
 			self.quad[i]:setViewport(0, y, self.bg[i]:getWidth(), self.bg[i]:getHeight() - y)
 		end
 	end
 end
 
 function HudMinions:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local p = ctx.players:get(ctx.id)
   if not p then return end
 
-  local yy = 135
+  local u, v = ctx.hud.u, ctx.hud.v
+  local ct = table.count(p.deck)
+
+  local upgradeFactor, t = ctx.hud.upgrades:getFactor()
+  local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
+  local inc = u * (.1 + (.15 * upgradeFactor))
+  local xx = .5 * u - (inc * (ct - 1) / 2)
   local font = ctx.hud.boldFont
 
-  for i = 1, #p.minions do
+  g.setColor(0, 0, 0, 65 * math.clamp(upgradeFactor, 0, 1))
+  g.rectangle('fill', 0, 0, ctx.view.frame.width, ctx.view.frame.height)
+
+  for i = 1, self.count do
     local bg = self.bg[i]
     local w, h = bg:getDimensions()
-    local scale = .75 + (.15 * self.factor[i]) + (.1 * self.extra[i])
-    local xx = 48 - 10 * (1 - self.factor[i])
-    local f, cost = font, tostring('5')
-    local tx, ty = xx - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
+    local scale = (.1 + (.0175 * self.factor[i]) + (.012 * self.extra[i]) + (.02 * upgradeFactor)) * v / w
+    local yy = v * (.07 + (.07 * upgradeFactor))
+    local f, cost = font, tostring('12')
+    --local tx, ty = xx - w / 2 - f:getWidth(cost) / 2 - (w * .75 / 2) + 4, yy - f:getHeight() / 2 - (h * .75 / 2) + 4
     local alpha = .65 + self.factor[i] * .35
 
     -- Backdrop
@@ -60,11 +58,57 @@ function HudMinions:draw()
     g.setBlendMode('alpha')
 
     -- Cost
-    g.setFont(ctx.hud.boldFont)
+    --[[g.setFont(ctx.hud.boldFont)
     g.setColor(0, 0, 0, 200 + 55 * self.factor[i])
     g.print(cost, tx + 1, ty + 1)
     g.setColor(255, 255, 255, 200 + 55 * self.factor[i])
-    g.print(cost, tx, ty)
-    yy = yy + h
+    g.print(cost, tx, ty)]]
+
+    do
+      local yy = yy + (.11 * v)
+      local inc = .08 * upgradeFactor * v
+      local radius = math.max(.02 * v * upgradeFactor, .01)
+
+      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
+      g.rectangle('fill', xx - inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+      g.rectangle('fill', xx + inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+      g.rectangle('line', xx - inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+      g.rectangle('line', xx + inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+
+      yy = yy + (.08 * v)
+      inc = .1 * upgradeFactor * v
+      radius = math.max(.035 * v * upgradeFactor, .01)
+
+      g.setColor(0, 0, 0, 200 * upgradeAlphaFactor)
+      g.circle('fill', xx - inc, yy, radius)
+      g.circle('fill', xx, yy, radius)
+      g.circle('fill', xx + inc, yy, radius)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+      g.circle('line', xx - inc, yy, radius)
+      g.circle('line', xx, yy, radius)
+      g.circle('line', xx + inc, yy, radius)
+    end
+
+    xx = xx + inc
+  end
+end
+
+function HudMinions:ready()
+  local p = ctx.players:get(ctx.id)
+
+  self.count = table.count(p.deck)
+  self.bg = {}
+  self.factor = {}
+  self.extra = {}
+  self.quad = {}
+
+  for i = 1, self.count do
+    self.bg[i] = data.media.graphics.selectZuju
+    self.factor[i] = 0
+    self.extra[i] = 0
+
+    local w, h = self.bg[i]:getDimensions()
+    self.quad[i] = g.newQuad(0, 0, w, h, w, h)
   end
 end

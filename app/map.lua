@@ -1,6 +1,6 @@
 Map = class()
 
-Map.width, Map.height = 2400, 600
+Map.width, Map.height = 1500, 600
 
 local function drawBackground(self)
   local g = love.graphics
@@ -8,30 +8,16 @@ local function drawBackground(self)
 
   if not p then return end
 
-  g.setColor(255, 255, 255)
-  for i = 0, ctx.map.width, data.media.graphics.bg:getWidth() do
-    g.draw(data.media.graphics.bg, i, 0)
-  end
-
+  local scale = ctx.map.height / data.media.graphics.bg:getHeight()
   local alpha = ctx.map.spiritAlpha * 255
   alpha = math.lerp(alpha, (1 - (p.healthDisplay / p.maxHealth)) * 255, .5)
-  g.setColor(255, 255, 255, alpha)
-  g.draw(data.media.graphics.bgSpirit)
-end
+  for i = 0, ctx.map.width, data.media.graphics.bg:getWidth() * scale do
+    g.setColor(255, 255, 255)
+    g.draw(data.media.graphics.bg, i, 0, 0, scale, scale)
+    g.setColor(255, 255, 255, alpha)
+    g.draw(data.media.graphics.bgSpirit, i, 0, 0, scale, scale)
+  end
 
-local function drawForeground(self)
-	local g = love.graphics
-  local p = ctx.players:get(ctx.id)
-
-  if not p then return end
-
-	g.setColor(200, 200, 200)
-	g.draw(data.media.graphics.grass, 0, 32)
-
-	local alpha = ctx.map.spiritAlpha * 255
-	alpha = math.lerp(alpha, (1 - (p.healthDisplay / p.maxHealth)) * 255, .5)
-	g.setColor(200, 200, 200, alpha)
-	g.draw(data.media.graphics.spiritGrass, 0, 32)
 end
 
 function Map:init()
@@ -44,11 +30,6 @@ function Map:init()
     draw = drawBackground
   }
 
-  self.foreground = {
-    depth = -50,
-    draw = drawForeground
-  }
-
   if ctx.view then
     ctx.view.xmax = self.width
     ctx.view.ymax = self.height
@@ -56,7 +37,6 @@ function Map:init()
   end
 
   ctx.event:emit('view.register', {object = self.background})
-  ctx.event:emit('view.register', {object = self.foreground})
 end
 
 function Map:update()

@@ -48,6 +48,13 @@ function View:update()
   self.prevy = self.y
   self.prevscale = self.scale
 
+  local mx = love.mouse.getX()
+  if mx < self.frame.x + (.02 * self.frame.width) then
+    self.vx = -1000
+  elseif mx > self.frame.x + (.98 * self.frame.width) then
+    self.vx = 1000
+  end
+
   self.x = self.x + self.vx * tickRate
   self.y = self.y + self.vy * tickRate
   
@@ -107,7 +114,13 @@ end
 function View:resize()
   local w, h = love.graphics.getDimensions()
   self.frame.x, self.frame.y, self.frame.width, self.frame.height = 0, 0, self.width, self.height
-  if (self.width / self.height) > (w / h) then
+  local ratio = w / h
+  self.width = self.height * ratio
+  self.scale = h / self.height
+  self.frame.width = w
+  self.frame.height = h
+
+  --[[if (self.width / self.height) > (w / h) then
     self.scale = w / self.width
     local margin = math.max(math.round(((h - w * (self.height / self.width)) / 2)), 0)
     self.frame.y = margin
@@ -119,7 +132,7 @@ function View:resize()
     self.frame.x = margin
     self.frame.width = w - 2 * margin
     self.frame.height = h
-  end
+  end]]
 
    self.sourceCanvas = love.graphics.newCanvas(w, h)
   self.targetCanvas = love.graphics.newCanvas(w, h)

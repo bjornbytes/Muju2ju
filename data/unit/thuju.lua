@@ -12,6 +12,18 @@ Thuju.attackRange = 32
 Thuju.attackSpeed = 1.5
 Thuju.speed = 42
 
+Thuju.tauntDuration = 2
+Thuju.tauntMaxEnemies = 2
+Thuju.tauntArmor = 0
+
+Thuju.smashRange = 128
+Thuju.smashStun = .75
+Thuju.smashDamage = 10
+
+Thuju.thornsAmount = .25
+Thuju.thornsReduce = 0
+Thuju.thornsArmorReduce = 0
+
 function Thuju:activate()
 	Unit.activate(self)
 end
@@ -39,6 +51,20 @@ function Thuju:attack()
     if love.math.random() > .5 then pitch = 1 / pitch end
     sound:setPitch(pitch)
   end})
+end
+
+function Thuju:hurt(amount, source)
+  if self.owner.deck[self.code].upgrades.thorns then
+    if source then
+      amount = amount * (1 - self.thornsReduce)
+      source:hurt(amount * self.thornsAmount, self)
+      if self.thornsArmorReduce > 0 then
+        source:addBuff('armor', self.thornsArmorReduce, 1, self, 'thornsArmorReduction')
+      end
+    end
+  end
+
+  Unit.hurt(self, amount, source)
 end
 
 return Thuju

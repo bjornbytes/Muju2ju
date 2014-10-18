@@ -21,9 +21,9 @@ data.load = function()
 	end
 
   data.media = {}
-	data.media.graphics = setmetatable({_path = 'media/graphics'}, {__index = lookup('.png', love.graphics and love.graphics.newImage)})
-	data.media.shaders = setmetatable({_path = 'media/shaders'}, {__index = lookup('.shader', love.graphics and love.graphics.newShader)})
-	data.media.sounds = setmetatable({_path = 'media/sounds'}, {__index = lookup('.ogg', love.audio and love.audio.newSource)})
+	data.media.graphics = setmetatable({_path = 'media/graphics'}, {__index = lookup('.png', love.graphics and love.graphics.newImage or f.empty)})
+	data.media.shaders = setmetatable({_path = 'media/shaders'}, {__index = lookup('.shader', love.graphics and love.graphics.newShader or f.empty)})
+	data.media.sounds = setmetatable({_path = 'media/sounds'}, {__index = lookup('.ogg', love.audio and love.audio.newSource or f.empty)})
 
   -- Data
   local function load(dir, type, fn)
@@ -54,5 +54,6 @@ data.load = function()
   load('data/animation', 'animation')
   load('data/particle', 'particle')
   load('data/effect', 'effect')
+  load('data/gooey', 'gooey')
 end
 

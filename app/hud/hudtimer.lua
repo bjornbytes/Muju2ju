@@ -3,10 +3,9 @@ HudTimer = class()
 local g = love.graphics
 
 function HudTimer:draw()
-  if ctx.ded then return end
+  if ctx.net.state == 'ending' then return end
 
   local u, v = ctx.hud.u, ctx.hud.v
-  local font = ctx.hud.boldFont
 
   local total = ctx.timer * tickRate
   local seconds = math.floor(total % 60)
@@ -16,7 +15,13 @@ function HudTimer:draw()
 
   local str = minutes .. ':' .. seconds
   g.setColor(255, 255, 255)
-  g.setFont(font)
-  g.print(str, ctx.view.frame.width - 25 - font:getWidth(str), 25)
+  g.setFont('inglobalb', .03 * v)
+  g.print(str, u - (.04 * v) - g.getFont():getWidth(str), v * .04)
+
+  if table.has(arg, 'test') then
+    g.setFont('pixel', 8)
+    local str = love.timer.getFPS()
+    g.print(str, u - g.getFont():getWidth(str) - 2, 2)
+  end
 end
 

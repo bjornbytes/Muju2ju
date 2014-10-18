@@ -33,6 +33,7 @@ function Input:init()
   self.axes = {}
   self.actions = {}
   self.dirtyActions = {}
+  self.active = true
 end
 
 function Input:update()
@@ -43,12 +44,13 @@ function Input:update()
     self.dirtyActions[action] = pressed
   end
 
-  local p = ctx.players:get(ctx.id)
-  local smooth = p.dead and 4 or 10
+  local smooth = 8
   for axis in pairs(axisMap) do
     local value = self:keyboardAxis(unpack(axisMap[axis].keyboard)) or self:gamepadAxis(axisMap[axis].gamepad)
     self.axes[axis] = math.lerp(self.axes[axis] or 0, value, math.min(smooth * tickRate, 1))
   end
+
+  self.active = not ctx.hud.chat.active
 end
 
 -- Axis

@@ -9,9 +9,9 @@ Spuju.maxHealth = 75
 Spuju.maxHealthPerMinute = 6.5
 Spuju.damage = 6
 Spuju.damagePerMinute = 8
-Spuju.attackRange = 150
+Spuju.attackRange = 300
 Spuju.attackSpeed = .3
-Spuju.speed = 25
+Spuju.speed = 40
 
 function Spuju:activate()
 	Unit.activate(self)
@@ -41,10 +41,12 @@ function Spuju:attack()
 	if self.clip == 0 then self.clip = self.maxClip end
 	self.clip = self.clip - 1
 	self.attackTimer = self.clip == 0 and self.attackSpeed * 6 or self.attackSpeed
+  local seed = tick % 256
+  local spiritBomb = {kind = ctx.spells.map.spiritBomb, owner = self.id, seed = seed}
 	local targetx = self.target == ctx.shrine and self.target.x or self.target.x + love.math.randomNormal(65)
 	local velocity = 150 + 250 * (math.abs(self.target.x - self.x) / self.attackRange)
 	local damage = self.damage
-	ctx.spells:add('spiritbomb', {x = self.x, y = self.y - self.height / 2, targetx = targetx, velocity = velocity, damage = damage, owner = self})
+  ctx.net:emit('spiritBomb', {x = self.x, y = self.y - self.height / 2, targetx = targetx, velocity = velocity, damage = damage, owner = self})
 end
 
 return Spuju

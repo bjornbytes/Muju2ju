@@ -16,11 +16,13 @@ load 'lib/deps/lutil'
 if love.audio then
   load 'lib/deps/slam'
 end
+load 'lib/gooey'
 load 'lib'
 
 load 'app/particles'
 load 'app/effects'
 
 load 'app/ctx'
+load 'app/menu'
 load 'app/hud'
 load 'app'

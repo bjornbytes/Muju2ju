@@ -12,12 +12,13 @@ function Ghost:activate()
   self.active = true
 	self.owner.ghostX = self.owner.x
 	self.owner.ghostY = self.owner.y + self.owner.height
+  self.drawX = nil
+  self.drawY = nil
 	self.vx = 0
 	self.vy = 0
   self.speed = 140
   self.boost = -650
   self.boosts = {}
-  self.bounds = {}
 
   self.health = self.owner.deathDuration
   self.maxHealth = self.health
@@ -26,6 +27,7 @@ function Ghost:activate()
 	self.maxRange = 500
 
 	self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
+  self.prevMaxDis = self.maxDis
 
   ctx.event:emit('sound.play', {sound = 'spirit', volume = .12})
 end
@@ -46,15 +48,21 @@ function Ghost:update()
 
   self.boost = math.lerp(self.boost, 0, 3 * tickRate)
   self.boosts[tick] = self.boost
-  self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
-  self.bounds[tick] = self.maxDis
   self.health = timer.rot(self.health)
+  self.prevMaxDis = self.maxDis
+  self.maxDis = math.lerp(self.maxRange, 0, (1 - (self.health / self.maxHealth)) ^ 3)
+  self:contain()
 end
 
 function Ghost:draw(x, y, angle)
 	local g = love.graphics
   local image = data.media.graphics.spiritMuju
   angle = angle or self.angle
+
+  if self.drawX and self.drawY then
+    local d = math.clamp(math.distance(x, y, self.drawX, self.drawY) / 80, 0, 1)
+    x, y = math.lerp(self.drawX, x, d), math.lerp(self.drawY, y, d)
+  end
 
 	local scale = math.min(self.health, 2) / 2
 	if self.maxHealth - self.health < 1 then
@@ -70,7 +78,10 @@ function Ghost:draw(x, y, angle)
 	g.draw(image, x, y, angle, .6 * scale, .6 * scale, image:getWidth() / 2, image:getHeight() / 2)
 
 	g.setColor(255, 255, 255, 10)
-	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, self.maxDis)
+  local bounds = math.lerp(self.prevMaxDis, self.maxDis, tickDelta / tickRate)
+	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, bounds)
+
+  self.drawX, self.drawY = x, y
 end
 
 function Ghost:move(input)
@@ -93,14 +104,23 @@ function Ghost:move(input)
   local boost = self.boosts[input.tick] or self.boost
   self.owner.ghostY = self.owner.ghostY + boost * tickRate
 
-	local px, py = self.owner.x, self.owner.y + self.owner.height
+  self:contain()
+end
 
-  local bounds = self.bounds[input.tick] or self.maxDis
-	if math.distance(self.owner.ghostX, self.owner.ghostY, px, py) > bounds then
+function Ghost:contain()
+  if not self.maxDis then return end
+  local px, py = self.owner.x, self.owner.y + self.owner.height
+  if math.distance(self.owner.ghostX, self.owner.ghostY, px, py) > self.maxDis then
 		local angle = math.direction(px, py, self.owner.ghostX, self.owner.ghostY)
-		self.owner.ghostX = math.lerp(self.owner.ghostX, px + math.dx(bounds, angle), 10 * tickRate)
-		self.owner.ghostY = math.lerp(self.owner.ghostY, py + math.dy(bounds, angle), 10 * tickRate)
+		self.owner.ghostX = math.lerp(self.owner.ghostX, px + math.dx(self.maxDis, angle), 4 * tickRate)
+		self.owner.ghostY = math.lerp(self.owner.ghostY, py + math.dy(self.maxDis, angle), 4 * tickRate)
 	end
+end
+
+function Ghost:contained(t)
+  if not self.maxDis then return true end
+	local px, py = self.owner.x, self.owner.y + self.owner.height
+	return math.distance(self.owner.ghostX, self.owner.ghostY, px, py) < self.maxDis - 20
 end
 
 function Ghost:despawn()

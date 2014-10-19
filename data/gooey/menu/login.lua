@@ -50,6 +50,19 @@ return {
       border = {255, 255, 255}
     }
   },
+  { id = 'signupButton',
+    kind = 'Button',
+    properties = {
+      x = .5,
+      y = .66,
+      width = .1,
+      height = .05,
+      padding = 8,
+      font = 'aeromatics',
+      text = 'Sign up',
+      center = true
+    }
+  },
   { id = 'exitButton',
     kind = 'Button',
     properties = {

@@ -14,6 +14,10 @@ function MenuLogin:init()
 		love.event.quit()
 	end)
 
+  self.gooey:find('signupButton'):on('clicked', function()
+    ctx.page = 'signup'
+  end)
+
   self.username:on('keypressed', function(data)
     if data.key == 'tab' then self.gooey:focus(self.password) end
   end)
@@ -34,7 +38,18 @@ function MenuLogin:draw()
   self.gooey:draw()
 end
 
-function MenuLogin:keypressed(...) self.gooey:keypressed(...) end
+function MenuLogin:keypressed(key)
+  if key == 'tab' then
+    if self.gooey.focused == self.username then
+      self.gooey:focus(self.password)
+    elseif self.gooey.focused == self.password then
+      self.gooey:focus(self.username)
+    end
+  end
+
+  self.gooey:keypressed(key)
+end
+
 function MenuLogin:keyreleased(...) self.gooey:keyreleased(...) end
 function MenuLogin:mousepressed(...) self.gooey:mousepressed(...) end
 function MenuLogin:mousereleased(...) self.gooey:mousereleased(...) end

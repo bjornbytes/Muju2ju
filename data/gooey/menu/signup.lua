@@ -64,6 +64,20 @@ return {
       border = {255, 255, 255}
     }
   },
+  { id = 'cancelButton',
+    kind = 'Button',
+    properties = {
+      x = .32,
+      y = .74,
+      width = .1,
+      height = .05,
+      padding = 8,
+      font = 'aeromatics',
+      text = 'Cancel',
+      center = true,
+      border = {255, 255, 255}
+    } 
+  },
   { id = 'exitButton',
     kind = 'Button',
     properties = {

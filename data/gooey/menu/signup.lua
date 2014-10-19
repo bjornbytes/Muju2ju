@@ -1,5 +1,5 @@
 return {
-  code = 'login',
+  code = 'signup',
   { id = 'background',
     kind = 'Element',
     properties = {
@@ -36,32 +36,47 @@ return {
       border = {255, 255, 255}
     }
   },
-  { id = 'loginButton',
-    kind = 'Button',
+  { id = 'passwordRetype',
+    kind = 'Password',
     properties = {
       x = .2,
       y = .66,
-      width = .1,
+      width = .4,
       height = .05,
       padding = 8,
       font = 'aeromatics',
-      text = 'Login',
-      center = true,
+      text = '',
+      placeholder = 'Retype Password',
       border = {255, 255, 255}
     }
   },
   { id = 'signupButton',
     kind = 'Button',
     properties = {
-      x = .5,
-      y = .66,
+      x = .2,
+      y = .74,
       width = .1,
       height = .05,
       padding = 8,
       font = 'aeromatics',
       text = 'Sign up',
-      center = true
+      center = true,
+      border = {255, 255, 255}
     }
+  },
+  { id = 'cancelButton',
+    kind = 'Button',
+    properties = {
+      x = .32,
+      y = .74,
+      width = .1,
+      height = .05,
+      padding = 8,
+      font = 'aeromatics',
+      text = 'Cancel',
+      center = true,
+      border = {255, 255, 255}
+    } 
   },
   { id = 'exitButton',
     kind = 'Button',

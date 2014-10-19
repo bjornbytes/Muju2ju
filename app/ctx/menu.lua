@@ -17,9 +17,11 @@ function Menu:load(userState)
 
   self.hub = MenuHub()
 
-  self.pages = {}
-  self.pages.login = MenuLogin()
-  self.pages.main = MenuMain()
+  self.pages = {
+    signup = MenuSignup(),
+    login = MenuLogin(),
+    main = MenuMain()
+  }
 
   self.page = self.userState.token and 'main' or 'login'
 

@@ -46,7 +46,7 @@ while true do
     message.payload = data
 
     if message.cmd == 'login' then
-      local str, code = http.request('http://' .. serverAddress .. ':7000/login', formatPost(message.payload))
+      local str, code = http.request('http://' .. serverAddress .. ':7000/api/users/login', formatPost(message.payload))
 
       local data
       if code == 200 then
@@ -55,6 +55,19 @@ while true do
         data = {cmd = 'login', error = 'authentication'}
       else
         data = {cmd = 'login', error = 'unknown'}
+      end
+
+      receiveQueue:push(data)
+    elseif message.cmd == 'signup' then
+      local str, code = http.request('http://' .. serverAddress .. ':7000/api/users/signup', formatPost(message.payload))
+
+      local data
+      if code == 200 then
+        data = {cmd = 'signup', token = str}
+      elseif code == 409 then
+        data = {cmd = 'signup', error = 'usernameTaken'}
+      else
+        data = {cmd = 'signup', error = 'unknown'}
       end
 
       receiveQueue:push(data)

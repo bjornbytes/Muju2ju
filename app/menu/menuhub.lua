@@ -5,6 +5,10 @@ MenuHub.handlers = {
     ctx.pages.login:loggedIn(data)
   end,
 
+  signup = function(self, data)
+    ctx.pages.signup:signedUp(data)
+  end,
+
   saveDeck = function(self, data)
     -- 
   end

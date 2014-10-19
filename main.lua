@@ -50,6 +50,12 @@ runes = {
 }
 
 function love.load()
+  if love.filesystem.exists('config.json') then
+    local json = require('spine-love/dkjson')
+    local string = love.filesystem.read('config.json')
+    config = require('spine-love/dkjson').decode(string)
+  end
+
   data.load()
 	Context:add(table.has(arg, 'server') and Server or Menu)
 end

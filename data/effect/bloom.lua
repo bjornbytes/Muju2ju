@@ -9,7 +9,7 @@ function Bloom:init()
 end
 
 function Bloom:update()
-  self.alpha = math.lerp(self.alpha, ctx.players:get(ctx.id).dead and .9 or .1, .6 * tickRate)
+  self.alpha = math.lerp(self.alpha, ctx.players:get(ctx.id).dead and 0 or .1, 6 * tickRate)
 end
 
 function Bloom:applyEffect(source, target)

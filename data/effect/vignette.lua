@@ -8,7 +8,7 @@ function Vignette:init()
 end
 
 function Vignette:update()
-	self.blur = math.lerp(self.blur, ctx.players:get(ctx.id).dead and 1.15 or .45, 2 * tickRate)
+	self.blur = math.lerp(self.blur, ctx.players:get(ctx.id).dead and .65 or .45, 6 * tickRate)
 	self.shader:send('blur', self.blur)
 	self.shader:send('radius', self.radius)
 end

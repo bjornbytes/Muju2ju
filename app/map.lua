@@ -7,11 +7,11 @@ local backgroundData = {
   background = {x = 0, y = 0, depth = 10},
   grassFront1 = {x = 0, y = 837, depth = 0},
   grassFront2 = {x = 1909, y = 827, depth = 0},
-  grassMid1 = {x = 783, y = 870, depth = 5},
-  grassMid2 = {x = 256, y = 857, depth = 5},
-  grassMid3 = {x = 1700, y = 894, depth = 5},
-  grassMid4 = {x = 563, y = 850, depth = 5},
-  grassMid5 = {x = 2090, y = 858, depth = 5},
+  grassMid1 = {x = 783, y = 870, depth = 2},
+  grassMid2 = {x = 256, y = 857, depth = 2},
+  grassMid3 = {x = 1700, y = 894, depth = 4},
+  grassMid4 = {x = 563, y = 850, depth = 4},
+  grassMid5 = {x = 2090, y = 858, depth = 4},
 }
 
 local function drawBackground(key)
@@ -25,7 +25,7 @@ local function drawBackground(key)
     local map = ctx.map
     local scale = ctx.map.height / data.media.graphics.map.background:getHeight()
     local alpha = map.spiritAlpha * 255
-    alpha = math.lerp(alpha, (1 - (p.healthDisplay / p.maxHealth)) * 255, .5)
+    alpha = math.lerp(alpha, (1 - (p.healthDisplay / p.maxHealth)) * 255, .6)
 
     g.setColor(255, 255, 255)
     g.draw(image, backgroundData[key].x * scale, backgroundData[key].y * scale, 0, scale, scale)

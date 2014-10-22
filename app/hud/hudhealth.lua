@@ -7,8 +7,15 @@ local function bar(x, y, hard, soft, color, width, height)
   x, y = ctx.view:screenPoint(x, y)
   width = width * ctx.view.scale
 
-	g.setColor(0, 0, 0, 160)
-	g.rectangle('fill', x - width / 2, y, width + 1, height + 1)
+  g.setColor(255, 255, 255)
+  local w, h = data.media.graphics.healthbarFrame:getDimensions()
+  local scale = width / w
+  g.draw(data.media.graphics.healthbarFrame, x - width / 2, y, 0, scale, scale)
+
+  y = y + (3 * scale)
+  width = width - (6 * scale)
+  height = (h - 6) * scale
+
 	g.setColor(color)
 	g.rectangle('fill', x - width / 2, y, hard * width, height)
 	g.setColor(color[1], color[2], color[3], 160)

@@ -9,7 +9,7 @@ function HudMinions:update()
 		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 10 * tickRate)
 		self.extra[i] = math.lerp(self.extra[i], 0, 5 * tickRate)
 		if p.minions[i] then
-			local y = self.bg[i]:getHeight() * (p.minioncds[i] / 3)
+			local y = self.bg[i]:getHeight() * (p.summonTimer > 0 and (1 - (p.summonTimer / 2)) or 0)--(p.minioncds[i] / .5)
 			self.quad[i]:setViewport(0, y, self.bg[i]:getWidth(), self.bg[i]:getHeight() - y)
 		end
 	end

@@ -183,11 +183,8 @@ function View:threeDepth(x, y, z)
 end
 
 function View:contain()
-  if self.x < 0 then self.x = math.lerp(self.x, 0, 6 * tickRate)
-  elseif self.x > self.xmax - self.width then self.x = math.lerp(self.x, self.xmax - self.width, 8 * tickRate) end
-
-  if self.y < 0 then self.y = math.lerp(self.y, 0, 6 * tickRate)
-  elseif self.y > self.ymax - self.height then self.y = math.lerp(self.y, self.ymax - self.height, 8 * tickRate) end
+  self.x = math.clamp(self.x, 0, self.xmax - self.width)
+  self.y = math.clamp(self.y, 0, self.ymax - self.height)
 end
 
 function View:worldPoint(x, y)

@@ -33,6 +33,7 @@ function Player:init()
 	self.minioncds = {0, 0}
 	self.selectedMinion = 1
 	self.invincible = 0
+  self.summonTimer = 0
 
   self.depth = self.depth + love.math.random()
 
@@ -116,18 +117,26 @@ function Player:slot(input)
 	end
 
   if not self.dead and not self.animation:blocking() and input.summon then
-    local minion = data.unit[self.minions[input.minion]]
-    local cooldown = self.minioncds[input.minion]
+    self.summonTimer = self.summonTimer + tickRate
 
-    if cooldown == 0 and self:spend(12) then
-      ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = math.round(self.x)})
-      self.minioncds[input.minion] = 3
+    if self.summonTimer >= 2 then
+      local minion = data.unit[self.minions[input.minion]]
+      local cooldown = self.minioncds[input.minion]
 
-      -- Juice
-      for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end
-      ctx.event:emit('sound.play', {sound = 'summon' .. (love.math.random(1, 3))})
-      self.animation:set('summon')
+      if cooldown == 0 and self:spend(12) then
+        ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = math.round(self.x)})
+        self.minioncds[input.minion] = .5
+
+        -- Juice
+        for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end
+        ctx.event:emit('sound.play', {sound = 'summon' .. (love.math.random(1, 3))})
+        self.animation:set('summon')
+
+        self.summonTimer = 0
+      end
     end
+  else
+    self.summonTimer = 0
   end
 end
 

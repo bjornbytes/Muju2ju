@@ -70,7 +70,7 @@ function PlayerMain:readInput()
 
   t.x = ctx.input:getAxis('x')
   t.y = ctx.input:getAxis('y')
-  t.summon = ctx.input:getAction('summon')
+  t.summon = love.keyboard.isDown(' ')--ctx.input:getAction('summon')
   t.minion = self.selectedMinion
 
   local current = self.animation:current()

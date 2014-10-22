@@ -17,3 +17,13 @@ isa = function(instance, class)
 
   return false
 end
+
+if love.graphics then
+  local g = love.graphics
+
+  function g.rectangleCenter(how, x, y, w, h, nohor, nover)
+    x = nohor and x or x - w / 2
+    y = nover and y or y - h / 2
+    return g.rectangle(how, x, y, w, h)
+  end
+end

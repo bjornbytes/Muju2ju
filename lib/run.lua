@@ -8,6 +8,7 @@ function love.run()
 	
 	love.load(arg)
 
+  love.timer.step()
 	delta = 0
 
 	while true do

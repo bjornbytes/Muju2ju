@@ -14,6 +14,7 @@ function Menu:load(user)
 
   self.hub = MenuHub()
   self.nav = MenuNav()
+  self.background = MenuBackground()
 
   self.pages = {
     signup = MenuSignup(),
@@ -42,8 +43,9 @@ function Menu:update()
 end
 
 function Menu:draw()
-  self:run('draw')
+  self.background:draw()
   self.nav:draw()
+  self:run('draw')
 end
 
 function Menu:keypressed(...)
@@ -70,6 +72,7 @@ end
 function Menu:resize()
   self.u, self.v = love.graphics.getDimensions()
   self:run('resize')
+  self.background:resize()
 end
 
 function Menu:run(key, ...)

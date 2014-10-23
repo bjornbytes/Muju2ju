@@ -10,6 +10,57 @@ function MenuMainGutter:init()
   self.scroll = self.targetScroll
   self.lepr = Lepr(self, .4, 'inOutQuart', {'offset'})
   self.height = 10000
+
+  self.geometry = {
+    units = function()
+      local u, v = ctx.u, ctx.v
+      g.setFont('inglobalb', .04 * v)
+      local fh = g.getFont():getHeight()
+      local ct = 4
+      local radius = .035 * v
+      local inc = .01 * u + 2 * radius
+      local x = (self.offset + .02) * u
+      local xstart = x
+      local y = ctx.nav.height * v + .5
+      local res = {}
+      y = y + (.02 * u) + fh + (.02 * v)
+      for i = 1, ct do
+        table.insert(res, {x + radius, y + radius, radius})
+        x = x + inc
+        if x + inc > (self.offset + self.width - .012) * u then
+          x = xstart
+          if i ~= ct then y = y + inc end
+        end
+      end
+      y = y + inc
+      return res, y
+    end,
+
+    runes = function()
+      local u, v = ctx.u, ctx.v
+      g.setFont('inglobalb', .04 * v)
+      local fh = g.getFont():getHeight()
+      local ct = 21
+      local radius = .035 * v
+      local inc = .01 * u + 2 * radius
+      local x = (self.offset + .02) * u
+      local xstart = x
+      local _, y = self.geometry.units()
+      y = y + .04 * v
+      y = y + fh + .02 * v
+      local res = {}
+      for i = 1, ct do
+        table.insert(res, {x + radius, y + radius, radius})
+        x = x + inc
+        if x + inc > (self.offset + self.width - .012) * u then
+          x = xstart
+          if i ~= ct then y = y + inc end
+        end
+      end
+      y = y + inc
+      return res, y
+    end
+  }
 end
 
 function MenuMainGutter:update()
@@ -27,6 +78,10 @@ function MenuMainGutter:draw()
 
   local x = self.offset
   local y = ctx.nav.height * v + .5
+
+  g.setColor(0, 0, 0, 80)
+  g.rectangle('fill', x * u, y, self.width * u, self.frameHeight)
+
   g.setColor(255, 255, 255)
   g.line((x + self.width) * u - .5, y, (x + self.width) * u - .5, v)
 
@@ -40,43 +95,22 @@ function MenuMainGutter:draw()
   g.setFont('inglobalb', .04 * v)
   local font = g.getFont()
 
-  -- Minions
+  -- Units
   g.print('Minions', xx, yy)
-  yy = yy + font:getHeight() + .02 * v
-  local ct = 4
-  local radius = .035 * v
-  local inc = .01 * u + 2 * radius
-  for i = 1, ct do
-    g.circle('line', xx + radius, yy + radius, radius)
-    xx = xx + inc
-    if xx + inc > (x + self.width - .012) * u then
-      xx = (self.offset + .02) * u
-      if i ~= ct then
-        yy = yy + inc
-      end
-    end
-  end
-  yy = yy + inc
+
+  local units, yy = self.geometry.units()
+  table.each(units, function(unit)
+    g.circle('line', unpack(unit))
+  end)
 
   -- Runes
   yy = yy + .04 * v
-  xx = (self.offset + .02) * u
   g.print('Runes', xx, yy)
-  yy = yy + font:getHeight() + .02 * v
-  local ct = 23
-  local radius = .035 * v
-  local inc = .01 * u + 2 * radius
-  for i = 1, ct do
-    g.circle('line', xx + radius, yy + radius, radius)
-    xx = xx + inc
-    if xx + inc > (x + self.width - .012) * u then
-      xx = (self.offset + .02) * u
-      if i ~= ct then
-        yy = yy + inc
-      end
-    end
-  end
-  yy = yy + inc
+  yy = yy + g.getFont():getHeight() + .02 * v
+  local runes, yy = self.geometry.runes()
+  table.each(runes, function(rune)
+    g.circle('line', unpack(rune))
+  end)
 
   self.height = math.max(yy - y, self.frameHeight)
 

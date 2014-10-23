@@ -27,3 +27,7 @@ if love.graphics then
     return g.rectangle(how, x, y, w, h)
   end
 end
+
+function math.insideCircle(x, y, cx, cy, r)
+  return math.distance(x, y, cx, cy) < r
+end

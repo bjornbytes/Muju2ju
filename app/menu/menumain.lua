@@ -113,10 +113,12 @@ function MenuMain:init()
   }
 
   self.gutter = MenuMainGutter()
+  self.hover = MenuMainHover()
 end
 
 function MenuMain:update()
   self.gutter:update()
+  self.hover:update()
 end
 
 function MenuMain:draw()
@@ -124,6 +126,8 @@ function MenuMain:draw()
   local mx, my = love.mouse.getPosition()
 
   self.gutter:draw()
+
+  g.setColor(255, 255, 255)
 
   -- Survival Button
   g.rectangle('line', self.geometry.survival())
@@ -148,6 +152,8 @@ function MenuMain:draw()
   table.each(self.geometry.mujuRunes(), function(rune)
     g.circle('line', unpack(rune))
   end)
+
+  self.hover:draw()
 end
 
 function MenuMain:keypressed(key)
@@ -164,6 +170,11 @@ function MenuMain:mousepressed(x, y, b)
   end
 
   self.gutter:mousepressed(x, y, b)
+  self.hover:mousepressed(x, y, b)
+end
+
+function MenuMain:mousereleased(x, y, b)
+  self.hover:mousereleased(x, y, b)
 end
 
 function MenuMain:hubMessage(message, data)

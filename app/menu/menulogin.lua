@@ -73,6 +73,7 @@ function MenuLogin:hubMessage(message, data)
     else
       ctx.user = data.user
       ctx.user.token = data.token
+      table.print(ctx.user)
       ctx.hub:send('connect')
     end
   elseif message == 'connect' then

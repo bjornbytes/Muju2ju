@@ -25,14 +25,20 @@ function MenuNav:draw()
   local u, v = g.getDimensions()
   local yy = math.round((self.y + self.height) * v) + .5
 
+  g.setColor(0, 0, 0, 80)
+  g.rectangle('fill', 0, 0, u, yy)
+
   g.setColor(200, 200, 200)
   g.line(0, yy, u, yy)
 
-  g.rectangle('line', self.geometry.gutter())
+  if ctx.page == 'main' then
+    g.rectangle('line', self.geometry.gutter())
+  end
+
   g.rectangle('line', self.geometry.quit())
 
   if false and ctx.user.username then
-    g.setFont('inglobal', self.height * v - 4)
+    g.setFont('inglobalb', self.height * v - 6)
     g.print(ctx.user.username, u * .5 - g.getFont():getWidth(ctx.user.username) / 2, 2)
   end
 end

@@ -115,6 +115,10 @@ function MenuMain:init()
   self.gutter = MenuMainGutter()
 end
 
+function MenuMain:update()
+  self.gutter:update()
+end
+
 function MenuMain:draw()
   local u, v = ctx.u, ctx.v
   local mx, my = love.mouse.getPosition()

@@ -200,7 +200,7 @@ end
 function NetClient:connect(event)
   self.state = 'waiting'
   self.server = event.peer
-  self:send('join', {username = 'trey'})
+  self:send('join', {username = ctx.user.username})
   event.peer:ping()
 end
 

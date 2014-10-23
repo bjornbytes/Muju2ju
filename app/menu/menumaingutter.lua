@@ -75,6 +75,7 @@ function MenuMainGutter:draw()
 
   self.lepr:update(delta)
   self.scroll = math.lerp(self.scroll, self.targetScroll, 8 * delta)
+  self.frameHeight = self.frameHeight or 0
 
   local x = self.offset
   local y = ctx.nav.height * v + .5

@@ -13,7 +13,7 @@ NetServer.messages.join = {
 
     local user, id
     for i = 1, #ctx.config.players do
-      if ctx.config.players[i].user == username then
+      if ctx.config.players[i].username == username then
         id = i
         user = ctx.config.players[i]
         break
@@ -170,7 +170,7 @@ NetServer.messages.chat = {
   receive = function(self, event)
     local id = self.peerToPlayer[event.peer]
     if not id then return end
-    local username = ctx.config.players[id].user
+    local username = ctx.config.players[id].username
     ctx.players:each(function(player)
       if player and player.peer then
         self:send('chat', player.peer, {message = '{' .. (player.team == ctx.config.players[id].team and 'green' or 'red') .. '}' .. username .. '{white}: ' .. event.data.message})

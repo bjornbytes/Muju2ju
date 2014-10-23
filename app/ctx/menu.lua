@@ -1,34 +1,35 @@
 Menu = class()
 
-function Menu:load(userState)
-  self.userState = userState or {}
+function Menu:load(user)
+  self.user = user or {}
 	self.sound = Sound()
 	self.menuSounds = self.sound:loop({sound = 'menu'})
 	self.font = love.graphics.newFont('media/fonts/pixel.ttf', 8)
 	self.creditsAlpha = 0
 	love.mouse.setCursor(love.mouse.newCursor('media/graphics/cursor.png'))
 
-  self.hubThread = love.thread.newThread('app/hub/hub.lua')
-  self.hubThread:start()
-
   love.keyboard.setKeyRepeat(true)
   
   if self.menuSounds then self.menuSounds:stop() end
 
   self.hub = MenuHub()
+  self.nav = MenuNav()
 
   self.pages = {
     signup = MenuSignup(),
     login = MenuLogin(),
-    main = MenuMain()
+    main = MenuMain(),
+    lobby = MenuLobby()
   }
 
-  self.page = self.userState.token and 'main' or 'login'
+  self.page = self.user.token and 'main' or 'login'
 
   if table.has(arg, 'test') then
     Context:remove(self)
     Context:add(Game)
   end
+
+  self.u, self.v = love.graphics.getDimensions()
 end
 
 function Menu:update()
@@ -36,30 +37,33 @@ function Menu:update()
 	self.creditsAlpha = timer.rot(self.creditsAlpha)
   
   self.hub:update()
-  if self.hubThread:getError() then error(self.hubThread:getError()) end
 
-  f.exe(page.update, page)
+  self:run('update')
 end
 
 function Menu:draw()
-  love.graphics.setColor(255, 255, 255)
-	love.graphics.draw(data.media.graphics.mainMenu)
-	love.graphics.setFont(self.font)
-	love.graphics.setColor(255, 255, 255, math.min(self.creditsAlpha * 255, 255))
-	love.graphics.print('We do not mind who gets the credit.', 2, 0)
-
-  local page = self.pages[self.page]
-  f.exe(page.draw, page)
+  self.nav:draw()
+  self:run('draw')
 end
 
-function Menu:keypressed(...) return self:with('keypressed', ...) end
-function Menu:keyreleased(...) return self:with('keyreleased', ...) end
-function Menu:mousepressed(...) return self:with('mousepressed', ...) end
-function Menu:mousereleased(...) return self:with('mousereleased', ...) end
-function Menu:textinput(...) return self:with('textinput', ...) end
+function Menu:keypressed(...) return self:run('keypressed', ...) end
+function Menu:keyreleased(...) return self:run('keyreleased', ...) end
+function Menu:mousepressed(...) return self:run('mousepressed', ...) end
+function Menu:mousereleased(...) return self:run('mousereleased', ...) end
+function Menu:textinput(...) return self:run('textinput', ...) end
 
+function Menu:resize()
+  self.u, self.v = love.graphics.getDimensions()
+  self:run('resize')
+end
 
-function Menu:with(key, ...)
+function Menu:run(key, ...)
   local page = self.pages[self.page]
   f.exe(page[key], page, ...)
+end
+
+function Menu:push(page, ...)
+  self:run('deactivate', page)
+  self.page = page
+  self:run('activate', ...)
 end

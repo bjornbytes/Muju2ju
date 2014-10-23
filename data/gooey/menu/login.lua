@@ -5,7 +5,7 @@ return {
     properties = {
       width = .999999,
       height = .999999,
-      background = {0, 0, 0}
+      background = {0, 0, 0, 0}
     }
   },
   { id = 'username',

@@ -62,11 +62,16 @@ function MenuLogin:authenticate()
   -- set up loading spinner!
 end
 
-function MenuLogin:loggedIn(data)
-  if not data.error then
-    ctx.page = 'main'
-    ctx.userState.token = data.token
-  else
-    print('login failed')
+function MenuLogin:hubMessage(message, data)
+  if message == 'login' then
+    if data.error then
+      print('login failed (' .. data.error .. ')')
+    else
+      ctx.user = data.user
+      ctx.user.token = data.token
+      ctx.hub:send('connect')
+    end
+  elseif message == 'connect' then
+    ctx:push('main')
   end
 end

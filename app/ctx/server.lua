@@ -2,7 +2,7 @@ Server = class()
 
 Server.tag = 'server'
 
-function Server:load()
+function Server:load(config)
   self.config = config
 
 	self.paused = false

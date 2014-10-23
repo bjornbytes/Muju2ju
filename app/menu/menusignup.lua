@@ -62,7 +62,7 @@ end
 function MenuSignup:signedUp(data)
   if not data.error then
     ctx.page = 'main'
-    ctx.userState.token = data.token
+    ctx.user.token = data.token
   else
     print(data.error)
   end

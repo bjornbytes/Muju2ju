@@ -2,9 +2,9 @@ Game = class()
 
 Game.tag = 'client'
 
-function Game:load(userState)
+function Game:load(config, user)
   self.config = config
-  self.userState = userState
+  self.user = user
 
 	self.paused = false
 	self.ded = false
@@ -52,11 +52,11 @@ function Game:load(userState)
     if lost then
       print('you lose')
       Context:remove(ctx)
-      Context:add(Menu, self.userState)
+      Context:add(Menu, self.user)
     else
       print('you win')
       Context:remove(ctx)
-      Context:add(Menu, self.userState)
+      Context:add(Menu, self.user)
     end
   end)
 

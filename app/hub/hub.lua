@@ -14,9 +14,9 @@ local function carry(line)
   while true do
     local idx = buffer:find('\n')
     if not idx then break end
-    local message = buffer:substr(1, idx)
-    receiveQueue:push(json.decode(line))
-    buffer = buffer:substr(idx + 1)
+    local message = buffer:sub(1, idx)
+    receiveQueue:push(message)
+    buffer = buffer:sub(idx + 1)
   end
 end
 
@@ -27,7 +27,7 @@ local function formatPost(data)
   return table.concat(t, '&')
 end
 
-local success, e = hub:connect(serverAddress, 7001)
+local success, e = hub:connect(serverAddress, 8001)
 if e then error(e) end
 
 hub:settimeout(.1)
@@ -35,47 +35,43 @@ hub:settimeout(.1)
 while true do
 
   -- Receive stuff
-  local line, e = hub:receive(1000)
-  carry(line)
+  all, e, line = hub:receive(1000)
+  if e then carry(line)
+  else carry(all) end
 
   -- Send stuff
-  local data = sendQueue:pop()
-  while data do
-    local message = {cmd = data.cmd}
-    data.cmd = nil
-    message.payload = data
+  local str = sendQueue:pop()
+  while str do
+    local message = json.decode(str)
 
     if message.cmd == 'login' then
       local str, code = http.request('http://' .. serverAddress .. ':7000/api/users/login', formatPost(message.payload))
 
       local data
       if code == 200 then
-        data = {cmd = 'login', token = str}
-      elseif code == 401 then
-        data = {cmd = 'login', error = 'authentication'}
+        data = {cmd = 'login', payload = json.decode(str)}
       else
-        data = {cmd = 'login', error = 'unknown'}
+        data = {cmd = 'login', payload = {error = code}}
       end
 
-      receiveQueue:push(data)
+      receiveQueue:push(json.encode(data))
     elseif message.cmd == 'signup' then
       local str, code = http.request('http://' .. serverAddress .. ':7000/api/users/signup', formatPost(message.payload))
 
       local data
       if code == 200 then
-        data = {cmd = 'signup', token = str}
-      elseif code == 409 then
-        data = {cmd = 'signup', error = 'usernameTaken'}
+        data = {cmd = 'signup', payload = json.decode(str)}
       else
-        data = {cmd = 'signup', error = 'unknown'}
+        data = {cmd = 'signup', payload = {error = code}}
       end
 
-      receiveQueue:push(data)
+      receiveQueue:push(json.encode(data))
     else
-      line:send(json.encode(data))
+      print('hub sending: ' .. str)
+      hub:send(str .. '\n')
     end
 
-    data = sendQueue:pop()
+    str = sendQueue:pop()
   end
 end
 

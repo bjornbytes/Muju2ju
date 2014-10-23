@@ -7,7 +7,7 @@ function love.load()
     if love.filesystem.exists('config.json') then
       local json = require('spine-love/dkjson')
       local string = love.filesystem.read('config.json')
-      Context:add(Server, json.decode(config))
+      Context:add(Server, json.decode(string))
     else
       error('Server missing config file')
     end

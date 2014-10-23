@@ -20,15 +20,15 @@ function Server:load(config)
   self.spells = Spells()
 	self.target = Target()
 
-  if ctx.config.game.kind == 'survival' then
+  if ctx.config.game.gameType == 'survival' then
     ctx.shrines:add(Shrine, {x = ctx.map.width / 2, team = 1})
-  elseif ctx.config.game.kind == 'vs' then
+  elseif ctx.config.game.gameType == 'vs' then
     --
   end
 
   self.event:on('shrine.dead', function(data)
     self.net.state = 'ending'
-    if ctx.config.game.kind == 'survival' then
+    if ctx.config.game.gameType == 'survival' then
       ctx.net:emit('over', {winner = 0})
     else
       ctx.net:emit('over', {winner = data.shrine.team == 1 and 2 or 1})

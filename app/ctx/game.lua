@@ -30,9 +30,9 @@ function Game:load(config, user)
     self.hud:ready()
     backgroundSound = self.sound:loop({sound = 'background'})
 
-    if ctx.config.game.kind == 'survival' then
+    if ctx.config.game.gameType == 'survival' then
       ctx.shrines:add(Shrine, {x = ctx.map.width / 2, team = 1})
-    elseif ctx.config.game.kind == 'vs' then
+    elseif ctx.config.game.gameType == 'vs' then
       --
     end
   end)

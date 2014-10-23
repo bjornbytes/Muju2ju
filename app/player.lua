@@ -14,7 +14,7 @@ function Player:init()
 
 	self.health = 100
 	self.healthDisplay = self.health
-  if ctx.config.game.kind == 'survival' then
+  if ctx.config.game.gameType == 'survival' then
     self.x = ctx.map.width / 2
   else
     self.x = ctx.map.width * .2 + (.6 * (self.team == 2 and 1 or 0))

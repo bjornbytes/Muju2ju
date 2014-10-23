@@ -28,6 +28,10 @@ function MenuLogin:init()
       self:authenticate()
     end
   end)
+
+  self.username.text = 'trey'
+  self.password.text = 'test'
+  self:authenticate()
 end
 
 function MenuLogin:update()

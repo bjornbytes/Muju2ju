@@ -42,15 +42,30 @@ function Menu:update()
 end
 
 function Menu:draw()
-  self.nav:draw()
   self:run('draw')
+  self.nav:draw()
 end
 
-function Menu:keypressed(...) return self:run('keypressed', ...) end
-function Menu:keyreleased(...) return self:run('keyreleased', ...) end
-function Menu:mousepressed(...) return self:run('mousepressed', ...) end
-function Menu:mousereleased(...) return self:run('mousereleased', ...) end
-function Menu:textinput(...) return self:run('textinput', ...) end
+function Menu:keypressed(...)
+  return self:run('keypressed', ...)
+end
+
+function Menu:keyreleased(...)
+  return self:run('keyreleased', ...)
+end
+
+function Menu:mousepressed(...)
+  return self:run('mousepressed', ...)
+end
+
+function Menu:mousereleased(...)
+  self.nav:mousereleased(...)
+  return self:run('mousereleased', ...)
+end
+
+function Menu:textinput(...)
+  return self:run('textinput', ...)
+end
 
 function Menu:resize()
   self.u, self.v = love.graphics.getDimensions()

@@ -11,7 +11,7 @@ function love.conf(t)
   t.window.width = 960
   t.window.height = 600
   t.window.resizable = true
-  t.window.vsync = false
+  t.window.vsync = true
 
   if has(arg, 'server') then
     t.modules.audio = nil

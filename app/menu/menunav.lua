@@ -7,6 +7,12 @@ function MenuNav:init()
   self.y = 0
 
   self.geometry = {
+    gutter = function()
+      local u, v = ctx.u, ctx.v
+      local size = (self.height * v) - 4
+      return 2, 2, size, size
+    end,
+
     quit = function()
       local u, v = ctx.u, ctx.v
       local size = (self.height * v) - 4
@@ -22,6 +28,7 @@ function MenuNav:draw()
   g.setColor(200, 200, 200)
   g.line(0, yy, u, yy)
 
+  g.rectangle('line', self.geometry.gutter())
   g.rectangle('line', self.geometry.quit())
 
   if false and ctx.user.username then
@@ -32,7 +39,9 @@ end
 
 function MenuNav:mousereleased(x, y, b)
   if b == 'l' then
-    if math.inside(x, y, self.geometry.quit()) then
+    if math.inside(x, y, self.geometry.gutter()) then
+      ctx.pages.main.gutter:toggle()
+    elseif math.inside(x, y, self.geometry.quit()) then
       love.event.quit()
     end
   end

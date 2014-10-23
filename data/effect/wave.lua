@@ -8,9 +8,10 @@ end
 
 function Wave:update()
   local ded = ctx.players:get(ctx.id).dead
-	self.strength[1] = math.lerp(self.strength[1], ded and .01 or 0, 6 * tickRate)
-	self.strength[2] = math.lerp(self.strength[2], ded and .01 * 4 / 3 or 0, 6 * tickRate)
-	self.shader:send('time', tick)
+  local ratio = ctx.view.frame.width / ctx.view.frame.height
+	self.strength[1] = math.lerp(self.strength[1], ded and .004 or 0, 6 * tickRate)
+	self.strength[2] = math.lerp(self.strength[2], ded and .004 * ratio or 0, 6 * tickRate)
+	self.shader:send('time', tick * .08)
 	self.shader:send('strength', self.strength)
 end
 

@@ -49,8 +49,8 @@ function Menu:draw()
   self.nav:draw()
   self:run('draw')
   if self.invitation then
-    g.setColor(255, 255, 255)
-    print('you have an invitation', 10, 10)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.print('you have an invitation', 10, 10)
   end
 end
 

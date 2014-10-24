@@ -10,15 +10,24 @@ function MenuLobby:init()
   self.geometryFunctions = {
     survivalStart = function()
       return {(.5 - .1) * ctx.u, .82 * ctx.v, .2 * ctx.u, .1 * ctx.v}
+    end,
+
+    centeredPlayer1 = function()
+      local u, v = ctx.u, ctx.v
+      return {(.5 - .25) * u, .2 * v, .5 * u, .25 * v}
+    end,
+
+    centeredPlayer2 = function()
+      local u, v = ctx.u, ctx.v
+      return {(.5 - .25) * u, .5 * v, .5 * u, .25 * v}
     end
   }
 end
 
-function MenuLobby:activate(kind)
+function MenuLobby:activate(kind, players)
   self.kind = kind
+  self.players = players
   self.searching = false
-  self.starting = false
-  self.players = table.copy(ctx.user)
 end
 
 function MenuLobby:update()
@@ -38,6 +47,14 @@ function MenuLobby:draw()
     -- draw top button using data from self.players[1]
     -- draw bottom button using data from self.players[2], or an add button if there is no second player
 
+    g.rectangle('line', unpack(self.geometry.centeredPlayer1))
+    g.print(self.players[1].username, (.5 * u) - g.getFont():getWidth(self.players[1].username) / 2, .25 * v)
+    g.rectangle('line', unpack(self.geometry.centeredPlayer2))
+
+    if self.players[2] then
+      g.print(self.players[2].username, (.5 * u) - g.getFont():getWidth(self.players[2].username) / 2, .25 * v)
+    end
+
     if not self.searching then
       g.rectangle('line', unpack(self.geometry.survivalStart))
     end
@@ -56,6 +73,8 @@ function MenuLobby:mousepressed(x, y, b)
       if math.inside(x, y, unpack(self.geometry.survivalStart)) then
         self.searching = true
         ctx.hub:send('lobbyQueue')
+      elseif #self.players < 2 and math.inside(x, y, unpack(self.geometry.centeredPlayer2)) then
+        ctx.hub:send('lobbyInvite', {username = 'yoko'})
       end
     end
   end

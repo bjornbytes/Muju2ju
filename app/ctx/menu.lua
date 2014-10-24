@@ -16,6 +16,8 @@ function Menu:load(user)
   self.nav = MenuNav()
   self.background = MenuBackground()
 
+  self.invitation = nil
+
   self.pages = {
     signup = MenuSignup(),
     login = MenuLogin(),
@@ -46,10 +48,18 @@ function Menu:draw()
   self.background:draw()
   self.nav:draw()
   self:run('draw')
+  if self.invitation then
+    g.setColor(255, 255, 255)
+    print('you have an invitation', 10, 10)
+  end
 end
 
-function Menu:keypressed(...)
-  return self:run('keypressed', ...)
+function Menu:keypressed(key)
+  if key == 'return' then
+    self.hub:send('lobbyInvitationResponse', {from = self.invitation.from, accept = true})
+  end
+
+  return self:run('keypressed', key)
 end
 
 function Menu:keyreleased(...)
@@ -73,6 +83,17 @@ function Menu:resize()
   self.u, self.v = love.graphics.getDimensions()
   self:run('resize')
   self.background:resize()
+end
+
+function Menu:hubMessage(message, data)
+  if message == 'lobbyInvitation' then
+    self.invitation = data
+  elseif message == 'lobbyInvitationResponse' then
+    self:push('lobby', data.gameType, data.players)
+    self.invitation = nil
+  end
+
+  self:run('hubMessage', message, data)
 end
 
 function Menu:run(key, ...)

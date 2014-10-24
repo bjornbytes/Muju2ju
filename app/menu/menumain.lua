@@ -205,7 +205,7 @@ end
 
 function MenuMain:hubMessage(message, data)
   if message == 'lobbyCreate' then
-    ctx:push('lobby', data.gameType or 'survival')
+    ctx:push('lobby', data.gameType, data.users)
   end
 end
 

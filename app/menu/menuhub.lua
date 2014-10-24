@@ -17,7 +17,7 @@ function MenuHub:update()
     
     message = json.decode(message)
     if message and message.cmd then
-      ctx:run('hubMessage', message.cmd, message.payload)
+      ctx:hubMessage(message.cmd, message.payload)
     end
   end
 

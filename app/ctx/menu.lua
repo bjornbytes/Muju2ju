@@ -56,7 +56,7 @@ end
 
 function Menu:keypressed(key)
   if key == 'return' and self.invitation then
-    self.hub:send('lobbyInvitationResponse', {from = self.invitation.from, accept = true})
+    self.hub:send('lobbyInvitationResponse', {lobbyToken = self.invitation.lobbyToken, accept = true})
   end
 
   return self:run('keypressed', key)

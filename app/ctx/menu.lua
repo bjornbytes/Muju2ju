@@ -55,7 +55,7 @@ function Menu:draw()
 end
 
 function Menu:keypressed(key)
-  if key == 'return' then
+  if key == 'return' and self.invitation then
     self.hub:send('lobbyInvitationResponse', {from = self.invitation.from, accept = true})
   end
 

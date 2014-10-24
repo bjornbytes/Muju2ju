@@ -13,19 +13,20 @@ end
 function MenuBackground:draw()
   local u, v = ctx.u, ctx.v
 
-  --[[g.setColor(255, 255, 255)
+  --[[g.setColor(140, 140, 180)
   g.draw(self.canvas)
 
-  g.setColor(0, 0, 0, 50)
+  g.setColor(50, 50, 80, 255)
   g.rectangle('fill', 0, 0, u, v)]]
 end
 
 function MenuBackground:resize()
+  do return end
   self.canvas = g.newCanvas()
   local working = g.newCanvas()
   local u, v = g.getDimensions()
   g.setColor(255, 255, 255)
-  local image = data.media.graphics.map.backgroundSpirit
+  local image = data.media.graphics.map.background
   local scale = v / image:getHeight()
 
   self.canvas:renderTo(function()

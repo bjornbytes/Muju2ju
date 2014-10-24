@@ -29,9 +29,9 @@ function MenuLogin:init()
     end
   end)
 
-  --[[self.username.text = 'trey'
-  self.password.text = 'test'
-  self:authenticate()]]
+  self.username.text = 'bjorn'
+  self.password.text = 'asdf'
+  self:authenticate()
 end
 
 function MenuLogin:update()

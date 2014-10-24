@@ -11,46 +11,33 @@ function MenuMainGutter:init()
   self.lepr = Lepr(self, .4, 'inOutQuart', {'offset'})
   self.height = 10000
 
-  self.geometry = {
-    units = function()
-      local u, v = ctx.u, ctx.v
-      g.setFont('inglobalb', .04 * v)
-      local fh = g.getFont():getHeight()
-      local ct = 4
-      local radius = .035 * v
-      local inc = .01 * u + 2 * radius
-      local x = (self.offset + .02) * u
-      local xstart = x
-      local y = ctx.nav.height * v + .5
-      local res = {}
-      y = y + (.02 * u) + fh + (.02 * v)
-      for i = 1, ct do
-        table.insert(res, {x + radius, y + radius, radius})
-        x = x + inc
-        if x + inc > (self.offset + self.width - .012) * u then
-          x = xstart
-          if i ~= ct then y = y + inc end
-        end
-      end
-      y = y + inc
-      return res, y
-    end,
+  self.geometry = setmetatable({}, {__index = function(t, k)
+    return rawset(t, k, self.geometryFunctions[k]())[k]
+  end})
 
-    runes = function()
+  self.geometryFunctions = {
+    all = function()
+      local res = {}
+      local ct
       local u, v = ctx.u, ctx.v
       g.setFont('inglobalb', .04 * v)
       local fh = g.getFont():getHeight()
-      local ct = 21
       local radius = .035 * v
       local inc = .01 * u + 2 * radius
       local x = (self.offset + .02) * u
-      local xstart = x
-      local _, y = self.geometry.units()
-      y = y + .04 * v
-      y = y + fh + .02 * v
-      local res = {}
+      local y = ctx.nav.height * v + .5
+      local xstart, ystart = x, y
+
+      -- Unit Label
+      y = y + .02 * u
+      res.unitLabel = {x, y}
+
+      -- Units
+      ct = #self.units
+      res.units = {}
+      y = y + fh + (.02 * v)
       for i = 1, ct do
-        table.insert(res, {x + radius, y + radius, radius})
+        table.insert(res.units, {x + radius, y + radius, radius})
         x = x + inc
         if x + inc > (self.offset + self.width - .012) * u then
           x = xstart
@@ -58,7 +45,30 @@ function MenuMainGutter:init()
         end
       end
       y = y + inc
-      return res, y
+      x = xstart
+      
+      -- Rune Label
+      y = y + .04 * v
+      res.runeLabel = {x, y}
+
+      -- Runes
+      res.runes = {}
+      y = y + fh + .02 * v
+      ct = #self.runes
+      for i = 1, ct do
+        table.insert(res.runes, {x + radius, y + radius, radius})
+        x = x + inc
+        if x + inc > (self.offset + self.width - .012) * u then
+          x = xstart
+          if i ~= ct then y = y + inc end
+        end
+      end
+      y = y + inc
+
+      -- Height
+      res.height = math.max(y - ystart, self.frameHeight)
+
+      return res
     end
   }
 end
@@ -74,6 +84,7 @@ function MenuMainGutter:draw()
   local u, v = ctx.u, ctx.v
 
   self.lepr:update(delta)
+  if self.lepr.tween.clock < self.lepr.tween.duration then ctx.pages.main:resize() end
   self.scroll = math.lerp(self.scroll, self.targetScroll, 8 * delta)
   self.frameHeight = self.frameHeight or 0
 
@@ -91,29 +102,20 @@ function MenuMainGutter:draw()
   g.push()
   g.translate(0, -self.scroll)
 
-  local yy = y + .02 * u
-  local xx = (self.offset + .02) * u
+  local geometry = self.geometry.all
   g.setFont('inglobalb', .04 * v)
-  local font = g.getFont()
+  g.print('Minions', unpack(geometry.unitLabel))
+  g.print('Runes', unpack(geometry.runeLabel))
 
-  -- Units
-  g.print('Minions', xx, yy)
-
-  local units, yy = self.geometry.units()
-  table.each(units, function(unit)
+  table.each(geometry.units, function(unit)
     g.circle('line', unpack(unit))
   end)
 
-  -- Runes
-  yy = yy + .04 * v
-  g.print('Runes', xx, yy)
-  yy = yy + g.getFont():getHeight() + .02 * v
-  local runes, yy = self.geometry.runes()
-  table.each(runes, function(rune)
+  table.each(geometry.runes, function(rune)
     g.circle('line', unpack(rune))
   end)
 
-  self.height = math.max(yy - y, self.frameHeight)
+  self.height = geometry.height
 
   g.pop()
   g.setScissor()
@@ -150,6 +152,10 @@ function MenuMainGutter:mousepressed(x, y, b)
       self.targetScroll = self.targetScroll - (v * scrollSpeed)
     end
   end
+end
+
+function MenuMainGutter:resize()
+  table.clear(self.geometry)
 end
 
 function MenuMainGutter:toggle()

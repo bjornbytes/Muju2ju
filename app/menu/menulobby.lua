@@ -3,9 +3,13 @@ MenuLobby = class()
 local g = love.graphics
 
 function MenuLobby:init()
-  self.geometry = {
+  self.geometry = setmetatable({}, {__index = function(t, k)
+    return rawset(t, k, self.geometryFunctions[k]())[k]
+  end})
+
+  self.geometryFunctions = {
     survivalStart = function()
-      return (.5 - .1) * ctx.u, .82 * ctx.v, .2 * ctx.u, .1 * ctx.v
+      return {(.5 - .1) * ctx.u, .82 * ctx.v, .2 * ctx.u, .1 * ctx.v}
     end
   }
 end
@@ -35,7 +39,7 @@ function MenuLobby:draw()
     -- draw bottom button using data from self.players[2], or an add button if there is no second player
 
     if not self.searching then
-      g.rectangle('line', self.geometry.survivalStart())
+      g.rectangle('line', unpack(self.geometry.survivalStart))
     end
   elseif self.kind == 'versus' then
     if not self.starting then
@@ -55,6 +59,10 @@ function MenuLobby:mousepressed(x, y, b)
       end
     end
   end
+end
+
+function MenuLobby:resize()
+  table.clear(self.geometry)
 end
 
 function MenuLobby:hubMessage(message, data)

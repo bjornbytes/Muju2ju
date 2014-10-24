@@ -89,7 +89,7 @@ function Menu:hubMessage(message, data)
   if message == 'lobbyInvitation' then
     self.invitation = data
   elseif message == 'lobbyInvitationResponse' then
-    self:push('lobby', data.gameType, data.players)
+    self:push('lobby', data.gameType, data.users)
     self.invitation = nil
   end
 

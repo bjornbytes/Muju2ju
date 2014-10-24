@@ -52,7 +52,7 @@ function MenuLobby:draw()
     g.rectangle('line', unpack(self.geometry.centeredPlayer2))
 
     if self.players[2] then
-      g.print(self.players[2].username, (.5 * u) - g.getFont():getWidth(self.players[2].username) / 2, .25 * v)
+      g.print(self.players[2].username, (.5 * u) - g.getFont():getWidth(self.players[2].username) / 2, .55 * v)
     end
 
     if not self.searching then

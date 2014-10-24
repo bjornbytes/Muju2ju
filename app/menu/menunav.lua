@@ -38,7 +38,7 @@ function MenuNav:draw()
   g.rectangle('line', self.geometry.quit())
 
   if false and ctx.user.username then
-    g.setFont('inglobalb', self.height * v - 6)
+    g.setFont('philosopher', self.height * v - 6)
     g.print(ctx.user.username, u * .5 - g.getFont():getWidth(ctx.user.username) / 2, 2)
   end
 end

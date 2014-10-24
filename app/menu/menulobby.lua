@@ -30,7 +30,7 @@ function MenuLobby:draw()
 
   g.setColor(255, 255, 255)
 
-  g.setFont('inglobalb', .08 * v)
+  g.setFont('philosopher', .08 * v)
   local str = self.kind:capitalize()
   g.print(str, u * .5 - g.getFont():getWidth(str) / 2, (ctx.nav.height + .02) * v)
 
@@ -53,7 +53,7 @@ end
 function MenuLobby:mousepressed(x, y, b)
   if b == 'l' then
     if self.kind == 'survival' then
-      if math.inside(x, y, self.geometry.survivalStart()) then
+      if math.inside(x, y, unpack(self.geometry.survivalStart)) then
         self.searching = true
         ctx.hub:send('lobbyQueue')
       end

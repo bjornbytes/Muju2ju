@@ -88,5 +88,9 @@ function MenuLobby:hubMessage(message, data)
   if message == 'lobbyStart' then
     Context:add(Game, data, ctx.user)
     Context:remove(ctx)
+  elseif message == 'lobbyAdd' then
+    if data.user.username ~= ctx.user.username then
+      table.insert(self.players, data.user)
+    end
   end
 end

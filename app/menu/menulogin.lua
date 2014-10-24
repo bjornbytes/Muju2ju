@@ -24,7 +24,7 @@ function MenuLogin:init()
 
   self.password:on('keypressed', function(data)
     if love.keyboard.isDown('lshift') and data.key == 'tab' then self.gooey:focus(self.username)
-    elseif data.key == 'enter' then
+    elseif data.key == 'return' then
       self:authenticate()
     end
   end)

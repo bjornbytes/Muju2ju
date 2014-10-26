@@ -58,6 +58,7 @@ function Juju:update(noHistory)
   if self.owner then
     if ctx.tag == 'server' or (self.owner ~= ctx.players:get(ctx.id)) then
       if ctx.tag == 'client' then
+        local tx, ty = ctx.view.x + 52, ctx.view.y + 52
         for i = 1, 20 do
           ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
         end

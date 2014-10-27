@@ -183,7 +183,7 @@ NetClient.messages.spellCreate = {
 function NetClient:init()
   self.other = NetServer
   self.state = 'connecting'
-  self:connectTo(ctx.config.ip, 6061)
+  self:connectTo(ctx.config.ip, ctx.config.port)
   self.messageBuffer = {}
 
   ctx.event:on('game.quit', f.cur(self.quit, self))

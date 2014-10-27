@@ -120,7 +120,7 @@ function Player:slot(input)
     self.summonTimer = self.summonTimer + tickRate
 
     if self.summonTimer >= 2 then
-      local minion = data.unit[self.minions[input.minion]]
+      local minion = data.unit[self.deck[input.minion].code]
       local cooldown = self.minioncds[input.minion]
 
       if cooldown == 0 and self:spend(12) then
@@ -179,13 +179,17 @@ end
 
 function Player:initDeck()
   self.deck = {}
+
   for i = 1, #ctx.config.players[self.id].deck do
     local entry = ctx.config.players[self.id].deck[i]
 
     self.deck[entry.code] = {
       runes = table.map(entry.runes, function(rune) return setmetatable({level = 0}, runes[rune]) end),
       upgrades = {},
-      cooldown = 0
+      cooldown = 0,
+      code = entry.code
     }
+
+    self.deck[i] = self.deck[entry.code]
   end
 end

@@ -232,7 +232,7 @@ function NetServer:init()
   self.other = NetClient
   self.state = 'waiting'
 
-  self:listen(6061)
+  self:listen(ctx.config.port)
   self.peerToPlayer = {}
   self.eventBuffer = {}
   self.importantEventBuffer = {}
@@ -271,7 +271,7 @@ function NetServer:disconnect(event)
     if table.has(arg, 'test') then
       self:quit()
       Context:remove(ctx)
-      Context:add(Server)
+      Context:add(Server, ctx.config)
     else
       if self.state == 'ending' then
         self:quit()

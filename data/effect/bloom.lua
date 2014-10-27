@@ -38,9 +38,6 @@ function Bloom:applyEffect(source, target)
   g.setCanvas(target)
   g.draw(source)
   ctx.view:worldPush()
-  ctx.particles:each(function(particle)
-		if particle.code == 'jujuSex' then particle:draw() end
-	end)
   g.pop()
   local w, h = ctx.view.frame.width, ctx.view.frame.height
   love.graphics.setColor(255, 255, 255, 50 * self.alpha)--self.alpha * 100 * factor)
@@ -59,6 +56,9 @@ function Bloom:applyEffect(source, target)
 		p:draw(true)
 		ctx.jujus:each(f.ego('draw'))
 	end
+  ctx.particles:each(function(particle)
+		if particle.code == 'jujuSex' then particle:draw() end
+	end)
   g.pop()
 
   g.setCanvas()

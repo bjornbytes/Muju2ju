@@ -24,7 +24,7 @@ function MenuMainGutter:init()
       local fh = g.getFont():getHeight()
       local radius = .035 * v
       local inc = .01 * u + 2 * radius
-      local x = (self.offset + .02) * u
+      local x = .02 * u
       local y = ctx.nav.height * v + .5
       local xstart, ystart = x, y
 
@@ -39,7 +39,7 @@ function MenuMainGutter:init()
       for i = 1, ct do
         table.insert(res.units, {x + radius, y + radius, radius})
         x = x + inc
-        if x + inc > (self.offset + self.width - .012) * u then
+        if x + inc > (self.width - .012) * u then
           x = xstart
           if i ~= ct then y = y + inc end
         end
@@ -58,7 +58,7 @@ function MenuMainGutter:init()
       for i = 1, ct do
         table.insert(res.runes, {x + radius, y + radius, radius})
         x = x + inc
-        if x + inc > (self.offset + self.width - .012) * u then
+        if x + inc > (self.width - .012) * u then
           x = xstart
           if i ~= ct then y = y + inc end
         end
@@ -88,17 +88,18 @@ function MenuMainGutter:draw()
   self.scroll = math.lerp(self.scroll, self.targetScroll, 8 * delta)
   self.frameHeight = self.frameHeight or 0
 
-  local x = self.offset
+  g.push()
+  g.translate(self.offset * u, 0)
   local y = ctx.nav.height * v + .5
 
   g.setColor(0, 0, 0, 80)
-  g.rectangle('fill', x * u, y, self.width * u, self.frameHeight)
+  g.rectangle('fill', 0, y, self.width * u, self.frameHeight)
 
   g.setColor(255, 255, 255)
-  g.line((x + self.width) * u - .5, y, (x + self.width) * u - .5, v)
+  g.line(self.width * u - .5, y, self.width * u - .5, v)
 
   -- Gutter contents
-  g.setScissor(x * u, y, self.width * u, self.frameHeight)
+  g.setScissor(self.offset * u, y, self.width * u, self.frameHeight)
   g.push()
   g.translate(0, -self.scroll)
 
@@ -133,7 +134,9 @@ function MenuMainGutter:draw()
     clamped = clamped + dif
     height = height - dif
   end
-  g.rectangle('fill', (x + self.width - .005) * u - 3, clamped, u * .005, height)
+  g.rectangle('fill', (self.width - .005) * u - 3, clamped, u * .005, height)
+
+  g.pop()
 end
 
 function MenuMainGutter:keypressed(key)

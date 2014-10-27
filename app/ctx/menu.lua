@@ -17,6 +17,9 @@ function Menu:load(user)
   self.background = MenuBackground()
 
   self.invitation = nil
+  self.loading = nil
+  self.loadingAlpha = 0
+  self.loadingScale = .25
 
   self.pages = {
     signup = MenuSignup(),
@@ -29,7 +32,7 @@ function Menu:load(user)
 
   if table.has(arg, 'test') then
     Context:remove(self)
-    Context:add(Game)
+    Context:add(Game, testConfig, {username = 'bjorn'})
   end
 
   self.u, self.v = love.graphics.getDimensions()

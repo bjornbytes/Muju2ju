@@ -43,7 +43,7 @@ function HudTutorial:update()
 			self.timer = 2 * math.pi
 			self.dirty[4] = true
 		end
-		if self.timer == 0 and #p.minions > 1 and not p.dead and not self.dirty[5] then
+		if self.timer == 0 and #p.deck > 1 and not p.dead and not self.dirty[5] then
 			self.index = 5
 			self.timer = 2 * math.pi
 			self.dirty[5] = true

@@ -48,7 +48,7 @@ function PlayerServer:trace(data)
 
   data.x = math.clamp(data.x, -1, 1)
   data.y = math.clamp(data.y, -1, 1)
-  data.minion = math.clamp(data.minion, 1, #self.minions)
+  data.minion = math.clamp(data.minion, 1, #self.deck)
 
   -- if not self.dead then?
   self:move(data)

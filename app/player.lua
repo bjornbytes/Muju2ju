@@ -29,11 +29,10 @@ function Player:init()
   self.deathTimer = 0
   self.deathDuration = 7
 	self.dead = false
-	self.minions = {'bruju'}
-	self.minioncds = {0, 0}
 	self.selectedMinion = 1
 	self.invincible = 0
   self.summonTimer = 0
+  self.minionCost = 12 -- For Debugging
 
   self.depth = self.depth + love.math.random()
 
@@ -83,7 +82,7 @@ function Player:draw(onlyGhost)
 end
 
 function Player:keypressed(key)
-	for i = 1, #self.minions do
+	for i = 1, #self.deck do
 		if tonumber(key) == i then
 			self.selectedMinion = i
 			self.recentSelect = 1
@@ -112,22 +111,14 @@ function Player:move(input)
 end
 
 function Player:slot(input)
-  for i = 1, #self.minioncds do
-		self.minioncds[i] = timer.rot(self.minioncds[i], function()
-      if ctx.hud then ctx.hud.minions.extra[i] = 1 end
-    end)
-	end
-
-  if not self.dead and not self.animation:blocking() and input.summon then
+  if not self.dead and not self.animation:blocking() and input.summon and self.juju >= self.minionCost then
     self.summonTimer = self.summonTimer + tickRate
 
     if self.summonTimer >= 2 then
       local minion = data.unit[self.deck[input.minion].code]
-      local cooldown = self.minioncds[input.minion]
 
-      if cooldown == 0 and self:spend(12) then
+      if self:spend(self.minionCost) then
         ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = math.round(self.x)})
-        self.minioncds[input.minion] = .5
 
         -- Juice
         for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end

@@ -24,8 +24,8 @@ function PlayerMain:update()
     if not self.gamepadSelectDirty then
       if rtrigger then self.selectedMinion = self.selectedMinion + 1 end
       if ltrigger then self.selectedMinion = self.selectedMinion - 1 end
-      if self.selectedMinion <= 0 then self.selectedMinion = #self.minions
-      elseif self.selectedMinion > #self.minions then self.selectedMinion = 1 end
+      if self.selectedMinion <= 0 then self.selectedMinion = #self.deck
+      elseif self.selectedMinion > #self.deck then self.selectedMinion = 1 end
     end
     self.gamepadSelectDirty = rtrigger or ltrigger
   end

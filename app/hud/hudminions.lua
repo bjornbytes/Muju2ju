@@ -8,8 +8,8 @@ function HudMinions:update()
 	for i = 1, self.count do
 		self.factor[i] = math.lerp(self.factor[i], p.selectedMinion == i and 1 or 0, 10 * tickRate)
 		self.extra[i] = math.lerp(self.extra[i], 0, 5 * tickRate)
-		if p.minions[i] then
-			local y = self.bg[i]:getHeight() * (p.summonTimer > 0 and (1 - (p.summonTimer / 2)) or 0)--(p.minioncds[i] / .5)
+		if p.deck[i] then
+			local y = self.bg[i]:getHeight() * (p.summonTimer > 0 and (1 - (p.summonTimer / 2)) or 0)
 			self.quad[i]:setViewport(0, y, self.bg[i]:getWidth(), self.bg[i]:getHeight() - y)
 		end
 	end
@@ -48,7 +48,7 @@ function HudMinions:draw()
 
     -- Cooldown
     local _, qy = self.quad[i]:getViewport()
-    g.setColor(255, 255, 255, (150 + (100 * (p.minioncds[i] == 0 and 1 or 0))) * alpha)
+    g.setColor(255, 255, 255)
     g.draw(bg, self.quad[i], xx, yy + qy * scale, 0, scale, scale, w / 2, h / 2)
 
     -- Juice

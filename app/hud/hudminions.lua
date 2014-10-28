@@ -22,7 +22,7 @@ function HudMinions:draw()
   if not p then return end
 
   local u, v = ctx.hud.u, ctx.hud.v
-  local ct = table.count(p.deck)
+  local ct = self.count
 
   local upgradeFactor, t = ctx.hud.upgrades:getFactor()
   local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
@@ -97,7 +97,7 @@ end
 function HudMinions:ready()
   local p = ctx.players:get(ctx.id)
 
-  self.count = table.count(p.deck)
+  self.count = #p.deck
   self.bg = {}
   self.factor = {}
   self.extra = {}

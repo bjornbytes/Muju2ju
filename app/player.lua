@@ -99,14 +99,16 @@ function Player:move(input)
   end
 
   local current = self.animation:current()
-  if current and current.name == 'resurrect' then
+  if (current and current.name == 'resurrect') or input.summon then
     self.speed = 0
     return
   end
 
-  self.speed = self.walkSpeed * input.x
-  if self.speed ~= 0 then self.hasMoved = true end
-  self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
+  if not input.summon then
+    self.speed = self.walkSpeed * input.x
+    if self.speed ~= 0 then self.hasMoved = true end
+    self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
+  end
 end
 
 function Player:slot(input)

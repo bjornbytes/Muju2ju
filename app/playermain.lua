@@ -73,6 +73,10 @@ function PlayerMain:readInput()
   t.summon = love.keyboard.isDown(' ')--ctx.input:getAction('summon')
   t.minion = self.selectedMinion
 
+  if self.summonTimer > 0 then
+    t.x = 0
+  end
+
   local current = self.animation:current()
   if current then
     if current.name == 'summon' then

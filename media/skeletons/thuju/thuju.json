@@ -1,11 +1,5 @@
 {
-"skeleton": {
-	"hash": "3C98xpVJ7UAM+kRTFb8v1DN+37E",
-	"spine": "2.0.23",
-	"width": 367.02,
-	"height": 329.83,
-	"images": "../../Art/thuju/thuju images/"
-},
+"skeleton": { "hash": "oYdPNCLcCpYXKfoViMuNh1XgXhI", "spine": "2.0.23", "width": 367.02, "height": 329.83 },
 "bones": [
 	{ "name": "root", "x": -90.85, "scaleX": 0.953, "scaleY": 0.953 },
 	{ "name": "waist", "parent": "root", "x": 87.79, "y": 131.97 },

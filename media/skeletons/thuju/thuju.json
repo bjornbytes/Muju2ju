@@ -1,6 +1,6 @@
 {
 "skeleton": {
-	"hash": "3hRcCV84JLNhvg4gfjqgdOQEW7g",
+	"hash": "3C98xpVJ7UAM+kRTFb8v1DN+37E",
 	"spine": "2.0.23",
 	"width": 367.02,
 	"height": 329.83,
@@ -77,7 +77,7 @@
 	}
 },
 "animations": {
-	"Attack": {
+	"attack": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -365,7 +365,7 @@
 			}
 		]
 	},
-	"Death": {
+	"death": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -769,7 +769,7 @@
 			}
 		]
 	},
-	"GroundSlam": {
+	"smash": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -1175,7 +1175,7 @@
 			}
 		]
 	},
-	"Taunt": {
+	"taunt": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -1711,7 +1711,7 @@
 			}
 		]
 	},
-	"Walk": {
+	"walk": {
 		"bones": {
 			"waist": {
 				"rotate": [

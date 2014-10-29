@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "tk/TnyRri3lcB7HAe1bKvOWdHuM", "spine": "2.0.23", "width": 385.02, "height": 345.98 },
+"skeleton": { "hash": "WO8Hi/3qMuMUIa4jDM6JtJbAbfs", "spine": "2.0.23", "width": 385.02, "height": 345.98 },
 "bones": [
 	{ "name": "root" },
 	{ "name": "waist", "parent": "root", "x": 87.79, "y": 131.97 },
@@ -71,7 +71,7 @@
 	}
 },
 "animations": {
-	"Attack": {
+	"attack": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -349,7 +349,7 @@
 			}
 		]
 	},
-	"Death": {
+	"death": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -747,7 +747,7 @@
 			}
 		]
 	},
-	"GroundSlam": {
+	"smash": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -1141,7 +1141,7 @@
 			}
 		]
 	},
-	"Taunt": {
+	"taunt": {
 		"bones": {
 			"waist": {
 				"rotate": [
@@ -1667,7 +1667,7 @@
 			}
 		]
 	},
-	"Walk": {
+	"walk": {
 		"bones": {
 			"waist": {
 				"rotate": [

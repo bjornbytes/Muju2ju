@@ -73,7 +73,7 @@ function Duju:butt()
 		if math.sign(self.target.x - self.x) == math.sign(target.x - self.x) then
 			target:hurt(damage, self)
 			local sign = math.sign(target.x - self.x)
-			target.knockBack = sign * (.2 + self.rng:random() / 25)
+			target.knockback = sign * (.2 + self.rng:random() / 25)
 		end
 	end)
 	self.buttTimer = self.buttRate

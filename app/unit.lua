@@ -20,7 +20,7 @@ function Unit:activate()
     self.rng = love.math.newRandomGenerator(self.id)
 
     -- Debuffs
-    self.knockBack = 0
+    self.knockback = 0
 
     self.target = nil
     self.attackTimer = 0
@@ -48,7 +48,7 @@ end
 function Unit:update()
   if ctx.tag == 'server' then
     self.attackTimer = self.attackTimer - math.min(self.attackTimer, tickRate)
-    self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
+    self.knockback = math.max(0, math.abs(self.knockback) - tickRate) * math.sign(self.knockback)
 
     table.each(self.buffs, function(entries, stat)
       table.each(entries, function(entry, i)
@@ -56,7 +56,7 @@ function Unit:update()
       end)
     end)
 
-    self.x = self.x + self.knockBack * tickRate * 3000
+    self.x = self.x + self.knockback * tickRate * 3000
 
     self:hurt(self.maxHealth * .02 * tickRate)
     self.speed = math.max(self.speed - .5 * tickRate, 20)

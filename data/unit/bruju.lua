@@ -16,10 +16,10 @@ Bruju.burstDamage = 15
 Bruju.burstRange = 90
 Bruju.burstHeal = 0
 
-Bruju.rewindChance = .1
+Bruju.rewindChance = .5
 Bruju.rewindHealthFactor = .2 -- Chance scales based on missing health
-Bruju.rewindReflect = 0
-Bruju.rewindKnockback = 0
+Bruju.rewindReflect = .5
+Bruju.rewindKnockback = .15
 
 function Bruju:activate()
 	Unit.activate(self)

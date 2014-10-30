@@ -10,16 +10,21 @@ local function bar(x, y, hard, soft, color, width, height)
   g.setColor(255, 255, 255)
   local w, h = data.media.graphics.healthbarFrame:getDimensions()
   local scale = width / w
-  g.draw(data.media.graphics.healthbarFrame, x - width / 2, y, 0, scale, scale)
+  local xx = math.round(x - width / 2)
+  local yy = math.round(y)
 
-  y = y + (3 * scale)
-  width = width - (6 * scale)
-  height = (h - 6) * scale
+  g.draw(data.media.graphics.healthbarFrame, xx, yy, 0, scale, scale)
 
+  yy = yy + math.max(math.round(3 * scale), 1)
+  xx = xx + math.max(math.round(3 * scale), 1)
+
+  local barHeight = data.media.graphics.healthbarGradient:getHeight()
+  g.setBlendMode('alpha')
 	g.setColor(color)
-	g.rectangle('fill', x - width / 2, y, hard * width, height)
+	g.draw(data.media.graphics.healthbarGradient, xx, yy, 0, hard * math.round(width - 6 * scale), scale)
 	g.setColor(color[1], color[2], color[3], 160)
-	g.rectangle('fill', x - width / 2, y, soft * width, height)
+	g.draw(data.media.graphics.healthbarGradient, xx, yy, 0, soft * math.round(width - 6 * scale), scale)
+  g.setBlendMode('alpha')
 end
 
 local function stack(t, x, range, delta)
@@ -54,10 +59,10 @@ function HudHealth:draw()
   local t = {}
   ctx.units:each(function(unit)
     local location = math.floor(unit.x)
-    stack(t, location, unit.width * 2, .5)
+    stack(t, location, unit.width * 2, 1)
     local color = green
     local color = (p and unit.team == p.team) and green or red
     local x, y, hard, soft = unit:getHealthbar()
-    bar(x, y - 15 * t[location], hard, soft, color, 50, 2)
+    bar(x, y - 5 * t[location], hard, soft, color, 50, 2)
   end)
 end

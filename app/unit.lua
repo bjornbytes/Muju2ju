@@ -150,7 +150,7 @@ function Unit:getHealthbar()
   local prev = self.history:get(t)
   local cur = self.history:get(t + 1)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-  return lerpd.x, ctx.map.height - ctx.map.groundHeight - self.height, lerpd.health / lerpd.maxHealth, self.healthDisplay / lerpd.maxHealth
+  return lerpd.x, ctx.map.height - ctx.map.groundHeight - 80, lerpd.health / lerpd.maxHealth, self.healthDisplay / lerpd.maxHealth
 end
 
 function Unit:applyUpgrades()

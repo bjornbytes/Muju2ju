@@ -19,22 +19,6 @@ function Unit:activate()
   if ctx.tag == 'server' then
     self.rng = love.math.newRandomGenerator(self.id)
 
-    -- Defensive Stats
-    self.armor = 0
-    self.flatArmor = 0
-    self.tenacity = 0
-    self.healAmplification = 0
-
-    -- Attack Stats
-    self.weaken = 0
-    self.lifesteal = 0
-    self.critChance = 0
-    self.cleave = 0
-    self.shred = 0
-
-    -- Utility Stats
-    self.cooldownReduction = 0
-
     -- Debuffs
     self.knockBack = 0
 
@@ -140,19 +124,7 @@ function Unit:move()
 end
 
 function Unit:hurt(amount, source)
-  if source then
-    amount = amount * (1 - source:getStat('weaken'))
-    if love.math.random() < source.critChance then
-      amount = amount * 2
-    end
-    amount = amount + (source.shred * self.maxHealth)
-  end
-  amount = amount - self.flatArmor
-  amount = amount * (1 - self.armor)
   self.health = self.health - amount
-  if source and source.lifesteal > 0 then
-    source:heal(amount * source.lifesteal)
-  end
 
   if self.health <= 0 then
     self:die()

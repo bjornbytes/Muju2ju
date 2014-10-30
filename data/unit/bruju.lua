@@ -26,18 +26,12 @@ function Bruju:activate()
 
   self.animation = data.animation.bruju(self, {scale = self.scale})
   self.animation.flipX = not self.owner.animation.flipX
+
+  self.rewind = 0
 end
 
 function Bruju:update()
   if ctx.tag == 'server' then
-    if self.animation:blocking() then
-      self.dead = self.animation:current().name == 'death'
-      self.x = self.x + self.knockBack * tickRate * 3000
-      self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
-      self.animation:tick(tickRate)
-      return
-    end
-
     Unit.update(self)
 
     -- Target Acquired
@@ -57,6 +51,12 @@ function Bruju:update()
     local current = self.animation:current()
     if current and current.name == 'walk' and self.target then
       self.animation.flipX = (self.target.x - self.x) < 0
+    end
+
+    if self.rewind > 0 then
+      local amount = math.min(self.rewind, self.maxHealth * .5 * tickRate)
+      self.health = math.min(self.health + amount, self.maxHealth)
+      self.rewind = self.rewind - amount
     end
   else
     return Unit.update(self)
@@ -81,6 +81,19 @@ function Bruju:attack()
     if love.math.random() > .5 then pitch = 1 / pitch end
     sound:setPitch(pitch)
   end})
+end
+
+function Bruju:hurt(amount, source)
+  if source and love.math.random() < self.rewindChance + (1 - (self.health / self.maxHealth)) * self.rewindHealthFactor then
+    self.rewind = self.rewind + amount
+
+    if source and self.rewindReflect > 0 then
+      source:hurt(amount * self.rewindReflect, self)
+      source.knockback = self.rewindKnockback
+    end
+  end
+
+  return Unit.hurt(self, amount, source)
 end
 
 function Bruju:burst()

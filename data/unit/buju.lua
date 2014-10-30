@@ -12,6 +12,9 @@ Buju.attackRange = 10
 Buju.attackSpeed = .85
 Buju.speed = 45
 
+Buju.phaseExtraAttacks = 0
+Buju.phaseLeapDistance = 0
+
 function Buju:activate()
 	Unit.activate(self)
 end

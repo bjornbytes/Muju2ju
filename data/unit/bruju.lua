@@ -16,16 +16,10 @@ Bruju.burstDamage = 15
 Bruju.burstRange = 90
 Bruju.burstHeal = 0
 
-Bruju.safeguardThreshold = .25
-Bruju.safeguardAmount = .25
-Bruju.safeguardDuration = 3
-Bruju.safeguardThorns = 0
-Bruju.safeguardHeal = 0
-
-Bruju.retaliationDamage = 10
-Bruju.retaliationLifesteal = 0
-Bruju.retaliationAttackSpeed = 0
-Bruju.retaliationSpeed = 0
+Bruju.rewindChance = .1
+Bruju.rewindHealthFactor = .2 -- Chance scales based on missing health
+Bruju.rewindReflect = 0
+Bruju.rewindKnockback = 0
 
 function Bruju:activate()
 	Unit.activate(self)
@@ -42,13 +36,6 @@ function Bruju:update()
       self.knockBack = math.max(0, math.abs(self.knockBack) - tickRate) * math.sign(self.knockBack)
       self.animation:tick(tickRate)
       return
-    end
-
-    if self.owner.deck[self.code].upgrades.retaliation then
-      self:addBuff('damage', (1 - (self.health / self.maxHealth)) * Bruju.retaliationDamage, 1, self, 'retaliationDamage')
-      self:addBuff('lifesteal', (1 - (self.health / self.maxHealth)) * Bruju.retaliationLifesteal, 1, self, 'retaliationLifesteal')
-      self:addBuff('attackSpeed', (1 - (self.health / self.maxHealth)) * Bruju.retaliationAttackSpeed, 1, self, 'retaliationAttackSpeed')
-      self:addBuff('speed', (1 - (self.health / self.maxHealth)) * Bruju.retaliationSpeed, 1, self, 'retaliationSpeed')
     end
 
     Unit.update(self)

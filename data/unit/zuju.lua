@@ -15,13 +15,9 @@ Zuju.speed = 40
 Zuju.arcBounces = 1
 Zuju.arcFalloff = .33
 
-Zuju.warpCooldown = 5
-Zuju.warpDistance = 80
-Zuju.warpStun = 0
-
-Zuju.powerSurgeMax = .5
-Zuju.powerSurgeDamageSpeed = .01
-Zuju.powerSurgeeRangeSpeed = 0
+Zuju.staticDamage = 10
+Zuju.staticDistance = 80
+Zuju.staticStun = 1
 
 function Zuju:activate()
 	Unit.activate(self)

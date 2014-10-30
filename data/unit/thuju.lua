@@ -14,18 +14,18 @@ Thuju.speed = 42
 
 Thuju.tauntDuration = 2
 Thuju.tauntMaxEnemies = 2
+Thuju.tauntReflect = 0
 Thuju.tauntArmor = 0
 
 Thuju.smashRange = 128
 Thuju.smashStun = .75
 Thuju.smashDamage = 10
 
-Thuju.thornsAmount = .25
-Thuju.thornsReduce = 0
-Thuju.thornsArmorReduce = 0
-
 function Thuju:activate()
 	Unit.activate(self)
+
+  self.animation = data.animation.thuju(self, {scale = self.scale})
+  self.animation.flipX = self.owner and (not self.owner.animation.flipX) or false
 end
 
 function Thuju:update()
@@ -38,6 +38,16 @@ function Thuju:update()
 
     -- Movement
     self:move()
+
+    -- Animations
+    if self.target and not self:inRange() then
+      self.animation:set('walk')
+    end
+
+    local current = self.animation:current()
+    if current and current.name == 'walk' and self.target then
+      self.animation.flipX = (self.target.x - self.x) < 0
+    end
   end
 end
 
@@ -51,20 +61,11 @@ function Thuju:attack()
     if love.math.random() > .5 then pitch = 1 / pitch end
     sound:setPitch(pitch)
   end})
-end
 
-function Thuju:hurt(amount, source)
-  if self.owner.deck[self.code].upgrades.thorns then
-    if source then
-      amount = amount * (1 - self.thornsReduce)
-      source:hurt(amount * self.thornsAmount, self)
-      if self.thornsArmorReduce > 0 then
-        source:addBuff('armor', self.thornsArmorReduce, 1, self, 'thornsArmorReduction')
-      end
-    end
+  -- Animation
+  if ctx.tag == 'server' then
+    self.animation:set('attack')
   end
-
-  Unit.hurt(self, amount, source)
 end
 
 return Thuju

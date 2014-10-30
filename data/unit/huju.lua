@@ -15,14 +15,11 @@ Huju.speed = 55
 Huju.channelDuration = 1
 Huju.healAmount = 30
 
-Huju.bulwarkStrength = 30
-Huju.bulwarkMagicResist = 0
+Huju.fortifyHeal = 30
+Huju.fortifySpeed = 0
 
-Huju.empowerDamage = 10
-Huju.empowerPersist = 0
-Huju.empowerAttackSpeed = 0
-
-Huju.salvationCooldown = 10
+Huju.salvationHeal = .3
+Huju.salvationInvincibleCooldown = 0
 
 function Huju:activate()
 	Unit.activate(self)

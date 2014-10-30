@@ -13,7 +13,15 @@ testConfig = {
         { code = 'bruju',
           skin = {},
           runes = {}
-        }
+        },
+        --[[{ code = 'huju',
+          skin = {},
+          runes = {}
+        },
+        { code = 'thuju',
+          skin = {},
+          runes = {}
+        }]]
       }
     }
   },

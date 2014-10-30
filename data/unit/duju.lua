@@ -12,31 +12,18 @@ Duju.attackRange = 32
 Duju.attackSpeed = 1.12
 Duju.speed = 65
 
--- Spells
+Duju.buttKnockback = .25
+Duju.buttSlow = .6
+Duju.buttSlowDuration = 1
+Duju.buttDamageMultiplier = 1
+
 Duju.chargeRate = 30
 Duju.chargeMax = 150
 Duju.chargeRegen = 0
 Duju.chargeDamage = 0
 
-Duju.buttCooldown = 5
-Duju.buttKnockback = .25
-Duju.buttStun = 0
-Duju.buttDamageMultiplier = 1
-
-Duju.impaleDuration = .75
-Duju.impaleArmorReduction = .1
-Duju.impaleWeaken = 0
-
 function Duju:activate()
 	Unit.activate(self)
-
-  if ctx.tag == 'server' then
-    self.maxHealth = self.maxHealth + 4 * ctx.units.enemyLevel ^ 1.1
-    self.health = self.maxHealth
-    self.damage = self.damage + .5 * ctx.units.enemyLevel
-    self.buttDamage = self.damage * 1.5
-    self.buttTimer = 1
-  end
 
   -- Animation
   self.animation = data.animation.duju(self, {scale = self.scale})

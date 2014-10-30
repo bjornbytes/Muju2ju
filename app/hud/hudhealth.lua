@@ -15,15 +15,16 @@ local function bar(x, y, hard, soft, color, width, height)
 
   g.draw(data.media.graphics.healthbarFrame, xx, yy, 0, scale, scale)
 
-  yy = yy + math.max(math.round(3 * scale), 1)
-  xx = xx + math.max(math.round(3 * scale), 1)
+  local tiny = math.round(3 * scale) == 0
+  yy = yy + (tiny and 1 or math.round(3 * scale))
+  xx = xx + (tiny and 1 or math.round(3 * scale))
 
   local barHeight = data.media.graphics.healthbarGradient:getHeight()
-  g.setBlendMode('alpha')
-	g.setColor(color)
-	g.draw(data.media.graphics.healthbarGradient, xx, yy, 0, hard * math.round(width - 6 * scale), scale)
-	g.setColor(color[1], color[2], color[3], 160)
-	g.draw(data.media.graphics.healthbarGradient, xx, yy, 0, soft * math.round(width - 6 * scale), scale)
+	g.setColor(color[1], color[2], color[3], 100)
+  g.rectangle('fill', xx, yy, hard * math.round(width - 6 * scale) - (tiny and 1 or 0), math.round((h - 6) * scale) - (tiny and 1 or 0))
+  g.setBlendMode('additive')
+	g.setColor(255, 255, 255, 180)
+	g.draw(data.media.graphics.healthbarGradient, xx, yy, 0, 1 * math.round(width - 6 * scale), scale)
   g.setBlendMode('alpha')
 end
 

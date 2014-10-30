@@ -19,7 +19,7 @@ Bruju.burstHeal = 0
 Bruju.rewindChance = .5
 Bruju.rewindHealthFactor = .2 -- Chance scales based on missing health
 Bruju.rewindReflect = .5
-Bruju.rewindKnockback = .15
+Bruju.rewindKnockback = .2
 
 function Bruju:activate()
 	Unit.activate(self)
@@ -89,7 +89,7 @@ function Bruju:hurt(amount, source)
 
     if source and self.rewindReflect > 0 then
       source:hurt(amount * self.rewindReflect, self)
-      source.knockback = self.rewindKnockback
+      source.knockback = self.rewindKnockback * math.sign(source.x - self.x)
     end
   end
 

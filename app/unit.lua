@@ -1,6 +1,6 @@
 Unit = class()
 
-Unit.depth = -10
+Unit.depth = 3
 
 Unit.cost = 5
 Unit.cooldown = 5

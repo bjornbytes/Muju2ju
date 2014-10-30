@@ -7,7 +7,7 @@ Player.height = 90
 Player.walkSpeed = 65
 Player.maxHealth = 100
 
-Player.depth = -10
+Player.depth = 3
 
 function Player:init()
   self.meta = {__index = self}

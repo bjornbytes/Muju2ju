@@ -9,7 +9,7 @@ local backgroundData = {
   grassFront2 = {x = 1909, y = 827, depth = 0},
   grassMid1 = {x = 783, y = 870, depth = 2},
   grassMid2 = {x = 256, y = 857, depth = 2},
-  grassMid3 = {x = 1700, y = 894, depth = 4},
+  grassMid3 = {x = 1700, y = 894, depth = 2},
   grassMid4 = {x = 563, y = 850, depth = 4},
   grassMid5 = {x = 2090, y = 858, depth = 4},
 }

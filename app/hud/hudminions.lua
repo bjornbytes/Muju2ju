@@ -2,6 +2,11 @@ HudMinions = class()
 
 local g = love.graphics
 
+function HudMinions:init()
+  self.spread1 = 0
+  self.spread2 = 0
+end
+
 function HudMinions:update()
   local p = ctx.players:get(ctx.id)
 
@@ -65,18 +70,40 @@ function HudMinions:draw()
     g.print(cost, tx, ty)]]
 
     do
+      self.spread1 = math.lerp(self.spread1, love.keyboard.isDown('g') and 1 or 0, math.min(10 * delta, 1))
+      self.spread2 = math.lerp(self.spread2, love.keyboard.isDown('h') and 1 or 0, math.min(10 * delta, 1))
+
       local yy = yy + (.11 * v)
-      local inc = .08 * upgradeFactor * v
-      local radius = math.max(.02 * v * upgradeFactor, .01)
+      local inc = .1 * upgradeFactor * v
+      local radius = math.max(.035 * v * upgradeFactor, .01)
+      local spreadFactor = 3 - (self.spread1 + self.spread2) ^ .5
+
+      local width = radius * 2
 
       g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
-      g.rectangle('fill', xx - inc / 2 - radius, yy - radius, radius * 2, radius * 2)
-      g.rectangle('fill', xx + inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+      g.circle('fill', xx - inc / 2 - inc * self.spread1 / spreadFactor, yy, radius)
+      g.circle('fill', xx + inc / 2 + inc * self.spread2 / spreadFactor, yy, radius)
       g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
-      g.rectangle('line', xx - inc / 2 - radius, yy - radius, radius * 2, radius * 2)
-      g.rectangle('line', xx + inc / 2 - radius, yy - radius, radius * 2, radius * 2)
+      g.circle('line', xx - inc / 2 - inc * self.spread1 / spreadFactor, yy, radius)
+      g.circle('line', xx + inc / 2 + inc * self.spread2 / spreadFactor, yy, radius)
 
       yy = yy + (.08 * v)
+
+      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * self.spread1)
+      g.circle('fill', xx - inc / 2 - inc * self.spread1 / spreadFactor - inc / 2, yy, radius)
+      g.circle('fill', xx - inc / 2 - inc * self.spread1 / spreadFactor + inc / 2, yy, radius)
+      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * self.spread2)
+      g.circle('fill', xx + inc / 2 + inc * self.spread2 / spreadFactor - inc / 2, yy, radius)
+      g.circle('fill', xx + inc / 2 + inc * self.spread2 / spreadFactor + inc / 2, yy, radius)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * self.spread1)
+      g.circle('line', xx - inc / 2 - inc * self.spread1 / spreadFactor - inc / 2, yy, radius)
+      g.circle('line', xx - inc / 2 - inc * self.spread1 / spreadFactor + inc / 2, yy, radius)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * self.spread2)
+      g.circle('line', xx + inc / 2 + inc * self.spread2 / spreadFactor - inc / 2, yy, radius)
+      g.circle('line', xx + inc / 2 + inc * self.spread2 / spreadFactor + inc / 2, yy, radius)
+
+      -- Runes
+      yy = yy + (.05 * v) + (.07 * v) * math.max(self.spread1, self.spread2)
       inc = .1 * upgradeFactor * v
       radius = math.max(.035 * v * upgradeFactor, .01)
 

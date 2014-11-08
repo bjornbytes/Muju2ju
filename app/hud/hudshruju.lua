@@ -11,6 +11,8 @@ function HudShruju:update()
 end
 
 function HudShruju:draw()
+  do return end
+
   local u, v = ctx.hud.u, ctx.hud.v
 
   local upgradeFactor, t = ctx.hud.upgrades:getFactor()

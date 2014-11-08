@@ -1,3 +1,5 @@
+local tween = require 'lib/deps/tween/tween'
+
 Player = class()
 Player.code = 'player'
 
@@ -32,6 +34,12 @@ function Player:init()
 	self.selectedMinion = 1
 	self.invincible = 0
   self.summonTimer = 0
+  self.summonPrevTimer = self.summonTimer
+  self.summonFactor = {value = 0}
+  self.summonTweenDuration = .45
+  self.summonTween = tween.new(self.summonTweenDuration, self.summonFactor, {value = 1}, 'inOutBack')
+  self.summonTweenTime = 0
+  self.summonTweenPrevTime = self.summonTweenTime
   self.minionCost = 12 -- For Debugging
 
   self.depth = self.depth + love.math.random()
@@ -111,8 +119,12 @@ function Player:move(input)
 end
 
 function Player:slot(input)
+  self.summonTweenPrevTime = self.summonTweenTime
+  self.summonPrevTimer = self.summonTimer
+
   if not self.dead and not self.animation:blocking() and input.summon and self.juju >= self.minionCost then
     self.summonTimer = self.summonTimer + tickRate
+    self.summonTweenTime = math.min(self.summonTweenTime + tickRate, self.summonTweenDuration)
 
     if self.summonTimer >= 2 then
       local minion = data.unit[self.deck[input.minion].code]
@@ -130,6 +142,7 @@ function Player:slot(input)
     end
   else
     self.summonTimer = 0
+    self.summonTweenTime = math.max(self.summonTweenTime - tickRate, 0)
   end
 end
 

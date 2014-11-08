@@ -29,7 +29,6 @@ local function bar(x, y, hard, soft, color, width, height)
   g.setColor(255, 255, 255, 180)
 	g.draw(data.media.graphics.healthbarGradient, xx, yy, 0, 1 * math.round(width - 6 * scale), scale)
   g.setBlendMode('alpha')
-
 end
 
 local function stack(t, x, range, delta)
@@ -49,8 +48,24 @@ function HudHealth:draw()
   local vx, vy = math.lerp(ctx.view.prevx, ctx.view.x, tickDelta / tickRate), math.lerp(ctx.view.prevy, ctx.view.y, tickDelta / tickRate)
 
   ctx.players:each(function(player)
-    local color = (p and player.team == p.team) and green or red
     local x, y, hard, soft = player:getHealthbar()
+
+    -- Draw summon bar
+
+    local t = math.lerp(player.summonTweenPrevTime, player.summonTweenTime, tickDelta / tickRate)
+    player.summonTween:set(t)
+    local summonFactor = player.summonFactor.value
+
+    local summonTimer = math.lerp(player.summonPrevTimer, player.summonTimer, tickDelta / tickRate)
+
+    local bx, by = ctx.view:screenPoint(x, y)
+    local width, height = math.max(120 * summonFactor, 0), math.max(10 * summonFactor, 0)
+    g.setColor(0, 0, 0, 200 * math.clamp(summonFactor, 0, 1))
+    g.rectangle('fill', bx - width / 2, by - 15 - 25 * summonFactor, width, height)
+    g.setColor(255, 255, 0, 255 * math.clamp(summonFactor, 0, 1))
+    g.rectangle('fill', bx - width / 2 + 1, by - 15 - 25 * summonFactor + 1, (summonTimer / 2) * (width - 2), height - 2)
+
+    local color = (p and player.team == p.team) and green or red
     bar(x, y - 15, hard, soft, color, 80, 3)
   end)
 

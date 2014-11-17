@@ -26,6 +26,11 @@ if love.graphics then
     y = nover and y or y - h / 2
     return g.rectangle(how, x, y, w, h)
   end
+
+  function g.printCenter(what, x, y)
+    local font = g.getFont()
+    g.print(what, x, y, 0, 1, 1, font:getWidth(what) / 2, font:getHeight() / 2)
+  end
 end
 
 function math.insideCircle(x, y, cx, cy, r)

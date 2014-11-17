@@ -21,7 +21,32 @@ function MenuHub:update()
     end
   end
 
-  if self.thread:getError() then error(self.thread:getError()) end
+  if not ctx.offline and self.thread:getError() then
+    print('problem with hub -- running in offline mode')
+    print(self.thread:getError())
+    ctx.offline = true
+
+    ctx.user = {
+      username = 'bjorn',
+      units = {'bruju', 'thuju', 'kuju', 'buju'},
+      deck = {
+        { code = 'bruju',
+          skin = {},
+          runes = {}
+        }
+      },
+      runes = {
+        { token = 123,
+          id = 1
+        },
+        { token = 345,
+          id = 2
+        }
+      }
+    }
+
+    ctx:push('main')
+  end
 end
 
 function MenuHub:send(cmd, payload)

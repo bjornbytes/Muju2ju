@@ -4,7 +4,7 @@ local g = love.graphics
 
 function MenuMainGutter:init()
   self.active = true
-  self.width = .25
+  self.width = .30
   self.offset = 0
   self.targetScroll = 0
   self.scroll = self.targetScroll
@@ -25,7 +25,7 @@ function MenuMainGutter:init()
       local radius = .035 * v
       local inc = .01 * u + 2 * radius
       local x = .02 * u
-      local y = ctx.nav.height * v + .5
+      local y = 0
       local xstart, ystart = x, y
 
       -- Unit Label
@@ -35,11 +35,11 @@ function MenuMainGutter:init()
       -- Units
       ct = #self.units
       res.units = {}
-      y = y + fh + (.02 * v)
+      y = y + fh + (.025 * v)
       for i = 1, ct do
         table.insert(res.units, {x + radius, y + radius, radius})
         x = x + inc
-        if x + inc > (self.width - .012) * u then
+        if true or x + inc > (self.width - .012) * u then
           x = xstart
           if i ~= ct then y = y + inc end
         end
@@ -53,12 +53,12 @@ function MenuMainGutter:init()
 
       -- Runes
       res.runes = {}
-      y = y + fh + .02 * v
+      y = y + fh + (.025 * v)
       ct = #self.runes
       for i = 1, ct do
         table.insert(res.runes, {x + radius, y + radius, radius})
         x = x + inc
-        if x + inc > (self.width - .012) * u then
+        if true or x + inc > (self.width - .012) * u then
           x = xstart
           if i ~= ct then y = y + inc end
         end
@@ -89,17 +89,15 @@ function MenuMainGutter:draw()
   self.frameHeight = self.frameHeight or 0
 
   g.push()
-  g.translate(self.offset * u, 0)
-  local y = ctx.nav.height * v + .5
+  g.translate(self.offset * u - 1, ctx.nav.height * v + 1)
 
-  g.setColor(0, 0, 0, 80)
-  g.rectangle('fill', 0, y, self.width * u, self.frameHeight)
+  g.setColor(5, 25, 40, 80)
+  g.rectangle('fill', 0, 0, self.width * u, self.frameHeight)
 
   g.setColor(255, 255, 255)
-  g.line(self.width * u - .5, y, self.width * u - .5, v)
 
   -- Gutter contents
-  g.setScissor(self.offset * u, y, self.width * u, self.frameHeight)
+  g.setScissor(self.offset * u, ctx.nav.height * v + .5, self.width * u, self.frameHeight)
   g.push()
   g.translate(0, -self.scroll)
 
@@ -108,12 +106,16 @@ function MenuMainGutter:draw()
   g.print('Minions', unpack(geometry.unitLabel))
   g.print('Runes', unpack(geometry.runeLabel))
 
-  table.each(geometry.units, function(unit)
-    g.circle('line', unpack(unit))
+  table.each(geometry.units, function(unit, i)
+    local x, y, r = unpack(unit)
+    g.circle('line', x, y, r)
+    g.print(self.units[i]:capitalize(), x + r + .02 * u, y - g.getFont():getHeight() / 2)
   end)
 
   table.each(geometry.runes, function(rune)
-    g.circle('line', unpack(rune))
+    local x, y, r = unpack(rune)
+    g.circle('line', x, y, r)
+    g.print('Rune', x + r + .02 * u, y - g.getFont():getHeight() / 2)
   end)
 
   self.height = geometry.height
@@ -124,9 +126,9 @@ function MenuMainGutter:draw()
   -- Scrollbar
   g.setColor(255, 255, 255, 100)
   local percent = self.scroll / ((self.height == self.frameHeight) and 1 or (self.height - self.frameHeight))
-  local height = self.frameHeight / self.height * (self.frameHeight - 2)
-  local scrolly = y + (percent * (self.frameHeight - height))
-  local clamped = math.clamp(scrolly, y + 1, y + self.frameHeight - height - 1)
+  local height = self.frameHeight / self.height * (self.frameHeight - 1)
+  local scrolly = 0 + (percent * (self.frameHeight - height))
+  local clamped = math.clamp(scrolly, 1, self.frameHeight - height - 1)
   local dif = math.abs(scrolly - clamped)
   if clamped > scrolly then
     height = height - dif
@@ -134,7 +136,7 @@ function MenuMainGutter:draw()
     clamped = clamped + dif
     height = height - dif
   end
-  g.rectangle('fill', (self.width - .005) * u - 3, clamped, u * .005, height)
+  g.rectangle('fill', (self.width - .005) * u - 1, clamped, u * .005, height)
 
   g.pop()
 end
@@ -166,7 +168,12 @@ function MenuMainGutter:toggle()
   if self.active then
     self.offset = 0
   else
-    self.offset = -.25
+    self.offset = -self.width
   end
   self.lepr:reset()
+end
+
+function MenuMainGutter:screenPoint(x, y)
+  local u, v = ctx.u, ctx.v
+  return x + self.offset * u - 1, y and y + ctx.nav.height * v + 1 - self.scroll
 end

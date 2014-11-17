@@ -3,7 +3,7 @@ MenuNav = class()
 local g = love.graphics
 
 function MenuNav:init()
-  self.height = .04
+  self.height = .05
   self.y = 0
 
   self.geometry = {
@@ -25,11 +25,8 @@ function MenuNav:draw()
   local u, v = g.getDimensions()
   local yy = math.round((self.y + self.height) * v) + .5
 
-  g.setColor(0, 0, 0, 80)
+  g.setColor(200, 255, 255, 45)
   g.rectangle('fill', 0, 0, u, yy)
-
-  g.setColor(200, 200, 200)
-  g.line(0, yy, u, yy)
 
   if ctx.page == 'main' then
     g.rectangle('line', self.geometry.gutter())

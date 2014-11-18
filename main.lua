@@ -26,7 +26,7 @@ testConfig = {
     }
   },
   game = {
-    gameType = 'survival',
+    gameType = 'vs',
     options = {}
   }
 }

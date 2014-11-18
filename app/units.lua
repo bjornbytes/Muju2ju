@@ -23,7 +23,7 @@ end
 function Units:update()
   Manager.update(self)
 
-  if ctx.tag == 'server' then
+  if ctx.tag == 'server' and ctx.config.game.gameType == 'survival' then
     self.enemyTimer = timer.rot(self.enemyTimer, function()
       local spawnType
       local x = love.math.random() > .5 and 0 or ctx.map.width

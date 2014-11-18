@@ -23,8 +23,8 @@ function Server:load(config)
   if ctx.config.game.gameType == 'survival' then
     ctx.shrines:add(Shrine, {x = ctx.map.width / 2, team = 1})
   elseif ctx.config.game.gameType == 'vs' then
-    ctx.shrines:add(Shrine, {x = ctx.map.width * .25, team = 1})
-    ctx.shrines:add(Shrine, {x = ctx.map.width * .75, team = 2})
+    ctx.shrines:add(Shrine, {x = ctx.map.width * .15, team = 1})
+    ctx.shrines:add(Shrine, {x = ctx.map.width * .85, team = 2})
   end
 
   self.event:on('shrine.dead', function(data)

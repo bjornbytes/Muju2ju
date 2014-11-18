@@ -5,7 +5,7 @@ local g = love.graphics
 function View:init()
   self.x = 0
   self.y = 0
-  self.width = 800
+  self.width = 960
   self.height = 600
   self.xmin = 0
   self.ymin = 0
@@ -113,12 +113,16 @@ end
 
 function View:resize()
   local w, h = love.graphics.getDimensions()
-  self.frame.x, self.frame.y, self.frame.width, self.frame.height = 0, 0, self.width, self.height
   local ratio = w / h
-  self.width = self.height * ratio
-  self.scale = h / self.height
-  self.frame.width = w
+  self.frame.x, self.frame.y = 0, 0
   self.frame.height = h
+  self.scale = h / self.height
+  self.frame.width = math.min(w, (self.xmax - self.xmin) * self.scale)
+  self.width = math.min(self.frame.width / self.scale, self.xmax - self.xmin)
+
+  --self.frame.width, self.frame.height = math.min(w, self.width), h
+  if self.frame.width < w then self.frame.x = (w - self.frame.width) / 2 end
+  if self.frame.height < h then self.frame.y = (h - self.frame.height) / 2 end
 
   --[[if (self.width / self.height) > (w / h) then
     self.scale = w / self.width

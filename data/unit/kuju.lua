@@ -8,7 +8,7 @@ Kuju.maxHealth = 55
 Kuju.maxHealthPerMinute = 7
 Kuju.damage = 8
 Kuju.damagePerMinute = 12
-Kuju.attackRange = 165
+Kuju.attackRange = 185
 Kuju.attackSpeed = .8
 Kuju.speed = 45
 
@@ -34,7 +34,6 @@ function Kuju:attack()
 
   -- The Works
   self.target:hurt(damage, self)
-  self.target:addBuff('slow', '-10%', 1, self, 'kujuSlow')
   self.attackTimer = self.attackSpeed
 
   -- Sound

@@ -28,7 +28,7 @@ function Menu:load(user)
     lobby = MenuLobby()
   }
 
-  self.page = self.user.token and 'main' or 'login'
+  self:push(self.user.token and 'main' or 'login')
 
   if table.has(arg, 'test') then
     Context:remove(self)
@@ -100,6 +100,7 @@ function Menu:hubMessage(message, data)
 end
 
 function Menu:run(key, ...)
+  if not self.page or not self.pages[self.page] then return end
   local page = self.pages[self.page]
   f.exe(page[key], page, ...)
 end

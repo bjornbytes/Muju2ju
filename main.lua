@@ -14,11 +14,11 @@ testConfig = {
           skin = {},
           runes = {}
         },
-        --[[{ code = 'huju',
+        { code = 'kuju',
           skin = {},
           runes = {}
         },
-        { code = 'thuju',
+        --[[{ code = 'thuju',
           skin = {},
           runes = {}
         }]]

@@ -26,7 +26,7 @@ testConfig = {
     }
   },
   game = {
-    gameType = 'vs',
+    gameType = 'versus',
     options = {}
   }
 }

@@ -105,6 +105,10 @@ end
 
 function MenuMain:hubMessage(message, data)
   if message == 'lobbyCreate' then
-    ctx:push('lobby', data.gameType, data.users)
+    --ctx:push('lobby', data.gameType, data.users)
+    ctx.hub:send('lobbyQueue')
+  elseif message == 'lobbyStart' then
+    Context:add(Game, data, ctx.user)
+    Context:remove(ctx)
   end
 end

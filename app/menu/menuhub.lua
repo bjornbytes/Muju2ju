@@ -21,7 +21,7 @@ function MenuHub:update()
     end
   end
 
-  if not ctx.offline and self.thread:getError() then
+  --[[if not ctx.offline and self.thread:getError() then
     print('problem with hub -- running in offline mode')
     print(self.thread:getError())
     ctx.offline = true
@@ -46,7 +46,7 @@ function MenuHub:update()
     }
 
     ctx:push('main')
-  end
+  end]]
 end
 
 function MenuHub:send(cmd, payload)

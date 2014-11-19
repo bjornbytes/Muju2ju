@@ -16,11 +16,7 @@ function Player:init()
 
 	self.health = 100
 	self.healthDisplay = self.health
-  if ctx.config.game.gameType == 'survival' then
-    self.x = ctx.map.width / 2
-  else
-    self.x = ctx.map.width * .2 + (.6 * (self.team == 2 and 1 or 0))
-  end
+  self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.ghost = Ghost(self)
   self.ghostX = self.x
@@ -50,6 +46,11 @@ end
 
 function Player:activate()
   self.animation = data.animation.muju(self)
+  if ctx.config.game.gameType == 'survival' then
+    self.x = ctx.map.width / 2
+  else
+    self.x = ctx.map.width * .2 + (.6 * (self.team == 2 and 1 or 0))
+  end
 
   self:initDeck()
 

@@ -7,7 +7,7 @@ Player.width = 45
 Player.height = 90
 
 Player.walkSpeed = 65
-Player.maxHealth = 250
+Player.maxHealth = 300
 
 Player.depth = 3
 
@@ -61,7 +61,6 @@ function Player:update()
 
   -- Global behavior
 	self.invincible = timer.rot(self.invincible)
-  self.maxHealth = 250 + 25 * (tick * tickRate / 60)
 	self:animate()
 	
   -- Dead behavior

@@ -34,6 +34,8 @@ function Bruju:update()
   if ctx.tag == 'server' then
     Unit.update(self)
 
+    if self.animation:blocking() then return end
+
     -- Target Acquired
     self:selectTarget()
     if self.target and self.attackTimer == 0 and self:inRange() then self:attack() end

@@ -28,8 +28,10 @@ Thuju.animations.attack = {
 
 Thuju.animations.taunt = {
   priority = 2,
+  blocking = true,
   loop = false,
   speed = 1,
+  complete = 'idle',
   mix = {
     walk = .2,
     attack = .2
@@ -38,7 +40,9 @@ Thuju.animations.taunt = {
 
 Thuju.animations.smash = {
   priority = 2,
+  blocking = true,
   loop = false,
+  complete = 'idle',
   mix = {
     walk = .2,
     attack = .2

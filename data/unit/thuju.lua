@@ -19,6 +19,7 @@ Thuju.tauntMaxEnemies = 2
 Thuju.tauntReflect = 0
 Thuju.tauntArmor = 0
 
+Thuju.smashCooldown = 12
 Thuju.smashRange = 128
 Thuju.smashStun = .75
 Thuju.smashDamage = 10
@@ -36,6 +37,8 @@ end
 function Thuju:update()
   if ctx.tag == 'server' then
     Unit.update(self)
+
+    if self.animation:blocking() then return end
 
     self.tauntCooldownTimer = timer.rot(self.tauntCooldownTimer)
     self.taunting = timer.rot(self.taunting)
@@ -55,6 +58,7 @@ function Thuju:update()
       if taunted > 0 then
         self.tauntCooldownTimer = self.tauntCooldown
         self.taunting = self.tauntDuration
+        self.animation:set('taunt')
       end
     end
 

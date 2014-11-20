@@ -338,7 +338,7 @@ function NetServer:snapshot()
       entry.ghostAngle = angle
     else
       entry.x = player.x
-      entry.health = math.round(player.health)
+      entry.health = math.round(player.health / player.maxHealth * 255)
     end
 
     table.insert(snapshot.players, entry)

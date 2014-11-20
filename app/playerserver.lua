@@ -72,7 +72,7 @@ function PlayerServer:trace(data)
       msg.ghostY = self.ghostY
     else
       msg.x = self.x
-      msg.health = math.round(self.health)
+      msg.health = math.round(self.health / self.maxHealth * 255)
     end
 
     ctx.net:send('input', self.peer, msg)

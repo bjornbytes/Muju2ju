@@ -58,6 +58,7 @@ function PlayerDummy:trace(data)
   local t = data.tick
   data.tick = nil
   table.merge(data, self)
+  if data.health then self.health = data.health * self.maxHealth end
   data.tick = t
 
   self.history:add(data)

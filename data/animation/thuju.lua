@@ -6,6 +6,16 @@ Thuju.offsety = 64
 Thuju.initial = 'walk'
 Thuju.animations = {}
 
+Thuju.animations.idle = {
+  priority = 1,
+  loop = true,
+  speed = .21,
+  mix = {
+    walk = .2,
+    death = .2
+  }
+}
+
 Thuju.animations.walk = {
   priority = 1,
   loop = true,

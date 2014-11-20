@@ -29,6 +29,7 @@ function Thuju:activate()
 
   self.tauntCooldownTimer = 0
   self.taunting = 0 -- Timer indicating whether or not I am taunting things.
+  self.smashTimer = 0
 
   self.animation = data.animation.thuju(self, {scale = self.scale})
   self.animation.flipX = self.owner and (not self.owner.animation.flipX) or false

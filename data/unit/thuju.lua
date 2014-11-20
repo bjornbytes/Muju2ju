@@ -40,6 +40,7 @@ function Thuju:update()
 
     if self.animation:blocking() then return end
 
+    -- Taunt
     self.tauntCooldownTimer = timer.rot(self.tauntCooldownTimer)
     self.taunting = timer.rot(self.taunting)
 
@@ -59,6 +60,28 @@ function Thuju:update()
         self.tauntCooldownTimer = self.tauntCooldown
         self.taunting = self.tauntDuration
         self.animation:set('taunt')
+      end
+    end
+
+    -- Ground Smash
+    self.smashTimer = timer.rot(self.smashTimer)
+    
+    if self.smashTimer == 0 then
+      local targets = ctx.target:inRange(self, self.smashRange, 'enemy', 'unit')
+      if #targets > 0 then
+        ctx.net:emit('spellCreate', {
+          properties = {
+            kind = 'smash',
+            owner = self.owner,
+            x = self.x,
+            direction = (self.target.x - self.x) < 0,
+            range = self.smashRange,
+            stun = self.smashStun,
+            damage = self.smashDamage
+          }
+        })
+
+        self.smashTimer = self.smashCooldown
       end
     end
 

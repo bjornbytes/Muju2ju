@@ -111,8 +111,12 @@ function Stream:writeSpell(spell)
   if spell.kind == 'burst' then
     self:writeBits(1, 4)
     self:writeBits(math.round(spell.x), 16)
-    self:writeBits(math.round(spell.y), 16)
     self:writeBits(math.round(spell.radius), 10)
+  elseif spell.kind == 'smash' then
+    self:writeBits(2, 4)
+    self:writeBits(math.round(spell.x), 16)
+    self:writeBits(spell.direction, 1)
+    self:writeBits(math.round(spell.range), 10)
   end
 end
 
@@ -197,8 +201,12 @@ function Stream:readSpell()
   if kind == 1 then
     properties.kind = 'burst'
     properties.x = self:readBits(16)
-    properties.y = self:readBits(16)
     properties.radius = self:readBits(10)
+  elseif kind == 2 then
+    properties.kind = 'smash'
+    properties.x = self:readBits(16)
+    properties.direction = self:readBits(1)
+    properties.range = self:readBits(10)
   end
 
   return properties

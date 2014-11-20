@@ -4,6 +4,7 @@ Burst.code = 'burst'
 Burst.maxHealth = .5
 
 function Burst:activate()
+  self.y = self.y or (ctx.map.height - ctx.map.groundHeight - data.unit.bruju.height)
 	self.health = self.maxHealth
 	self.angle = love.math.random() * 2 * math.pi
 	self.scale = 0

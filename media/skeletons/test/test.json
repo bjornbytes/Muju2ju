@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "g0ZA0vZOWnkOEP0UecwlUgCsmpM", "spine": "2.1.04", "width": 314, "height": 343 },
+"skeleton": { "hash": "6lHPMQJmM6UHfAJk6kEZQuKP2Jw", "spine": "2.1.04", "width": 314, "height": 343 },
 "bones": [
 	{ "name": "root" }
 ],
@@ -16,7 +16,39 @@
 "animations": {
 	"attack": {},
 	"death": {},
-	"idle": {},
-	"walk": {}
+	"idle": {
+		"bones": {
+			"root": {
+				"rotate": [
+					{ "time": 0, "angle": 0, "curve": "stepped" },
+					{ "time": 0.3333, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 },
+					{ "time": 0.1666, "x": 0, "y": 17.98 },
+					{ "time": 0.3333, "x": 0, "y": 0 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1, "curve": "stepped" },
+					{ "time": 0.3333, "x": 1, "y": 1 }
+				]
+			}
+		}
+	},
+	"walk": {
+		"bones": {
+			"root": {
+				"rotate": [
+					{ "time": 0, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1 }
+				]
+			}
+		}
+	}
 }
 }

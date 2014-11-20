@@ -1,8 +1,18 @@
 {
-"skeleton": { "hash": "Hv/E+2Ywsg78w2tCcSAY0D3DrBw", "spine": "2.1.04", "width": 0, "height": 0 },
+"skeleton": { "hash": "g0ZA0vZOWnkOEP0UecwlUgCsmpM", "spine": "2.1.04", "width": 314, "height": 343 },
 "bones": [
 	{ "name": "root" }
 ],
+"slots": [
+	{ "name": "Rectangle 1", "bone": "root", "attachment": "Rectangle 1" }
+],
+"skins": {
+	"default": {
+		"Rectangle 1": {
+			"Rectangle 1": { "x": 6.64, "y": 174.03, "width": 314, "height": 343 }
+		}
+	}
+},
 "animations": {
 	"attack": {},
 	"death": {},

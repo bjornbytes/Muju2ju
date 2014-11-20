@@ -4,12 +4,12 @@ Bruju.code = 'bruju'
 Bruju.width = 48
 Bruju.height = 48
 
-Bruju.maxHealth = 120
+Bruju.maxHealth = 140
 Bruju.maxHealthPerMinute = 10
 Bruju.damage = 9
 Bruju.damagePerMinute = 10
 Bruju.attackRange = 24
-Bruju.attackSpeed = 1
+Bruju.attackSpeed = 1.6
 Bruju.speed = 50
 
 Bruju.burstDamage = 0

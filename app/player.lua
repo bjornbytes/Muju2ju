@@ -22,7 +22,7 @@ function Player:init()
   self.ghostX = self.x
   self.ghostY = self.y
 	self.speed = 0
-	self.juju = 30
+	self.juju = 5
 	self.jujuTimer = 1
   self.deathTimer = 0
   self.deathDuration = 7
@@ -36,7 +36,7 @@ function Player:init()
   self.summonTween = tween.new(self.summonTweenDuration, self.summonFactor, {value = 1}, 'inOutBack')
   self.summonTweenTime = 0
   self.summonTweenPrevTime = self.summonTweenTime
-  self.minionCost = 12 -- For Debugging
+  self.minionCost = 10 -- For Debugging
 
   self.depth = self.depth + love.math.random()
 
@@ -63,7 +63,6 @@ function Player:update()
 	self.invincible = timer.rot(self.invincible)
   local old = self.maxHealth
   self.maxHealth = math.round(Player.maxHealth + 20 * (tick * tickRate / 60))
-  print(old, self.maxHealth, self.maxHealth - old)
   if self.health > 0 then self.health = self.health + (self.maxHealth - old) end
 	self:animate()
 	
@@ -131,7 +130,7 @@ function Player:slot(input)
     self.summonTimer = self.summonTimer + tickRate
     self.summonTweenTime = math.min(self.summonTweenTime + tickRate, self.summonTweenDuration)
 
-    if self.summonTimer >= 2 then
+    if self.summonTimer >= 5 then
       local minion = data.unit[self.deck[input.minion].code]
 
       if self:spend(self.minionCost) then

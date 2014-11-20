@@ -1,5 +1,5 @@
 {
-"skeleton": { "spine": "1.9.17", "hash": "KroKIfUEcKhP6+WXp8eFAKqIFlg", "width": 126.61, "height": 121.45 },
+"skeleton": { "hash": "yglj6pueIhk1iIfjZR7ZBPNPOIk", "spine": "2.1.04", "width": 118.17, "height": 121.44 },
 "bones": [
 	{ "name": "root" },
 	{ "name": "body glow", "parent": "root", "length": 53.15, "y": 72, "rotation": -94.08 },

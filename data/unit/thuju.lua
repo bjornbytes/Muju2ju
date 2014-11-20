@@ -99,7 +99,7 @@ function Thuju:attack()
 end
 
 function Thuju:hurt(amount, source)
-  if self.taunting > 0 and source.team ~= self.team then
+  if source and source.team ~= self.team and self.taunting > 0 then
     if self.tauntReflect > 0 then
       source:hurt(amount * self.tauntReflect, self)
     end

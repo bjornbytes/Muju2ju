@@ -58,7 +58,7 @@ function HudHealth:draw()
     local summonFactor = player.summonFactor.value
     local summonTimer = math.lerp(player.summonPrevTimer, player.summonTimer, tickDelta / tickRate)
     local width, height = math.max(120 * summonFactor, 0), math.max(10 * summonFactor, 0)
-    bar(x, y - 15 - 25 * summonFactor, summonTimer / 2, nil, orange, width, height)
+    bar(x, y - 15 - 25 * summonFactor, summonTimer / 5, nil, orange, width, height)
 
     local color = (p and player.team == p.team) and green or red
     bar(x, y - 15, hard, soft, color, 80, 3)

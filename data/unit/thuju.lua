@@ -66,7 +66,7 @@ function Thuju:update()
     -- Ground Smash
     self.smashTimer = timer.rot(self.smashTimer)
     
-    if self.smashTimer == 0 then
+    if false and self.smashTimer == 0 then
       local targets = ctx.target:inRange(self, self.smashRange, 'enemy', 'unit')
       if #targets > 0 then
         ctx.net:emit('spellCreate', {

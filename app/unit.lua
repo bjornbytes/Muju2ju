@@ -140,7 +140,7 @@ end
 function Unit:die()
   if not self.shouldDestroy then
     local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
-    ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), team = self.owner and self.owner.team or 0, amount = 5 + love.math.random(0, 2), vx = vx, vy = vy})
+    ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), team = self.owner and self.owner.team or 0, amount = 3 + love.math.random(0, 2), vx = vx, vy = vy})
     self.shouldDestroy = true
   end
 end

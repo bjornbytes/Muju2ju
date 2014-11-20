@@ -28,7 +28,7 @@ end
 function PlayerServer:update()
 	self.jujuTimer = timer.rot(self.jujuTimer, function()
 		self.juju = self.juju + 1
-		return 1
+		return 2
 	end)
 
 	--self:hurt(self.maxHealth * .033 * tickRate)

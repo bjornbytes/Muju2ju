@@ -69,7 +69,7 @@ function Ghost:draw(x, y, angle)
 		scale = self.maxHealth - self.health
 	end
 	scale = .4 + scale * .4
-	local alphaScale = math.min(self.health * 6 / self.maxHealth, 1) * (ctx.id == self.owner.id and 1 or .5)
+	local alphaScale = math.min(self.health * 6 / self.maxHealth, 1) * (ctx.id == self.owner.id and 1 or .75)
 	g.setColor(255, 255, 255, 30 * alphaScale)
 	g.draw(image, x, y, angle, 1 * scale, 1 * scale, image:getWidth() / 2, image:getHeight() / 2)
 	g.setColor(255, 255, 255, 75 * alphaScale)

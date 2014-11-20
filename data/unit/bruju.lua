@@ -12,11 +12,11 @@ Bruju.attackRange = 24
 Bruju.attackSpeed = 1
 Bruju.speed = 50
 
-Bruju.burstDamage = 15
+Bruju.burstDamage = 0
 Bruju.burstRange = 90
 Bruju.burstHeal = 0
 
-Bruju.rewindChance = .5
+Bruju.rewindChance = 0
 Bruju.rewindHealthFactor = .2 -- Chance scales based on missing health
 Bruju.rewindReflect = .5
 Bruju.rewindKnockback = .2

@@ -7,14 +7,14 @@ Player.width = 45
 Player.height = 90
 
 Player.walkSpeed = 65
-Player.maxHealth = 100
+Player.maxHealth = 250
 
 Player.depth = 3
 
 function Player:init()
   self.meta = {__index = self}
 
-	self.health = 100
+	self.health = self.maxHealth
 	self.healthDisplay = self.health
   self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
@@ -61,6 +61,7 @@ function Player:update()
 
   -- Global behavior
 	self.invincible = timer.rot(self.invincible)
+  self.maxHealth = 250 + 25 * (tick * tickRate / 60)
 	self:animate()
 	
   -- Dead behavior

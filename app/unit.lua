@@ -23,6 +23,8 @@ function Unit:activate()
     self.knockback = 0
 
     self.target = nil
+    self.tauntedBy = nil
+    self.tauntTimer = 0
     self.attackTimer = 0
     self.dead = false
     self.buffs = {}
@@ -49,6 +51,8 @@ function Unit:update()
   if ctx.tag == 'server' then
     self.attackTimer = self.attackTimer - math.min(self.attackTimer, tickRate)
     self.knockback = math.max(0, math.abs(self.knockback) - tickRate) * math.sign(self.knockback)
+    self.tauntTimer = timer.rot(self.tauntTimer)
+    if not self.tauntedBy then self.tauntTimer = 0 end
 
     table.each(self.buffs, function(entries, stat)
       table.each(entries, function(entry, i)
@@ -106,7 +110,7 @@ function Unit:draw()
 end
 
 function Unit:selectTarget()
-  self.target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
+  self.target = self.tauntedBy or ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
 end
 
 function Unit:isTargetable(other)

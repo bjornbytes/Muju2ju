@@ -1,0 +1,12 @@
+{
+"skeleton": { "hash": "Hv/E+2Ywsg78w2tCcSAY0D3DrBw", "spine": "2.1.04", "width": 0, "height": 0 },
+"bones": [
+	{ "name": "root" }
+],
+"animations": {
+	"attack": {},
+	"death": {},
+	"idle": {},
+	"walk": {}
+}
+}

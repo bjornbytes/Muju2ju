@@ -9,6 +9,8 @@ function Smash:activate()
   if self.damage and self.stun then
     table.each(ctx.target:inRange(self, self.range, 'enemy', 'unit'), function(target)
       if math.sign(target.x - self.owner.x) == self.direction then
+        target:hurt(self.damage, self.owner)
+        target:addBuff('stun', self.stun, self.stun, self.owner, 'smashStun')
         -- damage and stun
       end
     end)

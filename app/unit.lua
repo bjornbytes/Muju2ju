@@ -9,34 +9,15 @@ function Unit:activate()
   self.createdAt = tick
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.team = self.owner and self.owner.team or 0
-
-  -- Time-based scaling
-  local minutes = ctx.timer * tickRate / 60
-  self.damage = self.damage + self.damagePerMinute * minutes
-  self.maxHealth = self.maxHealth + self.maxHealthPerMinute * minutes
   self.health = self.maxHealth
 
   if ctx.tag == 'server' then
-    self.rng = love.math.newRandomGenerator(self.id)
-
-    -- Debuffs
-    self.knockback = 0
-
     self.target = nil
-    self.tauntedBy = nil
-    self.tauntTimer = 0
     self.attackTimer = 0
-    self.dead = false
     self.buffs = {}
     self.shouldDestroy = false
   else
     self.history = NetHistory(self)
-    
-    -- Depth randomization / Fake3D
-    local r = love.math.random(-20, 20)
-    self.scale = (data.animation[self.code] and data.animation[self.code].scale or 1) + (r / 210)
-    self.y = self.y + r
-    self.depth = self.depth - r / 20 + love.math.random() * (1 / 20)
     self.healthDisplay = self.health
   end
 
@@ -50,20 +31,12 @@ end
 function Unit:update()
   if ctx.tag == 'server' then
     self.attackTimer = self.attackTimer - math.min(self.attackTimer, tickRate)
-    self.knockback = math.max(0, math.abs(self.knockback) - tickRate) * math.sign(self.knockback)
-    self.tauntTimer = timer.rot(self.tauntTimer)
-    if not self.tauntedBy then self.tauntTimer = 0 end
 
     table.each(self.buffs, function(entries, stat)
       table.each(entries, function(entry, i)
         entry.timer = timer.rot(entry.timer, function() table.remove(entries, i) end)
       end)
     end)
-
-    self.x = self.x + self.knockback * tickRate * 3000
-
-    self:hurt(self.maxHealth * .02 * tickRate)
-    self.speed = math.max(self.speed - .5 * tickRate, 20)
 
     if self.animation then self.animation:tick(tickRate) end
   else
@@ -110,7 +83,7 @@ function Unit:draw()
 end
 
 function Unit:selectTarget()
-  self.target = self.tauntedBy or ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
+  self.target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
 end
 
 function Unit:isTargetable(other)
@@ -137,7 +110,6 @@ function Unit:hurt(amount, source)
 end
 
 function Unit:heal(amount, source)
-  amount = amount * (1 + self.healAmplification)
   self.health = math.min(self.health + amount, self.maxHealth)
 end
 

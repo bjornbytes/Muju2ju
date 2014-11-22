@@ -35,13 +35,6 @@ function Kuju:attack()
   -- The Works
   self.target:hurt(damage, self)
   self.attackTimer = self.attackSpeed
-
-  -- Sound
-  ctx.event:emit('sound.play', {sound = 'combat', volume = .5, with = function(sound)
-    local pitch = 1 + love.math.random() * .2
-    if love.math.random() > .5 then pitch = 1 / pitch end
-    sound:setPitch(pitch)
-  end})
 end
 
 return Kuju

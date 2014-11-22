@@ -27,10 +27,6 @@ Thuju.smashDamage = 10
 function Thuju:activate()
 	Unit.activate(self)
 
-  self.tauntCooldownTimer = 0
-  self.taunting = 0 -- Timer indicating whether or not I am taunting things.
-  self.smashTimer = 0
-
   self.animation = data.animation.thuju(self, {scale = self.scale})
   self.animation.flipX = self.owner and (not self.owner.animation.flipX) or false
 end
@@ -40,51 +36,6 @@ function Thuju:update()
     Unit.update(self)
 
     if self.animation:blocking() then return end
-
-    -- Taunt
-    self.tauntCooldownTimer = timer.rot(self.tauntCooldownTimer)
-    self.taunting = timer.rot(self.taunting)
-
-    if self.tauntCooldownTimer == 0 then
-      local targets = ctx.target:inRange(self, self.tauntRange, 'enemy', 'unit')
-      local taunted = 0
-      for i = 1, #targets do
-        if not targets[i].tauntedBy then
-          targets[i].tauntedBy = self
-          targets[i].tauntTimer = self.tauntDuration
-          taunted = taunted + 1
-          if taunted == self.tauntMaxEnemies then break end
-        end
-      end
-
-      if taunted > 0 then
-        self.tauntCooldownTimer = self.tauntCooldown
-        self.taunting = self.tauntDuration
-        self.animation:set('taunt')
-      end
-    end
-
-    -- Ground Smash
-    self.smashTimer = timer.rot(self.smashTimer)
-    
-    if false and self.smashTimer == 0 then
-      local targets = ctx.target:inRange(self, self.smashRange, 'enemy', 'unit')
-      if #targets > 0 then
-        ctx.net:emit('spellCreate', {
-          properties = {
-            kind = 'smash',
-            owner = self.owner,
-            x = self.x,
-            direction = (self.target.x - self.x) < 0,
-            range = self.smashRange,
-            stun = self.smashStun,
-            damage = self.smashDamage
-          }
-        })
-
-        self.smashTimer = self.smashCooldown
-      end
-    end
 
     -- Target Acquired
     self:selectTarget()
@@ -108,13 +59,6 @@ end
 function Thuju:attack()
   self.target:hurt(self.damage, self)
   self.attackTimer = self.attackSpeed
-
-  -- Sound
-  ctx.event:emit('sound.play', {sound = 'combat', volume = .5, with = function(sound)
-    local pitch = 1 + love.math.random() * .2
-    if love.math.random() > .5 then pitch = 1 / pitch end
-    sound:setPitch(pitch)
-  end})
 
   -- Animation
   if ctx.tag == 'server' then

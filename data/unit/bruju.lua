@@ -19,7 +19,6 @@ Bruju.burstHeal = 0
 Bruju.rewindChance = 0
 Bruju.rewindHealthFactor = .2 -- Chance scales based on missing health
 Bruju.rewindReflect = .5
-Bruju.rewindKnockback = .2
 
 function Bruju:activate()
 	Unit.activate(self)
@@ -76,13 +75,6 @@ function Bruju:attack()
   -- The Works
   self.target:hurt(self:getStat('damage'), self)
   self.attackTimer = self.attackSpeed
-
-  -- Sound
-  ctx.event:emit('sound.play', {sound = 'combat', volume = .5, with = function(sound)
-    local pitch = 1 + love.math.random() * .2
-    if love.math.random() > .5 then pitch = 1 / pitch end
-    sound:setPitch(pitch)
-  end})
 end
 
 function Bruju:hurt(amount, source)
@@ -91,7 +83,6 @@ function Bruju:hurt(amount, source)
 
     if source and self.rewindReflect > 0 then
       source:hurt(amount * self.rewindReflect, self)
-      source.knockback = self.rewindKnockback * math.sign(source.x - self.x)
     end
   end
 

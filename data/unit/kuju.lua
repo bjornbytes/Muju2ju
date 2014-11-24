@@ -4,11 +4,11 @@ Kuju.code = 'kuju'
 Kuju.width = 40
 Kuju.height = 40
 
-Kuju.maxHealth = 55
-Kuju.damage = 8
+Kuju.maxHealth = 300
+Kuju.damage = 15
 Kuju.attackRange = 185
-Kuju.attackSpeed = .8
-Kuju.speed = 45
+Kuju.attackSpeed = 1.667
+Kuju.speed = 40
 
 function Kuju:activate()
 	Unit.activate(self)

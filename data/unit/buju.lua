@@ -5,9 +5,7 @@ Buju.width = 20
 Buju.height = 50
 
 Buju.maxHealth = 50
-Buju.maxHealthPerMinute = 11
 Buju.damage = 6
-Buju.damagePerMinute = 14
 Buju.attackRange = 10
 Buju.attackSpeed = .85
 Buju.speed = 45

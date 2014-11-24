@@ -5,9 +5,7 @@ Huju.width = 36
 Huju.height = 36
 
 Huju.maxHealth = 100
-Huju.maxHealthPerMinute = 10
 Huju.damage = 0
-Huju.damagePerMinute = 0
 Huju.attackRange = 150
 Huju.attackSpeed = 2
 Huju.speed = 55

@@ -6,9 +6,7 @@ Spuju.width = 60
 Spuju.height = 60
 
 Spuju.maxHealth = 75
-Spuju.maxHealthPerMinute = 6.5
 Spuju.damage = 6
-Spuju.damagePerMinute = 8
 Spuju.attackRange = 300
 Spuju.attackSpeed = .3
 Spuju.speed = 40

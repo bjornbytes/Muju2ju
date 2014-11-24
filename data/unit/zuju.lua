@@ -5,9 +5,7 @@ Zuju.width = 32
 Zuju.height = 48
 
 Zuju.maxHealth = 65
-Zuju.maxHealthPerMinute = 7
 Zuju.damage = 8
-Zuju.damagePerMinute = 13
 Zuju.attackRange = 125
 Zuju.attackSpeed = 1.5
 Zuju.speed = 40

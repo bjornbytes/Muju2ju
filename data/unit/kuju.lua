@@ -5,9 +5,7 @@ Kuju.width = 40
 Kuju.height = 40
 
 Kuju.maxHealth = 55
-Kuju.maxHealthPerMinute = 7
 Kuju.damage = 8
-Kuju.damagePerMinute = 12
 Kuju.attackRange = 185
 Kuju.attackSpeed = .8
 Kuju.speed = 45

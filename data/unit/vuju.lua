@@ -5,9 +5,7 @@ Vuju.width = 40
 Vuju.height = 48
 
 Vuju.maxHealth = 60
-Vuju.maxHealthPerMinute = 9
 Vuju.damage = 0
-Vuju.damagePerMinute = 0
 Vuju.attackRange = 200
 Vuju.attackSpeed = 1.5
 Vuju.speed = 50

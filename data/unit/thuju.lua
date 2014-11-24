@@ -5,9 +5,7 @@ Thuju.width = 64
 Thuju.height = 64
 
 Thuju.maxHealth = 150
-Thuju.maxHealthPerMinute = 15
 Thuju.damage = 9
-Thuju.damagePerMinute = 6
 Thuju.attackRange = 32
 Thuju.attackSpeed = 2
 Thuju.speed = 42

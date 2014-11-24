@@ -5,9 +5,7 @@ Guju.width = 64
 Guju.height = 48
 
 Guju.maxHealth = 100
-Guju.maxHealthPerMinute = 8
 Guju.damage = 6
-Guju.damagePerMinute = 9
 Guju.attackRange = 96
 Guju.attackSpeed = 1.4
 Guju.speed = 35

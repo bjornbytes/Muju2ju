@@ -5,9 +5,7 @@ Duju.width = 64
 Duju.height = 24
 
 Duju.maxHealth = 75
-Duju.maxHealthPerMinute = 8
 Duju.damage = 11
-Duju.damagePerMinute = 10
 Duju.attackRange = 32
 Duju.attackSpeed = 1.12
 Duju.speed = 65

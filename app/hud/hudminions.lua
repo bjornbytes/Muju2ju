@@ -69,6 +69,14 @@ function HudMinions:draw()
     g.setColor(255, 255, 255, 200 + 55 * self.factor[i])
     g.print(cost, tx, ty)]]
 
+    local population = p:getPopulation()
+    local str = population .. ' / ' .. p.maxPopulation
+    g.setFont('inglobalb', .03 * v)
+    g.setColor(0, 0, 0, 200)
+    g.print(str, u * .1 + 1, 2 + 1)
+    g.setColor(population == p.maxPopulation and {255, 0, 0} or {255, 255, 255}, 255)
+    g.print(str, u * .1, 2)
+
     do
       self.spread1 = math.lerp(self.spread1, love.keyboard.isDown('g') and 1 or 0, math.min(10 * delta, 1))
       self.spread2 = math.lerp(self.spread2, love.keyboard.isDown('h') and 1 or 0, math.min(10 * delta, 1))

@@ -38,6 +38,8 @@ function Player:init()
   self.summonTweenPrevTime = self.summonTweenTime
   self.minionCost = 10 -- For Debugging
 
+  self.maxPopulation = 1
+
   self.depth = self.depth + love.math.random()
 
 	self.summonedMinions = 0
@@ -126,7 +128,7 @@ function Player:slot(input)
   self.summonTweenPrevTime = self.summonTweenTime
   self.summonPrevTimer = self.summonTimer
 
-  if not self.dead and not self.animation:blocking() and input.summon and self.juju >= self.minionCost then
+  if not self.dead and not self.animation:blocking() and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
     self.summonTimer = self.summonTimer + tickRate
     self.summonTweenTime = math.min(self.summonTweenTime + tickRate, self.summonTweenDuration)
 
@@ -202,4 +204,8 @@ function Player:initDeck()
 
     self.deck[i] = self.deck[entry.code]
   end
+end
+
+function Player:getPopulation()
+  return table.count(table.filter(ctx.units.objects, function(unit) return unit.owner == self end))
 end

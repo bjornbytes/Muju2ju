@@ -3,10 +3,10 @@ Bruju.code = 'bruju'
 
 Bruju.scale = .5
 Bruju.offsety = 48
-Bruju.initial = 'spawn'
-Bruju.animations = {}
+Bruju.default = 'spawn'
+Bruju.states = {}
 
-Bruju.animations.spawn = {
+Bruju.states.spawn = {
   priority = 3,
   blocking = true,
   speed = .85,
@@ -15,7 +15,7 @@ Bruju.animations.spawn = {
   }
 }
 
-Bruju.animations.idle = {
+Bruju.states.idle = {
   priority = 1,
   loop = true,
   speed = .3,
@@ -25,7 +25,7 @@ Bruju.animations.idle = {
   }
 }
 
-Bruju.animations.walk = {
+Bruju.states.walk = {
   priority = 1,
   loop = true,
   speed = .73,
@@ -34,13 +34,10 @@ Bruju.animations.walk = {
   }
 }
 
-Bruju.animations.death = {
+Bruju.states.death = {
   priority = 3,
   blocking = true,
-  speed = .8,
-  complete = function(self, owner)
-    owner:die()
-  end
+  speed = .8
 }
 
 return Bruju

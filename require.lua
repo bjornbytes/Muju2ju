@@ -21,9 +21,10 @@ load 'lib'
 
 load 'app/particles'
 load 'app/effects'
+load 'app/player'
+load 'app/unit'
 
 load 'app/ctx'
 load 'app/menu'
 load 'app/hud'
-load 'app/unit'
 load 'app'

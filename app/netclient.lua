@@ -112,12 +112,14 @@ NetClient.messages.snapshot = {
         unit.history:add({
           tick = data.tick,
           x = data.x,
-          health = data.health,
-          animationData = data.animationData
+          health = data.health / 255 * unit.maxHealth,
+          animationIndex = data.animationIndex,
+          flipped = data.flipped
         })
         unit.x = data.x
-        unit.health = data.health
-        unit.animationData = data.animationData
+        unit.health = data.health / 255 * unit.maxHealth
+        unit.animationIndex = data.animationIndex
+        unit.flipped = data.flipped
       end
     end)
 

@@ -10,6 +10,7 @@ Unit.depth = 3
 -- Core
 ----------------
 function Unit:activate()
+  self.animation = data.animation[self.class.code]()
   self.buffs = UnitBuffs(self)
 
   self.skills = {}
@@ -21,6 +22,7 @@ function Unit:activate()
   end
 
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
+  self.selected = false
   self.team = self.owner and self.owner.team or 0
   self.maxHealth = self.health
   self.stance = 'aggressive'
@@ -78,13 +80,19 @@ function Unit:inRange(target)
 end
 
 function Unit:moveTowards(target)
-  if self:inRange(target) then return end
+  if self:inRange(target) then
+    self.animation:set('idle')
+    return
+  end
+
   self.x = self.x + self.speed * math.sign(target.x - self.x) * tickRate
+  self.animation:set('walk')
 end
 
 function Unit:attack(target)
   if not self:inRange(target) then return end
   target:hurt(self.damage, self)
+  self.animation:set('attack')
 end
 
 function Unit:hurt(amount, source)

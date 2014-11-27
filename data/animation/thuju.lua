@@ -1,12 +1,12 @@
 local Thuju = extend(Animation)
 Thuju.code = 'thuju'
 
-Thuju.scale = .25
+Thuju.scale = .35
 Thuju.offsety = 64
-Thuju.initial = 'walk'
-Thuju.animations = {}
+Thuju.default = 'walk'
+Thuju.states = {}
 
-Thuju.animations.idle = {
+Thuju.states.idle = {
   priority = 1,
   loop = true,
   speed = .21,
@@ -16,7 +16,7 @@ Thuju.animations.idle = {
   }
 }
 
-Thuju.animations.walk = {
+Thuju.states.walk = {
   priority = 1,
   loop = true,
   speed = .73,
@@ -25,41 +25,38 @@ Thuju.animations.walk = {
   }
 }
 
-Thuju.animations.attack = {
+Thuju.states.attack = {
   priority = 1,
   mix = {
     death = .2,
     walk = .2,
     taunt = .2,
     smash = .2
-  },
-  complete = 'walk'
+  }
 }
 
-Thuju.animations.taunt = {
+Thuju.states.taunt = {
   priority = 2,
   blocking = true,
   loop = false,
   speed = 1,
-  complete = 'idle',
   mix = {
     walk = .2,
     attack = .2
   }
 }
 
-Thuju.animations.smash = {
+Thuju.states.smash = {
   priority = 2,
   blocking = true,
   loop = false,
-  complete = 'idle',
   mix = {
     walk = .2,
     attack = .2
   }
 }
 
-Thuju.animations.death = {
+Thuju.states.death = {
   priority = 3,
   blocking = true,
   speed = .8,
@@ -69,4 +66,3 @@ Thuju.animations.death = {
 }
 
 return Thuju
-

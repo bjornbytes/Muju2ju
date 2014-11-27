@@ -1,12 +1,12 @@
 local Muju = extend(Animation)
 Muju.code = 'muju'
 
-Muju.scale = .6
+Muju.scale = .65
 Muju.offsety = Player.height / 2
-Muju.initial = 'idle'
-Muju.animations = {}
+Muju.default = 'idle'
+Muju.states = {}
 
-Muju.animations.idle = {
+Muju.states.idle = {
   priority = 1,
   loop = true,
   speed = .4,
@@ -18,12 +18,10 @@ Muju.animations.idle = {
   }
 }
 
-Muju.animations.walk = {
+Muju.states.walk = {
   priority = 1,
   loop = true,
-  speed = function(self, owner)
-    return math.abs(owner.speed / owner.walkSpeed)
-  end,
+  speed = 1,
   mix = {
     idle = .2,
     summon = .1,
@@ -31,20 +29,17 @@ Muju.animations.walk = {
   }
 }
 
-Muju.animations.summon = {
+Muju.states.summon = {
   priority = 2,
   blocking = true,
   speed = 1.85,
   mix = {
     walk = .2,
     idle = .2
-  },
-  complete = function(self, owner)
-    if ctx.input then ctx.input:clearAxis('x') end
-  end
+  }
 }
 
-Muju.animations.death = {
+Muju.states.death = {
   priority = 3,
   blocking = true,
   mix = {
@@ -52,7 +47,7 @@ Muju.animations.death = {
   }
 }
 
-Muju.animations.resurrect = {
+Muju.states.resurrect = {
   priority = 3,
   blocking = true,
   speed = 2

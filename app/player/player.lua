@@ -18,6 +18,7 @@ function Player:init()
 	self.healthDisplay = self.health
   self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
+  self.direction = 1
   self.ghost = Ghost(self)
   self.ghostX = self.x
   self.ghostY = self.y
@@ -47,7 +48,14 @@ function Player:init()
 end
 
 function Player:activate()
-  self.animation = data.animation.muju(self)
+  self.animation = data.animation.muju()
+
+  self.animation:on('complete', function(data)
+    if not data.state.loop then
+      self.animation:set('idle', {force = true})
+    end
+  end)
+
   if ctx.config.game.gameType == 'survival' then
     self.x = ctx.map.width / 2
   else
@@ -83,10 +91,9 @@ function Player:paused()
   --
 end
 
-function Player:draw(onlyGhost)
-	if not onlyGhost and math.floor(self.invincible * 4) % 2 == 0 then
+function Player:draw()
+	if math.floor(self.invincible * 4) % 2 == 0 then
 		love.graphics.setColor(255, 255, 255)
-    --love.graphics.rectangle('fill', self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
 		self.animation:draw(self.x, self.y)
 	end
 
@@ -111,8 +118,7 @@ function Player:move(input)
     return self.ghost:move(input)
   end
 
-  local current = self.animation:current()
-  if (current and current.name == 'resurrect') or input.summon then
+  if self.animation.state.name == 'resurrect' or input.summon then
     self.speed = 0
     return
   end
@@ -128,7 +134,7 @@ function Player:slot(input)
   self.summonTweenPrevTime = self.summonTweenTime
   self.summonPrevTimer = self.summonTimer
 
-  if not self.dead and not self.animation:blocking() and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
+  if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
     self.summonTimer = self.summonTimer + tickRate
     self.summonTweenTime = math.min(self.summonTweenTime + tickRate, self.summonTweenDuration)
 
@@ -171,14 +177,6 @@ function Player:spawn()
   self.animation:set('resurrect')
 end
 
-function Player:animate()
-	if not self.dead then
-    self.animation:set(math.abs(self.speed) > self.walkSpeed / 4 and 'walk' or 'idle')
-  end
-
-	if self.speed ~= 0 then self.animation.flipX = self.speed > 0 end
-end
-
 function Player:spend(amount)
   return self.juju >= amount
 end
@@ -208,4 +206,12 @@ end
 
 function Player:getPopulation()
   return table.count(table.filter(ctx.units.objects, function(unit) return unit.owner == self end))
+end
+
+function Player:animate()
+  if self.dead then return end
+
+  self.animation:set(math.abs(self.speed) > self.walkSpeed / 4 and 'walk' or 'idle')
+  self.animation.speed = self.animation.state.name == 'walk' and math.abs(self.speed / self.walkSpeed) or 1
+  if self.speed ~= 0 then self.animation.flipped = math.sign(self.speed) > 0 end
 end

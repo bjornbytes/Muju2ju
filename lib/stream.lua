@@ -49,7 +49,6 @@ function Stream:write(x, sig)
   elseif sig == 'string' then self:writeString(x)
   elseif sig == 'bool' then self:writeBool(x)
   elseif sig == 'float' then self:writeFloat(x)
-  elseif sig == 'animation' then self:writeAnimation(x)
   elseif sig == 'spell' then self:writeSpell(x) end
   
   return self
@@ -95,18 +94,6 @@ function Stream:writeBits(x, n)
   until n == 0
 end
 
-function Stream:writeAnimation(animation)
-  self:writeBits(animation.index, 4)
-  self:writeBits(math.round(animation.time * 255), 8)
-  self:writeBool(animation.flipped)
-  self:writeBool(animation.mixing)
-  if animation.mixing then
-    self:writeBits(animation.mixWith, 4)
-    self:writeBits(math.round(animation.mixTime * 255), 8)
-    self:writeBits(math.round(animation.mixAlpha * 255), 8)
-  end
-end
-
 function Stream:writeSpell(spell)
   if spell.kind == 'burst' then
     self:writeBits(1, 4)
@@ -125,7 +112,6 @@ function Stream:read(kind)
   elseif kind == 'string' then return self:readString()
   elseif kind == 'bool' then return self:readBool()
   elseif kind == 'float' then return self:readFloat()
-  elseif kind == 'animation' then return self:readAnimation()
   elseif kind == 'spell' then return self:readSpell() end
 end
 
@@ -178,21 +164,6 @@ function Stream:readBits(n)
   end
 
   return x
-end
-
-function Stream:readAnimation()
-  local animation = {}
-  animation.index = self:readBits(4)
-  animation.time = self:readBits(8) / 255
-  animation.flipped = self:readBool()
-  animation.mixing = self:readBool()
-  if animation.mixing then
-    animation.mixWith = self:readBits(4)
-    animation.mixTime = self:readBits(8) / 255
-    animation.mixAlpha = self:readBits(8) / 255
-  end
-
-  return animation
 end
 
 function Stream:readSpell()

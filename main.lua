@@ -10,7 +10,7 @@ testConfig = {
       color = 'purple',
       skin = {},
       deck = {
-        { code = 'bruju',
+        { code = 'thuju',
           skin = {},
           runes = {}
         },
@@ -18,12 +18,24 @@ testConfig = {
           skin = {},
           runes = {}
         },
-        --[[{ code = 'thuju',
+        { code = 'bruju',
           skin = {},
           runes = {}
-        }]]
+        }
       }
-    }
+    },
+    --[[{ username = 'yoko',
+      ip = '127.0.0.1',
+      team = 2,
+      color = 'purple',
+      skin = {},
+      deck = {
+        { code = 'bruju',
+          skin = {},
+          runes = {}
+        }
+      }
+    }]]
   },
   game = {
     gameType = 'versus',

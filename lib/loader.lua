@@ -52,7 +52,19 @@ data.load = function()
   load('data/skill', 'skill')
   load('data/unit', 'unit')
   load('data/spell', 'spell')
-  load('data/animation', 'animation')
+  load('data/animation', 'animation', function(animation)
+    local keys = table.keys(animation.states)
+    table.sort(keys)
+
+    for i = 1, #keys do
+      local state = animation.states[keys[i]]
+      animation.states[i] = state
+      state.index = i
+      state.name = keys[i]
+    end
+
+    return animation
+  end)
   load('data/particle', 'particle')
   load('data/effect', 'effect')
   load('data/gooey', 'gooey')

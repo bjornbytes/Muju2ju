@@ -1,3 +1,5 @@
+require 'app/player/player'
+
 PlayerMain = extend(Player)
 
 function PlayerMain:activate()
@@ -48,10 +50,10 @@ function PlayerMain:update()
   Player.update(self)
 end
 
-function PlayerMain:draw(onlyGhost)
+function PlayerMain:draw()
   local lerpd = table.interpolate(self.prev, self, tickDelta / tickRate)
   if self.prev.ghostAngle then lerpd.ghostAngle = math.anglerp(self.prev.ghostAngle or self.ghost.angle, self.ghost.angle, tickDelta / tickRate) end
-  Player.draw(lerpd, onlyGhost)
+  return Player.draw(lerpd)
 end
 
 function PlayerMain:getHealthbar()
@@ -77,14 +79,11 @@ function PlayerMain:readInput()
     t.x = 0
   end
 
-  local current = self.animation:current()
-  if current then
-    if current.name == 'summon' then
-      t.x = 0
-    elseif current.name == 'resurrect' then
-      t.x = 0
-      t.summon = false
-    end
+  if self.animation.state.name == 'summon' then
+    t.x = 0
+  elseif self.animation.state.name == 'resurrect' then
+    t.x = 0
+    t.summon = false
   end
  
   local vx = ctx.input:getAxis('vx')

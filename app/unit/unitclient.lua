@@ -14,28 +14,11 @@ function UnitClient:draw()
   if t < self.createdAt then return end
   local prev = self.history:get(t, true)
   local cur = self.history:get(t + 1, true)
-
-  if not cur.animationData or not prev.animationData then return end
-
-  while cur.animationData.index == prev.animationData.index and cur.animationData.time < prev.animationData.time do
-    cur.animationData.time = cur.animationData.time + 1
-  end
-
-  if prev.animationData.mixing and cur.animationData.mixing then
-    while cur.animationData.mixTime < prev.animationData.mixTime do
-      cur.animationData.mixTime = cur.animationData.mixTime + 1
-    end
-  end
-
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
 
-  if lerpd.animationData then
-    if prev.animationData.index ~= cur.animationData.index then
-      lerpd.animationData = prev.animationData
-    end
+  if not lerpd.animationIndex then return end
 
-    self.animation:drawRaw(lerpd.animationData, lerpd.x, lerpd.y)
-  end
+  self.animation:draw(lerpd.x, lerpd.y)
 end
 
 function UnitClient:getHealthbar()

@@ -20,6 +20,11 @@ NetServer.messages.join = {
       end
     end
 
+    if table.has(arg, 'test') and table.count(ctx.players.players) == 1 then
+      id = 2
+      user = ctx.config.players[2]
+    end
+
     if not user then
       self:send('join', event.peer, {id = 0, problem = 'username'})
       event.peer:disconnect_later()
@@ -128,17 +133,19 @@ NetServer.messages.snapshot = {
       id = 3,
       x = 'float',
       health = 8,
+      animationIndex = 4,
+      flipped = 'bool',
       dead = 'bool',
-      animationData = 'animation',
       ghostX = 'float',
       ghostY = 'float',
       ghostAngle = 9
     },
     units = {
-      id = 12,
+      id = 5,
       x = 16,
-      health = 10,
-      animationData = 'animation'
+      health = 8,
+      animationIndex = 4,
+      flipped = 'bool'
     },
     shrines = {
       id = 4,
@@ -148,15 +155,13 @@ NetServer.messages.snapshot = {
   delta = {
     players = {
       {'x', 'health'},
-      {'ghostX', 'ghostY', 'ghostAngle'},
-      'animationData'
-    },
-    units = {'animationData'}
+      {'ghostX', 'ghostY', 'ghostAngle'}
+    }
   },
   order = {
     'tick', 'players', 'units', 'shrines',
-    players = {'id', 'x', 'health', 'dead', 'animationData', 'ghostX', 'ghostY', 'ghostAngle' },
-    units = {'id', 'x', 'health', 'animationData'},
+    players = {'id', 'x', 'health', 'animationIndex', 'flipped', 'dead', 'ghostX', 'ghostY', 'ghostAngle' },
+    units = {'id', 'x', 'health', 'animationIndex', 'flipped'},
     shrines = {'id', 'health'}
   }
 }
@@ -326,7 +331,8 @@ function NetServer:snapshot()
     local entry = {
       id = player.id,
       dead = player.dead,
-      animationData = player.animation:pack()
+      animationIndex = player.animation.state.index,
+      flipped = player.animation.flipped
     }
 
     if player.dead then
@@ -349,8 +355,9 @@ function NetServer:snapshot()
       id = unit.id,
       x = math.round(unit.x),
       y = math.round(unit.y),
-      health = math.round(unit.health),
-      animationData = unit.animation and unit.animation:pack() or nil
+      health = math.round(unit.health / unit.maxHealth * 255),
+      animationIndex = unit.animation.state.index,
+      flipped = unit.animation.flipped
     })
   end)
 

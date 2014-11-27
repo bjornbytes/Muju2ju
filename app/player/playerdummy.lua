@@ -1,3 +1,5 @@
+require 'app/player/player'
+
 PlayerDummy = extend(Player)
 
 function PlayerDummy:activate()
@@ -15,35 +17,13 @@ function PlayerDummy:get(t, raw)
   return self.history:get(t, raw)
 end
 
-function PlayerDummy:draw(onlyGhost)
+function PlayerDummy:draw()
   local t = tick - (interp / tickRate)
-  local prev = self:get(t, true)
-  local cur = self:get(t + 1, true)
+  local prev = self:get(t)
+  local cur = self:get(t + 1)
+  local lerpd = table.interpolate(self:get(t), self:get(t + 1), tickDelta / tickRate)
 
-  while cur.animationData.index == prev.animationData.index and cur.animationData.time < prev.animationData.time do
-    cur.animationData.time = cur.animationData.time + 1
-  end
-
-  if prev.animationData.mixing and cur.animationData.mixing then
-    while cur.animationData.mixTime < prev.animationData.mixTime do
-      cur.animationData.mixTime = cur.animationData.mixTime + 1
-    end
-  end
-
-  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-
-  if not onlyGhost and lerpd.animationData then
-    if prev.animationData.index ~= cur.animationData.index then
-      lerpd.animationData = prev.animationData
-    end
-
-    self.animation:drawRaw(lerpd.animationData, lerpd.x, lerpd.y)
-  end
-
-  if lerpd.dead then
-    local angle = math.anglerp(prev.ghostAngle, cur.ghostAngle, tickDelta / tickRate)
-    self.ghost:draw(lerpd.ghostX, lerpd.ghostY, angle)
-  end
+  return Player.draw(lerpd)
 end
 
 function PlayerDummy:getHealthbar()
@@ -60,6 +40,9 @@ function PlayerDummy:trace(data)
   if data.health then data.health = (data.health / 255) * self.maxHealth end
   table.merge(data, self)
   data.tick = t
+
+  self.animation:set(self.animation.states[data.animationIndex].name)
+  self.animation.flipped = data.flipped
 
   self.history:add(data)
 end

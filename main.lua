@@ -1,5 +1,11 @@
 require 'require'
 
+runes = {
+  { name = 'Rune of Fortitude',
+    description = 'Makes things stronker'
+  }
+}
+
 testConfig = {
   ip = '127.0.0.1',
   port = 6061,

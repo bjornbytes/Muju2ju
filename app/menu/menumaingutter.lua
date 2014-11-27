@@ -112,10 +112,10 @@ function MenuMainGutter:draw()
     g.print(self.units[i]:capitalize(), x + r + .02 * u, y - g.getFont():getHeight() / 2)
   end)
 
-  table.each(geometry.runes, function(rune)
+  table.each(geometry.runes, function(rune, i)
     local x, y, r = unpack(rune)
     g.circle('line', x, y, r)
-    g.print('Rune', x + r + .02 * u, y - g.getFont():getHeight() / 2)
+    g.print(runes[self.runes[i].id].name, x + r + .02 * u, y - g.getFont():getHeight() / 2)
   end)
 
   self.height = geometry.height

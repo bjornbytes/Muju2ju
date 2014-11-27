@@ -15,6 +15,7 @@ function Menu:load(user)
   self.hub = MenuHub()
   self.nav = MenuNav()
   self.background = MenuBackground()
+  self.tooltip = MenuTooltip()
 
   self.invitation = nil
   self.loading = nil
@@ -43,6 +44,7 @@ function Menu:update()
 	self.creditsAlpha = timer.rot(self.creditsAlpha)
   
   self.hub:update()
+  self.tooltip:update()
 
   self:run('update')
 end
@@ -55,6 +57,7 @@ function Menu:draw()
     love.graphics.setColor(255, 255, 255)
     love.graphics.print('you have an invitation', 10, 10)
   end
+  self.tooltip:draw()
 end
 
 function Menu:keypressed(key)
@@ -86,6 +89,7 @@ function Menu:resize()
   self.u, self.v = love.graphics.getDimensions()
   self:run('resize')
   self.background:resize()
+  self.tooltip:resize()
 end
 
 function Menu:hubMessage(message, data)

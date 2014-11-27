@@ -9,6 +9,12 @@ end
 function MenuMainDrag:update()
   if self.active then
     --
+  else
+    local _, unit = self.hoverDeckUnit()
+
+    if unit then
+      ctx.tooltip:setTooltip(ctx.tooltip:unitTooltip(unit.code))
+    end
   end
 end
 
@@ -69,55 +75,42 @@ function MenuMainDrag:mousereleased(mx, my, b)
       local deck, gutter = ctx.pages.main.deck, ctx.pages.main.gutter
 
       if self.dragType == 'unit' then
-        local units = deck.geometry.units
-        for i = 1, #units do
-          local x, y, r = unpack(units[i])
-          x, y = deck:screenPoint(x, y)
-          if math.insideCircle(mx, my, x, y, r) then
-            local unit = ctx.user.deck[i]
-            
-            if unit then
-              while #unit.runes > 0 do
-                table.insert(gutter.runes, table.remove(unit.runes, 1))
-              end
+        local i, unit = self:hoverDeckUnits()
+        if i then
+          if unit then
+            while #unit.runes > 0 do
+              table.insert(gutter.runes, table.remove(unit.runes, 1))
             end
-
-            ctx.user.deck[i] = {
-              code = gutter.units[self.dragIndex],
-              skin = {},
-              runes = {}
-            }
-
-            if not unit then
-              table.remove(gutter.units, self.dragIndex)
-            else
-              gutter.units[self.dragIndex] = unit.code
-            end
-
-            table.clear(gutter.geometry)
           end
+
+          ctx.user.deck[i] = {
+            code = gutter.units[self.dragIndex],
+            skin = {},
+            runes = {}
+          }
+
+          if not unit then
+            table.remove(gutter.units, self.dragIndex)
+          else
+            gutter.units[self.dragIndex] = unit.code
+          end
+
+          table.clear(gutter.geometry)
         end
       elseif self.dragType == 'rune' then
-        local unitRunes = deck.geometry.unitRunes
-        for unit = 1, #unitRunes do
-          local runes = unitRunes[unit]
-          for i = 1, #runes do
-            local x, y, r = unpack(runes[i])
-            x, y = deck:screenPoint(x, y)
-            if math.insideCircle(mx, my, x, y, r) then
-              local rune = ctx.user.deck[unit].runes[i]
+        local unit, i, rune = self:hoverDeckUnitRunes()
+        if i and ctx.user.deck[unit] then
+          local unit = ctx.user.deck[unit]
 
-              ctx.user.deck[unit].runes[i] = gutter.runes[self.dragIndex]
+          unit.runes[i] = gutter.runes[self.dragIndex]
 
-              if not rune then
-                table.remove(gutter.runes, self.dragIndex)
-              else
-                gutter.runes[self.dragIndex] = rune
-              end
-
-              table.clear(gutter.geometry)
-            end
+          if not rune then
+            table.remove(gutter.runes, self.dragIndex)
+          else
+            gutter.runes[self.dragIndex] = rune
           end
+
+          table.clear(gutter.geometry)
         end
       end
     end
@@ -126,43 +119,24 @@ function MenuMainDrag:mousereleased(mx, my, b)
   elseif b == 'r' and not self.active then
     local deck, gutter = ctx.pages.main.deck, ctx.pages.main.gutter
 
-    local units = deck.geometry.units
-    for i = 1, #units do
-      local x, y, r = unpack(units[i])
-      x, y = deck:screenPoint(x, y)
-      if math.insideCircle(mx, my, x, y, r) then
-        local unit = ctx.user.deck[i]
-
-        if unit then
-          while #unit.runes > 0 do
-            table.insert(gutter.runes, table.remove(unit.runes, 1))
-          end
-
-          table.insert(gutter.units, unit.code)
-          ctx.user.deck[i] = nil
-
-          table.clear(gutter.geometry)
-        end
+    local i, unit = self:hoverDeckUnits()
+    if unit then
+      while #unit.runes > 0 do
+        table.insert(gutter.runes, table.remove(unit.runes, 1))
       end
+
+      table.insert(gutter.units, unit.code)
+      ctx.user.deck[i] = nil
+
+      table.clear(gutter.geometry)
     end
 
-    local unitRunes = deck.geometry.unitRunes
-    for unit = 1, #unitRunes do
-      local runes = unitRunes[unit]
-      for i = 1, #runes do
-        local x, y, r = unpack(runes[i])
-        x, y = deck:screenPoint(x, y)
-        if math.insideCircle(mx, my, x, y, r) then
-          local rune = ctx.user.deck[unit].runes[i]
+    local unit, i, rune = self:hoverDeckUnitRunes()
+    if rune then
+      table.insert(gutter.runes, rune)
+      ctx.user.deck[unit].runes[i] = nil
 
-          if rune then
-            table.insert(gutter.runes, rune)
-            ctx.user.deck[unit].runes[i] = nil
-          end
-
-          table.clear(gutter.geometry)
-        end
-      end
+      table.clear(gutter.geometry)
     end
   end
 end
@@ -175,4 +149,65 @@ function MenuMainDrag:resetDrag()
   self.dragY = nil
   self.dragOffsetX = nil
   self.dragOffsetY = nil
+end
+
+function MenuMainDrag:hoverGutter(kind)
+  local mx, my = love.mouse.getPosition()
+  local gutter = ctx.pages.main.gutter
+  local objects = gutter.geometry.all[kind .. 's']
+  for i = 1, #objects do
+    local x, y, r = unpack(objects[i])
+    x, y = gutter:screenPoint(x, y)
+    if math.insideCircle(mx, my, x, y, r) then
+      return gutter[kind .. 's'], i
+    end
+  end
+end
+
+function MenuMainDrag:hoverDeckUnits()
+  local mx, my = love.mouse.getPosition()
+  local deck = ctx.pages.main.deck
+  local units = deck.geometry.units
+  for i = 1, #units do
+    local unit = units[i]
+    local x, y, r = unpack(unit)
+    x, y = deck:screenPoint(x, y)
+    if math.insideCircle(mx, my, x, y, r) then
+      return i
+    end
+  end
+
+  return nil
+end
+
+function MenuMainDrag:hoverDeckUnitRunes()
+  local mx, my = love.mouse.getPosition()
+  local deck = ctx.pages.main.deck
+  local unitRunes = deck.geometry.unitRunes
+  for i = 1, #unitRunes do
+    for j = 1, #unitRunes[i] do
+      local rune = unitRunes[i][j]
+      local x, y, r = unpack(rune)
+      x, y = deck:screenPoint(x, y)
+      if math.insideCircle(mx, my, x, y, r) then
+        return i, j, ctx.user.deck[i].runes[j]
+      end
+    end
+  end
+
+  return nil
+end
+
+function MenuMainDrag:makeUnitTooltip(unit)
+  local pieces = {}
+  table.insert(pieces, '{white}{title}' .. data.unit[unit.code].name .. '{normal}')
+  table.insert(pieces, 'This unit is actually really cool.')
+  return table.concat(pieces, '\n')
+end
+
+function MenuMainDrag:richOptions()
+  local options = {}
+  options.title = Typo.font('inglobal', .04 * ctx.v)
+  options.normal = Typo.font('inglobal', .023 * ctx.v)
+  options.white = {255, 255, 255}
 end

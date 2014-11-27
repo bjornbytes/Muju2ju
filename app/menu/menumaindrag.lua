@@ -101,6 +101,26 @@ function MenuMainDrag:mousereleased(mx, my, b)
     end
     
     self:resetDrag()
+  elseif b == 'r' and not self.active then
+    local deck, gutter = ctx.pages.main.deck, ctx.pages.main.gutter
+    local units = deck.geometry.units
+    for i = 1, #units do
+      local x, y, r = unpack(units[i])
+      x, y = deck:screenPoint(x, y)
+      if math.insideCircle(mx, my, x, y, r) then
+        local unit = ctx.user.deck[i]
+        if unit then
+          while #unit.runes > 0 do
+            table.insert(gutter.runes, table.remove(unit.runes, 1))
+          end
+
+          table.insert(gutter.units, unit.code)
+          ctx.user.deck[i] = nil
+
+          table.clear(gutter.geometry)
+        end
+      end
+    end
   end
 end
 

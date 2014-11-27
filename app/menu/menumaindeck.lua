@@ -93,9 +93,13 @@ function MenuMainDeck:draw()
     end
   end)
 
-  table.each(self.geometry.unitRunes, function(runes)
-    table.each(runes, function(rune)
-      g.circle('line', unpack(rune))
+  table.each(self.geometry.unitRunes, function(runes, unit)
+    table.each(runes, function(rune, i)
+      local x, y, r = unpack(rune)
+      g.circle('line', x, y, r)
+      if ctx.user.deck[unit] and ctx.user.deck[unit].runes[i] then
+        g.printCenter(ctx.user.deck[unit].runes[i].id, x, y)
+      end
     end)
   end)
 

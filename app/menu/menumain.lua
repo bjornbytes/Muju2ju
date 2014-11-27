@@ -46,7 +46,7 @@ function MenuMain:activate()
     end
 
     if not inDeck then
-      table.insert(self.gutter.runes, token)
+      table.insert(self.gutter.runes, rune)
     end
   end
 end

@@ -1,24 +1,25 @@
 Unit = class()
 
+Unit.width = 64
+Unit.height = 64
 Unit.depth = 3
 
-Unit.cost = 5
-Unit.cooldown = 5
-
+----------------
+-- Core
+----------------
 function Unit:activate()
-  self.createdAt = tick
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.team = self.owner and self.owner.team or 0
+
+  self.maxHealth = self.class.health
   self.health = self.maxHealth
 
-  if ctx.tag == 'server' then
-    self.target = nil
-    self.attackTimer = 0
-    self.buffs = {}
-    self.shouldDestroy = false
-  else
-    self.history = NetHistory(self)
-    self.healthDisplay = self.health
+  self.skills = {}
+  for i = 1, 2 do
+    local skill = data.skills[self.code][self.class.skills[i]]
+    assert(skill, 'Missing skill ' .. i .. ' for ' .. self.class.name)
+    self.skills[i] = setmetatable({}, {__index = skill})
+    f.exe(self.skills[i].activate, self.skills[i], self)
   end
 
   ctx.event:emit('view.register', {object = self})
@@ -29,59 +30,13 @@ function Unit:deactivate()
 end
 
 function Unit:update()
-  if ctx.tag == 'server' then
-    self.attackTimer = self.attackTimer - math.min(self.attackTimer, tickRate)
-
-    table.each(self.buffs, function(entries, stat)
-      table.each(entries, function(entry, i)
-        entry.timer = timer.rot(entry.timer, function() table.remove(entries, i) end)
-      end)
-    end)
-
-    if self.animation then self.animation:tick(tickRate) end
-  else
-    self.healthDisplay = math.lerp(self.healthDisplay, self.health, 5 * tickRate)
-  end
+  --
 end
 
-function Unit:draw()
-  local t = tick - (interp / tickRate)
-  if t < self.createdAt then return end
-  local prev = self.history:get(t, true)
-  local cur = self.history:get(t + 1, true)
 
-  if not self.animation then
-    local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-    local p = ctx.players:get(ctx.id)
-    local g = love.graphics
-
-    g.setColor(self.team == p.team and {0, 255, 0} or {255, 0, 0})
-    g.rectangle('fill', lerpd.x - lerpd.width / 2, lerpd.y, lerpd.width, lerpd.height)
-  end
-
-  if not cur.animationData or not prev.animationData then return end
-
-  while cur.animationData.index == prev.animationData.index and cur.animationData.time < prev.animationData.time do
-    cur.animationData.time = cur.animationData.time + 1
-  end
-
-  if prev.animationData.mixing and cur.animationData.mixing then
-    while cur.animationData.mixTime < prev.animationData.mixTime do
-      cur.animationData.mixTime = cur.animationData.mixTime + 1
-    end
-  end
-
-  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-
-  if lerpd.animationData then
-    if prev.animationData.index ~= cur.animationData.index then
-      lerpd.animationData = prev.animationData
-    end
-
-    self.animation:drawRaw(lerpd.animationData, lerpd.x, lerpd.y)
-  end
-end
-
+----------------
+-- Behavior
+----------------
 function Unit:selectTarget()
   self.target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
 end
@@ -121,14 +76,10 @@ function Unit:die()
   end
 end
 
-function Unit:getHealthbar()
-  local t = tick - (interp / tickRate)
-  local prev = self.history:get(t)
-  local cur = self.history:get(t + 1)
-  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-  return lerpd.x, ctx.map.height - ctx.map.groundHeight - 80, lerpd.health / lerpd.maxHealth, self.healthDisplay / lerpd.maxHealth
-end
 
+----------------
+-- Stats
+----------------
 function Unit:applyUpgrades()
   local base = data.unit[self.code]
   local runes = self.owner.deck[self.code].runes

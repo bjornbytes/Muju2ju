@@ -7,7 +7,7 @@ Player.width = 45
 Player.height = 90
 
 Player.walkSpeed = 65
-Player.maxHealth = 200
+Player.maxHealth = 500
 
 Player.depth = 3
 
@@ -22,7 +22,7 @@ function Player:init()
   self.ghostX = self.x
   self.ghostY = self.y
 	self.speed = 0
-	self.juju = 5
+	self.juju = 10
 	self.jujuTimer = 1
   self.deathTimer = 0
   self.deathDuration = 7

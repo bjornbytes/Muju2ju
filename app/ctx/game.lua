@@ -132,6 +132,12 @@ function Game:keyreleased(key)
   self.hud:keyreleased(key)
 end
 
+function Game:mousepressed(...)
+  if not self.id then return end
+
+  self.hud:mousepressed(...)
+end
+
 function Game:mousereleased(...)
   if not self.id then return end
 

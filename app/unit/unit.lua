@@ -11,6 +11,20 @@ Unit.depth = 3
 ----------------
 function Unit:activate()
   self.animation = data.animation[self.class.code]()
+
+  self.animation:on('event', function(data)
+    table.print(data)
+    if data.name == 'attack' then
+      if self.target then
+        self.target:hurt(self.damage, self)
+      end
+    end
+  end)
+
+  self.animation:on('complete', function(data)
+    if not data.state.loop then self.animation:set('idle') end
+  end)
+
   self.buffs = UnitBuffs(self)
 
   self.skills = {}
@@ -91,7 +105,7 @@ end
 
 function Unit:attack(target)
   if not self:inRange(target) then return end
-  target:hurt(self.damage, self)
+  self.target = target
   self.animation:set('attack')
 end
 

@@ -49,6 +49,7 @@ data.load = function()
     halp(dir, data[type])
   end
 
+  load('data/skill', 'skill')
   load('data/unit', 'unit')
   load('data/spell', 'spell')
   load('data/animation', 'animation')

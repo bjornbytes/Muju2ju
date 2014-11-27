@@ -40,9 +40,18 @@ function MenuTooltip:setTooltip(str)
 end
 
 function MenuTooltip:unitTooltip(code)
+  local unit = data.unit[code]
   local pieces = {}
-  table.insert(pieces, '{white}{title}' .. data.unit[code].name .. '{normal}')
+  table.insert(pieces, '{white}{title}' .. unit.name .. '{normal}')
   table.insert(pieces, 'This unit is actually really cool.')
+  return table.concat(pieces, '\n')
+end
+
+function MenuTooltip:runeTooltip(id)
+  local rune = runes[id]
+  local pieces = {}
+  table.insert(pieces, '{white}{title}' .. rune.name .. '{normal}')
+  table.insert(pieces, rune.description)
   return table.concat(pieces, '\n')
 end
 

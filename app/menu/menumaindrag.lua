@@ -10,10 +10,24 @@ function MenuMainDrag:update()
   if self.active then
     --
   else
-    local _, unit = self.hoverDeckUnit()
-
+    local _, unit = self:hoverDeckUnit()
     if unit then
       ctx.tooltip:setTooltip(ctx.tooltip:unitTooltip(unit.code))
+    end
+
+    local _, _, rune = self:hoverDeckUnitRunes()
+    if rune then
+      ctx.tooltip:setTooltip(ctx.tooltip:runeTooltip(rune.id))
+    end
+
+    local _, unit = self:hoverGutter('unit')
+    if unit then
+      ctx.tooltip:setTooltip(ctx.tooltip:unitTooltip(unit.code))
+    end
+
+    local _, rune = self:hoverGutter('rune')
+    if rune then
+      ctx.tooltip:setTooltip(ctx.tooltip:runeTooltip(rune.id))
     end
   end
 end
@@ -36,33 +50,17 @@ function MenuMainDrag:mousepressed(mx, my, b)
     local gx, gy = gutter:screenPoint(0, 0)
     if math.inside(mx, my, gx, gy + gutter.scroll, gutter.width * u, gutter.frameHeight) then
       local geometry = ctx.pages.main.gutter.geometry.all
-      for i = 1, #geometry.units do
-        local x, y, r = unpack(geometry.units[i])
-        x, y = gutter:screenPoint(x, y)
-        if math.insideCircle(mx, my, x, y, r) then
-          self.active = true
-          self.dragIndex = i
-          self.dragType = 'unit'
-          self.dragX = mx
-          self.dragY = my
-          self.dragOffsetX = x - mx
-          self.dragOffsetY = y - my
-          return
-        end
-      end
 
-      for i = 1, #geometry.runes do
-        local x, y, r = unpack(geometry.runes[i])
-        x, y = gutter:screenPoint(x, y)
-        if math.insideCircle(mx, my, x, y, r) then
+      for _, kind in pairs({'unit', 'rune'}) do
+        local i, obj = self:hoverGutter(kind)
+        if obj then
           self.active = true
           self.dragIndex = i
-          self.dragType = 'rune'
+          self.dragType = kind
           self.dragX = mx
-          self.dragY = my
+          self.dragy = my
           self.dragOffsetX = x - mx
           self.dragOffsetY = y - my
-          return
         end
       end
     end
@@ -159,7 +157,7 @@ function MenuMainDrag:hoverGutter(kind)
     local x, y, r = unpack(objects[i])
     x, y = gutter:screenPoint(x, y)
     if math.insideCircle(mx, my, x, y, r) then
-      return gutter[kind .. 's'], i
+      return i, gutter[kind .. 's'][i]
     end
   end
 end
@@ -173,7 +171,7 @@ function MenuMainDrag:hoverDeckUnits()
     local x, y, r = unpack(unit)
     x, y = deck:screenPoint(x, y)
     if math.insideCircle(mx, my, x, y, r) then
-      return i
+      return i, ctx.user.deck[i]
     end
   end
 
@@ -196,18 +194,4 @@ function MenuMainDrag:hoverDeckUnitRunes()
   end
 
   return nil
-end
-
-function MenuMainDrag:makeUnitTooltip(unit)
-  local pieces = {}
-  table.insert(pieces, '{white}{title}' .. data.unit[unit.code].name .. '{normal}')
-  table.insert(pieces, 'This unit is actually really cool.')
-  return table.concat(pieces, '\n')
-end
-
-function MenuMainDrag:richOptions()
-  local options = {}
-  options.title = Typo.font('inglobal', .04 * ctx.v)
-  options.normal = Typo.font('inglobal', .023 * ctx.v)
-  options.white = {255, 255, 255}
 end

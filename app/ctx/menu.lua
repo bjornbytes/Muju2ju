@@ -18,9 +18,6 @@ function Menu:load(user)
   self.tooltip = MenuTooltip()
 
   self.invitation = nil
-  self.loading = nil
-  self.loadingAlpha = 0
-  self.loadingScale = .25
 
   self.pages = {
     signup = MenuSignup(),

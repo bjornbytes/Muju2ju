@@ -15,6 +15,6 @@ Kuju.speed = 40
 ----------------
 -- Skills
 ----------------
-Kuju.skills = {'frozenOrb', 'shatter'}
+Kuju.skills = {'snowball', 'shatter'}
 
 return Kuju

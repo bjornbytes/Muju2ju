@@ -60,6 +60,15 @@ function HudHealth:draw()
     local width, height = math.max(120 * summonFactor, 0), math.max(10 * summonFactor, 0)
     bar(x, y - 15 - 25 * summonFactor, summonTimer / 5, nil, orange, width, height)
 
+    -- Username
+    g.setFont('pixel', 8)
+    g.setColor(0, 0, 0)
+    local username = ctx.config.players[player.id].username
+    local yy = y - 15 - 16
+    g.print(username, x - g.getFont():getWidth(username) / 2 + 1, yy + 1)
+    g.setColor(255, 255, 255)
+    g.print(username, x - g.getFont():getWidth(username) / 2, yy)
+
     local color = (p and player.team == p.team) and green or red
     bar(x, y - 15, hard, soft, color, 80, 3)
   end)

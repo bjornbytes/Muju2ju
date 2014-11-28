@@ -5,6 +5,72 @@ local g = love.graphics
 function HudMinions:init()
   self.spread1 = 0
   self.spread2 = 0
+
+  self.geometry = setmetatable({}, {__index = function(t, k)
+    return rawset(t, k, self.geometryFunctions[k]())[k]
+  end})
+
+  self.geometryFunctions = {
+    upgrades = function()
+      local u, v = ctx.hud.u, ctx.hud.v
+      local upgradeFactor, t = ctx.hud.upgrades:getFactor()
+      local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
+      local minionInc = u * (.1 + (.18 * upgradeFactor))
+      local inc = .1 * upgradeFactor * v
+      local xx = .5 * u - (minionInc * (self.count - 1) / 2)
+      local yy = v * (.07 + (.07 * upgradeFactor)) + (.11 * v)
+      local radius = math.max(.035 * v * upgradeFactor, .01)
+      local spreadFactor = 3.5 - (self.spread1 + self.spread2) ^ .75
+      local res = {}
+
+      for i = 1, self.count do
+        res[i] = {}
+
+        for j = 1, 2 do
+          local sign = j == 1 and -1 or 1
+          local xx = xx + (inc / 2 + inc * self['spread' .. j] / spreadFactor) * sign
+          res[i][j] = {xx, yy, radius, {}}
+
+          for k = 1, 2 do
+            local yy = yy + (.08 * v)
+            local sign = k == 1 and -1 or 1
+            local xx = xx + (inc / 2) * sign
+            res[i][j][4][k] = {xx, yy, radius}
+          end
+        end
+
+        xx = xx + minionInc
+      end
+
+      return res
+    end,
+
+    runes = function()
+      local u, v = ctx.hud.u, ctx.hud.v
+      local upgradeFactor, t = ctx.hud.upgrades:getFactor()
+      local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
+      local minionInc = u * (.1 + (.18 * upgradeFactor))
+      local inc = .1 * upgradeFactor * v
+      local xx = .5 * u - (minionInc * (self.count - 1) / 2)
+      local yy = v * (.07 + (.07 * upgradeFactor)) + (.11 * v)
+      local radius = math.max(.035 * v * upgradeFactor, .01)
+      local res = {}
+
+      for i = 1, self.count do
+        local yy = yy + (.08 * v) + (.02 * v) + (.1 * v) * math.max(self.spread1, self.spread2)
+        res[i] = {}
+
+        for j = 1, 3 do
+          local sign = j - 2
+          res[i][j] = {xx + inc * sign, yy, radius}
+        end
+
+        xx = xx + minionInc
+      end
+
+      return res
+    end
+  }
 end
 
 function HudMinions:update()
@@ -31,9 +97,11 @@ function HudMinions:draw()
 
   local upgradeFactor, t = ctx.hud.upgrades:getFactor()
   local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
-  local inc = u * (.1 + (.15 * upgradeFactor))
+  local inc = u * (.1 + (.18 * upgradeFactor))
   local xx = .5 * u - (inc * (ct - 1) / 2)
   local font = ctx.hud.boldFont
+
+  if t < 1 then table.clear(self.geometry) end
 
   g.setColor(0, 0, 0, 65 * math.clamp(upgradeFactor, 0, 1))
   g.rectangle('fill', 0, 0, ctx.view.frame.width, ctx.view.frame.height)
@@ -77,55 +145,37 @@ function HudMinions:draw()
     g.setColor(population == p.maxPopulation and {255, 0, 0} or {255, 255, 255}, 255)
     g.print(str, u * .1, 2)
 
-    do
-      self.spread1 = math.lerp(self.spread1, love.keyboard.isDown('g') and 1 or 0, math.min(10 * delta, 1))
-      self.spread2 = math.lerp(self.spread2, love.keyboard.isDown('h') and 1 or 0, math.min(10 * delta, 1))
-
-      local yy = yy + (.11 * v)
-      local inc = .1 * upgradeFactor * v
-      local radius = math.max(.035 * v * upgradeFactor, .01)
-      local spreadFactor = 3 - (self.spread1 + self.spread2) ^ .5
-
-      local width = radius * 2
-
-      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
-      g.circle('fill', xx - inc / 2 - inc * self.spread1 / spreadFactor, yy, radius)
-      g.circle('fill', xx + inc / 2 + inc * self.spread2 / spreadFactor, yy, radius)
-      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
-      g.circle('line', xx - inc / 2 - inc * self.spread1 / spreadFactor, yy, radius)
-      g.circle('line', xx + inc / 2 + inc * self.spread2 / spreadFactor, yy, radius)
-
-      yy = yy + (.08 * v)
-
-      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * self.spread1)
-      g.circle('fill', xx - inc / 2 - inc * self.spread1 / spreadFactor - inc / 2, yy, radius)
-      g.circle('fill', xx - inc / 2 - inc * self.spread1 / spreadFactor + inc / 2, yy, radius)
-      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * self.spread2)
-      g.circle('fill', xx + inc / 2 + inc * self.spread2 / spreadFactor - inc / 2, yy, radius)
-      g.circle('fill', xx + inc / 2 + inc * self.spread2 / spreadFactor + inc / 2, yy, radius)
-      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * self.spread1)
-      g.circle('line', xx - inc / 2 - inc * self.spread1 / spreadFactor - inc / 2, yy, radius)
-      g.circle('line', xx - inc / 2 - inc * self.spread1 / spreadFactor + inc / 2, yy, radius)
-      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * self.spread2)
-      g.circle('line', xx + inc / 2 + inc * self.spread2 / spreadFactor - inc / 2, yy, radius)
-      g.circle('line', xx + inc / 2 + inc * self.spread2 / spreadFactor + inc / 2, yy, radius)
-
-      -- Runes
-      yy = yy + (.05 * v) + (.07 * v) * math.max(self.spread1, self.spread2)
-      inc = .1 * upgradeFactor * v
-      radius = math.max(.035 * v * upgradeFactor, .01)
-
-      g.setColor(0, 0, 0, 200 * upgradeAlphaFactor)
-      g.circle('fill', xx - inc, yy, radius)
-      g.circle('fill', xx, yy, radius)
-      g.circle('fill', xx + inc, yy, radius)
-      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
-      g.circle('line', xx - inc, yy, radius)
-      g.circle('line', xx, yy, radius)
-      g.circle('line', xx + inc, yy, radius)
-    end
-
     xx = xx + inc
+  end
+
+  local upgrades = self.geometry.upgrades
+  for minion = 1, #upgrades do
+    for upgrade = 1, 2 do
+      local x, y, r, children = unpack(upgrades[minion][upgrade])
+      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
+      g.circle('fill', x, y, r)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+      g.circle('line', x, y, r)
+
+      for i = 1, #children do
+        local x, y, r = unpack(children[i])
+        g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * self['spread' .. upgrade])
+        g.circle('fill', x, y, r)
+        g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * self['spread' .. upgrade])
+        g.circle('line', x, y, r)
+      end
+    end
+  end
+
+  local runes = self.geometry.runes
+  for minion = 1, #runes do
+    for i = 1, #runes[minion] do
+      local x, y, r = unpack(runes[minion][i])
+      g.setColor(0, 0, 0, 200 * upgradeAlphaFactor)
+      g.circle('fill', x, y, r)
+      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+      g.circle('line', x, y, r)
+    end
   end
 end
 

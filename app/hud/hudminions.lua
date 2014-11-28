@@ -92,8 +92,8 @@ function HudMinions:update()
   local runes = self.geometry.runes
   for minion = 1, #runes do
     for i = 1, #runes[minion] do
-      if math.insideCircle(mx, my, unpack(runes[minion][i])) then
-        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:runeTooltip(1))
+      if math.insideCircle(mx, my, unpack(runes[minion][i])) and p.deck[minion].runes[i] then
+        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:runeTooltip(p.deck[minion].runes[i].id))
       end
     end
   end
@@ -202,8 +202,10 @@ function HudMinions:draw()
       local x, y, r = unpack(runes[minion][i])
       g.setColor(0, 0, 0, 200 * upgradeAlphaFactor)
       g.circle('fill', x, y, r)
-      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
-      g.circle('line', x, y, r)
+      if p.deck[minion].runes[i] then
+        g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+        g.circle('line', x, y, r)
+      end
     end
   end
 end
@@ -218,7 +220,7 @@ function HudMinions:ready()
   self.quad = {}
 
   for i = 1, self.count do
-    self.bg[i] = data.media.graphics.selectZuju
+    self.bg[i] = data.media.graphics.unit.portrait[p.deck[i].code] or data.media.graphics.menuCove
     self.factor[i] = 0
     self.extra[i] = 0
 

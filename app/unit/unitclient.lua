@@ -39,8 +39,10 @@ function UnitClient:draw()
     g.setShader()
   end)
 
-  data.media.shaders.horizontalBlur:send('amount', .003)
-  data.media.shaders.verticalBlur:send('amount', .003)
+  local hover = self.animation:contains(love.mouse.getPosition())
+
+  data.media.shaders.horizontalBlur:send('amount', hover and .006 or .003)
+  data.media.shaders.verticalBlur:send('amount', hover and .006 or .003)
   g.setColor(255, 255, 255)
   for i = 1, 3 do
     g.setShader(data.media.shaders.horizontalBlur)

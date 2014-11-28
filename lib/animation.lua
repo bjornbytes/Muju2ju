@@ -43,6 +43,11 @@ function Animation:set(name, options)
   self.spine.animationState:setAnimationByName(0, self.state.name, self.state.loop)
 end
 
+function Animation:contains(x, y)
+  self.spine.skeletonBounds:update(self.spine.skeleton, true)
+  return self.spine.skeletonBounds:containsPoint(x, y)
+end
+
 function Animation:initSpine(name)
 	local json = spine.SkeletonJson.new()
   json.scale = self.scale
@@ -54,6 +59,7 @@ function Animation:initSpine(name)
 		return love.graphics and love.graphics.newImage('media/skeletons/' .. name .. '/' .. attachment.name .. '.png')
 	end
 	skeleton:setToSetupPose()
+  local skeletonBounds = spine.SkeletonBounds.new()
   local animationStateData = spine.AnimationStateData.new(skeletonData)
   local animationState = spine.AnimationState.new(animationStateData)
 
@@ -61,6 +67,7 @@ function Animation:initSpine(name)
     json = json,
     skeletonData = skeletonData,
     skeleton = skeleton,
+    skeletonBounds = skeletonBounds,
     animationStateData = animationStateData,
     animationState = animationState
   }

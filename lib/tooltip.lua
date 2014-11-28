@@ -1,26 +1,30 @@
 local rich = require 'lib/deps/richtext/richtext'
 
-MenuTooltip = class()
+Tooltip = class()
 
 local g = love.graphics
 
-function MenuTooltip:init()
+function Tooltip:init()
+  self.active = false
   self.tooltip = nil
   self.tooltipText = nil
   self.x = nil
   self.y = nil
 end
 
-function MenuTooltip:update()
-  --
+function Tooltip:update()
+  self.active = false
+
+  if not self.richOptions then self:resize() end
 end
 
-function MenuTooltip:draw()
-  if self.tooltip then
-    local u, v = ctx.u, ctx.v
-    local mx, my = love.mouse.getPosition()
-    self.x = self.x and math.lerp(self.x, mx, 10 * delta) or mx
-    self.y = self.y and math.lerp(self.y, my, 10 * delta) or my
+function Tooltip:draw()
+  local mx, my = love.mouse.getPosition()
+  self.x = self.x and math.lerp(self.x, mx, 15 * delta) or mx
+  self.y = self.y and math.lerp(self.y, my, 15 * delta) or my
+
+  if self.active then
+    local u, v = self:getUV()
     local font = Typo.font('inglobal', .023 * v)
     local textWidth, lines = font:getWrap(self.tooltipText, .375 * u)
     local xx = math.round(math.min(self.x + 8, u - textWidth - (.03 * u)))
@@ -34,12 +38,13 @@ function MenuTooltip:draw()
   end
 end
 
-function MenuTooltip:setTooltip(str)
+function Tooltip:setTooltip(str)
   self.tooltip = rich.new(table.merge({str}, self.richOptions))
   self.tooltipText = str:gsub('{%a+}', '')
+  self.active = true
 end
 
-function MenuTooltip:unitTooltip(code)
+function Tooltip:unitTooltip(code)
   local unit = data.unit[code]
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. unit.name .. '{normal}')
@@ -47,7 +52,7 @@ function MenuTooltip:unitTooltip(code)
   return table.concat(pieces, '\n')
 end
 
-function MenuTooltip:runeTooltip(id)
+function Tooltip:runeTooltip(id)
   local rune = runes[id]
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. rune.name .. '{normal}')
@@ -55,12 +60,34 @@ function MenuTooltip:runeTooltip(id)
   return table.concat(pieces, '\n')
 end
 
-function MenuTooltip:resize()
+function Tooltip:skillTooltip(code, index)
+  local skill = data.skill[data.unit[code].skills[index]]
+  local pieces = {}
+  table.insert(pieces, '{white}{title}' .. skill.name .. '{normal}')
+  table.insert(pieces, skill.description)
+  return table.concat(pieces, '\n')
+end
+
+function Tooltip:skillUpgradeTooltip(code, skill, index)
+  local upgrade = data.skill[data.unit[code].skills[skill]].upgrades[index]
+  local pieces = {}
+  table.insert(pieces, '{white}{title}' .. upgrade.name .. '{normal}')
+  table.insert(pieces, upgrade.description)
+  return table.concat(pieces, '\n')
+end
+
+function Tooltip:resize()
+  local u, v = self:getUV()
   self.richOptions = {}
-  self.richOptions[2] = ctx.u * .375
+  self.richOptions[2] = u * .375
   self.richOptions.white = {255, 255, 255}
   self.richOptions.red = {255, 100, 100}
   self.richOptions.green = {100, 255, 100}
-  self.richOptions.title = Typo.font('inglobal', .04 * ctx.v)
-  self.richOptions.normal = Typo.font('inglobal', .023 * ctx.v)
+  self.richOptions.title = Typo.font('inglobal', .04 * v)
+  self.richOptions.normal = Typo.font('inglobal', .023 * v)
+end
+
+function Tooltip:getUV()
+  if isa(ctx, Menu) then return ctx.u, ctx.v
+  elseif isa(ctx, Game) then return ctx.hud.u, ctx.hud.v end
 end

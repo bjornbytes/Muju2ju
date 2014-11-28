@@ -18,12 +18,13 @@ function Animation:init()
   self.flipped = false
 end
 
-function Animation:draw(x, y)
+function Animation:draw(x, y, options)
+  options = options or {}
   local skeleton, animationState = self.spine.skeleton, self.spine.animationState
   skeleton.x = x + (self.offsetx or 0)
   skeleton.y = y + (self.offsety or 0)
   skeleton.flipX = self.flipped
-  animationState:update(delta * (self.state.speed or 1) * self.speed)
+  if not options.noupdate then animationState:update(delta * (self.state.speed or 1) * self.speed) end
   animationState:apply(skeleton)
   skeleton:updateWorldTransform()
   skeleton:draw()
@@ -44,7 +45,7 @@ end
 
 function Animation:initSpine(name)
 	local json = spine.SkeletonJson.new()
-	json.scale = self.scale
+  json.scale = self.scale
 
 	local skeletonData = json:readSkeletonDataFile('media/skeletons/' .. name .. '/' .. name .. '.json')
 

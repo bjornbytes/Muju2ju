@@ -15,7 +15,7 @@ function Menu:load(user)
   self.hub = MenuHub()
   self.nav = MenuNav()
   self.background = MenuBackground()
-  self.tooltip = MenuTooltip()
+  self.tooltip = Tooltip()
 
   self.invitation = nil
 

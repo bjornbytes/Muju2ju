@@ -2,7 +2,7 @@ require 'require'
 
 runes = {
   { name = 'Rune of Fortitude',
-    description = 'Makes things stronker'
+    description = 'This rune will make your minions more stronk.'
   }
 }
 

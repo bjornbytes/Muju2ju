@@ -13,6 +13,7 @@ function HudMinions:init()
   self.geometryFunctions = {
     upgrades = function()
       local u, v = ctx.hud.u, ctx.hud.v
+      local p = ctx.players:get(ctx.id)
       local upgradeFactor, t = ctx.hud.upgrades:getFactor()
       local upgradeAlphaFactor = (t / ctx.hud.upgrades.maxTime) ^ 3
       local minionInc = u * (.1 + (.18 * upgradeFactor))
@@ -31,11 +32,13 @@ function HudMinions:init()
           local xx = xx + (inc / 2 + inc * self['spread' .. j] / spreadFactor) * sign
           res[i][j] = {xx, yy, radius, {}}
 
-          for k = 1, 2 do
-            local yy = yy + (.08 * v)
-            local sign = k == 1 and -1 or 1
-            local xx = xx + (inc / 2) * sign
-            res[i][j][4][k] = {xx, yy, radius}
+          if p.deck[i].upgrades[j] then
+            for k = 1, 2 do
+              local yy = yy + (.08 * v)
+              local sign = k == 1 and -1 or 1
+              local xx = xx + (inc / 2) * sign
+              res[i][j][4][k] = {xx, yy, radius}
+            end
           end
         end
 
@@ -84,6 +87,32 @@ function HudMinions:update()
 			self.quad[i]:setViewport(0, y, self.bg[i]:getWidth(), self.bg[i]:getHeight() - y)
 		end
 	end
+
+  local mx, my = love.mouse.getPosition()
+  local runes = self.geometry.runes
+  for minion = 1, #runes do
+    for i = 1, #runes[minion] do
+      if math.insideCircle(mx, my, unpack(runes[minion][i])) then
+        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:runeTooltip(1))
+      end
+    end
+  end
+
+  local upgrades = self.geometry.upgrades
+  for minion = 1, #upgrades do
+    for upgrade = 1, #upgrades[minion] do
+      local x, y, r, children = unpack(upgrades[minion][upgrade])
+      if math.insideCircle(mx, my, x, y, r) then
+        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:skillTooltip(p.deck[minion].code, upgrade))
+      else
+        for i = 1, #children do
+          if math.insideCircle(mx, my, unpack(children[i])) then
+            ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:skillUpgradeTooltip(p.deck[minion].code, upgrade, i))
+          end
+        end
+      end
+    end
+  end
 end
 
 function HudMinions:draw()

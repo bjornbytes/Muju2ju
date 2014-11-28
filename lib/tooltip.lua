@@ -61,7 +61,7 @@ function Tooltip:runeTooltip(id)
 end
 
 function Tooltip:skillTooltip(code, index)
-  local skill = data.skill[data.unit[code].skills[index]]
+  local skill = data.skill[code][data.unit[code].skills[index]]
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. skill.name .. '{normal}')
   table.insert(pieces, skill.description)
@@ -69,7 +69,7 @@ function Tooltip:skillTooltip(code, index)
 end
 
 function Tooltip:skillUpgradeTooltip(code, skill, index)
-  local upgrade = data.skill[data.unit[code].skills[skill]].upgrades[index]
+  local upgrade = data.skill[code][data.unit[code].skills[skill]].upgrades[index]
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. upgrade.name .. '{normal}')
   table.insert(pieces, upgrade.description)

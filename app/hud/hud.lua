@@ -21,6 +21,7 @@ function Hud:init()
   self.upgrades = HudUpgrades()
   self.pause = HudPause()
   self.dead = HudDead()
+  self.tooltip = Tooltip()
 
   self.u = ctx.view.frame.width
   self.v = ctx.view.frame.height
@@ -29,6 +30,8 @@ function Hud:init()
 end
 
 function Hud:update()
+  self.tooltip:update()
+
   self.protect:update()
   self.selector:update()
   self.juju:update()
@@ -69,6 +72,7 @@ function Hud:gui()
   self.upgrades:draw()
   self.pause:draw()
   self.dead:draw()
+  self.tooltip:draw()
 end
 
 function Hud:keypressed(key)
@@ -105,6 +109,7 @@ function Hud:resize()
   self.u = ctx.view.frame.width
   self.v = ctx.view.frame.height
   self.chat:resize()
+  self.tooltip:resize()
 end
 
 function Hud:ready()

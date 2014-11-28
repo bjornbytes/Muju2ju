@@ -30,8 +30,8 @@ function HudChat:draw()
   if #self.log == 0 and not self.active then return end
 
   local upgradeFactor = ctx.hud.upgrades:getFactor()
-  if self.timer > 0 then upgradeFactor = math.min(upgradeFactor, 1) end
-  if upgradeFactor > 1 then upgradeFactor = 1 + (upgradeFactor - 1) / 4 end
+  if self.timer > 0 then upgradeFactor = math.min(upgradeFactor, 1)
+  elseif upgradeFactor > 1 then upgradeFactor = 1 + (upgradeFactor - 1) / 4 end
   local upgradeOffset = -(u * .35) - 4 + (u * .35 + 4) * upgradeFactor
   local offset = math.lerp(self.prevOffset, self.offset, tickDelta / tickRate)
   offset = math.max(offset, upgradeOffset)

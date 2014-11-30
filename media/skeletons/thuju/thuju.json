@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "Br/lpA/f8zJMe0oHpjxxakmjWgQ", "spine": "2.1.07", "width": 0, "height": 0 },
+"skeleton": { "hash": "g+SxSVr1+gGp4qvW9hJtr7ChY3I", "spine": "2.1.07", "width": 391.12, "height": 347.63 },
 "bones": [
 	{ "name": "root", "x": -0.01, "scaleX": 0.953, "scaleY": 0.953 },
 	{ "name": "waist", "parent": "root", "x": -7.52, "y": 131.97 },
@@ -17,18 +17,18 @@
 	{ "name": "righthand", "parent": "righthandmid", "length": 50.62, "x": 54.94, "y": -0.06, "rotation": 5.39 }
 ],
 "slots": [
-	{ "name": "right leg lower", "bone": "rightfoot", "attachment": "rightleglower_bb" },
-	{ "name": "left leg lower", "bone": "leftfoot", "attachment": "leftleglower_bb" },
-	{ "name": "left leg upper", "bone": "leftlegupper", "attachment": "leftlegupper_bb" },
-	{ "name": "right leg upper", "bone": "rightlegupper", "attachment": "rightlegupper_bb" },
-	{ "name": "right upper arm", "bone": "leftarmupper", "attachment": "rightupperarm_bb" },
-	{ "name": "left lower arm", "bone": "leftarmmid", "attachment": "leftlowerarm_bb" },
-	{ "name": "lefthand", "bone": "lefthand", "attachment": "lefthand_bb" },
-	{ "name": "chest", "bone": "chest", "attachment": "chest_bb" },
-	{ "name": "rightupper arm", "bone": "rightarmupper", "attachment": "otherrightupperarm_bb" },
-	{ "name": "right lower arm", "bone": "righthandmid", "attachment": "rightlowerarm_bb" },
-	{ "name": "righthand", "bone": "righthand", "attachment": "righthand_bb" },
-	{ "name": "head", "bone": "head", "attachment": "head_bb" }
+	{ "name": "right leg lower", "bone": "rightfoot", "attachment": "right leg lower" },
+	{ "name": "left leg lower", "bone": "leftfoot", "attachment": "left leg lower" },
+	{ "name": "left leg upper", "bone": "leftlegupper", "attachment": "left leg upper" },
+	{ "name": "right leg upper", "bone": "rightlegupper", "attachment": "right leg upper" },
+	{ "name": "right upper arm", "bone": "leftarmupper", "attachment": "right upper arm" },
+	{ "name": "left lower arm", "bone": "leftarmmid", "attachment": "left lower arm" },
+	{ "name": "lefthand", "bone": "lefthand", "attachment": "lefthand" },
+	{ "name": "chest", "bone": "chest", "attachment": "chest" },
+	{ "name": "rightupper arm", "bone": "rightarmupper", "attachment": "rightupper arm" },
+	{ "name": "right lower arm", "bone": "righthandmid", "attachment": "right lower arm" },
+	{ "name": "righthand", "bone": "righthand", "attachment": "righthand" },
+	{ "name": "head", "bone": "head", "attachment": "head" }
 ],
 "skins": {
 	"default": {
@@ -117,6 +117,9 @@
 			"rightupper arm": { "x": 47.26, "y": -23.59, "rotation": 143.66, "width": 117, "height": 108 }
 		}
 	}
+},
+"events": {
+	"attack_event": {}
 },
 "animations": {
 	"attack": {
@@ -395,6 +398,9 @@
 					{ "slot": "head", "offset": -5 }
 				]
 			}
+		],
+		"events": [
+			{ "time": 0.5, "name": "attack_event" }
 		]
 	},
 	"death": {

@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "g+SxSVr1+gGp4qvW9hJtr7ChY3I", "spine": "2.1.07", "width": 391.12, "height": 347.63 },
+"skeleton": { "hash": "utjme8d1s77yu0rxl+aKDlI0GZU", "spine": "2.1.07", "width": 366.98, "height": 329.71 },
 "bones": [
 	{ "name": "root", "x": -0.01, "scaleX": 0.953, "scaleY": 0.953 },
 	{ "name": "waist", "parent": "root", "x": -7.52, "y": 131.97 },
@@ -17,109 +17,62 @@
 	{ "name": "righthand", "parent": "righthandmid", "length": 50.62, "x": 54.94, "y": -0.06, "rotation": 5.39 }
 ],
 "slots": [
-	{ "name": "right leg lower", "bone": "rightfoot", "attachment": "right leg lower" },
-	{ "name": "left leg lower", "bone": "leftfoot", "attachment": "left leg lower" },
-	{ "name": "left leg upper", "bone": "leftlegupper", "attachment": "left leg upper" },
-	{ "name": "right leg upper", "bone": "rightlegupper", "attachment": "right leg upper" },
-	{ "name": "right upper arm", "bone": "leftarmupper", "attachment": "right upper arm" },
-	{ "name": "left lower arm", "bone": "leftarmmid", "attachment": "left lower arm" },
-	{ "name": "lefthand", "bone": "lefthand", "attachment": "lefthand" },
-	{ "name": "chest", "bone": "chest", "attachment": "chest" },
-	{ "name": "rightupper arm", "bone": "rightarmupper", "attachment": "rightupper arm" },
-	{ "name": "right lower arm", "bone": "righthandmid", "attachment": "right lower arm" },
-	{ "name": "righthand", "bone": "righthand", "attachment": "righthand" },
-	{ "name": "head", "bone": "head", "attachment": "head" }
+	{ "name": "right leg lower", "bone": "rightfoot", "attachment": "rightleglower_sp" },
+	{ "name": "left leg lower", "bone": "leftfoot", "attachment": "leftleglower_sp" },
+	{ "name": "left leg upper", "bone": "leftlegupper", "attachment": "leftlegupper_sp" },
+	{ "name": "right leg upper", "bone": "rightlegupper", "attachment": "rightlegupper_sp" },
+	{ "name": "right upper arm", "bone": "leftarmupper", "attachment": "rightupperarm_sp" },
+	{ "name": "left lower arm", "bone": "leftarmmid", "attachment": "leftlowerarm_sp" },
+	{ "name": "lefthand", "bone": "lefthand", "attachment": "lefthand_sp" },
+	{ "name": "chest", "bone": "chest", "attachment": "chest_sp" },
+	{ "name": "rightupper arm", "bone": "rightarmupper", "attachment": "rightupperarm_sp" },
+	{ "name": "right lower arm", "bone": "righthandmid", "attachment": "rightlowerarm_sp" },
+	{ "name": "righthand", "bone": "righthand", "attachment": "righthand_sp" },
+	{ "name": "head", "bone": "head", "attachment": "head_sp" }
 ],
 "skins": {
-	"default": {
+	"default": {},
+	"thuju": {
 		"chest": {
-			"chest": { "x": 64.01, "y": 4.29, "rotation": -87.29, "width": 233, "height": 268 },
-			"chest_bb": {
-				"type": "boundingbox",
-				"vertices": [ 136.70859, 32.503277, 82.10092, 34.869152, 28.51619, 50.494564, 2.0752563, 50.892746, -24.451538, 18.259232, -14.815094, -45.687813, 24.174835, -66.95915, 49.983368, -88.85521, 119.1077, -83.92753, 164.93036, -75.15019, 184.8663, -42.82903, 187.7008, 1.8925638, 181.98447, 52.81438, 165.35919, 90.008095 ]
-			}
+			"chest_sp": { "name": "chest", "x": 64, "y": 4.29, "rotation": -87.29, "width": 233, "height": 268 }
 		},
 		"head": {
-			"head": { "x": 63.11, "y": 3.38, "rotation": -55.41, "width": 105, "height": 124 },
-			"head_bb": {
-				"type": "boundingbox",
-				"vertices": [ 25.881546, 34.669945, -3.9912262, 14.065208, 10.948868, -33.741707, 39.279465, -60.289444, 68.4037, -50.22033, 102.58324, -12.617989, 94.62045, 27.978386, 64.08949, 49.000694 ]
-			}
+			"head_sp": { "name": "head", "x": 63.11, "y": 3.38, "rotation": -55.41, "width": 105, "height": 124 }
 		},
 		"left leg lower": {
-			"left leg lower": { "x": 24.01, "y": 0.87, "rotation": 78.18, "width": 43, "height": 56 },
-			"leftleglower_bb": {
-				"type": "boundingbox",
-				"vertices": [ 14.260235, -18.610956, 46.029297, -11.783241, 51.780083, 15.664848, 3.603569, 19.016705, 6.264042, -8.508293 ]
-			}
+			"leftleglower_sp": { "name": "left leg lower", "x": 24.01, "y": 0.87, "rotation": 78.18, "width": 43, "height": 56 }
 		},
 		"left leg upper": {
-			"left leg upper": { "x": 37.89, "y": 0.88, "rotation": 62.35, "width": 62, "height": 86 },
-			"leftlegupper_bb": {
-				"type": "boundingbox",
-				"vertices": [ -17.53685, -13.145996, 21.917816, -33.822685, 68.686584, -19.217606, 82.54137, 10.773842, -2.009819, 27.14473 ]
-			}
+			"leftlegupper_sp": { "name": "left leg upper", "x": 37.89, "y": 0.88, "rotation": 62.35, "width": 62, "height": 86 }
 		},
 		"left lower arm": {
-			"left lower arm": { "x": 38.84, "y": -0.44, "rotation": 126.5, "width": 116, "height": 111 },
-			"leftlowerarm_bb": {
-				"type": "boundingbox",
-				"vertices": [ 72.1947, -42.215466, 77.361176, 39.568516, 5.787445, 42.027912, -9.54718, 18.376995, 14.338425, -11.145474, 40.87654, -38.706226 ]
-			}
+			"leftlowerarm_sp": { "name": "left lower arm", "x": 38.83, "y": -0.43, "rotation": 126.5, "width": 116, "height": 111 }
 		},
 		"lefthand": {
-			"lefthand": { "x": 22.82, "y": -5.98, "rotation": 144.8, "width": 95, "height": 91 },
-			"lefthand_bb": {
-				"type": "boundingbox",
-				"vertices": [ 36.776657, -42.936058, 59.13511, -28.435486, 63.582245, 0.73511887, 47.338577, 26.344181, 10.244034, 42.44632, -6.72554, 24.139168, -8.006302, -23.423141, 9.189011, -47.6848 ]
-			}
+			"lefthand_sp": { "name": "lefthand", "x": 22.81, "y": -5.98, "rotation": 144.8, "width": 95, "height": 91 }
 		},
 		"right leg lower": {
-			"right leg lower": { "x": 17.24, "y": 2.26, "rotation": 110.9, "width": 54, "height": 58 },
-			"rightleglower_bb": {
-				"type": "boundingbox",
-				"vertices": [ 21.072474, -20.538673, 50.354317, -9.365822, 41.310646, 18.96291, 0.3488083, 24.519737, 2.8627968, -9.831558 ]
-			}
+			"rightleglower_sp": { "name": "right leg lower", "x": 17.24, "y": 2.26, "rotation": 110.9, "width": 54, "height": 58 }
 		},
 		"right leg upper": {
-			"right leg upper": { "x": 36.18, "y": 2.56, "rotation": 116.74, "width": 73, "height": 92 },
-			"rightlegupper_bb": {
-				"type": "boundingbox",
-				"vertices": [ -13.2836075, 7.6015854, -1.4125977, -19.663498, 39.929253, -32.101288, 81.93891, -16.505112, 76.694275, 15.9403305, 23.53656, 33.512608 ]
-			}
+			"rightlegupper_sp": { "name": "right leg upper", "x": 36.17, "y": 2.56, "rotation": 116.74, "width": 73, "height": 92 }
 		},
 		"right lower arm": {
-			"right lower arm": { "x": 11.51, "y": 7.95, "rotation": 42.43, "width": 109, "height": 127 },
-			"rightlowerarm_bb": {
-				"type": "boundingbox",
-				"vertices": [ -29.583282, -23.296314, 15.189941, -40.458767, 58.068604, -21.343632, 47.0811, 46.860554, 7.4626923, 48.616558, -38.55011, 37.813084 ]
-			}
+			"rightlowerarm_sp": { "name": "right lower arm", "x": 11.5, "y": 7.94, "rotation": 42.43, "width": 109, "height": 127 }
 		},
 		"right upper arm": {
-			"right upper arm": { "x": 43.95, "y": 12.29, "rotation": 39.21, "width": 94, "height": 120 },
-			"rightupperarm_bb": {
-				"type": "boundingbox",
-				"vertices": [ 33.87375, -32.036545, 61.021217, -41.831238, 115.42957, 8.92511, 67.055786, 29.085358, 32.80764, 26.70285, 5.660179, 36.49759, -31.145126, 32.029663 ]
-			}
+			"rightupperarm_sp": { "name": "right upper arm", "x": 43.94, "y": 12.29, "rotation": 39.21, "width": 94, "height": 120 }
 		},
 		"righthand": {
-			"righthand": { "x": 35.93, "y": 8.6, "rotation": 37.04, "width": 98, "height": 91 },
-			"righthand_bb": {
-				"type": "boundingbox",
-				"vertices": [ 29.899017, -43.1522, 61.54326, -35.778828, 64.08504, -9.047028, 75.838806, 24.646454, 60.56942, 50.32357, 23.27951, 53.156746, -1.3730164, 28.323784, -6.2253113, 1.9134216, 2.4640656, -28.736298 ]
-			}
+			"righthand_sp": { "name": "righthand", "x": 35.92, "y": 8.6, "rotation": 37.04, "width": 98, "height": 91 }
 		},
 		"rightupper arm": {
-			"otherrightupperarm_bb": {
-				"type": "boundingbox",
-				"vertices": [ 18.369072, -68.531235, 53.66411, -67.85628, 108.846924, -42.902664, 94.094124, 15.019272, 63.249886, 31.543716, 10.211784, 23.437057, -12.797577, -19.017776, -6.80571, -58.219833 ]
-			},
-			"rightupper arm": { "x": 47.26, "y": -23.59, "rotation": 143.66, "width": 117, "height": 108 }
+			"rightupperarm_sp": { "name": "rightupper arm", "x": 47.26, "y": -23.58, "rotation": 143.66, "width": 117, "height": 108 }
 		}
 	}
 },
 "events": {
-	"attack_event": {}
+	"attack": {}
 },
 "animations": {
 	"attack": {
@@ -400,7 +353,7 @@
 			}
 		],
 		"events": [
-			{ "time": 0.5, "name": "attack_event" }
+			{ "time": 0.5, "name": "attack" }
 		]
 	},
 	"death": {

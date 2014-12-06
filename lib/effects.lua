@@ -4,9 +4,9 @@ function Effects:init()
   self.active = love.graphics.isSupported('shader')
   self.effects = {}
   self:add('bloom')
-	--self:add('vignette')
-	--self:add('wave')
-	--self:add('deathBlur')
+	self:add('vignette')
+	self:add('wave')
+	self:add('deathBlur')
 end
 
 function Effects:update()

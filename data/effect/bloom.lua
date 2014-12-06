@@ -9,21 +9,23 @@ function Bloom:init()
 end
 
 function Bloom:update()
-  self.alpha = math.lerp(self.alpha, ctx.players:get(ctx.id).dead and .9 or .1, 6 * tickRate)
+  self.alpha = math.lerp(self.alpha, ctx.players:get(ctx.id).dead and 1 or .5, 6 * tickRate)
 end
 
 function Bloom:applyEffect(source, target)
   local p = ctx.players:get(ctx.id)
 
+  g.setColor(255, 255, 255)
   g.setCanvas(self.canvas)
 	g.push()
 	g.scale(.25)
+  g.setShader(self.threshold)
+  self.threshold:send('threshold', .75)
 	g.draw(source)
 	g.pop()
-  self.hblur:send('amount', .008)
-  self.vblur:send('amount', .008)
-  g.setColor(255, 255, 255)
-  for i = 1, 6 do
+  self.hblur:send('amount', .004)
+  self.vblur:send('amount', .004 * (g.getWidth() / g.getHeight()))
+  for i = 1, 4 do
     g.setShader(self.hblur)
     self.working:renderTo(function()
       g.draw(self.canvas)
@@ -40,20 +42,14 @@ function Bloom:applyEffect(source, target)
   ctx.view:worldPush()
   g.pop()
   local w, h = ctx.view.frame.width, ctx.view.frame.height
-  love.graphics.setColor(255, 255, 255, 50 * self.alpha)--self.alpha * 100 * factor)
-  g.setBlendMode('alpha')
-	g.draw(self.canvas, 0, 0, 0, 4, 4)
-	--local x = p.dead and math.clamp(p.ghostX, .35 * w, .65 * w) or .5 * w
-	--local y = p.dead and math.clamp(p.ghostY, .35 * h, .65 * h) or .5 * h
-  local x, y = w * .5, h * .5
-	for i = 6, 1, -1 do
-		g.draw(self.canvas, x, y, 0, 4 + i * 1.1, 4 + i * 1.1, self.canvas:getWidth() / 2, self.canvas:getHeight() / 2)
-	end
+  love.graphics.setColor(255, 255, 255, 255 * self.alpha)
+  g.setBlendMode('additive')
+  g.draw(self.canvas, 0, 0, 0, 4, 4)
   g.setBlendMode('alpha')
 
   ctx.view:worldPush()
 	if p.dead then
-		p:draw(true)
+		p:draw()
 		ctx.jujus:each(f.ego('draw'))
 	end
   ctx.particles:each(function(particle)

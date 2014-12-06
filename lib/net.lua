@@ -7,6 +7,7 @@ Net.messageMap = {
   'over',
   'bootstrap',
   'input',
+  'stance',
   'snapshot',
   'chat',
   'unitCreate',

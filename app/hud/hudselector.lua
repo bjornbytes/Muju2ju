@@ -18,21 +18,24 @@ function HudSelector:update()
     end
     self.active = true
   else
-    self.active = false
-    self.prevx2 = self.x2
+    if self.active then
+      self.prevx2 = self.x2
 
-    if self.x1 and self.x2 then
-      local p = ctx.players:get(ctx.id)
-      table.each(ctx.units.objects, function(unit)
-        local x1, x2 = self.x1, self.x2
-        if x1 > x2 then x1, x2 = x2, x1 end
-        if unit.owner == p then
-          unit.selected = false
-          if unit.x >= x1 and unit.x <= x2 then
-            unit.selected = true
+      if self.x1 and self.x2 then
+        local p = ctx.players:get(ctx.id)
+        table.each(ctx.units.objects, function(unit)
+          local x1, x2 = self.x1, self.x2
+          if x1 > x2 then x1, x2 = x2, x1 end
+          if unit.owner == p then
+            unit.selected = false
+            local umin, umax = unit.x - unit.width / 2, unit.x + unit.width / 2
+            if math.max(x1, umin) <= math.min(x2, umax) then
+              unit.selected = true
+            end
           end
-        end
-      end)
+        end)
+      end
+      self.active = false
     end
   end
 
@@ -62,7 +65,11 @@ function HudSelector:draw()
 end
 
 function HudSelector:mousepressed(x, y, b)
-  --
+  table.each(ctx.units.objects, function(unit)
+    if unit.animation:contains(x, y) then
+      unit.selected = true
+    end
+  end)
 end
 
 function HudSelector:mousereleased(x, y, b)

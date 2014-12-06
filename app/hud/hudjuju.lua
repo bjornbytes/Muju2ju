@@ -24,13 +24,14 @@ function HudJuju:draw()
   g.setFont('inglobalb', .022 * v)
   local font = g.getFont()
 
-  local corner = .02 * v
+  local corner = .9 * u
+  local top = .02 * v
 
   g.setColor(255, 255, 255, 255 * 1)
-  g.draw(image, corner, corner, 0, scale, scale)
+  g.draw(image, corner, top, 0, scale, scale)
   g.setColor(0, 0, 0)
 
-  local x, y = corner + (image:getWidth() * scale) / 2, corner + (image:getHeight() * scale) / 2
+  local x, y = corner + (image:getWidth() * scale) / 2, top + (image:getHeight() * scale) / 2
   local str = tostring(math.floor(p.juju))
   g.print(str, x - font:getWidth(str) / 2, y - font:getHeight() / 2)
   g.setColor(255, 255, 255)

@@ -12,9 +12,9 @@ Unit.depth = 3
 function Unit:activate()
   self.animation = data.animation[self.class.code]()
 
-  self.animation:on('event', function(data)
-    table.print(data)
-    if data.name == 'attack' then
+  self.animation:on('event', function(event)
+    print(event.data.name)
+    if event.data.name == 'attack' then
       if self.target then
         self.target:hurt(self.damage, self)
       end
@@ -66,7 +66,7 @@ Unit.stances = {}
 function Unit.stances:defensive()
   local target = ctx.target:closest(self, 'enemy', 'player', 'unit')
 
-  if self:inRange(target) then
+  if target and self:inRange(target) then
     self:attack(target)
   end
 end

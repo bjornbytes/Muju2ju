@@ -16,7 +16,7 @@ function HudTimer:draw()
   local str = minutes .. ':' .. seconds
   g.setColor(255, 255, 255)
   g.setFont('inglobalb', .03 * v)
-  g.print(str, u - (.04 * v) - g.getFont():getWidth(str), v * .04)
+  g.print(str, u - (.07 * v) - g.getFont():getWidth(str), v * .14)
 
   if table.has(arg, 'test') then
     g.setFont('pixel', 8)

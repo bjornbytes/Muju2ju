@@ -70,6 +70,23 @@ function PlayerMain:readInput()
     end
   end
 
+  local stanceMap = {'defensive', 'aggressive', 'follow'}
+  for stance, key in pairs({'z', 'x', 'c'}) do -- todo
+    if love.keyboard.isDown(key) then
+      local selected
+      ctx.units:each(function(unit)
+        if unit.selected == true and unit.owner == self then
+          selected = unit
+          return false
+        end
+      end)
+
+      if selected then
+        ctx.net:send('stance', {id = selected.id, stance = stance})
+      end
+    end
+  end
+
   t.x = ctx.input:getAxis('x')
   t.y = ctx.input:getAxis('y')
   t.summon = love.keyboard.isDown(' ')--ctx.input:getAction('summon')

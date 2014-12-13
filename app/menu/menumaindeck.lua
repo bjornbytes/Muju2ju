@@ -3,6 +3,8 @@ MenuMainDeck = class()
 local g = love.graphics
 
 function MenuMainDeck:init()
+  self.frameWidth = 0
+
   self.geometry = setmetatable({}, {__index = function(t, k)
     return rawset(t, k, self.geometryFunctions[k]())[k]
   end})

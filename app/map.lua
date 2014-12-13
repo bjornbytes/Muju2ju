@@ -4,14 +4,7 @@ Map.width, Map.height = 960, 600
 Map.depth = -100
 
 local backgroundData = {
-  background = {x = 0, y = 0, depth = 10},
-  grassFront1 = {x = 0, y = 837, depth = 0},
-  grassFront2 = {x = 1909, y = 827, depth = 0},
-  grassMid1 = {x = 783, y = 870, depth = 2},
-  grassMid2 = {x = 256, y = 857, depth = 2},
-  grassMid3 = {x = 1700, y = 894, depth = 2},
-  grassMid4 = {x = 563, y = 850, depth = 4},
-  grassMid5 = {x = 2090, y = 858, depth = 4},
+  background = {x = 0, y = 0, depth = 10}
 }
 
 local function drawBackground(key)
@@ -47,7 +40,7 @@ function Map:init()
   
   ctx.event:emit('view.register', {object = self})
 
-  local backgrounds = {'background', 'grassFront1', 'grassFront2', 'grassMid1', 'grassMid2', 'grassMid3', 'grassMid4', 'grassMid5'}
+  local backgrounds = {'background'}
   table.each(backgrounds, function(background)
     local object = {
       depth = backgroundData[background].depth,

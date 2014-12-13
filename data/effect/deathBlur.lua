@@ -3,7 +3,7 @@ DeathBlur.code = 'deathBlur'
 
 function DeathBlur:init()
   self:resize()
-	self.amount = 0.1
+	self.amount = 0
 end
 
 function DeathBlur:update()

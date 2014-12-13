@@ -7,7 +7,6 @@ function Game:load(config, user)
   self.user = user
 
 	self.paused = false
-	self.ded = false
   self.timer = 0
 
   self.event = Event()
@@ -48,16 +47,16 @@ function Game:load(config, user)
     local p = ctx.players:get(ctx.id)
     if not p then return end
 
+    self.net.state = 'ending'
+
     local lost = data.winner ~= p.team
+
+    self.winner = data.winner
 
     if lost then
       print('you lose')
-      Context:remove(ctx)
-      Context:add(Menu, self.user)
     else
       print('you win')
-      Context:remove(ctx)
-      Context:add(Menu, self.user)
     end
   end)
 
@@ -78,7 +77,7 @@ function Game:update()
 
   self.input:update()
 
-	if self.paused or self.ded then
+	if self.paused or self.net.state == 'ending' then
     self.effects:paused()
     self.hud:update()
 		return
@@ -121,7 +120,7 @@ function Game:keypressed(key)
   if (key == 'p' or key == 'escape') and not self.hud.upgrades.active then self.paused = not self.paused
   elseif key == 'm' then self.sound:mute() end
 
-  if self.hud.upgrades.active or self.paused or self.ded then return end
+  if self.hud.upgrades.active or self.paused or self.net.state == 'ending' then return end
 
 	--self.player:keypressed(key)
 end
@@ -158,7 +157,7 @@ function Game:gamepadpressed(gamepad, button)
   if button == 'b' and self.paused then self.paused = not self.paused end
 	if button == 'start' or button == 'guide' then self.paused = not self.paused end
 
-	if self.hud.upgrades.active or self.paused or self.ded then return end
+	if self.hud.upgrades.active or self.paused or self.net.state == 'ending' then return end
 
 	--self.player:gamepadpressed(gamepad, button)
 end

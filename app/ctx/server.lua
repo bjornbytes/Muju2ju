@@ -6,7 +6,7 @@ function Server:load(config)
   self.config = config
 
 	self.paused = false
-	self.ded = false
+	self.over = false
   self.timer = 0
 
   self.event = Event()
@@ -38,7 +38,7 @@ function Server:load(config)
 end
 
 function Server:update()
-	if self.paused or self.ded then return end
+	if self.paused or self.over then return end
 
   self.net:update()
 

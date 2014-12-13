@@ -10,7 +10,7 @@ function MenuMainDrag:update()
   if self.active then
     --
   else
-    local _, unit = self:hoverDeckUnit()
+    local _, unit = self:hoverDeckUnits()
     if unit then
       ctx.tooltip:setTooltip(ctx.tooltip:unitTooltip(unit.code))
     end
@@ -22,7 +22,7 @@ function MenuMainDrag:update()
 
     local _, unit = self:hoverGutter('unit')
     if unit then
-      ctx.tooltip:setTooltip(ctx.tooltip:unitTooltip(unit.code))
+      ctx.tooltip:setTooltip(ctx.tooltip:unitTooltip(unit))
     end
 
     local _, rune = self:hoverGutter('rune')
@@ -52,13 +52,13 @@ function MenuMainDrag:mousepressed(mx, my, b)
       local geometry = ctx.pages.main.gutter.geometry.all
 
       for _, kind in pairs({'unit', 'rune'}) do
-        local i, obj = self:hoverGutter(kind)
+        local i, obj, x, y = self:hoverGutter(kind)
         if obj then
           self.active = true
           self.dragIndex = i
           self.dragType = kind
           self.dragX = mx
-          self.dragy = my
+          self.dragY = my
           self.dragOffsetX = x - mx
           self.dragOffsetY = y - my
         end
@@ -157,7 +157,7 @@ function MenuMainDrag:hoverGutter(kind)
     local x, y, r = unpack(objects[i])
     x, y = gutter:screenPoint(x, y)
     if math.insideCircle(mx, my, x, y, r) then
-      return i, gutter[kind .. 's'][i]
+      return i, gutter[kind .. 's'][i], x, y
     end
   end
 end

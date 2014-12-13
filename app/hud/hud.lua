@@ -81,7 +81,6 @@ end
 function Hud:keypressed(key)
   self.chat:keypressed(key)
   self.upgrades:keypressed(key)
-  self.dead:keypressed(key)
 end
 
 function Hud:keyreleased(key)
@@ -95,13 +94,12 @@ end
 function Hud:mousereleased(...)
   self.selector:mousepressed(...)
   self.upgrades:mousereleased(...)
-  self.dead:mousereleased(...)
   self.pause:mousereleased(...)
+  self.dead:mousereleased(...)
 end
 
 function Hud:textinput(char)
   self.chat:textinput(char)
-  self.dead:textinput(char)
 end
 
 function Hud:gamepadpressed(...)

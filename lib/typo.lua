@@ -18,9 +18,13 @@ end
 
 if love.graphics then
   love.graphics.setFont = function(name, size)
-    if type(name) ~= 'string' then return setFont(name) end
+    if type(name) ~= 'string' then
+      setFont(name)
+    else
+      setFont(Typo.font(name, size))
+    end
 
-    setFont(Typo.font(name, size))
+    return love.graphics.getFont()
   end
 end
 

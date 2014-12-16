@@ -28,11 +28,14 @@ function Server:load(config)
   end
 
   self.event:on('shrine.dead', function(data)
-    self.net.state = 'ending'
-    if ctx.config.game.gameType == 'survival' then
-      ctx.net:emit('over', {winner = 0})
-    else
-      ctx.net:emit('over', {winner = data.shrine.team == 1 and 2 or 1})
+    if self.net.state ~= 'ending' then
+      self.net.state = 'ending'
+      if ctx.config.game.gameType == 'survival' then
+        ctx.net:emit('over', {winner = 0})
+      else
+        ctx.net:emit('over', {winner = data.shrine.team == 1 and 2 or 1})
+      end
+
     end
   end)
 end

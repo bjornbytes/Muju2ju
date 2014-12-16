@@ -45,6 +45,12 @@ NetClient.messages.over = {
   end
 }
 
+NetClient.messages.rewards = {
+  receive = function(self, event)
+    ctx.event:emit('rewards', event.data)
+  end
+}
+
 NetClient.messages.bootstrap = {
   receive = function(self, event)
 

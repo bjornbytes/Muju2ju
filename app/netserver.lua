@@ -87,6 +87,15 @@ NetServer.messages.over = {
   important = true
 }
 
+NetServer.messages.rewards = {
+  data = {
+    runes = {id = 5, token = 'string'},
+    units = {code = 'string'}
+  },
+  order = {'runes', 'units'},
+  important = true
+}
+
 NetServer.messages.bootstrap = {
   data = {
     tick = 16,
@@ -257,6 +266,39 @@ function NetServer:init()
   self.importantEventBuffer = {}
 
   ctx.event:on('game.quit', f.cur(self.quit, self))
+  ctx.event:on('over', function(data)
+    local winners = table.filter(ctx.config.players, function(player) return player.team == data.winner end)
+    local losers = table.filter(ctx.config.players, function(player) return player.team ~= data.winner end)
+    winners = table.values(table.map(winners, function(winner) return winner.username end))
+    losers = table.values(table.map(losers, function(loser) return loser.username end))
+
+    local socket = require('socket.unix')
+    local json = require('spine-love/dkjson')
+    local hub = socket.unix()
+    assert(socket and json and hub)
+    assert(hub:connect('/tmp/juju-hub.sock'))
+    local req = json.encode({cmd = 'gameOver', payload = {token = ctx.config.token, winners = winners, losers = losers}})
+    assert(req)
+    hub:send(req .. '\n')
+    local line  = hub:receive('*l')
+    assert(line)
+    local res = json.decode(line)
+    assert(res.cmd == 'rewards')
+    assert(res.payload)
+    hub:close()
+
+    for i = 1, self.host:peer_count() do
+      local peer = self.host:get_peer(i)
+      local player = peer and self.peerToPlayer[peer]
+      if peer and player then
+        local username = ctx.config.players[player.id].username
+        local rewards = username and res.payload.rewards[username]
+        if rewards then
+          self:send('rewards', peer, rewards)
+        end
+      end
+    end
+  end)
 
   Net.init(self)
 end

@@ -49,13 +49,14 @@ function Game:load(config, user)
 
     self.net.state = 'ending'
 
-    local lost = data.winner ~= p.team
-
     self.winner = data.winner
+    local lost = self.winner ~= p.team
 
     if lost then
+      ctx.sound:play(data.media.sounds.lose)
       print('you lose')
     else
+      ctx.sound:play(data.media.sounds.win)
       print('you win')
     end
   end)

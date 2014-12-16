@@ -5,6 +5,7 @@ Net.messageMap = {
   'leave',
   'ready',
   'over',
+  'rewards',
   'bootstrap',
   'input',
   'stance',

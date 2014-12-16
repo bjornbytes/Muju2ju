@@ -59,6 +59,8 @@ function MenuLogin:authenticate()
   local username, password = self.username.text, self.password.text
   ctx.hub:send('login', {username = username, password = password})
 
+  print('logging in')
+
   -- set up loading spinner!
 end
 

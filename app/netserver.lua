@@ -294,7 +294,7 @@ function NetServer:init()
       local player = peer and self.peerToPlayer[peer]
       if peer and player then
         local username = ctx.config.players[player].username
-        local rewards = username and res.payload.rewards[username]
+        local rewards = username and res.payload[username]
         if rewards then
           self:send('rewards', peer, rewards)
         end

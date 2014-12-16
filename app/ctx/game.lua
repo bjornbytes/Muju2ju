@@ -41,7 +41,7 @@ function Game:load(config, user)
     self.particles:add(data.kind, data)
   end)
 
-  self.event:on('over', function(data)
+  self.event:on('over', function(event)
     if backgroundSound then backgroundSound:stop() end
 
     local p = ctx.players:get(ctx.id)
@@ -49,14 +49,14 @@ function Game:load(config, user)
 
     self.net.state = 'ending'
 
-    self.winner = data.winner
+    self.winner = event.winner
     local lost = self.winner ~= p.team
 
     if lost then
-      ctx.sound:play(data.media.sounds.lose)
+      ctx.sound:play({sound = 'lose'})
       print('you lose')
     else
-      ctx.sound:play(data.media.sounds.win)
+      ctx.sound:play({sound = 'win'})
       print('you win')
     end
   end)

@@ -41,6 +41,8 @@ function Unit:activate()
   self.maxHealth = self.health
   self.stance = 'aggressive'
 
+  if self.owner then self.owner.deck[self.code].instance = self end
+
   ctx.event:emit('view.register', {object = self})
 end
 
@@ -107,6 +109,11 @@ function Unit:attack(target)
   if not self:inRange(target) then return end
   self.target = target
   self.animation:set('attack')
+end
+
+function Unit:ability(index)
+  local skill = self.skills[index]
+  f.exe(skill.use, skill, self)
 end
 
 function Unit:hurt(amount, source)

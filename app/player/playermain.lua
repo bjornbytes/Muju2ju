@@ -73,16 +73,10 @@ function PlayerMain:readInput()
   local stanceMap = {'defensive', 'aggressive', 'follow'}
   for stance, key in pairs({'z', 'x', 'c'}) do -- todo
     if love.keyboard.isDown(key) then
-      local selected
-      ctx.units:each(function(unit)
-        if unit.selected == true and unit.owner == self then
-          selected = unit
-          return false
-        end
-      end)
+      local unit = self.deck[self.selected].instance
 
-      if selected then
-        ctx.net:send('stance', {id = selected.id, stance = stance})
+      if unit then
+        ctx.net:send('stance', {id = unit.id, stance = stance})
       end
     end
   end

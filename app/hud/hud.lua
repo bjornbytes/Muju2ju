@@ -11,7 +11,6 @@ function Hud:init()
 
   self.health = HudHealth()
   self.protect = HudProtect()
-  self.selector = HudSelector()
   self.juju = HudJuju()
   self.portrait = HudPortrait()
   self.minions = HudMinions()
@@ -34,7 +33,6 @@ function Hud:update()
   self.tooltip:update()
 
   self.protect:update()
-  self.selector:update()
   self.juju:update()
   self.portrait:update()
   self.minions:update()
@@ -64,7 +62,6 @@ function Hud:gui()
 
   self.health:draw()
   self.protect:draw()
-  self.selector:draw()
   self.minions:draw()
   self.shruju:draw()
   self.juju:draw()
@@ -88,11 +85,10 @@ function Hud:keyreleased(key)
 end
 
 function Hud:mousepressed(...)
-  self.selector:mousepressed(...)
+  --
 end
 
 function Hud:mousereleased(...)
-  self.selector:mousepressed(...)
   self.upgrades:mousereleased(...)
   self.pause:mousereleased(...)
   self.dead:mousereleased(...)

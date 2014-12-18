@@ -3,11 +3,11 @@ HudPortrait = class()
 local g = love.graphics
 
 function HudPortrait:init()
-
+  --
 end
 
 function HudPortrait:update()
-
+  --
 end
 
 function HudPortrait:draw()
@@ -51,14 +51,5 @@ end
 
 function HudPortrait:getSelected()
   local p = ctx.players:get(ctx.id)
-  local unit
-
-  ctx.units:each(function(u)
-    if u.owner == p and u.selected then
-      unit = u
-      return false
-    end
-  end)
-
-  return unit
+  return p.selected and p.deck[p.selected].instance
 end

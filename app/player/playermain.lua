@@ -4,7 +4,7 @@ PlayerMain = extend(Player)
 
 function PlayerMain:activate()
   self.prev = setmetatable({}, self.meta)
-  self.input = Input()
+  self.input = PlayerInput(self)
 
   ctx.view.x = self.x - ctx.view.width / 2
   ctx.view.y = self.y - ctx.view.height / 2
@@ -28,6 +28,7 @@ function PlayerMain:update()
 
   self.healthDisplay = math.lerp(self.healthDisplay, self.health, 5 * tickRate)
 
+  self.input:update()
   local input = self.input:read()
   self:move(input)
   self:slot(input)
@@ -60,14 +61,14 @@ function PlayerMain:trace(data)
   end
 
   -- Discard inputs before the ack.
-  while #self.inputs > 0 and self.inputs[1].tick < data.ack + 1 do
-    table.remove(self.inputs, 1)
+  while #self.input.list > 0 and self.input.list[1].tick < data.ack + 1 do
+    table.remove(self.input.list, 1)
   end
 
   -- Server reconciliation: Apply inputs that occurred after the ack.
-  for i = 1, #self.inputs do
+  for i = 1, #self.input.list do
     if not self.dead or (self.dead and self.ghost:contained()) then
-      self:move(self.inputs[i])
+      self:move(self.input.list[i])
     end
   end
 end

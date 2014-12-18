@@ -41,60 +41,66 @@ function PlayerInput:update()
 end
 
 function PlayerInput:read()
-  local t = self:current()
+  local input = self:current()
 
-  t.x = ctx.input:getAxis('x')
-  t.y = ctx.input:getAxis('y')
-  t.summon = love.keyboard.isDown(' ')
+  input.x = self:getAxis('x')
+  input.y = self:getAxis('y')
+  input.summon = lk.isDown(' ')
 
-  if self.summonTimer > 0 then
-    t.x = 0
+  if self.owner.summonTimer > 0 then
+    input.x = 0
   end
 
-  if self.animation.state.name == 'summon' then
-    t.x = 0
-  elseif self.animation.state.name == 'resurrect' then
-    t.x = 0
-    t.summon = false
+  if self.owner.animation.state.name == 'summon' then
+    input.x = 0
+  elseif self.owner.animation.state.name == 'resurrect' then
+    input.x = 0
+    input.summon = false
   end
  
   local vx = self:getAxis('vx')
   ctx.view.vx = 1000 * vx
 
-  return t
+  return input
 end
 
 function PlayerInput:keypressed(key)
-  local latest = self:current()
+  local input = self:current()
 
   if key == 'q' then
-    latest.ability = 1
+    input.ability = 1
     return
   elseif key == 'e' then
-    latest.ability = 2
+    input.ability = 2
     return
   end
 
   local stanceMap = {'defensive', 'aggressive', 'follow'}
   for stance, hotkey in pairs({'z', 'x', 'c'}) do
     if key == hotkey then
-      local selected = self.owner.selected
-      ctx.units:each(function(unit)
-        if unit.selected == true and unit.owner == self then
-          selected = unit
-          return false
-        end
-      end)
-
-      if selected then
-        ctx.net:send('stance', {id = selected.id, stance = stance})
-      end
+      input.stance = stance
     end
   end
 
   for i = 1, #self.owner.deck do
     if i == tonumber(key) then
-      latest.selected = i
+      input.selected = i
+      return
+    end
+  end
+end
+
+function PlayerInput:keyreleased(key)
+
+end
+
+function PlayerInput:mousepressed(x, y, b)
+  if b ~= 'l' then return end
+
+  local input = self:current()
+  for i = 1, #self.deck do
+    if self.deck[i].instance and self.deck[i].instance.animation:containsPoint(x, y) then
+      input.selected = i
       return
     end
   end
@@ -102,7 +108,7 @@ end
 
 function PlayerInput:current()
   local latest = self.list[#self.list]
-  if latest.tick == tick then return latest end
+  if latest and latest.tick == tick then return latest end
   
   table.insert(self.list, {tick = tick})
   return self.list[#self.list]

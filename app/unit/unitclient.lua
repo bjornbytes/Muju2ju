@@ -39,8 +39,9 @@ function UnitClient:draw()
     g.setShader()
   end)
 
-  data.media.shaders.horizontalBlur:send('amount', self.selected and .006 or .003)
-  data.media.shaders.verticalBlur:send('amount', self.selected and .006 or .003)
+  local selected = self.owner.deck[self.class.code].instance == self
+  data.media.shaders.horizontalBlur:send('amount', selected and .006 or .003)
+  data.media.shaders.verticalBlur:send('amount', selected and .006 or .003)
   g.setColor(255, 255, 255)
   for i = 1, 3 do
     g.setShader(data.media.shaders.horizontalBlur)
@@ -57,9 +58,6 @@ function UnitClient:draw()
   g.setColor(255, 255, 255)
   g.draw(self.canvas, lerpd.x, lerpd.y, 0, 1, 1, 100, 100)
   self.animation:draw(lerpd.x, lerpd.y, {noupdate = true})
-
-  g.setColor(0, 255, 0)
-  g.rectangle('line', self.x - self.width / 2, self.y, self.width, self.height)
 end
 
 function UnitClient:getHealthbar()

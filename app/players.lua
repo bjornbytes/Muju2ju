@@ -8,6 +8,27 @@ function Players:update()
   table.with(self.players, 'update')
 end
 
+function Players:keypressed(key)
+  local p = ctx.id and self:get(ctx.id)
+  if p and p.input then
+    p.input:keypressed(key)
+  end
+end
+
+function Players:keyreleased(key)
+  local p = ctx.id and self:get(ctx.id)
+  if p and p.input then
+    p.input:keyreleased(key)
+  end
+end
+
+function Players:mousepressed(x, y, b)
+  local p = ctx.id and self:get(ctx.id)
+  if p and p.input then
+    p.input:mousepressed(x, y, b)
+  end
+end
+
 function Players:add(id, vars)
   local player = self:get(id)
   if player then return player end

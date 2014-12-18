@@ -17,7 +17,6 @@ function Game:load(config, user)
   self.hud = Hud()
 
   self.event:on('ready', function()
-    self.input = Input()
     self.shrines = Manager()
     self.units = Units()
     self.jujus = Jujus()
@@ -76,8 +75,6 @@ function Game:update()
     return
   end
 
-  self.input:update()
-
 	if self.paused or self.net.state == 'ending' then
     self.effects:paused()
     self.hud:update()
@@ -123,13 +120,14 @@ function Game:keypressed(key)
 
   if self.hud.upgrades.active or self.paused or self.net.state == 'ending' then return end
 
-	--self.player:keypressed(key)
+  self.players:keypressed(key)
 end
 
 function Game:keyreleased(key)
   if not self.id then return end
 
   self.hud:keyreleased(key)
+  self.players:keyreleased(key)
 end
 
 function Game:mousepressed(...)
@@ -166,11 +164,11 @@ end
 function Game:joystickadded(...)
   if not self.id then return end
 
-  return self.input:joystickadded(...)
+  return self.players:joystickadded(...)
 end
 
 function Game:joystickremoved(...)
   if not self.id then return end
 
-  return self.input:joystickremoved(...)
+  return self.players:joystickremoved(...)
 end

@@ -83,25 +83,14 @@ NetClient.messages.input = {
     x = 'float',
     y = 'float',
     summon = 'bool',
-    minion = 3,
+    selected = 2,
+    stance = 2,
     ability = 2
   },
-  delta = {{'x', 'y'}},
-  order = {'tick', 'x', 'y', 'summon', 'minion', 'ability'},
+  delta = {{'x', 'y'}, 'selected', 'stance', 'ability'},
+  order = {'tick', 'x', 'y', 'summon', 'selected', 'stance', 'ability'},
   receive = function(self, event)
     ctx.players:get(ctx.id):trace(event.data)
-  end
-}
-
-NetClient.messages.stance = {
-  data = {
-    id = 5,
-    stance = 2
-  },
-  order = {'id', 'stance'},
-  receive = function(self, event)
-    local stanceMap = {[1] = 'defensive', [2] = 'aggressive', [3] = 'follow'}
-    ctx.units.objects[event.data.id].stance = stanceMap[event.data.stance]
   end
 }
 

@@ -8,7 +8,6 @@ Net.messageMap = {
   'rewards',
   'bootstrap',
   'input',
-  'stance',
   'snapshot',
   'chat',
   'unitCreate',

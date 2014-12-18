@@ -10,3 +10,9 @@ function UnitServer:activate()
 
   return Unit.activate(self)
 end
+
+function UnitServer:update()
+  self.animation:tick(tickRate)
+
+  return Unit.update(self)
+end

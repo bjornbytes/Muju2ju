@@ -36,12 +36,11 @@ function Unit:activate()
   end
 
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
-  self.selected = false
   self.team = self.owner and self.owner.team or 0
   self.maxHealth = self.health
   self.stance = 'aggressive'
 
-  if self.owner then self.owner.deck[self.code].instance = self end
+  if self.owner then self.owner.deck[self.class.code].instance = self end
 
   ctx.event:emit('view.register', {object = self})
 end

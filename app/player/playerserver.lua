@@ -49,11 +49,17 @@ function PlayerServer:trace(data)
 
   data.x = math.clamp(data.x, -1, 1)
   data.y = math.clamp(data.y, -1, 1)
-  data.minion = math.clamp(data.minion, 1, #self.deck)
+  if data.selected then data.selected = math.clamp(data.selected, 1, #self.deck) end
 
   -- if not self.dead then?
   self:move(data)
   self:slot(data)
+
+  local stanceMap = {[1] = 'defensive', [2] = 'aggressive', [3] = 'follow'}
+  local instance = self.deck[self.selected].instance
+  if instance and data.stance then
+    instance.stance = stanceMap[data.stance]
+  end
 
   table.insert(self.history, setmetatable({
     x = self.x,

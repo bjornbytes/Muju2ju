@@ -115,19 +115,15 @@ function Player:slot(input)
   self.summonTweenPrevTime = self.summonTweenTime
   self.summonPrevTimer = self.summonTimer
 
-  if input.ability then
-    --
-  end
+  self.selected = input.selected or self.selected
 
   if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
     self.summonTimer = self.summonTimer + tickRate
     self.summonTweenTime = math.min(self.summonTweenTime + tickRate, self.summonTweenDuration)
 
     if self.summonTimer >= 5 then
-      local minion = data.unit[self.deck[input.minion].code]
-
       if self:spend(self.minionCost) then
-        ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = minion.code, x = math.round(self.x)})
+        ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = self.deck[self.selected].code, x = math.round(self.x)})
 
         -- Juice
         for i = 1, 15 do ctx.event:emit('particles.add', {kind = 'dirt', x = self.x, y = self.y + self.height}) end

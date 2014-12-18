@@ -24,10 +24,14 @@ function Animation:draw(x, y, options)
   skeleton.x = x + (self.offsetx or 0)
   skeleton.y = y + (self.offsety or 0)
   skeleton.flipX = self.flipped
-  if not options.noupdate then animationState:update(delta * (self.state.speed or 1) * self.speed) end
+  if not options.noupdate then self:tick(delta) end
   animationState:apply(skeleton)
   skeleton:updateWorldTransform()
   skeleton:draw()
+end
+
+function Animation:tick(delta)
+  self.spine.animationState:update(delta * (self.state.speed or 1) * self.speed)
 end
 
 function Animation:set(name, options)
@@ -44,7 +48,16 @@ function Animation:set(name, options)
 end
 
 function Animation:contains(x, y)
+  table.each(self.spine.skeleton.slots, function(slot)
+    slot:setAttachment(slot.data.name .. '_bb')
+  end)
+
   self.spine.skeletonBounds:update(self.spine.skeleton, true)
+
+  table.each(self.spine.skeleton.slots, function(slot)
+    slot:setAttachment(slot.data.name)
+  end)
+
   return self.spine.skeletonBounds:containsPoint(x, y)
 end
 

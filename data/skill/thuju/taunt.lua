@@ -21,6 +21,10 @@ function Taunt:activate()
 
 end
 
+function Taunt:use(owner)
+  --
+end
+
 
 ----------------
 -- Upgrades

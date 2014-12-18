@@ -48,7 +48,6 @@ function PlayerMain:getHealthbar()
   return lerpd.x, lerpd.y, self.health / lerpd.maxHealth, lerpd.healthDisplay / lerpd.maxHealth
 end
 
-
 function PlayerMain:trace(data)
   self.juju = data.juju
 

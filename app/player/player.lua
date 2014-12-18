@@ -19,17 +19,22 @@ function Player:init()
   self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.direction = 1
+  self.speed = 0
+
+  self.deathTimer = 0
+  self.deathDuration = 7
+  self.dead = false
   self.ghost = Ghost(self)
   self.ghostX = self.x
   self.ghostY = self.y
-	self.speed = 0
+
 	self.juju = 10
 	self.jujuTimer = 1
-  self.deathTimer = 0
-  self.deathDuration = 7
-	self.dead = false
-	self.selectedMinion = 1
-	self.invincible = 0
+
+	self.selected = 1
+  self.maxPopulation = 1
+  self.minionCost = 10 -- For Debugging
+
   self.summonTimer = 0
   self.summonPrevTimer = self.summonTimer
   self.summonFactor = {value = 0}
@@ -37,14 +42,8 @@ function Player:init()
   self.summonTween = tween.new(self.summonTweenDuration, self.summonFactor, {value = 1}, 'inOutBack')
   self.summonTweenTime = 0
   self.summonTweenPrevTime = self.summonTweenTime
-  self.minionCost = 10 -- For Debugging
-
-  self.maxPopulation = 1
 
   self.depth = self.depth + love.math.random()
-
-	self.summonedMinions = 0
-	self.hasMoved = false
 end
 
 function Player:activate()
@@ -70,7 +69,6 @@ end
 function Player:update()
 
   -- Global behavior
-	self.invincible = timer.rot(self.invincible)
   local old = self.maxHealth
   self.maxHealth = math.round(Player.maxHealth + 20 * (tick * tickRate / 60))
   if self.health > 0 then self.health = self.health + (self.maxHealth - old) end
@@ -87,29 +85,13 @@ function Player:update()
   end
 end
 
-function Player:paused()
-  --
-end
-
 function Player:draw()
-	if math.floor(self.invincible * 4) % 2 == 0 then
-		love.graphics.setColor(255, 255, 255)
-		self.animation:draw(self.x, self.y)
-	end
+	love.graphics.setColor(255, 255, 255)
+	self.animation:draw(self.x, self.y)
 
   if self.dead then
     self.ghost:draw(self.ghostX, self.ghostY, self.ghostAngle)
   end
-end
-
-function Player:keypressed(key)
-	for i = 1, #self.deck do
-		if tonumber(key) == i then
-			self.selectedMinion = i
-			self.recentSelect = 1
-			return
-		end
-	end
 end
 
 function Player:move(input)
@@ -125,7 +107,6 @@ function Player:move(input)
 
   if not input.summon then
     self.speed = self.walkSpeed * input.x
-    if self.speed ~= 0 then self.hasMoved = true end
     self.x = math.clamp(self.x + self.speed * tickRate, 0, ctx.map.width)
   end
 end
@@ -133,6 +114,10 @@ end
 function Player:slot(input)
   self.summonTweenPrevTime = self.summonTweenTime
   self.summonPrevTimer = self.summonTimer
+
+  if input.ability then
+    --
+  end
 
   if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
     self.summonTimer = self.summonTimer + tickRate
@@ -169,7 +154,6 @@ function Player:die()
 end
 
 function Player:spawn()
-  self.invincible = 2
   self.health = self.maxHealth
   self.dead = false
   self.ghost:deactivate()
@@ -197,6 +181,7 @@ function Player:initDeck()
       runes = table.map(entry.runes, function(rune) return setmetatable({level = 0}, runes[rune]) end),
       upgrades = {},
       cooldown = 0,
+      instance = nil,
       code = entry.code
     }
 

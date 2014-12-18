@@ -3,9 +3,8 @@ require 'app/player/player'
 PlayerMain = extend(Player)
 
 function PlayerMain:activate()
-  self.gamepadSelectDirty = false
   self.prev = setmetatable({}, self.meta)
-  self.inputs = {}
+  self.input = Input()
 
   ctx.view.x = self.x - ctx.view.width / 2
   ctx.view.y = self.y - ctx.view.height / 2
@@ -20,18 +19,6 @@ function PlayerMain:get(t)
 end
 
 function PlayerMain:update()
-  if ctx.input.gamepad then -- TODO
-    local ltrigger = ctx.input.gamepad:getGamepadAxis('triggerleft') > .5
-    local rtrigger = ctx.input.gamepad:getGamepadAxis('triggerright') > .5
-    if not self.gamepadSelectDirty then
-      if rtrigger then self.selectedMinion = self.selectedMinion + 1 end
-      if ltrigger then self.selectedMinion = self.selectedMinion - 1 end
-      if self.selectedMinion <= 0 then self.selectedMinion = #self.deck
-      elseif self.selectedMinion > #self.deck then self.selectedMinion = 1 end
-    end
-    self.gamepadSelectDirty = rtrigger or ltrigger
-  end
-
   self.prev.x = self.x
   self.prev.y = self.y
   self.prev.ghostX = self.ghostX
@@ -41,7 +28,7 @@ function PlayerMain:update()
 
   self.healthDisplay = math.lerp(self.healthDisplay, self.health, 5 * tickRate)
 
-  local input = self:readInput()
+  local input = self.input:read()
   self:move(input)
   self:slot(input)
 
@@ -61,55 +48,6 @@ function PlayerMain:getHealthbar()
   return lerpd.x, lerpd.y, self.health / lerpd.maxHealth, lerpd.healthDisplay / lerpd.maxHealth
 end
 
-function PlayerMain:readInput()
-  local t = {tick = tick}
-
-  for i = 1, table.count(self.deck) do -- todo
-    if love.keyboard.isDown(tostring(i)) then
-      self.selectedMinion = i
-    end
-  end
-
-  local stanceMap = {'defensive', 'aggressive', 'follow'}
-  for stance, key in pairs({'z', 'x', 'c'}) do -- todo
-    if love.keyboard.isDown(key) then
-      local selected
-      ctx.units:each(function(unit)
-        if unit.selected == true and unit.owner == self then
-          selected = unit
-          return false
-        end
-      end)
-
-      if selected then
-        ctx.net:send('stance', {id = selected.id, stance = stance})
-      end
-    end
-  end
-
-  t.x = ctx.input:getAxis('x')
-  t.y = ctx.input:getAxis('y')
-  t.summon = love.keyboard.isDown(' ')--ctx.input:getAction('summon')
-  t.minion = self.selectedMinion
-
-  if self.summonTimer > 0 then
-    t.x = 0
-  end
-
-  if self.animation.state.name == 'summon' then
-    t.x = 0
-  elseif self.animation.state.name == 'resurrect' then
-    t.x = 0
-    t.summon = false
-  end
- 
-  local vx = ctx.input:getAxis('vx')
-  ctx.view.vx = 1000 * vx
-
-  table.insert(self.inputs, t)
-
-  return t
-end
 
 function PlayerMain:trace(data)
   self.juju = data.juju

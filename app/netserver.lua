@@ -135,19 +135,6 @@ NetServer.messages.input = {
   end
 }
 
-NetServer.messages.stance = {
-  data = {
-    id = 5,
-    stance = 2
-  },
-  order = {'id', 'stance'},
-  receive = function(self, event)
-    local stanceMap = {[1] = 'defensive', [2] = 'aggressive', [3] = 'follow'}
-    ctx.units.objects[event.data.id].stance = stanceMap[event.data.stance]
-    self:send('stance', event.peer, event.data)
-  end
-}
-
 NetServer.messages.snapshot = {
   data = {
     tick = 16,

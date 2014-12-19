@@ -55,7 +55,9 @@ function Unit:update()
     f.exe(self.skills[i].update, self.skills[i], self)
   end
 
-  f.exe(self.stances[self.stance], self)
+  if ctx.tag == 'server' then
+    f.exe(self.stances[self.stance], self)
+  end
 end
 
 

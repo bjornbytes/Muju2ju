@@ -36,6 +36,7 @@ function Animation:tick(delta)
 end
 
 function Animation:set(name, options)
+  if type(name) == 'number' and self.states[name] then name = self.states[name].name end
   if not name or not self.states[name] then return end
   options = options or {}
 

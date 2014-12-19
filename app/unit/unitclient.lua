@@ -20,7 +20,10 @@ function UnitClient:draw()
   local cur = self.history:get(t + 1, true)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
 
-  if not lerpd.animationIndex then return end
+  if not cur.animationIndex then return end
+
+  self.animation:set(cur.animationIndex, {force = true})
+  self.animation.flipped = cur.flipped
 
   if self.owner.team == ctx.players:get(ctx.id).team then
     self.canvas:clear(0, 255, 0, 0)

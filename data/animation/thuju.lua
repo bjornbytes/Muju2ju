@@ -11,7 +11,7 @@ Thuju.states.idle = {
   loop = true,
   speed = .21,
   mix = {
-    walk = .2,
+    walk = .1,
     death = .2
   }
 }
@@ -21,7 +21,8 @@ Thuju.states.walk = {
   loop = true,
   speed = .73,
   mix = {
-    death = .2
+    death = .2,
+    idle = .1
   }
 }
 
@@ -31,7 +32,8 @@ Thuju.states.attack = {
     death = .2,
     walk = .2,
     taunt = .2,
-    smash = .2
+    smash = .2,
+    idle = .2
   }
 }
 

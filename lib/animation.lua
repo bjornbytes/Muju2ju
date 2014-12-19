@@ -32,6 +32,7 @@ end
 
 function Animation:tick(delta)
   self.spine.animationState:update(delta * (self.state.speed or 1) * self.speed)
+  self.spine.animationState:apply(self.spine.skeleton)
 end
 
 function Animation:set(name, options)
@@ -48,17 +49,21 @@ function Animation:set(name, options)
 end
 
 function Animation:contains(x, y)
-  table.each(self.spine.skeleton.slots, function(slot)
-    slot:setAttachment(slot.data.name .. '_bb')
-  end)
-
-  self.spine.skeletonBounds:update(self.spine.skeleton, true)
+  x = x + (self.offsetx or 0)
+  y = y + (self.offsety or 0)
 
   table.each(self.spine.skeleton.slots, function(slot)
-    slot:setAttachment(slot.data.name)
+    slot:setAttachment(self.spine.skeleton:getAttachment(slot.data.name, slot.data.name .. '_bb'))
   end)
 
-  return self.spine.skeletonBounds:containsPoint(x, y)
+  self.spine.skeletonBounds:update(self.spine.skeleton)
+  local contains = self.spine.skeletonBounds:containsPoint(x, y)
+
+  table.each(self.spine.skeleton.slots, function(slot)
+    slot:setAttachment(self.spine.skeleton:getAttachment(slot.data.name, slot.data.name))
+  end)
+
+  return contains
 end
 
 function Animation:initSpine(name)

@@ -13,7 +13,6 @@ function Unit:activate()
   self.animation = data.animation[self.class.code]()
 
   self.animation:on('event', function(event)
-    print(event.data.name)
     if event.data.name == 'attack' then
       if self.target then
         self.target:hurt(self.damage, self)
@@ -69,6 +68,8 @@ function Unit.stances:defensive()
 
   if target and self:inRange(target) then
     self:attack(target)
+  else
+    self.animation:set('idle')
   end
 end
 
@@ -102,6 +103,7 @@ function Unit:moveTowards(target)
 
   self.x = self.x + self.speed * math.sign(target.x - self.x) * tickRate
   self.animation:set('walk')
+  self.animation.flipped = self.x > target.x
 end
 
 function Unit:attack(target)

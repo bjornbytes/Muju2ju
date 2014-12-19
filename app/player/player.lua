@@ -116,6 +116,9 @@ function Player:slot(input)
   self.summonPrevTimer = self.summonTimer
 
   self.selected = input.selected or self.selected
+  if input.stance and self.deck[self.selected].instance then
+    self.deck[self.selected].instance.stance = ({'defensive', 'aggressive', 'follow'})[input.stance]
+  end
 
   if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
     self.summonTimer = self.summonTimer + tickRate

@@ -134,6 +134,7 @@ function Game:mousepressed(...)
   if not self.id then return end
 
   self.hud:mousepressed(...)
+  self.players:mousepressed(...)
 end
 
 function Game:mousereleased(...)

@@ -65,7 +65,7 @@ function PlayerInput:read()
 end
 
 function PlayerInput:keypressed(key)
-  local input = self:current()
+  local input = self:current(tick + 1)
 
   if key == 'q' then
     input.ability = 1
@@ -79,6 +79,7 @@ function PlayerInput:keypressed(key)
   for stance, hotkey in pairs({'z', 'x', 'c'}) do
     if key == hotkey then
       input.stance = stance
+      return
     end
   end
 
@@ -97,20 +98,21 @@ end
 function PlayerInput:mousepressed(x, y, b)
   if b ~= 'l' then return end
 
-  local input = self:current()
-  for i = 1, #self.deck do
-    if self.deck[i].instance and self.deck[i].instance.animation:containsPoint(x, y) then
+  local input = self:current(tick + 1)
+  for i = 1, #self.owner.deck do
+    if self.owner.deck[i].instance and self.owner.deck[i].instance.animation:contains(x, y) then
       input.selected = i
       return
     end
   end
 end
 
-function PlayerInput:current()
+function PlayerInput:current(t)
+  local t = t or tick
   local latest = self.list[#self.list]
-  if latest and latest.tick == tick then return latest end
+  if latest and latest.tick == t then return latest end
   
-  table.insert(self.list, {tick = tick})
+  table.insert(self.list, {tick = t})
   return self.list[#self.list]
 end
 

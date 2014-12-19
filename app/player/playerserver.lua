@@ -55,12 +55,6 @@ function PlayerServer:trace(data)
   self:move(data)
   self:slot(data)
 
-  local stanceMap = {[1] = 'defensive', [2] = 'aggressive', [3] = 'follow'}
-  local instance = self.deck[self.selected].instance
-  if instance and data.stance then
-    instance.stance = stanceMap[data.stance]
-  end
-
   table.insert(self.history, setmetatable({
     x = self.x,
     y = self.y,

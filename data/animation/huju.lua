@@ -27,10 +27,7 @@ Huju.animations.cast = {
 Huju.animations.death = {
   priority = 3,
   blocking = true,
-  speed = .8,
-  complete = function(self, owner)
-    ctx.units:remove(owner)
-  end
+  speed = .8
 }
 
 return Huju

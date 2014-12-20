@@ -6,15 +6,15 @@ function Units:init()
 
   self.base = _G['Unit' .. ctx.tag:capitalize()]
 
-  ctx.event:on('unitCreate', function(info)
-    if not self.objects[info.id] then
-      self:add(info.kind, {id = info.id, owner = ctx.players:get(info.owner), x = info.x})
+  ctx.event:on('unitCreate', function(data)
+    if not self.objects[data.id] then
+      self:add(data.kind, {id = data.id, owner = ctx.players:get(data.owner), x = data.x})
     end
   end)
 
-  ctx.event:on('unitDestroy', function(info)
-    self.objects[info.id]:die()
-    self:remove(self.objects[info.id])
+  ctx.event:on('unitDie', function(data)
+    self.objects[data.id]:die()
+    self:remove(self.objects[data.id])
   end)
 end
 

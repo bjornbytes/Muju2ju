@@ -11,7 +11,7 @@ Net.messageMap = {
   'snapshot',
   'chat',
   'unitCreate',
-  'unitDestroy',
+  'unitDie',
   'unitAbility',
   'jujuCreate',
   'jujuCollect',

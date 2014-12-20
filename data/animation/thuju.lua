@@ -61,10 +61,7 @@ Thuju.states.smash = {
 Thuju.states.death = {
   priority = 3,
   blocking = true,
-  speed = .8,
-  complete = function(self, owner)
-    owner:die()
-  end
+  speed = .8
 }
 
 return Thuju

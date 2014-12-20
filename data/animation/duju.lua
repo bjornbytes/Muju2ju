@@ -19,14 +19,7 @@ Duju.animations.headbutt = {
   speed = .69,
   mix = {
     attack = .2
-  },
-  complete = 'attack'
-}
-
-Duju.on = {
-  headbutt = function(self, owner, event)
-    print('headbutt!')
-  end
+  }
 }
 
 return Duju

@@ -6,20 +6,20 @@ Player.code = 'player'
 Player.width = 45
 Player.height = 90
 
-Player.walkSpeed = 65
-Player.maxHealth = 500
-
 Player.depth = 3
 
 function Player:init()
   self.meta = {__index = self}
 
-	self.health = self.maxHealth
-	self.healthDisplay = self.health
   self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.direction = 1
   self.speed = 0
+  self.walkSpeed = 65
+
+  self.maxHealth = 500
+	self.health = self.maxHealth
+	self.healthDisplay = self.health
 
   self.deathTimer = 0
   self.deathDuration = 7
@@ -69,9 +69,6 @@ end
 function Player:update()
 
   -- Global behavior
-  local old = self.maxHealth
-  self.maxHealth = math.round(Player.maxHealth + 20 * (tick * tickRate / 60))
-  if self.health > 0 then self.health = self.health + (self.maxHealth - old) end
 	self:animate()
 	
   -- Dead behavior

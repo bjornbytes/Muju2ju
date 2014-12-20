@@ -32,6 +32,7 @@ function Unit:activate()
   self.team = self.owner and self.owner.team or 0
   self.maxHealth = self.health
   self.stance = 'aggressive'
+  self.dying = false
 
   if self.owner then self.owner.deck[self.class.code].instance = self end
 
@@ -43,6 +44,8 @@ function Unit:deactivate()
 end
 
 function Unit:update()
+  if self.dying then return end
+
   for i = 1, 2 do
     f.exe(self.abilities[i].update, self.abilities[i], self)
   end
@@ -116,24 +119,8 @@ function Unit:useAbility(index)
   ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index})
 end
 
-function Unit:hurt(amount, source)
-  if source then
-    for i = 1, 2 do
-      amount = f.exe(source.abilities[i].preHurt, source.abilities[i], self, amount) or amount
-    end
-  end
-
-  self.health = self.health - amount
-
-  if self.health <= 0 then
-    self:die()
-    return true
-  end
-end
-
-function Unit:heal(amount, source)
-  self.health = math.min(self.health + amount, self.maxHealth)
-end
+Unit.hurt = f.empty
+Unit.heal = f.empty
 
 function Unit:die()
   for i = 1, 2 do

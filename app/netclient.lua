@@ -121,14 +121,16 @@ NetClient.messages.snapshot = {
           tick = data.tick,
           x = data.x,
           health = data.health / 255 * unit.maxHealth,
-          ability = data.ability,
+          dying = data.dying,
           animationIndex = data.animationIndex,
           flipped = data.flipped
         })
-        unit.x = data.x
+
+        --[[unit.x = data.x
         unit.health = data.health / 255 * unit.maxHealth
+        unit.dying = data.dying
         unit.animationIndex = data.animationIndex
-        unit.flipped = data.flipped
+        unit.flipped = data.flipped]]
       end
     end)
 
@@ -161,9 +163,9 @@ NetClient.messages.unitCreate = {
   end
 }
 
-NetClient.messages.unitDestroy = {
+NetClient.messages.unitDie = {
   receive = function(self, event)
-    ctx.event:emit('unitDestroy', event.data)
+    ctx.event:emit('unitDie', event.data)
   end
 }
 

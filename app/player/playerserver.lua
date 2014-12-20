@@ -114,3 +114,11 @@ end
 function PlayerServer:heal(amount, source)
   self.health = math.min(self.health + amount, self.maxHealth)
 end
+
+function PlayerServer:animate()
+  if self.dead then return end
+
+  self.animation:tick(tickRate)
+
+  return Player.animate(self)
+end

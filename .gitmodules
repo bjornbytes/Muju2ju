@@ -10,3 +10,6 @@
 [submodule "lib/deps/tween"]
 	path = lib/deps/tween
 	url = https://github.com/kikito/tween.lua
+[submodule "lib/deps/spine"]
+	path = lib/deps/spine
+	url = https://github.com/bjornswenson/spine-runtimes

@@ -14,4 +14,4 @@ function Taunt:postupdate()
   end)
 end
 
-function Taunt
+return Taunt

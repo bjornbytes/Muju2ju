@@ -11,27 +11,27 @@ Burst.description = 'Burst things'
 ----------------
 -- Data
 ----------------
-Burst.cooldown = 5
+Burst.passive = true
 
 
 ----------------
 -- Behavior
 ----------------
-function Burst:activate()
-
+function Burst:die()
+  --
 end
 
 
 ----------------
 -- Upgrades
 ----------------
-local DamageRange = {}
-DamageRange.name = 'Burst Damage and Range'
-DamageRange.description = 'Burst does more damage and has more range.'
+local EssenceFlame = {}
+EssenceFlame.name = 'Essence Flame'
+EssenceFlame.description = 'Burst deals 50% increased damage and the radius is increased by 100%.'
 
 local Sanctuary = {}
 Sanctuary.name = 'Sanctuary'
-Sanctuary.description = 'Sanctuary bitch!'
+Sanctuary.description = 'Burst heals allies in the area of effect for 15% of their maximum health.'
 
 Burst.upgrades = {DamageRange, Sanctuary}
 

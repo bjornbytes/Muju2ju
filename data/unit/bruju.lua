@@ -15,6 +15,6 @@ Bruju.speed = 50
 ----------------
 -- Abilities
 ----------------
-Bruju.abilities = {'burst', 'rewind'}
+Bruju.abilities = {'burst', 'siphon'}
 
 return Bruju

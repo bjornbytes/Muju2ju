@@ -15,6 +15,6 @@ Thuju.speed = 45
 ----------------
 -- Abilities
 ----------------
-Thuju.abilities = {'taunt', 'smash'}
+Thuju.abilities = {'taunt', 'tremor'}
 
 return Thuju

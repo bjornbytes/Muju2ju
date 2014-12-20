@@ -20,14 +20,14 @@ Taunt.duration = 3
 ----------------
 -- Behavior
 ----------------
-function Taunt:activate(owner)
+function Taunt:activate()
   --
 end
 
-function Taunt:use(owner)
-  local targets = table.take(ctx.target:inRange(owner, self.range, 'enemy', 'unit'), self.targets)
+function Taunt:use()
+  local targets = table.take(ctx.target:inRange(self.owner, self.range, 'enemy', 'unit'), self.targets)
   table.each(targets, function(target)
-    target.buffs:add('taunt', owner, self.duration)
+    target.buffs:add('taunt', self.owner, self.duration)
   end)
 end
 

@@ -24,7 +24,7 @@ function Unit:activate()
   for i = 1, 2 do
     local ability = data.ability[self.class.code][self.class.abilities[i]]
     assert(ability, 'Missing ability ' .. i .. ' for ' .. self.class.name)
-    self.abilities[i] = setmetatable({}, {__index = ability})
+    self.abilities[i] = setmetatable({owner = self}, {__index = ability})
   end
 
   self:abilityCall('activate')

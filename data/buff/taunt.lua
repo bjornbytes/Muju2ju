@@ -1,4 +1,4 @@
-local Taunt = {}
+local Taunt = class()
 Taunt.code = 'taunt'
 
 function Taunt:activate(target, timer)

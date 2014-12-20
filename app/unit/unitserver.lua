@@ -8,7 +8,15 @@ function UnitServer:activate()
   self.buffs = {}
   self.shouldDestroy = false
 
-  return Unit.activate(self)
+  Unit.activate(self)
+
+  self.animation:on('event', function(event)
+    if event.data.name == 'attack' then
+      if self.target then
+        self.target:hurt(self.damage, self)
+      end
+    end
+  end)
 end
 
 function UnitServer:update()

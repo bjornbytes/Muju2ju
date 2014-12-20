@@ -16,13 +16,14 @@ end
 function UnitClient:draw()
   local t = tick - (interp / tickRate)
   if t < self.createdAt then return end
-  local prev = self.history:get(t, true)
-  local cur = self.history:get(t + 1, true)
+  local prev = self.history:get(t)
+  local cur = self.history:get(t + 1)
   local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
 
-  if not cur.animationIndex then return end
+  local animationIndex = self.history:get(t + 1, true).animationIndex
+  if not animationIndex then return end
 
-  self.animation:set(cur.animationIndex, {force = true})
+  self.animation:set(animationIndex, {force = true})
   self.animation.flipped = cur.flipped
 
   if self.owner.team == ctx.players:get(ctx.id).team then

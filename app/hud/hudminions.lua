@@ -103,11 +103,11 @@ function HudMinions:update()
     for upgrade = 1, #upgrades[minion] do
       local x, y, r, children = unpack(upgrades[minion][upgrade])
       if math.insideCircle(mx, my, x, y, r) then
-        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:skillTooltip(p.deck[minion].code, upgrade))
+        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:abilityTooltip(p.deck[minion].code, upgrade))
       else
         for i = 1, #children do
           if math.insideCircle(mx, my, unpack(children[i])) then
-            ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:skillUpgradeTooltip(p.deck[minion].code, upgrade, i))
+            ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:abilityUpgradeTooltip(p.deck[minion].code, upgrade, i))
           end
         end
       end

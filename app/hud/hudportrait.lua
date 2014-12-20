@@ -43,7 +43,6 @@ function HudPortrait:mousereleased(x, y, b)
     for i = 1, #stances do
       if math.inside(x, y, .08 * v + (.03 * v) * (i - 1), .06 * v, .02 * v, .02 * v) then
         unit.stance = stances[i]
-        ctx.net:send()
       end
     end
   end

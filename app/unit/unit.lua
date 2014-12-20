@@ -12,26 +12,18 @@ Unit.depth = 3
 function Unit:activate()
   self.animation = data.animation[self.class.code]()
 
-  self.animation:on('event', function(event)
-    if event.data.name == 'attack' then
-      if self.target then
-        self.target:hurt(self.damage, self)
-      end
-    end
-  end)
-
   self.animation:on('complete', function(data)
     if not data.state.loop then self.animation:set('idle') end
   end)
 
   self.buffs = UnitBuffs(self)
 
-  self.skills = {}
+  self.abilities = {}
   for i = 1, 2 do
-    local skill = data.skill[self.class.code][self.class.skills[i]]
-    assert(skill, 'Missing skill ' .. i .. ' for ' .. self.class.name)
-    self.skills[i] = setmetatable({}, {__index = skill})
-    f.exe(self.skills[i].activate, self.skills[i], self)
+    local ability = data.ability[self.class.code][self.class.abilities[i]]
+    assert(ability, 'Missing ability ' .. i .. ' for ' .. self.class.name)
+    self.abilities[i] = setmetatable({}, {__index = ability})
+    f.exe(self.abilities[i].activate, self.abilities[i], self)
   end
 
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
@@ -52,7 +44,7 @@ function Unit:update()
   self.buffs:update()
 
   for i = 1, 2 do
-    f.exe(self.skills[i].update, self.skills[i], self)
+    f.exe(self.abilities[i].update, self.abilities[i], self)
   end
 
   if ctx.tag == 'server' then
@@ -115,14 +107,14 @@ function Unit:attack(target)
 end
 
 function Unit:ability(index)
-  local skill = self.skills[index]
-  f.exe(skill.use, skill, self)
+  local ability = self.abilities[index]
+  f.exe(ability.use, ability, self)
 end
 
 function Unit:hurt(amount, source)
   if source then
     for i = 1, 2 do
-      amount = f.exe(source.skills[i].preHurt, source.skills[i], self, amount) or amount
+      amount = f.exe(source.abilities[i].preHurt, source.abilities[i], self, amount) or amount
     end
   end
 

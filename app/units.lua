@@ -13,6 +13,7 @@ function Units:init()
   end)
 
   ctx.event:on('unitDestroy', function(info)
+    self.objects[info.id]:die()
     self:remove(self.objects[info.id])
   end)
 end

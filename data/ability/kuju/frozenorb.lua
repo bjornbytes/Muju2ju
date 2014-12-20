@@ -5,7 +5,10 @@ FrozenOrb.code = 'frozenorb'
 -- Meta
 ----------------
 FrozenOrb.name = 'Frozen Orb'
-FrozenOrb.description = 'Fuck shit up'
+FrozenOrb.description = [[
+Kuju sends out a projectile in a target direction that deals damage and slows units hit.
+It then returns to Kuju, reapplying the damage and slow.
+]]
 
 
 ----------------
@@ -22,18 +25,23 @@ function FrozenOrb:activate()
 end
 
 
+function FrozenOrb:use()
+  ctx.spells.add(data.spell.kuju.frozenorb)
+end
+
+
 ----------------
 -- Upgrades
 ----------------
-local Something = {}
-Something.name = 'FrozenOrb Something'
-Something.description = 'This upgrade does something to make FrozenOrb better.'
+local WintersWrath = {}
+WintersWrath.name = 'Winter\'s Wrath'
+WintersWrath.description = 'Frozen Orb deals 10% more damage.'
 
-local Something2 = {}
-Something2.name = 'FrozenOrb Something'
-Something2.description = 'This is another upgrade that makes FrozenOrb better.'
+local SweepingGale = {}
+SweepingGale.name = 'Sweeping Gale'
+SweepingGale.description = 'Frozen orb travels 25% further away from Kuju before returning.'
 
-FrozenOrb.upgrades = {Something, Something2}
+FrozenOrb.upgrades = {WintersWrath, SweepingGale}
 
 return FrozenOrb
 

@@ -121,6 +121,7 @@ NetClient.messages.snapshot = {
           tick = data.tick,
           x = data.x,
           health = data.health / 255 * unit.maxHealth,
+          ability = data.ability,
           animationIndex = data.animationIndex,
           flipped = data.flipped
         })
@@ -163,6 +164,14 @@ NetClient.messages.unitCreate = {
 NetClient.messages.unitDestroy = {
   receive = function(self, event)
     ctx.event:emit('unitDestroy', event.data)
+  end
+}
+
+NetClient.messages.unitAbility = {
+  receive = function(self, event)
+    if ctx.units.objects[event.data.id] then
+      table.insert(ctx.units.objects[event.data.id].abilityQueue, event.data)
+    end
   end
 }
 

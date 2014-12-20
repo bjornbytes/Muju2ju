@@ -117,7 +117,7 @@ function Player:slot(input)
 
   self.selected = input.selected or self.selected
   if input.stance and self.deck[self.selected].instance then
-    self.deck[self.selected].instance.stance = ({'defensive', 'aggressive', 'follow'})[input.stance]
+    self.deck[self.selected].instance.stance = Unit.stanceList[input.stance]
   end
 
   if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
@@ -183,6 +183,10 @@ function Player:initDeck()
       instance = nil,
       code = entry.code
     }
+
+    table.each(data.unit[entry.code].abilities, function(code)
+      self.deck[entry.code].upgrades[code] = {}
+    end)
 
     self.deck[i] = self.deck[entry.code]
   end

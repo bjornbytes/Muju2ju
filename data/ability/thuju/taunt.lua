@@ -12,17 +12,23 @@ Taunt.description = 'Taunt things'
 -- Data
 ----------------
 Taunt.cooldown = 5
+Taunt.range = 100
+Taunt.targets = 2
+Taunt.duration = 3
 
 
 ----------------
 -- Behavior
 ----------------
-function Taunt:activate()
-
+function Taunt:activate(owner)
+  --
 end
 
 function Taunt:use(owner)
-  --
+  local targets = table.take(ctx.target:inRange(owner, self.range, 'enemy', 'unit'), self.targets)
+  table.each(targets, function(target)
+    target.buffs:add('taunt', owner, self.duration)
+  end)
 end
 
 

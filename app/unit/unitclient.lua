@@ -9,8 +9,20 @@ function UnitClient:activate()
   self.createdAt = tick
   self.backCanvas = g.newCanvas(200, 200)
   self.canvas = g.newCanvas(200, 200)
+  self.abilityQueue = {}
 
   return Unit.activate(self)
+end
+
+function UnitClient:update()
+  local t = tick - (interp / tickRate)
+
+  while #self.abilityQueue > 0 and self.abilityQueue[1].tick <= t do
+    self:useAbility(self.abilityQueue[1].ability)
+    table.remove(self.abilityQueue, 1)
+  end
+
+  return Unit.update(self)
 end
 
 function UnitClient:draw()

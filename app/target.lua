@@ -52,5 +52,7 @@ function Target:inRange(source, range, teamFilter, ...)
     else i = i + 1 end
   end
 
+  table.sort(targets, function(a, b) return a[2] < b[2] end)
+
   return table.map(targets, function(t) return t[1] end)
 end

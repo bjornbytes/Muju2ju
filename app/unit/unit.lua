@@ -1,6 +1,8 @@
 Unit = class()
 
 Unit.classStats = {'health', 'damage', 'range', 'attackSpeed', 'speed'}
+Unit.stanceList = {'defensive', 'aggressive', 'follow'}
+table.each(Unit.stanceList, function(stance, i) Unit.stanceList[stance] = i end)
 
 Unit.width = 64
 Unit.height = 64
@@ -41,15 +43,17 @@ function Unit:deactivate()
 end
 
 function Unit:update()
-  self.buffs:update()
-
   for i = 1, 2 do
     f.exe(self.abilities[i].update, self.abilities[i], self)
   end
 
+  self.buffs:preupdate()
+
   if ctx.tag == 'server' then
     f.exe(self.stances[self.stance], self)
   end
+
+  self.buffs:postupdate()
 end
 
 
@@ -106,9 +110,10 @@ function Unit:attack(target)
   self.animation:set('attack')
 end
 
-function Unit:ability(index)
+function Unit:useAbility(index)
   local ability = self.abilities[index]
   f.exe(ability.use, ability, self)
+  ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index})
 end
 
 function Unit:hurt(amount, source)

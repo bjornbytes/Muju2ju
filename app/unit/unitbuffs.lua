@@ -8,18 +8,30 @@ function UnitBuffs:init(owner)
   self:applyRunes()
 end
 
-function UnitBuffs:update()
+function UnitBuffs:preupdate()
+  table.with(self.list, 'preupdate')
+end
+
+function UnitBuffs:postupdate()
+  table.with(self.list, 'postupdate')
   table.with(self.list, 'update')
 end
 
 function UnitBuffs:add(code, vars)
-  local buff = data.buffs[code]()
-  self.list[code] = buff
+  local buff = data.buff[code]()
+  self.list[buff] = buff
   f.exe(buff.activate, buff, self.owner, vars)
+  return buff
 end
 
-function UnitBuffs:getBuff(code)
-  return self.list[code]
+function UnitBuffs:remove(buff)
+  if type(buff) == 'string' then
+    -- remove by code
+    return
+  end
+
+  f.exe(buff.deactivate, buff, self.owner)
+  self.list[buff] = nil
 end
 
 function UnitBuffs:applyRunes()

@@ -12,12 +12,24 @@ Net.messageMap = {
   'chat',
   'unitCreate',
   'unitDestroy',
+  'unitAbility',
   'jujuCreate',
   'jujuCollect',
   'spellCreate'
 }
 
 table.each(Net.messageMap, function(message, i) Net.messageMap[message] = i end)
+
+Net.sizes = {
+  tick = 16,
+  teamId = 2,
+  playerId = 3,
+  playerAnimationIndex = 4,
+  unitId = 5,
+  unitStance = 2,
+  unitAbility = 2,
+  unitAnimationIndex = 4
+}
 
 function Net:init()
   self.inStream = Stream()

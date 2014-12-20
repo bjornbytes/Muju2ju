@@ -8,6 +8,10 @@ Player.height = 90
 
 Player.depth = 3
 
+
+----------------
+-- Core
+----------------
 function Player:init()
   self.meta = {__index = self}
 
@@ -91,6 +95,10 @@ function Player:draw()
   end
 end
 
+
+----------------
+-- Behavior
+----------------
 function Player:move(input)
   if self.dead then
     self.speed = 0
@@ -161,6 +169,10 @@ function Player:spend(amount)
   return self.juju >= amount
 end
 
+
+----------------
+-- Helper
+----------------
 function Player:atShrine()
   local shrine = ctx.shrines:filter(function(shrine) return shrine.team == self.team end)[1]
   if not shrine then return false end

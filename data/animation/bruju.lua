@@ -3,40 +3,33 @@ Bruju.code = 'bruju'
 
 Bruju.scale = .5
 Bruju.offsety = 48
-Bruju.default = 'spawn'
+Bruju.default = 'idle'
 Bruju.states = {}
 
 Bruju.states.spawn = {
-  priority = 3,
-  blocking = true,
-  speed = .85,
-  mix = {
-    walk = .4
-  }
+  priority = 5,
+  speed = .85
 }
 
 Bruju.states.idle = {
   priority = 1,
   loop = true,
-  speed = .3,
-  mix = {
-    walk = .2,
-    death = .2
-  }
+  speed = .3
 }
 
 Bruju.states.walk = {
   priority = 1,
   loop = true,
-  speed = .73,
-  mix = {
-    death = .2
-  }
+  speed = .73
+}
+
+Bruju.states.attack = {
+  priority = 2,
+  speed = .73
 }
 
 Bruju.states.death = {
-  priority = 3,
-  blocking = true,
+  priority = 5,
   speed = .8
 }
 

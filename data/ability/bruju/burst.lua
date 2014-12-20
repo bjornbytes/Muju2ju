@@ -1,4 +1,4 @@
-local Burst = {}
+local Burst = extend(Ability)
 Burst.code = 'burst'
 
 ----------------
@@ -18,6 +18,7 @@ Burst.passive = true
 -- Behavior
 ----------------
 function Burst:die()
+  local damage = 50 + 
   ctx.spells:add(data.spell.bruju.burst, {owner = self})
 end
 

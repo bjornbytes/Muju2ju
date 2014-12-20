@@ -1,4 +1,4 @@
-local Frostbite = {}
+local Frostbite = extend(Ability)
 Frostbite.code = 'Frostbite'
 
 ----------------

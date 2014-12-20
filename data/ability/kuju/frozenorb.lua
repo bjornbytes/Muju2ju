@@ -1,4 +1,4 @@
-local FrozenOrb = {}
+local FrozenOrb = extend(Ability)
 FrozenOrb.code = 'frozenorb'
 
 ----------------

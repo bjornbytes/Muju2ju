@@ -1,4 +1,4 @@
-local Tremor = {}
+local Tremor = extend(Ability)
 Tremor.code = 'tremor'
 
 ----------------

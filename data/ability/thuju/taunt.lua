@@ -1,4 +1,4 @@
-local Taunt = {}
+local Taunt = extend(Ability)
 Taunt.code = 'taunt'
 
 ----------------

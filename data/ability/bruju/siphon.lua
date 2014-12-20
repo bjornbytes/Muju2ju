@@ -1,4 +1,4 @@
-local Siphon = class()
+local Siphon = extend(Ability)
 Siphon.code = 'siphon'
 
 ----------------

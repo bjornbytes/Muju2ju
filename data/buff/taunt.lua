@@ -1,5 +1,6 @@
 local Taunt = class()
 Taunt.code = 'taunt'
+Taunt.tags = {'taunt'}
 
 function Taunt:activate(owner, target, timer)
   self.target = target

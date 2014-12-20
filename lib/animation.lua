@@ -1,9 +1,15 @@
 Animation = class()
 
+Animation.defaultMix = .2
+
 function Animation:init()
   self:initSpine(self.code)
 
   for i = 1, #self.states do
+    table.each(self.states, function(state)
+      if state.index ~= i then self.spine.animationStateData:setMix(self.states[i].name, state.name, self.defaultMix) end
+    end)
+
     table.each(self.states[i].mix, function(time, to)
       self.spine.animationStateData:setMix(self.states[i].name, to, time)
     end)

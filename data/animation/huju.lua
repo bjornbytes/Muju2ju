@@ -27,7 +27,7 @@ Huju.states.attack = {
   speed = .8
 }
 
-Huju.animations.death = {
+Huju.states.death = {
   priority = 5,
   speed = .8
 }

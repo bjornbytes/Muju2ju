@@ -25,8 +25,9 @@ function Unit:activate()
     local ability = data.ability[self.class.code][self.class.abilities[i]]
     assert(ability, 'Missing ability ' .. i .. ' for ' .. self.class.name)
     self.abilities[i] = setmetatable({}, {__index = ability})
-    f.exe(self.abilities[i].activate, self.abilities[i], self)
   end
+
+  self:abilityCall('activate')
 
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.team = self.owner and self.owner.team or 0
@@ -46,9 +47,7 @@ end
 function Unit:update()
   if self.dying then return end
 
-  for i = 1, 2 do
-    f.exe(self.abilities[i].update, self.abilities[i], self)
-  end
+  self:abilityCall('update')
 
   self.buffs:preupdate()
 
@@ -123,11 +122,17 @@ Unit.hurt = f.empty
 Unit.heal = f.empty
 
 function Unit:die()
-  for i = 1, 2 do
-    f.exe(self.abilities[i].deactivate, self.abilities[i], self)
-  end
+  self:abilityCall('die')
+  self:abilityCall('deactivate')
 
   if self.owner then self.owner.deck[self.class.code].instance = nil end
 
   ctx.units:remove(self)
+end
+
+function Unit:abilityCall(key, ...)
+  for i = 1, 2 do
+    local ability = self.abilities[i]
+    f.exe(ability[key], ability, self, ...)
+  end
 end

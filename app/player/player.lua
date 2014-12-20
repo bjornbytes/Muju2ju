@@ -202,7 +202,7 @@ function Player:initDeck()
 end
 
 function Player:getPopulation()
-  return table.count(table.filter(ctx.units.objects, function(unit) return unit.owner == self end))
+  return table.count(ctx.units:filter(function(unit) return unit.owner == self end))
 end
 
 function Player:animate()

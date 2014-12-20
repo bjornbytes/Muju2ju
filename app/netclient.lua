@@ -64,10 +64,10 @@ NetClient.messages.bootstrap = {
 
     table.each(event.data.units, function(data)
       data.tick = event.data.tick
-      local unit = ctx.units.objects[data.id]
+      local unit = ctx.units:get(data.id)
       if not unit then
         ctx.event:emit('unitCreate', data)
-        unit = ctx.units.objects[data.id]
+        unit = ctx.units:get(data.id)
       end
 
       if unit then
@@ -115,7 +115,7 @@ NetClient.messages.snapshot = {
 
     table.each(event.data.units, function(data)
       data.tick = event.data.tick
-      local unit = ctx.units.objects[data.id]
+      local unit = ctx.units:get(data.id)
       if unit then
         unit.history:add({
           tick = data.tick,
@@ -125,17 +125,11 @@ NetClient.messages.snapshot = {
           animationIndex = data.animationIndex,
           flipped = data.flipped
         })
-
-        --[[unit.x = data.x
-        unit.health = data.health / 255 * unit.maxHealth
-        unit.dying = data.dying
-        unit.animationIndex = data.animationIndex
-        unit.flipped = data.flipped]]
       end
     end)
 
     table.each(event.data.shrines, function(data)
-      local shrine = ctx.shrines.objects[data.id]
+      local shrine = ctx.shrines:get(data.id)
       if shrine then
         shrine.history:add({
           tick = event.data.tick,
@@ -165,14 +159,20 @@ NetClient.messages.unitCreate = {
 
 NetClient.messages.unitDie = {
   receive = function(self, event)
-    ctx.event:emit('unitDie', event.data)
+    local unit = ctx.units:get(event.data.id)
+    if unit then
+      event.data.kind = 'death'
+      table.insert(unit.eventQueue, event.data)
+    end
   end
 }
 
 NetClient.messages.unitAbility = {
   receive = function(self, event)
-    if ctx.units.objects[event.data.id] then
-      table.insert(ctx.units.objects[event.data.id].abilityQueue, event.data)
+    local unit = ctx.units:get(event.data.id)
+    if unit then
+      event.data.kind = 'ability'
+      table.insert(unit.eventQueue, event.data)
     end
   end
 }
@@ -180,7 +180,7 @@ NetClient.messages.unitAbility = {
 NetClient.messages.jujuCreate = {
   receive = function(self, event)
     ctx.event:emit('jujuCreate', event.data)
-    local juju = ctx.jujus.objects[event.data.id]
+    local juju = ctx.jujus:get(event.data.id)
     if juju then
       for i = 1, (self.server:round_trip_time() / 1000) / tickRate do
         juju:update()

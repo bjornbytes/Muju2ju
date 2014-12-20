@@ -128,4 +128,6 @@ function Unit:die()
   end
 
   if self.owner then self.owner.deck[self.class.code].instance = nil end
+
+  ctx.units:remove(self)
 end

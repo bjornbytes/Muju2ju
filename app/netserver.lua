@@ -207,9 +207,10 @@ NetServer.messages.unitCreate = {
 
 NetServer.messages.unitDie = {
   data = {
+    tick = Net.sizes.tick,
     id = Net.sizes.unitId
   },
-  order = {'id'},
+  order = {'tick', 'id'},
   important = true
 }
 

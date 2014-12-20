@@ -33,6 +33,10 @@ function Manager:remove(object)
   self.objects[object.id] = nil
 end
 
+function Manager:get(id)
+  return self.objects[id]
+end
+
 function Manager:each(fn)
   table.each(self.objects, fn)
 end

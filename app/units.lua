@@ -11,11 +11,6 @@ function Units:init()
       self:add(data.kind, {id = data.id, owner = ctx.players:get(data.owner), x = data.x})
     end
   end)
-
-  ctx.event:on('unitDie', function(data)
-    self.objects[data.id]:die()
-    self:remove(self.objects[data.id])
-  end)
 end
 
 function Units:add(class, vars)

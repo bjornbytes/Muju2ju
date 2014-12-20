@@ -19,7 +19,8 @@ function UnitServer:activate()
 
   self.animation:on('complete', function(data)
     if data.state.name == 'death' then
-      ctx.net:emit('unitDie', {id = self.id})
+      ctx.net:emit('unitDie', {tick = tick, id = self.id})
+      self:die()
     end
   end)
 end

@@ -9,7 +9,7 @@ function UnitClient:activate()
   self.createdAt = tick
   self.backCanvas = g.newCanvas(200, 200)
   self.canvas = g.newCanvas(200, 200)
-  self.abilityQueue = {}
+  self.eventQueue = {}
 
   return Unit.activate(self)
 end
@@ -17,9 +17,16 @@ end
 function UnitClient:update()
   local t = tick - (interp / tickRate)
 
-  while #self.abilityQueue > 0 and self.abilityQueue[1].tick <= t do
-    self:useAbility(self.abilityQueue[1].ability)
-    table.remove(self.abilityQueue, 1)
+  while #self.eventQueue > 0 and self.eventQueue[1].tick <= t do
+    local item = self.eventQueue[1]
+
+    if item.kind == 'ability' then
+      self:useAbility(item.ability)
+    elseif item.kind == 'death' then
+      self:die()
+    end
+
+    table.remove(self.eventQueue, 1)
   end
 
   return Unit.update(self)

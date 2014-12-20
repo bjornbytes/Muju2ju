@@ -19,6 +19,7 @@ end
 
 function UnitBuffs:add(code, vars)
   local buff = data.buff[code]()
+  buff.owner = self.owner
   self.list[buff] = buff
   f.exe(buff.activate, buff, self.owner, vars)
   return buff

@@ -41,7 +41,7 @@ function PlayerDummy:trace(data)
   table.merge(data, self)
   data.tick = t
 
-  self.animation:set(self.animation.states[data.animationIndex].name)
+  self.animation:set(data.animationIndex, {force = true})
   self.animation.flipped = data.flipped
 
   self.history:add(data)

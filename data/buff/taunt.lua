@@ -1,7 +1,7 @@
 local Taunt = class()
 Taunt.code = 'taunt'
 
-function Taunt:activate(target, timer)
+function Taunt:activate(owner, target, timer)
   self.target = target
   self.timer = timer
 end

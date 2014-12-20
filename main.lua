@@ -58,7 +58,7 @@ function love.load()
       config = testConfig
     else
       if love.filesystem.exists('config.json') then
-        local json = require('spine-love/dkjson')
+        local json = require 'lib/deps/dkjson'
         local string = love.filesystem.read('config.json')
         config = json.decode(string)
       else

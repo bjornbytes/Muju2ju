@@ -52,7 +52,9 @@ function Animation:set(name, options)
   if not options.force and self.state and self.state.priority > target.priority then return end
 
   self.state = target
-  self.spine.animationState:setAnimationByName(0, self.state.name, self.state.loop)
+  if self.spine.skeletonData:findAnimation(self.state.name) then
+    self.spine.animationState:setAnimationByName(0, self.state.name, self.state.loop)
+  end
 end
 
 function Animation:contains(x, y)

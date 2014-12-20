@@ -9,13 +9,11 @@ local function load(dir)
 	if love.filesystem.exists(dir .. '.lua') then require(dir) end
 end
 
-require 'spine-love.spine'
 require 'enet'
+require 'lib/deps/spine/love/spine'
 
 load 'lib/deps/lutil'
-if love.audio then
-  load 'lib/deps/slam'
-end
+if love.audio then load 'lib/deps/slam' end
 load 'lib/gooey'
 load 'lib'
 

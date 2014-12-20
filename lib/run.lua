@@ -46,8 +46,13 @@ end
 
 function love.errhand(msg)
   msg = tostring(msg)
+  msg = debug.traceback('Error: ' .. tostring(msg), 1 + 2):gsub('\n[^\n]+$', '')
 
-  print((debug.traceback('Error: ' .. tostring(msg), 1 + 2):gsub('\n[^\n]+$', '')))
+  print(msg)
+
+  local file = io.open('error.log', 'w+')
+  file:write(msg)
+  file:close()
 
   if not love.window or not love.graphics or not love.event then return end
 

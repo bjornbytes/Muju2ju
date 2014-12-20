@@ -116,7 +116,6 @@ function HudChat:resize()
 end
 
 function HudChat:refresh()
-  do return end
   if #self.log == 0 then return end
   local u, v = ctx.hud.u, ctx.hud.v
   local width = u * .25 - 4

@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "76dmtYdQYpyLQuvrrf0scxqws74", "spine": "2.1.07", "width": 103.54, "height": 121.51 },
+"skeleton": { "hash": "knkSIZWHuRPeiPXPksj3vJloRms", "spine": "2.1.07", "width": 131.38, "height": 120.12 },
 "bones": [
 	{ "name": "root" },
 	{ "name": "chest", "parent": "root", "length": 53.15, "y": 72, "rotation": -94.08 },
@@ -69,7 +69,7 @@
 	"attack": {}
 },
 "animations": {
-	"cast": {
+	"attack": {
 		"bones": {
 			"root": {
 				"rotate": [

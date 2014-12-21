@@ -6,7 +6,7 @@ Player.code = 'player'
 Player.width = 45
 Player.height = 90
 
-Player.depth = 3
+Player.depth = 2
 
 
 ----------------

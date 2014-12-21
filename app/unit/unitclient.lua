@@ -10,6 +10,8 @@ function UnitClient:activate()
   self.backCanvas = g.newCanvas(200, 200)
   self.canvas = g.newCanvas(200, 200)
   self.eventQueue = {}
+  
+  self.depth = self.depth + love.math.random()
 
   return Unit.activate(self)
 end
@@ -92,5 +94,6 @@ end
 
 function UnitClient:getHealthbar()
   local lerpd = self:lerp()
-  return lerpd.x, ctx.map.height - ctx.map.groundHeight - 80, lerpd.health / lerpd.maxHealth, self.health / lerpd.maxHealth
+  if lerpd.dying then lerpd.health = 0 end
+  return lerpd.x, ctx.map.height - ctx.map.groundHeight - 80, lerpd.health / lerpd.maxHealth, lerpd.health / lerpd.maxHealth
 end

@@ -80,7 +80,7 @@ function Unit.stances:aggressive()
   if self:inRange(target) then
     self:attack(target)
   else
-    self:moveTowards(target)
+    self:moveIntoRange(target)
   end
 end
 
@@ -96,12 +96,16 @@ function Unit:inRange(target)
   return math.abs(target.x - self.x) <= self.range + target.width / 2 + self.width / 2
 end
 
-function Unit:moveTowards(target)
+function Unit:moveIntoRange(target)
   if self:inRange(target) then
     self.animation:set('idle')
     return
   end
 
+  self:moveTowards(target)
+end
+
+function Unit:moveTowards(target)
   self.x = self.x + self.speed * math.sign(target.x - self.x) * tickRate
   self.animation:set('walk')
   self.animation.flipped = self.x > target.x
@@ -135,10 +139,6 @@ end
 ----------------
 -- Helper
 ----------------
-function Unit:get()
-  return self -- overridden
-end
-
 function Unit:abilityCall(key, ...)
   for i = 1, 2 do
     local ability = self.abilities[i]

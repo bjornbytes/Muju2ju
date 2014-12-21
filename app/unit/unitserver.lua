@@ -27,7 +27,6 @@ end
 
 function UnitServer:update()
   self.animation:tick(tickRate)
-  self:hurt(10)
 
   return Unit.update(self)
 end

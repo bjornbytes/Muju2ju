@@ -1,4 +1,4 @@
-local FrozenOrb = class()
+local FrozenOrb = extend(Spell)
 FrozenOrb.code = 'frozenorb'
 
 function FrozenOrb:activate()

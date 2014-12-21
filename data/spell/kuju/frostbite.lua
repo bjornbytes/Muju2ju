@@ -1,4 +1,4 @@
-local Frostbite = class()
+local Frostbite = extend(Spell)
 Frostbite.code = 'frostbite'
 
 function Frostbite:activate()

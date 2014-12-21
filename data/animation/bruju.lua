@@ -24,7 +24,7 @@ Bruju.states.walk = {
 }
 
 Bruju.states.attack = {
-  priority = 2,
+  priority = 1,
   loop = true,
   speed = .73
 }

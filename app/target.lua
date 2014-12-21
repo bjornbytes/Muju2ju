@@ -16,14 +16,14 @@ local getEntries = {
   end,
   player = function(source, teamFilter, t)
     ctx.players:each(function(player)
-      if source ~= player and not player.dead and player.invincible == 0 and teamFilter(source, player) then
+      if source ~= player and not player.dead and teamFilter(source, player) then
         table.insert(t, {player, math.abs(player.x - source.x)})
       end
     end)
   end,
   unit = function(source, teamFilter, t)
     ctx.units:each(function(unit)
-      if source ~= unit and not unit.dead and teamFilter(source, unit) then
+      if source ~= unit and not unit.dying and teamFilter(source, unit) then
         table.insert(t, {unit, math.abs(unit.x - source.x)})
       end
     end)
@@ -51,6 +51,8 @@ function Target:inRange(source, range, teamFilter, ...)
     if targets[i][2] > range + targets[i][1].width / 2 then table.remove(targets, i)
     else i = i + 1 end
   end
+
+  table.sort(targets, function(a, b) return a[2] < b[2] end)
 
   return table.map(targets, function(t) return t[1] end)
 end

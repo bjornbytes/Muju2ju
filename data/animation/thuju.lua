@@ -3,68 +3,45 @@ Thuju.code = 'thuju'
 
 Thuju.scale = .35
 Thuju.offsety = 64
-Thuju.default = 'walk'
+Thuju.default = 'idle'
 Thuju.states = {}
+
+Thuju.states.spawn = {
+  priority = 5,
+  speed = .21
+}
 
 Thuju.states.idle = {
   priority = 1,
   loop = true,
-  speed = .21,
-  mix = {
-    walk = .2,
-    death = .2
-  }
+  speed = .21
 }
 
 Thuju.states.walk = {
   priority = 1,
   loop = true,
-  speed = .73,
-  mix = {
-    death = .2,
-    idle = .05
-  }
+  speed = .73
 }
 
 Thuju.states.attack = {
-  priority = 1,
-  mix = {
-    death = .2,
-    walk = .2,
-    taunt = .2,
-    smash = .2,
-    idle = .05
-  }
+  priority = 2,
+  loop = true,
+  speed = 1
 }
 
 Thuju.states.taunt = {
-  priority = 2,
-  blocking = true,
-  loop = false,
-  speed = 1,
-  mix = {
-    walk = .2,
-    attack = .2
-  }
+  priority = 3,
+  speed = 1
 }
 
-Thuju.states.smash = {
-  priority = 2,
-  blocking = true,
-  loop = false,
-  mix = {
-    walk = .2,
-    attack = .2
-  }
+Thuju.states.tremor = {
+  priority = 3,
+  speed = 1
 }
 
 Thuju.states.death = {
-  priority = 3,
-  blocking = true,
-  speed = .8,
-  complete = function(self, owner)
-    owner:die()
-  end
+  priority = 5,
+  speed = .8
 }
 
 return Thuju

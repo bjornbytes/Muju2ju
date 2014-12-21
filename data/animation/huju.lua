@@ -2,35 +2,35 @@ local Huju = extend(Animation)
 Huju.code = 'huju'
 
 Huju.scale = .5
-Huju.initial = 'idle'
-Huju.animations = {}
+Huju.default = 'idle'
+Huju.states = {}
 
-Huju.animations.idle = {
+Huju.states.spawn = {
+  priority = 5,
+  speed = 1
+}
+
+Huju.states.idle = {
   priority = 1,
   loop = true,
-  speed = .4,
-  mix = {
-    cast = .2,
-    death = .2
-  }
+  speed = .4
 }
 
-Huju.animations.cast = {
+Huju.states.walk = {
+  priority = 1,
+  loop = true,
+  speed = .4
+}
+
+Huju.states.attack = {
   priority = 2,
-  speed = .8,
-  mix = {
-    idle = .2,
-    death = .2
-  }
+  loop = true,
+  speed = .8
 }
 
-Huju.animations.death = {
-  priority = 3,
-  blocking = true,
-  speed = .8,
-  complete = function(self, owner)
-    ctx.units:remove(owner)
-  end
+Huju.states.death = {
+  priority = 5,
+  speed = .8
 }
 
 return Huju

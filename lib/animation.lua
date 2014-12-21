@@ -1,9 +1,15 @@
 Animation = class()
 
+Animation.defaultMix = .2
+
 function Animation:init()
   self:initSpine(self.code)
 
   for i = 1, #self.states do
+    table.each(self.states, function(state)
+      if state.index ~= i then self.spine.animationStateData:setMix(self.states[i].name, state.name, self.defaultMix) end
+    end)
+
     table.each(self.states[i].mix, function(time, to)
       self.spine.animationStateData:setMix(self.states[i].name, to, time)
     end)
@@ -46,7 +52,9 @@ function Animation:set(name, options)
   if not options.force and self.state and self.state.priority > target.priority then return end
 
   self.state = target
-  self.spine.animationState:setAnimationByName(0, self.state.name, self.state.loop)
+  if self.spine.skeletonData:findAnimation(self.state.name) then
+    self.spine.animationState:setAnimationByName(0, self.state.name, self.state.loop)
+  end
 end
 
 function Animation:contains(x, y)

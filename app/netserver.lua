@@ -3,7 +3,7 @@ NetServer = extend(Net)
 NetServer.messages = {}
 NetServer.messages.join = {
   data = {
-    id = 3,
+    id = Net.sizes.playerId,
     problem = 'string'
   },
   order = {'id', 'problem'},
@@ -61,7 +61,7 @@ NetServer.messages.join = {
 
 NetServer.messages.leave = {
   data = {
-    id = 3,
+    id = Net.sizes.playerId,
     reason = 'string'
   },
   order = {'id', 'reason'},
@@ -73,7 +73,7 @@ NetServer.messages.leave = {
 
 NetServer.messages.ready = {
   data = {
-    tick = 16
+    tick = Net.sizes.tick
   },
   order = {'tick'},
   important = true
@@ -81,7 +81,7 @@ NetServer.messages.ready = {
 
 NetServer.messages.over = {
   data = {
-    winner = 2
+    winner = Net.sizes.teamId
   },
   order = {'winner'},
   important = true
@@ -98,15 +98,15 @@ NetServer.messages.rewards = {
 
 NetServer.messages.bootstrap = {
   data = {
-    tick = 16,
+    tick = Net.sizes.tick,
     players = {
       color = 'string',
-      id = 3,
+      id = Net.sizes.playerId,
       x = 'float'
     },
     units = {
-      id = 12,
-      owner = 3,
+      id = Net.sizes.unitId,
+      owner = Net.sizes.playerId,
       kind = 'string',
       x = 16
     }
@@ -121,9 +121,9 @@ NetServer.messages.bootstrap = {
 
 NetServer.messages.input = {
   data = {
-    ack = 16,
+    ack = Net.sizes.tick,
     x = 'float',
-    juju = 12, 
+    juju = 12,
     health = 8,
     ghostX = 'float',
     ghostY = 'float'
@@ -137,12 +137,12 @@ NetServer.messages.input = {
 
 NetServer.messages.snapshot = {
   data = {
-    tick = 16,
+    tick = Net.sizes.tick,
     players = {
-      id = 3,
+      id = Net.sizes.playerId,
       x = 'float',
       health = 8,
-      animationIndex = 4,
+      animationIndex = Net.sizes.playerAnimationIndex,
       flipped = 'bool',
       dead = 'bool',
       ghostX = 'float',
@@ -150,11 +150,11 @@ NetServer.messages.snapshot = {
       ghostAngle = 9
     },
     units = {
-      id = 5,
+      id = Net.sizes.unitId,
       x = 16,
       health = 8,
-      stance = 2,
-      animationIndex = 4,
+      dying = 'bool',
+      animationIndex = Net.sizes.unitAnimationIndex,
       flipped = 'bool'
     },
     shrines = {
@@ -170,8 +170,8 @@ NetServer.messages.snapshot = {
   },
   order = {
     'tick', 'players', 'units', 'shrines',
-    players = {'id', 'x', 'health', 'animationIndex', 'flipped', 'dead', 'ghostX', 'ghostY', 'ghostAngle' },
-    units = {'id', 'x', 'health', 'animationIndex', 'flipped'},
+    players = {'id', 'x', 'health', 'animationIndex', 'flipped', 'ghostX', 'ghostY', 'ghostAngle' },
+    units = {'id', 'x', 'health', 'dying', 'animationIndex', 'flipped'},
     shrines = {'id', 'health'}
   }
 }
@@ -196,8 +196,8 @@ NetServer.messages.chat = {
 
 NetServer.messages.unitCreate = {
   data = {
-    id = 12,
-    owner = 3,
+    id = Net.sizes.unitId,
+    owner = Net.sizes.playerId,
     kind = 'string',
     x = 16
   },
@@ -205,18 +205,29 @@ NetServer.messages.unitCreate = {
   important = true
 }
 
-NetServer.messages.unitDestroy = {
+NetServer.messages.unitDie = {
   data = {
-    id = 12
+    tick = Net.sizes.tick,
+    id = Net.sizes.unitId
   },
-  order = {'id'},
+  order = {'tick', 'id'},
+  important = true
+}
+
+NetServer.messages.unitAbility = {
+  data = {
+    id = Net.sizes.unitId,
+    tick = Net.sizes.tick,
+    ability = Net.sizes.unitAbility
+  },
+  order = {'id', 'tick', 'ability'},
   important = true
 }
 
 NetServer.messages.jujuCreate = {
   data = {
     id = 12,
-    team = 2,
+    team = Net.sizes.team,
     x = 16,
     y = 16,
     amount = 8,
@@ -234,13 +245,6 @@ NetServer.messages.jujuCollect = {
   },
   order = {'id', 'owner'},
   important = true
-}
-
-NetServer.messages.spellCreate = {
-  data = {
-    properties = 'spell'
-  },
-  order = {'properties'}
 }
 
 function NetServer:init()
@@ -372,6 +376,7 @@ end
 
 function NetServer:snapshot()
   local snapshot = {tick = tick, players = {}, units = {}, shrines = {}}
+
   ctx.players:each(function(player)
     local entry = {
       id = player.id,
@@ -399,8 +404,8 @@ function NetServer:snapshot()
     table.insert(snapshot.units, {
       id = unit.id,
       x = math.round(unit.x),
-      y = math.round(unit.y),
       health = math.round(unit.health / unit.maxHealth * 255),
+      dying = unit.dying,
       animationIndex = unit.animation.state.index,
       flipped = unit.animation.flipped
     })
@@ -414,10 +419,6 @@ function NetServer:snapshot()
   end)
 
   self:emit('snapshot', snapshot)
-
-  ctx.units:each(function(unit)
-    if unit.shouldDestroy then self:emit('unitDestroy', {id = unit.id}) end
-  end)
 end
 
 function NetServer:bootstrap(peer)

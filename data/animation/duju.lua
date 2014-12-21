@@ -2,31 +2,45 @@ local Duju = extend(Animation)
 Duju.code = 'duju'
 
 Duju.scale = 1
-Duju.initial = 'attack'
-Duju.animations = {}
+Duju.default = 'idle'
+Duju.states = {}
 
-Duju.animations.attack = {
+Duju.states.spawn = {
+  priority = 5,
+  speed = 1
+}
+
+Duju.states.idle = {
   priority = 1,
   loop = true,
-  speed = function(self, owner) return .8 * owner.attackAnimation end,
-  mix = {
-    heabutt = .2
-  }
+  speed = 1
 }
 
-Duju.animations.headbutt = {
+Duju.states.walk = {
   priority = 1,
-  speed = .69,
-  mix = {
-    attack = .2
-  },
-  complete = 'attack'
+  loop = true,
+  speed = 1
 }
 
-Duju.on = {
-  headbutt = function(self, owner, event)
-    print('headbutt!')
-  end
+Duju.states.attack = {
+  priority = 2,
+  loop = true,
+  speed = 1
+}
+
+Duju.states.headbutt = {
+  priority = 3,
+  speed = .69,
+}
+
+Duju.states.charge = {
+  priority = 3,
+  speed = 1
+}
+
+Duju.states.death = {
+  priority = 5,
+  speed = 1
 }
 
 return Duju

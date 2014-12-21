@@ -49,7 +49,16 @@ data.load = function()
     halp(dir, data[type])
   end
 
-  load('data/skill', 'skill')
+  load('data/buff', 'buff')
+  load('data/ability', 'ability', function(ability)
+    if ability.upgrades then
+      table.each(ability.upgrades, function(upgrade)
+        if upgrade.code then
+          ability.upgrades[upgrade.code] = upgrade
+        end
+      end)
+    end
+  end)
   load('data/unit', 'unit')
   load('data/spell', 'spell')
   load('data/animation', 'animation', function(animation)
@@ -61,6 +70,26 @@ data.load = function()
       animation.states[i] = state
       state.index = i
       state.name = keys[i]
+    end
+
+    -- If it's an animation for a unit, make sure all required animations are supplied.
+    if data.unit[animation.code] then
+      local instance = animation()
+
+      local function check(name)
+        local code = animation.code:capitalize()
+        local article = 'a'
+        local first = name:sub(1, 1)
+        if table.has({'a', 'e', 'i', 'o', 'u'}, first) then article = 'an' end
+
+        if not instance.spine.skeletonData:findAnimation(name) then print(code .. ' is missing ' .. article .. ' ' .. name .. ' animation') end
+      end
+
+      check('spawn')
+      check('idle')
+      check('walk')
+      check('attack')
+      check('death')
     end
 
     return animation

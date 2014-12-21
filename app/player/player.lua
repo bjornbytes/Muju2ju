@@ -6,20 +6,24 @@ Player.code = 'player'
 Player.width = 45
 Player.height = 90
 
-Player.walkSpeed = 65
-Player.maxHealth = 500
+Player.depth = 2
 
-Player.depth = 3
 
+----------------
+-- Core
+----------------
 function Player:init()
   self.meta = {__index = self}
 
-	self.health = self.maxHealth
-	self.healthDisplay = self.health
   self.x = ctx.map.width / 2
 	self.y = ctx.map.height - ctx.map.groundHeight - self.height
   self.direction = 1
   self.speed = 0
+  self.walkSpeed = 65
+
+  self.maxHealth = 500
+	self.health = self.maxHealth
+	self.healthDisplay = self.health
 
   self.deathTimer = 0
   self.deathDuration = 7
@@ -69,9 +73,6 @@ end
 function Player:update()
 
   -- Global behavior
-  local old = self.maxHealth
-  self.maxHealth = math.round(Player.maxHealth + 20 * (tick * tickRate / 60))
-  if self.health > 0 then self.health = self.health + (self.maxHealth - old) end
 	self:animate()
 	
   -- Dead behavior
@@ -94,6 +95,10 @@ function Player:draw()
   end
 end
 
+
+----------------
+-- Behavior
+----------------
 function Player:move(input)
   if self.dead then
     self.speed = 0
@@ -117,7 +122,7 @@ function Player:slot(input)
 
   self.selected = input.selected or self.selected
   if input.stance and self.deck[self.selected].instance then
-    self.deck[self.selected].instance.stance = ({'defensive', 'aggressive', 'follow'})[input.stance]
+    self.deck[self.selected].instance.stance = Unit.stanceList[input.stance]
   end
 
   if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation then
@@ -164,6 +169,10 @@ function Player:spend(amount)
   return self.juju >= amount
 end
 
+
+----------------
+-- Helper
+----------------
 function Player:atShrine()
   local shrine = ctx.shrines:filter(function(shrine) return shrine.team == self.team end)[1]
   if not shrine then return false end
@@ -184,12 +193,16 @@ function Player:initDeck()
       code = entry.code
     }
 
+    table.each(data.unit[entry.code].abilities, function(code)
+      self.deck[entry.code].upgrades[code] = {}
+    end)
+
     self.deck[i] = self.deck[entry.code]
   end
 end
 
 function Player:getPopulation()
-  return table.count(table.filter(ctx.units.objects, function(unit) return unit.owner == self end))
+  return table.count(ctx.units:filter(function(unit) return unit.owner == self end))
 end
 
 function Player:animate()

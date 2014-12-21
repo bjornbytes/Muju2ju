@@ -9,23 +9,45 @@ function UnitClient:activate()
   self.createdAt = tick
   self.backCanvas = g.newCanvas(200, 200)
   self.canvas = g.newCanvas(200, 200)
+  self.eventQueue = {}
+  
+  self.depth = self.depth + love.math.random()
 
   return Unit.activate(self)
+end
+
+function UnitClient:update()
+  local t = tick - (interp / tickRate)
+  local state = self.history:get(t)
+  table.merge(state, self)
+
+  while #self.eventQueue > 0 and self.eventQueue[1].tick <= t do
+    local item = self.eventQueue[1]
+
+    if item.kind == 'ability' then
+      self:useAbility(item.ability)
+    elseif item.kind == 'death' then
+      self:die()
+    end
+
+    table.remove(self.eventQueue, 1)
+  end
+
+  return Unit.update(self)
 end
 
 function UnitClient:draw()
   local t = tick - (interp / tickRate)
   if t < self.createdAt then return end
-  local prev = self.history:get(t, true)
-  local cur = self.history:get(t + 1, true)
-  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
+  local lerpd = self:lerp()
 
-  if not cur.animationIndex then return end
+  local animationIndex = self.history:get(t + 1, true).animationIndex
+  if not animationIndex then return end
 
-  self.animation:set(cur.animationIndex, {force = true})
-  self.animation.flipped = cur.flipped
+  self.animation:set(animationIndex, {force = true})
+  self.animation.flipped = lerpd.flipped
 
-  if self.owner.team == ctx.players:get(ctx.id).team then
+  if self.player.team == ctx.players:get(ctx.id).team then
     self.canvas:clear(0, 255, 0, 0)
     self.backCanvas:clear(0, 255, 0, 0)
     g.setColor(0, 255, 0)
@@ -42,7 +64,7 @@ function UnitClient:draw()
     g.setShader()
   end)
 
-  local selected = self.owner.deck[self.class.code].instance == self
+  local selected = self.player.deck[self.class.code].instance == self
   data.media.shaders.horizontalBlur:send('amount', selected and .006 or .003)
   data.media.shaders.verticalBlur:send('amount', selected and .006 or .003)
   g.setColor(255, 255, 255)
@@ -63,10 +85,15 @@ function UnitClient:draw()
   self.animation:draw(lerpd.x, lerpd.y, {noupdate = true})
 end
 
-function UnitClient:getHealthbar()
+function UnitClient:lerp()
   local t = tick - (interp / tickRate)
   local prev = self.history:get(t)
   local cur = self.history:get(t + 1)
-  local lerpd = table.interpolate(prev, cur, tickDelta / tickRate)
-  return lerpd.x, ctx.map.height - ctx.map.groundHeight - 80, lerpd.health / lerpd.maxHealth, self.health / lerpd.maxHealth
+  return table.interpolate(prev, cur, tickDelta / tickRate)
+end
+
+function UnitClient:getHealthbar()
+  local lerpd = self:lerp()
+  if lerpd.dying then lerpd.health = 0 end
+  return lerpd.x, ctx.map.height - ctx.map.groundHeight - 80, lerpd.health / lerpd.maxHealth, lerpd.health / lerpd.maxHealth
 end

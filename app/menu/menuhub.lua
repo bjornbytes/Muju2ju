@@ -1,4 +1,4 @@
-local json = require('spine-love/dkjson')
+local json = require 'lib/deps/dkjson'
 
 MenuHub = class()
 

@@ -75,7 +75,6 @@ function PlayerInput:keypressed(key)
     return
   end
 
-  local stanceMap = {'defensive', 'aggressive', 'follow'}
   for stance, hotkey in pairs({'z', 'x', 'c'}) do
     if key == hotkey then
       input.stance = stance

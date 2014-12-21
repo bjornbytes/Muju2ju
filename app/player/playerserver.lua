@@ -33,7 +33,7 @@ function PlayerServer:update()
 		return 2
 	end)
 
-	--self:hurt(self.maxHealth * .033 * tickRate)
+	self:hurt(self.maxHealth * .033 * tickRate)
 
   Player.update(self)
 end
@@ -54,6 +54,10 @@ function PlayerServer:trace(data)
   -- if not self.dead then?
   self:move(data)
   self:slot(data)
+
+  if data.ability and self.deck[self.selected].instance then
+    self.deck[self.selected].instance:useAbility(data.ability)
+  end
 
   table.insert(self.history, setmetatable({
     x = self.x,
@@ -87,18 +91,7 @@ function PlayerServer:spend(amount)
 end
 
 function PlayerServer:hurt(amount, source)
-	if self.invincible == 0 then
-		self.health = math.max(self.health - amount, 0)
-		if self.gamepad and self.gamepad:isVibrationSupported() then
-			local l, r = .25, .25
-			if source then
-				if source.x > self.x then r = .5
-				elseif source.x < self.x then l = .5 end
-			end
-
-			self.gamepad:setVibration(l, r, .25)
-		end
-	end
+  self.health = math.max(self.health - amount, 0)
 
 	-- Death
 	if self.health <= 0 and self.deathTimer == 0 then
@@ -109,4 +102,12 @@ end
 
 function PlayerServer:heal(amount, source)
   self.health = math.min(self.health + amount, self.maxHealth)
+end
+
+function PlayerServer:animate()
+  if self.dead then return end
+
+  self.animation:tick(tickRate)
+
+  return Player.animate(self)
 end

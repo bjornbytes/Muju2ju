@@ -46,6 +46,7 @@ end
 
 function Tooltip:unitTooltip(code)
   local unit = data.unit[code]
+  if not unit then return end
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. unit.name .. '{normal}')
   table.insert(pieces, 'This unit is actually really cool.')
@@ -54,22 +55,25 @@ end
 
 function Tooltip:runeTooltip(id)
   local rune = runes[id]
+  if not rune then return end
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. rune.name .. '{normal}')
   table.insert(pieces, rune.description)
   return table.concat(pieces, '\n')
 end
 
-function Tooltip:skillTooltip(code, index)
-  local skill = data.skill[code][data.unit[code].skills[index]]
+function Tooltip:abilityTooltip(code, index)
+  local ability = data.ability[code][data.unit[code].abilities[index]]
+  if not ability then return end
   local pieces = {}
-  table.insert(pieces, '{white}{title}' .. skill.name .. '{normal}')
-  table.insert(pieces, skill.description)
+  table.insert(pieces, '{white}{title}' .. ability.name .. '{normal}')
+  table.insert(pieces, ability.description)
   return table.concat(pieces, '\n')
 end
 
-function Tooltip:skillUpgradeTooltip(code, skill, index)
-  local upgrade = data.skill[code][data.unit[code].skills[skill]].upgrades[index]
+function Tooltip:abilityUpgradeTooltip(code, skill, index)
+  local upgrade = data.ability[code][data.unit[code].abilities[ability]].upgrades[index]
+  if not upgrade then return end
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. upgrade.name .. '{normal}')
   table.insert(pieces, upgrade.description)

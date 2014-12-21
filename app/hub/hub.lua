@@ -1,6 +1,6 @@
-local hub = require('socket').tcp()
-local http = require('socket.http')
-local json = require('spine-love/dkjson')
+local hub = (require 'socket').tcp()
+local http = require 'socket.http'
+local json = require 'lib/deps/dkjson'
 
 local receiveQueue = love.thread.getChannel('hubReceiveQueue')
 local sendQueue = love.thread.getChannel('hubSendQueue')

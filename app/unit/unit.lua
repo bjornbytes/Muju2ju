@@ -1,6 +1,8 @@
 Unit = class()
 
 Unit.classStats = {'health', 'damage', 'range', 'attackSpeed', 'speed'}
+Unit.stanceList = {'defensive', 'aggressive', 'follow'}
+table.each(Unit.stanceList, function(stance, i) Unit.stanceList[stance] = i end)
 
 Unit.width = 64
 Unit.height = 64
@@ -12,34 +14,29 @@ Unit.depth = 3
 function Unit:activate()
   self.animation = data.animation[self.class.code]()
 
-  self.animation:on('event', function(event)
-    if event.data.name == 'attack' then
-      if self.target then
-        self.target:hurt(self.damage, self)
-      end
-    end
-  end)
-
   self.animation:on('complete', function(data)
     if not data.state.loop then self.animation:set('idle') end
   end)
 
   self.buffs = UnitBuffs(self)
 
-  self.skills = {}
+  self.abilities = {}
   for i = 1, 2 do
-    local skill = data.skill[self.class.code][self.class.skills[i]]
-    assert(skill, 'Missing skill ' .. i .. ' for ' .. self.class.name)
-    self.skills[i] = setmetatable({}, {__index = skill})
-    f.exe(self.skills[i].activate, self.skills[i], self)
+    local ability = data.ability[self.class.code][self.class.abilities[i]]
+    assert(ability, 'Missing ability ' .. i .. ' for ' .. self.class.name)
+    self.abilities[i] = ability()
+    self.abilities[i].unit = self
   end
 
+  self:abilityCall('activate')
+
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
-  self.team = self.owner and self.owner.team or 0
+  self.team = self.player and self.player.team or 0
   self.maxHealth = self.health
   self.stance = 'aggressive'
+  self.dying = false
 
-  if self.owner then self.owner.deck[self.class.code].instance = self end
+  if self.player then self.player.deck[self.class.code].instance = self end
 
   ctx.event:emit('view.register', {object = self})
 end
@@ -49,15 +46,17 @@ function Unit:deactivate()
 end
 
 function Unit:update()
-  self.buffs:update()
+  if self.dying then return end
 
-  for i = 1, 2 do
-    f.exe(self.skills[i].update, self.skills[i], self)
-  end
+  self:abilityCall('update')
+
+  self.buffs:preupdate()
 
   if ctx.tag == 'server' then
     f.exe(self.stances[self.stance], self)
   end
+
+  self.buffs:postupdate()
 end
 
 
@@ -86,7 +85,7 @@ function Unit.stances:aggressive()
 end
 
 function Unit.stances:follow()
-  self:moveTowards(self.owner)
+  self:moveTowards(self.player)
 end
 
 
@@ -114,34 +113,35 @@ function Unit:attack(target)
   self.animation:set('attack')
 end
 
-function Unit:ability(index)
-  local skill = self.skills[index]
-  f.exe(skill.use, skill, self)
+function Unit:useAbility(index)
+  local ability = self.abilities[index]
+  f.exe(ability.use, ability, self)
+  ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index})
 end
 
-function Unit:hurt(amount, source)
-  if source then
-    for i = 1, 2 do
-      amount = f.exe(source.skills[i].preHurt, source.skills[i], self, amount) or amount
-    end
-  end
-
-  self.health = self.health - amount
-
-  if self.health <= 0 then
-    self:die()
-    return true
-  end
-end
-
-function Unit:heal(amount, source)
-  self.health = math.min(self.health + amount, self.maxHealth)
-end
+Unit.hurt = f.empty
+Unit.heal = f.empty
 
 function Unit:die()
-  if not self.shouldDestroy then
-    local vx, vy = love.math.random(-35, 35), love.math.random(-300, -100)
-    ctx.net:emit('jujuCreate', {id = ctx.jujus.nextId, x = math.round(self.x), y = math.round(self.y), team = self.owner and self.owner.team or 0, amount = 3 + love.math.random(0, 2), vx = vx, vy = vy})
-    self.shouldDestroy = true
+  self:abilityCall('die')
+  self:abilityCall('deactivate')
+
+  if self.player then self.player.deck[self.class.code].instance = nil end
+
+  ctx.units:remove(self)
+end
+
+
+----------------
+-- Helper
+----------------
+function Unit:get()
+  return self -- overridden
+end
+
+function Unit:abilityCall(key, ...)
+  for i = 1, 2 do
+    local ability = self.abilities[i]
+    f.exe(ability[key], ability, ...)
   end
 end

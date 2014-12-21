@@ -91,18 +91,7 @@ function PlayerServer:spend(amount)
 end
 
 function PlayerServer:hurt(amount, source)
-	if self.invincible == 0 then
-		self.health = math.max(self.health - amount, 0)
-		if self.gamepad and self.gamepad:isVibrationSupported() then
-			local l, r = .25, .25
-			if source then
-				if source.x > self.x then r = .5
-				elseif source.x < self.x then l = .5 end
-			end
-
-			self.gamepad:setVibration(l, r, .25)
-		end
-	end
+  self.health = math.max(self.health - amount, 0)
 
 	-- Death
 	if self.health <= 0 and self.deathTimer == 0 then

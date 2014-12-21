@@ -14,9 +14,13 @@ function Burst:activate()
 
     self.x = self.owner.owner.x
     self.y = self.y or (ctx.map.height - ctx.map.groundHeight - self.owner.owner.height / 2)
+    self.team = self.owner.owner.team
 
-    table.each(ctx.target:inRange(unit, self.range, 'enemy', 'unit', 'player'), f.ego('hurt', self.damage))
-    table.each(ctx.target:inRange(unit, self.range, 'ally', 'unit', 'player'), function(target)
+    table.each(ctx.target:inRange(self, self.range, 'enemy', 'unit', 'player'), function(target)
+      target:hurt(self.damage, self.owner.owner)
+    end)
+
+    table.each(ctx.target:inRange(self, self.range, 'ally', 'unit', 'player'), function(target)
       target:heal(target.maxHealth * self.heal, self.owner.owner)
     end)
 

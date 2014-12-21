@@ -54,7 +54,7 @@ function UnitServer:die()
     id = ctx.jujus.nextId,
     x = math.round(self.x),
     y = math.round(self.y),
-    team = self.owner and self.owner.team or 0,
+    team = self.player and self.player.team or 0,
     amount = 3 + love.math.random(0, 2),
     vx = love.math.random(-35, 35),
     vy = love.math.random(-300, -100)

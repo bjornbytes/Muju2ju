@@ -48,8 +48,7 @@ function Stream:write(x, sig)
   if type(sig) == 'number' then self:writeBits(x, sig)
   elseif sig == 'string' then self:writeString(x)
   elseif sig == 'bool' then self:writeBool(x)
-  elseif sig == 'float' then self:writeFloat(x)
-  elseif sig == 'spell' then self:writeSpell(x) end
+  elseif sig == 'float' then self:writeFloat(x) end
   
   return self
 end
@@ -94,25 +93,11 @@ function Stream:writeBits(x, n)
   until n == 0
 end
 
-function Stream:writeSpell(spell)
-  if spell.kind == 'burst' then
-    self:writeBits(1, 4)
-    self:writeBits(math.round(spell.x), 16)
-    self:writeBits(math.round(spell.radius), 10)
-  elseif spell.kind == 'smash' then
-    self:writeBits(2, 4)
-    self:writeBits(math.round(spell.x), 16)
-    self:writeBits(spell.direction, 1)
-    self:writeBits(math.round(spell.range), 10)
-  end
-end
-
 function Stream:read(kind)
   if type(kind) == 'number' then return self:readBits(kind)
   elseif kind == 'string' then return self:readString()
   elseif kind == 'bool' then return self:readBool()
-  elseif kind == 'float' then return self:readFloat()
-  elseif kind == 'spell' then return self:readSpell() end
+  elseif kind == 'float' then return self:readFloat() end
 end
 
 function Stream:readString()
@@ -164,23 +149,6 @@ function Stream:readBits(n)
   end
 
   return x
-end
-
-function Stream:readSpell()
-  local properties = {}
-  local kind = self:readBits(4)
-  if kind == 1 then
-    properties.kind = 'burst'
-    properties.x = self:readBits(16)
-    properties.radius = self:readBits(10)
-  elseif kind == 2 then
-    properties.kind = 'smash'
-    properties.x = self:readBits(16)
-    properties.direction = self:readBits(1)
-    properties.range = self:readBits(10)
-  end
-
-  return properties
 end
 
 function Stream:pack(data, signature)

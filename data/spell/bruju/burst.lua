@@ -6,22 +6,22 @@ local g = love.graphics
 Burst.maxHealth = .5
 
 function Burst:activate()
-  self.x = self.owner.owner.x
-  self.y = self.owner.owner.y
+  local unit, player = self:getUnit(), self:getPlayer()
+
+  self.x = unit.x
+  self.y = unit.y
 
   if ctx.tag == 'server' then
     assert(self.damage and self.heal)
 
-    self.x = self.owner.owner.x
-    self.y = self.y or (ctx.map.height - ctx.map.groundHeight - self.owner.owner.height / 2)
-    self.team = self.owner.owner.team
+    self.team = unit.team
 
     table.each(ctx.target:inRange(self, self.range, 'enemy', 'unit', 'player'), function(target)
-      target:hurt(self.damage, self.owner.owner)
+      target:hurt(self.damage, unit)
     end)
 
     table.each(ctx.target:inRange(self, self.range, 'ally', 'unit', 'player'), function(target)
-      target:heal(target.maxHealth * self.heal, self.owner.owner)
+      target:heal(target.maxHealth * self.heal, unit)
     end)
 
     return ctx.spells:remove(self)
@@ -50,7 +50,8 @@ function Burst:update()
 end
 
 function Burst:draw()
-  local color = self.owner.owner.team == ctx.players:get(ctx.id).team and {40, 230, 40} or {230, 40, 40}
+  local unit = self:getUnit()
+  local color = unit.team == ctx.players:get(ctx.id).team and {40, 230, 40} or {230, 40, 40}
   color[4] = self.health / self.maxHealth * 255
 	g.setColor(color)
 

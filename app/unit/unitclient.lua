@@ -47,7 +47,7 @@ function UnitClient:draw()
   self.animation:set(animationIndex, {force = true})
   self.animation.flipped = lerpd.flipped
 
-  if self.owner.team == ctx.players:get(ctx.id).team then
+  if self.player.team == ctx.players:get(ctx.id).team then
     self.canvas:clear(0, 255, 0, 0)
     self.backCanvas:clear(0, 255, 0, 0)
     g.setColor(0, 255, 0)
@@ -64,7 +64,7 @@ function UnitClient:draw()
     g.setShader()
   end)
 
-  local selected = self.owner.deck[self.class.code].instance == self
+  local selected = self.player.deck[self.class.code].instance == self
   data.media.shaders.horizontalBlur:send('amount', selected and .006 or .003)
   data.media.shaders.verticalBlur:send('amount', selected and .006 or .003)
   g.setColor(255, 255, 255)

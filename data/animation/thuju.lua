@@ -34,7 +34,7 @@ Thuju.states.taunt = {
   speed = 1
 }
 
-Thuju.states.smash = {
+Thuju.states.tremor = {
   priority = 3,
   speed = 1
 }

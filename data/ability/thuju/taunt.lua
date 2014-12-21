@@ -35,14 +35,16 @@ end
 ----------------
 -- Upgrades
 ----------------
-local Armor = {}
-Armor.name = 'Taunt Armor'
-Armor.description = 'You get armor when you are taunting things.'
+local ImpenetrableHide = {}
+ImpenetrableHide.code = 'impenetrablehide'
+ImpenetrableHide.name = 'Impenetrable Hide'
+ImpenetrableHide.description = 'You get armor when you are taunting things.'
 
-local Reflect = {}
-Reflect.name = 'Taunt Reflect'
-Reflect.description = 'You reflect damage dealt by taunted attackers.'
+local WardOfThorns = {}
+WardOfThorns.code = 'wardofthorns'
+WardOfThorns.name = 'Ward of Thorns'
+WardOfThorns.description = 'You reflect damage dealt by taunted attackers.'
 
-Taunt.upgrades = {Armor, Reflect}
+Taunt.upgrades = {ImpenetrableHide, WardOfThorns}
 
 return Taunt

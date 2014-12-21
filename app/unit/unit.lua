@@ -25,18 +25,18 @@ function Unit:activate()
     local ability = data.ability[self.class.code][self.class.abilities[i]]
     assert(ability, 'Missing ability ' .. i .. ' for ' .. self.class.name)
     self.abilities[i] = ability()
-    self.abilities[i].owner = self
+    self.abilities[i].unit = self
   end
 
   self:abilityCall('activate')
 
   self.y = ctx.map.height - ctx.map.groundHeight - self.height
-  self.team = self.owner and self.owner.team or 0
+  self.team = self.player and self.player.team or 0
   self.maxHealth = self.health
   self.stance = 'aggressive'
   self.dying = false
 
-  if self.owner then self.owner.deck[self.class.code].instance = self end
+  if self.player then self.player.deck[self.class.code].instance = self end
 
   ctx.event:emit('view.register', {object = self})
 end
@@ -85,7 +85,7 @@ function Unit.stances:aggressive()
 end
 
 function Unit.stances:follow()
-  self:moveTowards(self.owner)
+  self:moveTowards(self.player)
 end
 
 
@@ -126,7 +126,7 @@ function Unit:die()
   self:abilityCall('die')
   self:abilityCall('deactivate')
 
-  if self.owner then self.owner.deck[self.class.code].instance = nil end
+  if self.player then self.player.deck[self.class.code].instance = nil end
 
   ctx.units:remove(self)
 end

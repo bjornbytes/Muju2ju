@@ -34,7 +34,7 @@ function Burst:die()
   end
 
   ctx.spells:add(data.spell.bruju.burst, {
-    owner = self,
+    ability = self,
     damage = damage,
     range = range,
     heal = heal

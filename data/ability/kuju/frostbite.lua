@@ -26,14 +26,16 @@ end
 ----------------
 -- Upgrades
 ----------------
-local Something = {}
-Something.name = 'Frostbite Something'
-Something.description = 'This upgrade does something to make Frostbite better.'
+local Tundra = {}
+Tundra.code = 'tundra'
+Tundra.name = 'Tundra'
+Tundra.description = 'This upgrade does something to make Frostbite better.'
 
-local Something2 = {}
-Something2.name = 'Frostbite Something'
-Something2.description = 'This is another upgrade that makes Frostbite better.'
+local FrigidPrison = {}
+FrigidPrison.code = 'frigidprison'
+FrigidPrison.name = 'Frigid Prison'
+FrigidPrison.description = 'This is another upgrade that makes Frostbite better.'
 
-Frostbite.upgrades = {Something, Something2}
+Frostbite.upgrades = {Tundra, FrigidPrison}
 
 return Frostbite

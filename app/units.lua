@@ -8,7 +8,7 @@ function Units:init()
 
   ctx.event:on('unitCreate', function(data)
     if not self.objects[data.id] then
-      self:add(data.kind, {id = data.id, owner = ctx.players:get(data.owner), x = data.x})
+      self:add(data.kind, {id = data.id, player = ctx.players:get(data.owner), x = data.x})
     end
   end)
 end

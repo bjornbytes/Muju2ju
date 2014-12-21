@@ -29,16 +29,6 @@ Kuju.states.attack = {
   speed = 1
 }
 
-Kuju.states.taunt = {
-  priority = 3,
-  speed = 1
-}
-
-Kuju.states.smash = {
-  priority = 3,
-  speed = 1
-}
-
 Kuju.states.death = {
   priority = 5,
   speed = .8

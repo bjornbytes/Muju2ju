@@ -7,6 +7,8 @@ function FrozenOrb:activate()
   self.team = unit.team
   self.returning = false
 
+  self.damaged = {}
+
   self.x = unit.x
   self.y = unit.y
   self.prevx = unit.x
@@ -27,6 +29,7 @@ function FrozenOrb:update()
   if inRange and not self.returning then
    self.x = self.x + direction * self.speed * tickRate
   elseif not inRange or self.returning then
+    if not self.returning then table.clear(self.damaged) end
     self.returning = true
     self.x = self.x - direction * self.speed * tickRate
   end
@@ -36,11 +39,14 @@ function FrozenOrb:update()
   end
 
   table.each(ctx.target:inRange(self, self.radius, 'enemy', 'unit'), function(target)
-    target.buffs:reapply('slow', {
-      amount = self.amount,
-      timer = self.duration
-    })
-    target:hurt(self.damage, unit)
+    if not self.damaged[target.id] then
+      target.buffs:add('slow', {
+        amount = self.amount,
+        timer = self.duration
+      })
+      target:hurt(self.damage, unit)
+      self.damaged[target.id] = true
+    end
   end)
 end
 

@@ -5,9 +5,16 @@ Siphon.name = 'Siphon'
 
 function Siphon:init()
   self.mode = 'passive'
+  self.timer = 0
+end
+
+function Siphon:update()
+  self.timer = timer.rot(self.timer, f.cur(self.setInactive, self))
 end
 
 function Siphon:postDealDamage(target, amount)
+  if self.mode == 'inactive' then return end
+
   local ability = self.ability
   local lifesteal = self.mode == 'active' and ability.activeLifesteal or ability.lifesteal
   local amount = lifesteal * amount
@@ -31,12 +38,17 @@ function Siphon:postDealDamage(target, amount)
   end
 end
 
+function Siphon:setInactive()
+  self.mode = 'inactive'
+end
+
 function Siphon:setPassive()
   self.mode = 'passive'
 end
 
 function Siphon:setActive()
   self.mode = 'active'
+  self.timer = self.ability.duration
 end
 
 return Siphon

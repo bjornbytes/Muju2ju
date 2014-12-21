@@ -19,20 +19,15 @@ function UnitBuffs:postupdate()
 end
 
 function UnitBuffs:add(code, vars)
+  if self:get(code) then return self:reapply(code, vars) end
+
   local buff = data.buff[code]()
   buff.unit = self.unit
+  buff.ability = ability
   self.list[buff] = buff
   table.merge(vars, buff, true)
   f.exe(buff.activate, buff)
   return buff
-end
-
-function UnitBuffs:reapply(code, vars)
-  if self.list[code] then
-    tabe.merge(vars, self.list[code], true)
-  else
-    self:add(code, vars)
-  end
 end
 
 function UnitBuffs:remove(buff)
@@ -43,6 +38,19 @@ function UnitBuffs:remove(buff)
 
   f.exe(buff.deactivate, buff, self.unit)
   self.list[buff] = nil
+end
+
+function UnitBuffs:get(code)
+  return next(table.filter(self.list, function(buff) return buff.code == code end))
+end
+
+function UnitBuffs:reapply(code, vars)
+  local buff = self:get(code)
+  if buff then
+    tabe.merge(vars, buff, true)
+  else
+    self:add(code, vars)
+  end
 end
 
 function UnitBuffs:buffsWithTag(tag)

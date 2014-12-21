@@ -106,6 +106,11 @@ function Unit:moveIntoRange(target)
 end
 
 function Unit:moveTowards(target)
+  if math.abs(target.x - self.x) <= target.width / 2 + self.width / 2 then
+    self.animation:set('idle')
+    return
+  end
+
   self.x = self.x + self.speed * math.sign(target.x - self.x) * tickRate
   self.animation:set('walk')
   self.animation.flipped = self.x > target.x

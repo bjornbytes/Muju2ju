@@ -22,24 +22,18 @@ Siphon.activeLifesteal = .4
 ----------------
 function Siphon:activate()
   self.buff = self.unit.buffs:add('siphon', {ability = self})
-  self.timer = 0
 end
 
 function Siphon:deactivate()
   self.unit.buffs:remove(self.buff)
 end
 
-function Siphon:update()
-  self.timer = timer.rot(self.timer, function()
-    self.buff:setPassive()
-  end)
+function Siphon:ready()
+  self.buff:setPassive()
 end
 
 function Siphon:use()
-  if self.timer == 0 then
-    self.buff:setActive()
-    self.timer = self.cooldown
-  end
+  self.buff:setActive()
 end
 
 

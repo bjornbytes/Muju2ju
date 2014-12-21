@@ -13,6 +13,7 @@ function UnitBuffs:preupdate()
 end
 
 function UnitBuffs:postupdate()
+  table.with(self.list, 'rot')
   table.with(self.list, 'postupdate')
   table.with(self.list, 'update')
 end
@@ -26,6 +27,14 @@ function UnitBuffs:add(code, vars)
   return buff
 end
 
+function UnitBuffs:reapply(code, vars)
+  if self.list[code] then
+    tabe.merge(vars, self.list[code], true)
+  else
+    self:add(code, vars)
+  end
+end
+
 function UnitBuffs:remove(buff)
   if type(buff) == 'string' then
     -- remove by code
@@ -34,6 +43,16 @@ function UnitBuffs:remove(buff)
 
   f.exe(buff.deactivate, buff, self.unit)
   self.list[buff] = nil
+end
+
+function UnitBuffs:buffsWithTag(tag)
+  local buffs = {}
+  table.each(self.list, function(buff, name)
+    if table.has(buff.tags, tag) then
+      buffs[name] = buff
+    end
+  end)
+  return buffs
 end
 
 function UnitBuffs:applyRunes()

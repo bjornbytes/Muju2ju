@@ -1,5 +1,5 @@
 local Frostbite = extend(Ability)
-Frostbite.code = 'Frostbite'
+Frostbite.code = 'frostbite'
 
 ----------------
 -- Meta
@@ -20,6 +20,10 @@ Frostbite.targeted = true
 ----------------
 function Frostbite:activate()
 
+end
+
+function Frostbite:use()
+  ctx.spells:add(data.spell.kuju.frostbite, {})
 end
 
 

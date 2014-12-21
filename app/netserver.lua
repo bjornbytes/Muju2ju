@@ -263,7 +263,7 @@ function NetServer:init()
     winners = table.values(table.map(winners, function(winner) return winner.username end))
     losers = table.values(table.map(losers, function(loser) return loser.username end))
 
-    local json = require('spine-love/dkjson')
+    local json = require 'lib/deps/dkjson'
     local hub = require('socket').tcp()
     assert(socket and json and hub)
     assert(hub:connect('127.0.0.1', 7999))

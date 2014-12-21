@@ -131,6 +131,14 @@ function Unit:die()
   ctx.units:remove(self)
 end
 
+
+----------------
+-- Helper
+----------------
+function Unit:get()
+  return self -- overridden
+end
+
 function Unit:abilityCall(key, ...)
   for i = 1, 2 do
     local ability = self.abilities[i]

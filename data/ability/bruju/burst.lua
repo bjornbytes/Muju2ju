@@ -22,7 +22,7 @@ Burst.range = 100
 function Burst:die()
   local damage = self.damage * (self:hasUpgrade('essenceflame') and 1.5 or 1)
   local range = self.range * (self:hasUpgrade('essenceflame') and 2 or 1)
-  local heal = self:hasUpgrade('sanctuary') and self.damage or 0
+  local heal = self:hasUpgrade('sanctuary') and .15 or 0
 
   ctx.spells:add(data.spell.bruju.burst, {
     owner = self,

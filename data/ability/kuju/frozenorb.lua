@@ -33,6 +33,14 @@ end
 
 
 function FrozenOrb:use()
+  if self:hasUpgrade('winterswrath') then
+    self.damage = self.damage + self.damage * .05
+  end
+
+  if self:hasUpgrade('sweepinggale') then
+    self.range = self.range + self.range * .25
+  end
+
   ctx.spells:add(data.spell.kuju.frozenorb, {
     damage = self.damage,
     radius = self.radius,

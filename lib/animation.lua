@@ -34,6 +34,23 @@ function Animation:draw(x, y, options)
   animationState:apply(skeleton)
   skeleton:updateWorldTransform()
   skeleton:draw()
+
+  if options.debug then
+    table.each(self.spine.skeleton.slots, function(slot)
+      slot:setAttachment(self.spine.skeleton:getAttachment(slot.data.name, slot.data.name .. '_bb'))
+      self.spine.skeleton.flipY = true
+    end)
+    skeleton:updateWorldTransform()
+    self.spine.skeletonBounds:update(self.spine.skeleton)
+    love.graphics.setColor(255, 255, 255)
+    for i = 1, #self.spine.skeletonBounds.polygons do
+      love.graphics.polygon('line', self.spine.skeletonBounds.polygons[i])
+    end
+    table.each(self.spine.skeleton.slots, function(slot)
+      slot:setAttachment(self.spine.skeleton:getAttachment(slot.data.name, slot.data.name))
+      self.spine.skeleton.flipY = false
+    end)
+  end
 end
 
 function Animation:tick(delta)
@@ -58,14 +75,14 @@ function Animation:set(name, options)
 end
 
 function Animation:contains(x, y)
-  x = x + (self.offsetx or 0)
-  y = y + (self.offsety or 0)
-
   table.each(self.spine.skeleton.slots, function(slot)
     slot:setAttachment(self.spine.skeleton:getAttachment(slot.data.name, slot.data.name .. '_bb'))
   end)
 
+  self.spine.skeleton.flipY = true
+  self.spine.skeleton:updateWorldTransform()
   self.spine.skeletonBounds:update(self.spine.skeleton)
+  self.spine.skeleton.flipY = false
   local contains = self.spine.skeletonBounds:containsPoint(x, y)
 
   table.each(self.spine.skeleton.slots, function(slot)

@@ -15,6 +15,7 @@ It then returns to Kuju, reapplying the damage and slow.
 -- Data
 ----------------
 FrozenOrb.cooldown = 5
+
 FrozenOrb.damage = 5
 FrozenOrb.range = 175
 FrozenOrb.radius = 10

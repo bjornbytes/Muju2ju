@@ -49,6 +49,7 @@ function Unit:update()
   if self.dying then return end
 
   self:abilityCall('update')
+  self:abilityCall('rot')
 
   self.buffs:preupdate()
 
@@ -124,8 +125,11 @@ end
 
 function Unit:useAbility(index)
   local ability = self.abilities[index]
-  f.exe(ability.use, ability, self)
-  ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index})
+  if ability:canUse() then
+    f.exe(ability.use, ability, self)
+    f.exe(ability.used, ability, self)
+    ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index})
+  end
 end
 
 Unit.hurt = f.empty

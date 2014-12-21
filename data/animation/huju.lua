@@ -24,6 +24,7 @@ Huju.states.walk = {
 
 Huju.states.attack = {
   priority = 2,
+  loop = true,
   speed = .8
 }
 

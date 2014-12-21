@@ -25,6 +25,7 @@ Kuju.states.walk = {
 
 Kuju.states.attack = {
   priority = 2,
+  loop = true,
   speed = 1
 }
 

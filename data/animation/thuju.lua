@@ -25,6 +25,7 @@ Thuju.states.walk = {
 
 Thuju.states.attack = {
   priority = 2,
+  loop = true,
   speed = 1
 }
 

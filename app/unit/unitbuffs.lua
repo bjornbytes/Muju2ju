@@ -17,11 +17,12 @@ function UnitBuffs:postupdate()
   table.with(self.list, 'update')
 end
 
-function UnitBuffs:add(code, ...)
+function UnitBuffs:add(code, vars)
   local buff = data.buff[code]()
   buff.unit = self.unit
   self.list[buff] = buff
-  f.exe(buff.activate, buff, ...)
+  table.merge(vars, buff, true)
+  f.exe(buff.activate, buff)
   return buff
 end
 

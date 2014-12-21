@@ -27,7 +27,7 @@ end
 function Taunt:use()
   local targets = table.take(ctx.target:inRange(self.owner, self.range, 'enemy', 'unit'), self.targets)
   table.each(targets, function(target)
-    target.buffs:add('taunt', self.owner, self.duration)
+    target.buffs:add('taunt', {target = self.unit, timer = self.duration})
   end)
 end
 

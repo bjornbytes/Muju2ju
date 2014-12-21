@@ -65,8 +65,8 @@ function UnitClient:draw()
   end)
 
   local selected = self.player.deck[self.class.code].instance == self
-  data.media.shaders.horizontalBlur:send('amount', selected and .006 or .003)
-  data.media.shaders.verticalBlur:send('amount', selected and .006 or .003)
+  data.media.shaders.horizontalBlur:send('amount', selected and .004 or .002)
+  data.media.shaders.verticalBlur:send('amount', selected and .004 or .002)
   g.setColor(255, 255, 255)
   for i = 1, 3 do
     g.setShader(data.media.shaders.horizontalBlur)

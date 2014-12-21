@@ -195,12 +195,6 @@ NetClient.messages.jujuCollect = {
   end
 }
 
-NetClient.messages.spellCreate = {
-  receive = function(self, event)
-    ctx.event:emit('spellCreate', event.data)
-  end
-}
-
 function NetClient:init()
   self.other = NetServer
   self.state = 'connecting'

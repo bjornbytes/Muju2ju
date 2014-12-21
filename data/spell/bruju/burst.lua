@@ -7,7 +7,7 @@ Burst.maxHealth = .5
 
 function Burst:activate()
   self.x = self.owner.owner.x
-  self.y = self.y or (ctx.map.height - ctx.map.groundHeight - self.owner.owner.height / 2)
+  self.y = self.owner.owner.y
 
   if ctx.tag == 'server' then
     assert(self.damage and self.heal)
@@ -28,6 +28,8 @@ function Burst:activate()
   end
 
   self.scale = 0
+  self.prevscale = self.scale
+
 	self.health = self.maxHealth
 
 	self.angle = love.math.random() * 2 * math.pi
@@ -42,6 +44,7 @@ end
 function Burst:update()
   if ctx.tag == 'client' then
     self.health = timer.rot(self.health, function() ctx.spells:remove(self) end)
+    self.prevscale = self.scale
     self.scale = math.lerp(self.scale, 1, 20 * tickRate)
   end
 end
@@ -51,7 +54,8 @@ function Burst:draw()
   color[4] = self.health / self.maxHealth * 255
 	g.setColor(color)
 
-  local scale = self.scale * ((self.range + 50) * 2 / self.image:getWidth())
+  local scale = math.lerp(self.prevscale, self.scale, tickDelta / tickRate)
+  scale = scale * ((self.range + 50) * 2 / self.image:getWidth())
 
 	g.draw(self.image, self.x, self.y, self.angle, scale, scale, self.image:getWidth() / 2, self.image:getHeight() / 2)
   g.circle('line', self.x, self.y, self.range * self.scale)

@@ -20,9 +20,18 @@ Burst.range = 100
 -- Behavior
 ----------------
 function Burst:die()
-  local damage = self.damage * (self:hasUpgrade('essenceflame') and 1.5 or 1)
-  local range = self.range * (self:hasUpgrade('essenceflame') and 2 or 1)
-  local heal = self:hasUpgrade('sanctuary') and .15 or 0
+  local damage = self.damage
+  local range = self.range
+  local heal = 0
+
+  if self:hasUpgrade('essenceFlame') then
+    damage = damage * self.upgrades.essenceflame.damageMultiplier
+    range = range * self.upgrades.essenceflame.rangeMultiplier
+  end
+
+  if self:hasUpgrade('sanctuary') then
+    heal = self.upgrades.sanctuary.maxHealthHeal
+  end
 
   ctx.spells:add(data.spell.bruju.burst, {
     owner = self,
@@ -39,13 +48,16 @@ end
 local EssenceFlame = {}
 EssenceFlame.code = 'essenceflame'
 EssenceFlame.name = 'Essence Flame'
-EssenceFlame.description = 'Burst deals 50% increased damage and the radius is increased by 100%.'
+EssenceFlame.description = 'Burst deals 50% more damage and the radius is increased by 20%.'
+EssenceFlame.damageMultiplier = 1.5
+EssenceFlame.rangeMultiplier = 1.2
 
 local Sanctuary = {}
 Sanctuary.code = 'sanctuary'
 Sanctuary.name = 'Sanctuary'
 Sanctuary.description = 'Burst heals allies in the area of effect for 15% of their maximum health.'
+Sanctuary.maxHealthHeal = .15
 
-Burst.upgrades = {DamageRange, Sanctuary}
+Burst.upgrades = {EssenceFlame, Sanctuary}
 
 return Burst

@@ -50,7 +50,15 @@ data.load = function()
   end
 
   load('data/buff', 'buff')
-  load('data/ability', 'ability')
+  load('data/ability', 'ability', function(ability)
+    if ability.upgrades then
+      table.each(ability.upgrades, function(upgrade)
+        if upgrade.code then
+          ability.upgrades[upgrade.code] = upgrade
+        end
+      end)
+    end
+  end)
   load('data/unit', 'unit')
   load('data/spell', 'spell')
   load('data/animation', 'animation', function(animation)

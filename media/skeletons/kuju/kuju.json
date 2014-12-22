@@ -1,7 +1,7 @@
 {
-"skeleton": { "hash": "SHWesZBmPoYtHqNdv+L736NGC0Q", "spine": "2.1.07", "width": 210.43, "height": 359.09 },
+"skeleton": { "hash": "74PfQRLgZrKFaOBPqzzgDkV0RbY", "spine": "2.1.07", "width": 246.93, "height": 350.33 },
 "bones": [
-	{ "name": "root" },
+	{ "name": "root", "flipX": true },
 	{ "name": "Roto", "parent": "root", "x": 50.98, "y": 165.73 },
 	{ "name": "chest", "parent": "Roto", "length": 63.66, "x": -1.04, "y": 8.38, "rotation": 98.94 },
 	{ "name": "leftthigh", "parent": "Roto", "length": 85.98, "x": 18.71, "y": -1.39, "rotation": -104.41 },

@@ -36,8 +36,6 @@ function Shrine:update()
     self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
     self.highlight = math.lerp(self.highlight, p:atShrine() and 128 or 0, 5 * tickRate)
   end
-
-  if self.team == 1 then self:hurt(.33 * self.maxHealth * tickRate) end
 end
 
 function Shrine:draw()

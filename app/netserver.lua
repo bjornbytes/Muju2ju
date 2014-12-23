@@ -258,6 +258,13 @@ function NetServer:init()
 
   ctx.event:on('game.quit', f.cur(self.quit, self))
   ctx.event:on('over', function(data)
+    if table.has(arg, 'test') then
+      self:quit()
+      Context:remove(ctx)
+      Context:add(Server, ctx.config)
+      return
+    end
+
     local winners = table.filter(ctx.config.players, function(player) return player.team == data.winner end)
     local losers = table.filter(ctx.config.players, function(player) return player.team ~= data.winner end)
     winners = table.values(table.map(winners, function(winner) return winner.username end))

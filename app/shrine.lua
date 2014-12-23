@@ -56,13 +56,14 @@ end
 function Shrine:getHealthbar()
   local t = tick - (interp / tickRate)
   local lerpd = table.interpolate(self.history:get(t), self.history:get(t + 1), tickDelta / tickRate)
+  lerpd.health, lerpd.healthDisplay = math.clamp(lerpd.health, 0, self.maxHealth), math.clamp(lerpd.healthDisplay, 0, self.maxHealth)
   return self.x, self.y, lerpd.health / lerpd.maxHealth, lerpd.healthDisplay / lerpd.maxHealth
 end
 
 function Shrine:hurt(value)
-	self.health = self.health - value
+	self.health = math.max(self.health - value, 0)
   self.lastHurt = tick
-	if self.health < 0 then
+	if self.health <= 0 then
     ctx.event:emit('shrine.dead', {shrine = self})
 		return true
 	end

@@ -34,6 +34,7 @@ function Player:init()
 
 	self.juju = 10
 	self.jujuTimer = 1
+  self.jujuRate = 2
 
 	self.selected = 1
   self.maxPopulation = 1
@@ -54,7 +55,7 @@ function Player:activate()
   self.animation = data.animation.muju()
 
   self.animation:on('complete', function(data)
-    if not data.state.loop then
+    if data.state.name ~= 'death' and not data.state.loop then
       self.animation:set('idle', {force = true})
     end
   end)
@@ -202,7 +203,7 @@ function Player:initDeck()
 end
 
 function Player:getPopulation()
-  return table.count(ctx.units:filter(function(unit) return unit.owner == self end))
+  return table.count(ctx.units:filter(function(unit) return unit.player == self end))
 end
 
 function Player:animate()

@@ -30,6 +30,7 @@ function Animation:draw(x, y, options)
   skeleton.x = x + (self.offsetx or 0)
   skeleton.y = y + (self.offsety or 0)
   skeleton.flipX = self.flipped
+  if self.backwards then skeleton.flipX = not skeleton.flipX end
   if not options.noupdate then self:tick(delta) end
   animationState:apply(skeleton)
   skeleton:updateWorldTransform()

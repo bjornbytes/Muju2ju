@@ -170,7 +170,7 @@ NetServer.messages.snapshot = {
   },
   order = {
     'tick', 'players', 'units', 'shrines',
-    players = {'id', 'x', 'health', 'animationIndex', 'flipped', 'ghostX', 'ghostY', 'ghostAngle' },
+    players = {'id', 'x', 'health', 'animationIndex', 'flipped', 'dead', 'ghostX', 'ghostY', 'ghostAngle' },
     units = {'id', 'x', 'health', 'dying', 'animationIndex', 'flipped'},
     shrines = {'id', 'health'}
   }

@@ -1,7 +1,7 @@
 Ability = class()
 
 function Ability:init()
-  self.timer = self.cooldown or 0
+  self.timer = 0
 end
 
 function Ability:getUnitDirection()

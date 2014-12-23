@@ -67,7 +67,7 @@ function PlayerMain:trace(data)
 
   -- Server reconciliation: Apply inputs that occurred after the ack.
   for i = 1, #self.input.list do
-    if self.input.list[i].tick < tick and not self.dead or (self.dead and self.ghost:contained()) then
+    if self.input.list[i].tick < tick and (not self.dead or (self.dead and self.ghost:contained())) then
       self:move(self.input.list[i])
     end
   end

@@ -35,6 +35,8 @@ function Unit:activate()
   self.maxHealth = self.health
   self.stance = 'aggressive'
   self.dying = false
+  self.casting = false
+  self.channeling = false
 
   if self.player then self.player.deck[self.class.code].instance = self end
 
@@ -53,7 +55,7 @@ function Unit:update()
 
   self.buffs:preupdate()
 
-  if ctx.tag == 'server' then
+  if ctx.tag == 'server' and not self.casting and not self.channeling then
     f.exe(self.stances[self.stance], self)
   end
 
@@ -124,6 +126,8 @@ function Unit:attack(target)
 end
 
 function Unit:useAbility(index)
+  if self.dying or self.casting or self.channeling then return end
+
   local ability = self.abilities[index]
   if ability:canUse() then
     f.exe(ability.use, ability, self)

@@ -20,11 +20,11 @@ testConfig = {
           skin = {},
           runes = {}
         },
-        { code = 'huju',
+        { code = 'kuju',
           skin = {},
           runes = {}
         },
-        { code = 'bruju',
+        { code = 'huju',
           skin = {},
           runes = {}
         }

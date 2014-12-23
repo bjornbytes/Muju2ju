@@ -30,10 +30,10 @@ end
 function PlayerServer:update()
 	self.jujuTimer = timer.rot(self.jujuTimer, function()
 		self.juju = self.juju + 1
-		return 2
+		return self.jujuRate
 	end)
 
-	self:hurt(self.maxHealth * .033 * tickRate)
+	self:hurt(self.maxHealth * .33 * tickRate)
 
   Player.update(self)
 end

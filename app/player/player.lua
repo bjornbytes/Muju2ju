@@ -213,3 +213,7 @@ function Player:animate()
   self.animation.speed = self.animation.state.name == 'walk' and math.abs(self.speed / self.walkSpeed) or 1
   if self.speed ~= 0 then self.animation.flipped = math.sign(self.speed) > 0 end
 end
+
+function Player:contains(x, y)
+  math.inside(x, y, self.x - self.width / 2, self.y, self.width, self.height)
+end

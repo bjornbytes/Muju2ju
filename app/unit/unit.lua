@@ -158,3 +158,7 @@ function Unit:abilityCall(key, ...)
     f.exe(ability[key], ability, ...)
   end
 end
+
+function Unit:contains(...)
+  return self.animation:contains(...)
+end

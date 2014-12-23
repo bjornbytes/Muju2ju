@@ -68,3 +68,7 @@ function Shrine:hurt(value)
 		return true
 	end
 end
+
+function Shrine:contains(x, y)
+  return math.inside(x, y, self.width - self.width / 2, self.y, self.width, self.height)
+end

@@ -56,3 +56,17 @@ function Target:inRange(source, range, teamFilter, ...)
 
   return table.map(targets, function(t) return t[1] end)
 end
+
+function Target:ground(source, range)
+  local ground = ctx.map.height - ctx.map.groundHeight
+  local x = math.clamp(love.mouse.getX(), source.x - range, source.x + range)
+  return x, ground
+end
+
+function Target:atMouse(...)
+  local mx, my = love.mouse.getPosition()
+  for _, entry in ipairs(self:inRange(...)) do
+    if entry[1]:contains(mx, my) then return unpack(entry) end
+  end
+  return nil
+end

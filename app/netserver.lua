@@ -95,7 +95,8 @@ NetServer.messages.rewards = {
   order = {
     'runes', 'units',
     runes = {'id', 'token'},
-    units = {'code'},
+    units = {'code'}
+  },
   important = true
 }
 

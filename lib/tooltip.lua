@@ -20,8 +20,8 @@ end
 
 function Tooltip:draw()
   local mx, my = love.mouse.getPosition()
-  self.x = self.x and math.lerp(self.x, mx, 15 * delta) or mx
-  self.y = self.y and math.lerp(self.y, my, 15 * delta) or my
+  self.x = self.x and math.lerp(self.x, mx, math.min(15 * delta, 1)) or mx
+  self.y = self.y and math.lerp(self.y, my, math.min(15 * delta, 1)) or my
 
   if self.active then
     local u, v = self:getUV()

@@ -26,6 +26,35 @@ function HudDead:update()
   if self.splashAlpha > .9 then
     self.rewardAlpha = math.lerp(self.rewardAlpha, 1, 5 * tickRate)
   end
+
+  if self.rewards then
+    local u, v = ctx.hud.u, ctx.hud.v
+    local ct = table.count(self.rewards.runes) + table.count(self.rewards.units)
+    local i = 1
+    local size = .1 * v
+    local inc = size + (.05 * v)
+    local xx = u * .5 - (inc * (ct - 1) / 2)
+    local yy = .58 * v
+    local mx, my = love.mouse.getPosition()
+
+    table.each(self.rewards.runes, function(rune)
+      if math.distance(mx, my, xx, yy) < size / 2 then
+        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:runeTooltip(rune.id))
+      end
+
+      i = i + 1
+      xx = xx + inc
+    end)
+
+    table.each(self.rewards.units, function(unit)
+      if math.distance(mx, my, xx, yy) < size / 2 then
+        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:unitTooltip(unit))
+      end
+
+      i = i + 1
+      xx = xx + inc
+    end)
+  end
 end
 
 function HudDead:draw()
@@ -58,27 +87,17 @@ function HudDead:draw()
     local size = .1 * v
     local inc = size + (.05 * v)
     local xx = u * .5 - (inc * (ct - 1) / 2)
-    local yy = .55 * v
+    local yy = .58 * v
     local mx, my = love.mouse.getPosition()
 
     table.each(self.rewards.runes, function(rune)
       g.circle('line', xx, yy, size / 2)
-
-      if math.distance(mx, my, xx, yy) < size / 2 then
-        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:runeTooltip(rune.id))
-      end
-
       i = i + 1
       xx = xx + inc
     end)
 
     table.each(self.rewards.units, function(unit)
       g.circle('line', xx, yy, size / 2)
-
-      if math.distance(mx, my, xx, yy) < size / 2 then
-        ctx.hud.tooltip:setTooltip(ctx.hud.tooltip:unitTooltip(unit))
-      end
-
       i = i + 1
       xx = xx + inc
     end)

@@ -130,6 +130,9 @@ function Unit:useAbility(index, target)
 
   local ability = self.abilities[index]
   if ability:canUse() then
+    if ability.target == 'unit' or ability.target == 'ally' or ability.target == 'enemy' then
+      target = ctx.units:get(target)
+    end
     f.exe(ability.use, ability, target)
     f.exe(ability.used, ability, target)
     ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index, target = target})

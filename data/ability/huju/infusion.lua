@@ -46,6 +46,8 @@ local Distortion = {}
 Distortion.code = 'distortion'
 Distortion.name = 'Distortion'
 Distortion.description = 'Infusion speeds up allies and slows enemies.'
+Distortion.slowAmount = .5
+Distortion.hasteAmount = .5
 
 local Bide = {}
 Bide.code = 'bide'

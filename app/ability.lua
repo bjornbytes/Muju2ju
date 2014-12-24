@@ -15,6 +15,7 @@ function Ability:hasUpgrade(upgrade)
 end
 
 function Ability:canUse()
+  do return self.timer == 0 end
   return self.unit.player.deck[self.unit.class.code].abilities[self.code] and self.timer == 0
 end
 

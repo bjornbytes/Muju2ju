@@ -16,6 +16,22 @@ function UnitBuffs:postupdate()
   table.with(self.list, 'rot')
   table.with(self.list, 'postupdate')
   table.with(self.list, 'update')
+  
+  local speed = self.unit.class.speed
+
+  -- Apply Hastes
+  local hastes = self:buffsWithTag('haste')
+  table.each(hastes, function(haste)
+    speed = speed + (self.unit.class.speed * haste.amount)
+  end)
+
+  -- Apply Slows
+  local slows = self:buffsWithTag('slow')
+  table.each(slows, function(slow)
+    speed = speed * (1 - slow.amount)
+  end)
+
+  self.unit.speed = speed
 end
 
 function UnitBuffs:add(code, vars)
@@ -47,20 +63,14 @@ end
 function UnitBuffs:reapply(code, vars)
   local buff = self:get(code)
   if buff then
-    tabe.merge(vars, buff, true)
+    table.merge(vars, buff, true)
   else
     self:add(code, vars)
   end
 end
 
 function UnitBuffs:buffsWithTag(tag)
-  local buffs = {}
-  table.each(self.list, function(buff, name)
-    if table.has(buff.tags, tag) then
-      buffs[name] = buff
-    end
-  end)
-  return buffs
+  return table.filter(self.list, function(buff) return table.has(buff.tags, tag) end)
 end
 
 function UnitBuffs:applyRunes()

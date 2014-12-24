@@ -187,7 +187,7 @@ function MenuMainDrag:hoverDeckUnitRunes()
       local rune = unitRunes[i][j]
       local x, y, r = unpack(rune)
       x, y = deck:screenPoint(x, y)
-      if math.insideCircle(mx, my, x, y, r) then
+      if math.insideCircle(mx, my, x, y, r) and ctx.user.deck[i] then
         return i, j, ctx.user.deck[i].runes[j]
       end
     end

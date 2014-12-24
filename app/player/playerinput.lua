@@ -73,7 +73,8 @@ function PlayerInput:keypressed(key)
   local input = self:current(tick + 1)
 
   if key == 'q' then
-    local ability = data.unit[self.owner.deck[self.owner.selected].code].abilities[1]
+    local code = self.owner.deck[self.owner.selected].code
+    local ability = data.ability[code][data.unit[code].abilities[1]]
     if ability.target then
       self.targeting = 1
     else
@@ -81,7 +82,8 @@ function PlayerInput:keypressed(key)
     end
     return
   elseif key == 'e' then
-    local ability = data.unit[self.owner.deck[self.owner.selected].code].abilities[2]
+    local code = self.owner.deck[self.owner.selected].code
+    local ability = data.ability[code][data.unit[code].abilities[2]]
     if ability.target then
       self.targeting = 2
     else
@@ -116,17 +118,19 @@ function PlayerInput:mousepressed(x, y, b)
   elseif b ~= 'l' then return end
 
   if self.targeting then
-    local ability = data.unit[self.owner.deck[self.owner.selected].code].abilities[self.targeting]
+    local unit = self.owner.deck[self.owner.selected].instance
+    local ability = data.unit[unit.class.code].abilities[self.targeting]
+
     if ability.target == 'unit' or ability.target == 'ally' or ability.target == 'enemy' then
       local teamFilter = ability.target == 'unit' and 'all' or ability.target
-      local target = ctx.target:atMouse(self.owner, ability.range or math.huge, target, 'unit')
+      local target = ctx.target:atMouse(instance, ability.range or math.huge, teamFilter, 'unit')
       if target then
         input.ability = self.targeting
         input.target = target.id
         self.targeting = nil
       end
-    elseif self.targeting.target == 'location' then
-      local x = ctx.target:location(self, ability)
+    elseif ability.target == 'location' then
+      local x = ctx.target:location(instance, ability.range or math.huge)
       input.ability = self.targeting
       input.target = x
       self.targeting = nil

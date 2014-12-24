@@ -10,6 +10,7 @@ function Hud:init()
   self.titleFont = g.newFont('media/fonts/inglobal.ttf', 24)
 
   self.health = HudHealth()
+  self.target = HudTarget()
   self.protect = HudProtect()
   self.juju = HudJuju()
   self.portrait = HudPortrait()
@@ -32,6 +33,7 @@ end
 function Hud:update()
   self.tooltip:update()
 
+  self.target:update()
   self.protect:update()
   self.juju:update()
   self.portrait:update()
@@ -61,6 +63,7 @@ function Hud:gui()
   end
 
   self.health:draw()
+  self.target:draw()
   self.protect:draw()
   self.minions:draw()
   self.shruju:draw()

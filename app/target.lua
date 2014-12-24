@@ -59,12 +59,13 @@ end
 
 function Target:location(source, range)
   local ground = ctx.map.height - ctx.map.groundHeight
-  local x = math.clamp(love.mouse.getX(), source.x - range, source.x + range)
+  local mx = ctx.view:worldPoint(love.mouse.getX())
+  local x = math.clamp(mx, source.x - range, source.x + range)
   return x, ground
 end
 
 function Target:atMouse(...)
-  local mx, my = love.mouse.getPosition()
+  local mx, my = ctx.view:worldPoint(love.mouse.getPosition())
   for _, entry in ipairs(self:inRange(...)) do
     if entry[1]:contains(mx, my) then return unpack(entry) end
   end

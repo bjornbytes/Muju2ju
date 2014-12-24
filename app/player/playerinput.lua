@@ -28,6 +28,7 @@ function PlayerInput:init(owner)
   self.gamepad = nil
   self.axes = {}
   self.active = true
+  self.targeting = nil
 end
 
 function PlayerInput:update()
@@ -38,6 +39,10 @@ function PlayerInput:update()
   end
 
   self.active = not ctx.hud.chat.active
+
+  if self.owner.dead then
+    self.targeting = nil
+  end
 end
 
 function PlayerInput:read()
@@ -68,10 +73,20 @@ function PlayerInput:keypressed(key)
   local input = self:current(tick + 1)
 
   if key == 'q' then
-    input.ability = 1
+    local ability = data.unit[self.owner.deck[self.owner.selected].code].abilities[1]
+    if ability.target then
+      self.targeting = 1
+    else
+      input.ability = 1
+    end
     return
   elseif key == 'e' then
-    input.ability = 2
+    local ability = data.unit[self.owner.deck[self.owner.selected].code].abilities[2]
+    if ability.target then
+      self.targeting = 2
+    else
+      input.ability = 2
+    end
     return
   end
 
@@ -82,10 +97,12 @@ function PlayerInput:keypressed(key)
     end
   end
 
-  for i = 1, #self.owner.deck do
-    if i == tonumber(key) then
-      input.selected = i
-      return
+  if not self.targeting then
+    for i = 1, #self.owner.deck do
+      if i == tonumber(key) then
+        input.selected = i
+        return
+      end
     end
   end
 end
@@ -95,7 +112,28 @@ function PlayerInput:keyreleased(key)
 end
 
 function PlayerInput:mousepressed(x, y, b)
-  if b ~= 'l' then return end
+  if b == 'r' then self.targeting = nil return
+  elseif b ~= 'l' then return end
+
+  if self.targeting then
+    local ability = data.unit[self.owner.deck[self.owner.selected].code].abilities[self.targeting]
+    if ability.target == 'unit' or ability.target == 'ally' or ability.target == 'enemy' then
+      local teamFilter = ability.target == 'unit' and 'all' or ability.target
+      local target = ctx.target:atMouse(self.owner, ability.range or math.huge, target, 'unit')
+      if target then
+        input.ability = self.targeting
+        input.target = target.id
+        self.targeting = nil
+      end
+    elseif self.targeting.target == 'location' then
+      local x = ctx.target:location(self, ability)
+      input.ability = self.targeting
+      input.target = x
+      self.targeting = nil
+    end
+
+    return
+  end
 
   local input = self:current(tick + 1)
   for i = 1, #self.owner.deck do
@@ -114,6 +152,7 @@ function PlayerInput:current(t)
   table.insert(self.list, {tick = t})
   return self.list[#self.list]
 end
+
 
 -- Axis
 function PlayerInput:getAxis(axis)

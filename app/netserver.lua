@@ -222,10 +222,10 @@ NetServer.messages.unitAbility = {
   data = {
     id = Net.sizes.unitId,
     tick = Net.sizes.tick,
-    ability = Net.sizes.unitAbility
+    ability = Net.sizes.unitAbility,
+    target = 10
   },
-  order = {'id', 'tick', 'ability'},
-  important = true
+  order = {'id', 'tick', 'ability', 'target'}
 }
 
 NetServer.messages.jujuCreate = {
@@ -318,8 +318,10 @@ function NetServer:quit()
 end
 
 function NetServer:connect(event)
-  event.peer:timeout(0, 0, 3000)
+  event.peer:timeout(0, 0, 5000)
   event.peer:ping()
+  event.peer:round_trip_time(self.pingGuess)
+  event.peer:last_round_trip_time(self.pingGuess)
 end
 
 function NetServer:disconnect(event)
@@ -351,7 +353,8 @@ end
 function NetServer:send(msg, peer, data)
   self.outStream:clear()
   self:pack(msg, data)
-  peer:send(tostring(self.outStream))
+  local important = self.messages[msg].important
+  peer:send(tostring(self.outStream), important and 0 or 1, important and 'reliable' or 'unsequenced')
 end
 
 function NetServer:emit(evt, data)
@@ -381,8 +384,10 @@ function NetServer:sync()
       table.remove(self.eventBuffer, 1)
     end
 
-    self.host:broadcast(tostring(self.outStream), 1, 'unreliable')
+    self.host:broadcast(tostring(self.outStream), 1, 'unsequenced')
   end
+
+  self.host:flush()
 end
 
 function NetServer:snapshot()

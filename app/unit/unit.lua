@@ -125,14 +125,14 @@ function Unit:attack(target)
   self.animation:set('attack')
 end
 
-function Unit:useAbility(index)
+function Unit:useAbility(index, target)
   if self.dying or self.casting or self.channeling then return end
 
   local ability = self.abilities[index]
   if ability:canUse() then
-    f.exe(ability.use, ability, self)
-    f.exe(ability.used, ability, self)
-    ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index})
+    f.exe(ability.use, ability, target)
+    f.exe(ability.used, ability, target)
+    ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index, target = target})
   end
 end
 

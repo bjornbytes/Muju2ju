@@ -57,7 +57,7 @@ function Target:inRange(source, range, teamFilter, ...)
   return table.map(targets, function(t) return t[1] end)
 end
 
-function Target:ground(source, range)
+function Target:location(source, range)
   local ground = ctx.map.height - ctx.map.groundHeight
   local x = math.clamp(love.mouse.getX(), source.x - range, source.x + range)
   return x, ground

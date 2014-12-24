@@ -85,10 +85,11 @@ NetClient.messages.input = {
     summon = 'bool',
     selected = 2,
     stance = 2,
-    ability = 2
+    ability = 2,
+    target = 10
   },
-  delta = {{'x', 'y'}, 'selected', 'stance', 'ability'},
-  order = {'tick', 'x', 'y', 'summon', 'selected', 'stance', 'ability'},
+  delta = {{'x', 'y'}, 'selected', 'stance', 'ability', 'target'},
+  order = {'tick', 'x', 'y', 'summon', 'selected', 'stance', 'ability', 'target'},
   receive = function(self, event)
     ctx.players:get(ctx.id):trace(event.data)
   end
@@ -241,8 +242,9 @@ function NetClient:send(msg, data)
 
   local important = self.messages[msg].important
   local channel = important and 0 or 1
-  local reliability = important and 'reliable' or 'unreliable'
+  local reliability = important and 'reliable' or 'unsequenced'
   self.server:send(tostring(self.outStream), channel, reliability)
+  self.host:flush()
 end
 
 NetClient.emit = f.empty

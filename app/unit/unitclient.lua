@@ -80,8 +80,9 @@ function UnitClient:draw()
   end
 
   g.setShader()
-  g.setColor(255, 255, 255)
+  g.setColor(255, 255, 255, 128)
   g.draw(self.canvas, lerpd.x, lerpd.y, 0, 1, 1, 100, 100)
+  g.setColor(255, 255, 255)
   self.animation:draw(lerpd.x, lerpd.y, {noupdate = true})
 end
 

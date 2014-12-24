@@ -1,5 +1,7 @@
 Net = class()
 
+Net.pingGuess = 50
+
 Net.messageMap = {
   'join',
   'leave',
@@ -14,7 +16,8 @@ Net.messageMap = {
   'unitDie',
   'unitAbility',
   'jujuCreate',
-  'jujuCollect'
+  'jujuCollect',
+  'upgrade'
 }
 
 table.each(Net.messageMap, function(message, i) Net.messageMap[message] = i end)
@@ -43,7 +46,9 @@ end
 function Net:connectTo(ip, port)
   if not self.host then self:listen() end
   local peer = self.host:connect(ip .. ':' .. port, 2)
-  peer:timeout(0, 0, 3000)
+  peer:timeout(0, 0, 5000)
+  peer:round_trip_time(self.pingGuess)
+  peer:last_round_trip_time(self.pingGuess)
 end
 
 function Net:update()

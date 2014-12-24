@@ -24,6 +24,7 @@ function NetHistory:get(t, raw)
   if not raw and history[#history].tick < t then
     local h1, h2 = history[#history - 1], history[#history]
     local factor = math.min(1 + ((t - h2.tick) / (h2.tick - h1.tick)), .25 / tickRate)
+    print('extrapolated ' .. factor * tickRate .. ' seconds')
     return table.interpolate(h1, h2, factor)
   end
 

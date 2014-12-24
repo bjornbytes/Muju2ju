@@ -56,7 +56,7 @@ function PlayerServer:trace(data)
   self:slot(data)
 
   if data.ability and self.deck[self.selected].instance then
-    self.deck[self.selected].instance:useAbility(data.ability)
+    self.deck[self.selected].instance:useAbility(data.ability, data.target)
   end
 
   table.insert(self.history, setmetatable({

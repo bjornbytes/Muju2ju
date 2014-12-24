@@ -21,6 +21,9 @@ function HudTimer:draw()
   if table.has(arg, 'test') then
     g.setFont('pixel', 8)
     local str = love.timer.getFPS()
+    if ctx.net.server:round_trip_time() then
+      str = str .. '\n' .. ctx.net.server:round_trip_time() .. 'ms'
+    end
     g.print(str, u - g.getFont():getWidth(str) - 2, 2)
   end
 end

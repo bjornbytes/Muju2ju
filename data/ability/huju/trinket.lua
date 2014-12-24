@@ -15,8 +15,8 @@ Trinket.cooldown = 15
 Trinket.target = 'ally'
 Trinket.range = 200
 Trinket.duration = 4
-Trinket.attackSpeedMultiplier = .3
-Trinket.speedMultiplier = .4
+Trinket.frenzy = .3
+Trinket.haste = .4
 
 
 ----------------

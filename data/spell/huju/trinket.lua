@@ -7,7 +7,11 @@ function Trinket:activate()
   local ability = self:getAbility()
   self.timer = ability.duration
 
-  self.target.buffs:add('trinket', {timer = self.duration})
+  self.target.buffs:add('trinket', {
+    timer = self.duration,
+    frenzy = ability.frenzy,
+    haste = ability.haste
+  })
 end
 
 function Trinket:update()

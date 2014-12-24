@@ -22,16 +22,25 @@ function UnitBuffs:postupdate()
   -- Apply Hastes
   local hastes = self:buffsWithTag('haste')
   table.each(hastes, function(haste)
-    speed = speed + (self.unit.class.speed * haste.amount)
+    speed = speed + (self.unit.class.speed * haste.haste)
   end)
 
   -- Apply Slows
   local slows = self:buffsWithTag('slow')
   table.each(slows, function(slow)
-    speed = speed * (1 - slow.amount)
+    speed = speed * (1 - slow.slow)
   end)
 
   self.unit.speed = speed
+
+  -- Apply Attack Speed Increases
+  local frenzies = self:buffsWithTag('frenzy')
+  local attackSpeed = self.unit.class.attackSpeed
+  table.each(frenzies, function(frenzy)
+    attackSpeed = attackSpeed * (1 - frenzy.frenzy)
+  end)
+
+  self.unit.attackSpeed = attackSpeed
 end
 
 function UnitBuffs:add(code, vars)

@@ -41,7 +41,7 @@ function FrozenOrb:update()
   table.each(ctx.target:inRange(self, self.radius, 'enemy', 'unit'), function(target)
     if not self.damaged[target.id] then
       target.buffs:add('slow', {
-        amount = self.amount,
+        slow = self.amount,
         timer = self.duration
       })
       target:hurt(self.damage, unit)

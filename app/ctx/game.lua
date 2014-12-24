@@ -15,6 +15,7 @@ function Game:load(config, user)
   self.map = Map()
   self.players = Players()
   self.hud = Hud()
+  self.upgrades = Upgrades()
 
   self.event:on('ready', function()
     self.shrines = Manager()

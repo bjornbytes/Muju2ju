@@ -188,11 +188,17 @@ function Player:initDeck()
 
     self.deck[entry.code] = {
       runes = table.map(entry.runes, function(rune) return setmetatable({level = 0}, runes[rune]) end),
+      abilities = {},
       upgrades = {},
       cooldown = 0,
       instance = nil,
       code = entry.code
     }
+
+    table.each(data.unit[entry.code].abilities, function(code, i)
+      self.deck[entry.code].abilities[code] = false
+      self.deck[entry.code].abilities[i] = false
+    end)
 
     table.each(data.unit[entry.code].abilities, function(code)
       self.deck[entry.code].upgrades[code] = {}

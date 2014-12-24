@@ -5,16 +5,17 @@ function Ability:init()
 end
 
 function Ability:getUnitDirection()
-  return self.unit.flipped and 1 or -1 
+  return (self.unit.animation.backwards and not self.unit.flipped or self.unit.flipped) and 1 or -1 
 end
 
 function Ability:hasUpgrade(upgrade)
   do return true end
-  return self.unit.player.deck[self.unit.class.code].upgrades[self.code][upgrade]
+  local deck = self.unit.player.deck[self.unit.class.code]
+  return deck.abilities[self.code] and deck.upgrades[self.code][upgrade]
 end
 
 function Ability:canUse()
-  return self.timer == 0
+  return self.unit.player.deck[self.unit.class.code].abilities[self.code] and self.timer == 0
 end
 
 function Ability:rot()

@@ -225,6 +225,7 @@ NetServer.messages.unitAbility = {
     ability = Net.sizes.unitAbility,
     target = 10
   },
+  delta = {'target'},
   order = {'id', 'tick', 'ability', 'target'}
 }
 
@@ -249,6 +250,26 @@ NetServer.messages.jujuCollect = {
   },
   order = {'id', 'owner'},
   important = true
+}
+
+NetServer.messages.upgrade = {
+  data = {
+    id = Net.sizes.playerId,
+    unit = 2,
+    ability = 2,
+    upgrade = 2,
+    rune = 3,
+    other = 'string'
+  },
+  delta = {'other'},
+  order = {'id', 'unit', 'ability', 'upgrade', 'rune', 'other'},
+  important = true,
+  receive = function(self, event)
+    if ctx.upgrades:process(event.data, ctx.players:get(self.peerToPlayer[event.peer])) then
+      event.data.id = self.peerToPlayer[event.peer]
+      self:emit('upgrade', event.data)
+    end
+  end
 }
 
 function NetServer:init()

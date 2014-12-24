@@ -38,6 +38,7 @@ Imbue.code = 'imbue'
 Imbue.name = 'Imbue'
 Imbue.description = 'Trinket heals the ally at the end and reduces their cooldowns.'
 Imbue.heal = 75
+Imbue.cooldownReduction = 3
 
 local Surge = {}
 Surge.code = 'surge'

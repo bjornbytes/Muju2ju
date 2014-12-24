@@ -16,6 +16,11 @@ function Trinket:update()
 
     if ability:hasUpgrade('imbue') then
       self.target:heal(ability.upgrades.imbue.heal, self:getUnit())
+      table.each(self.target.abilities, function(ability)
+        if ability.cooldown and ability.timer then
+          ability.timer = math.max(ability.timer - self:getAbility().upgrades.imbue.cooldownReduction, 0)
+        end
+      end)
     elseif ability:hasUpgrade('surge') then
       table.each(ctx.target:inRange(self.target, ability.upgrades.surge.range, 'enemy', 'unit', 'player'), function(target)
         target:hurt(ability.upgrades.surge.damage, self:getUnit())

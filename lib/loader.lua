@@ -36,6 +36,7 @@ data.load = function()
           halp(path, dst[file])
         elseif file:match('%.lua$') and not file:match('^%.') then
           local obj = love.filesystem.load(path)()
+          assert(obj, path .. ' did not return a value')
           obj = f.exe(fn, obj) or obj
           obj.id = id
           data[type][id] = obj

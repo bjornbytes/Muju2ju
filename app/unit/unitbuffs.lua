@@ -33,9 +33,8 @@ function UnitBuffs:postupdate()
 
   self.unit.speed = speed
 
-  -- Apply Roots
-  local rooted = table.count(self.buffsWithTag('root')) > 0
-  if rooted then self.unit.speed = 0 end
+  -- Apply Roots and Stuns
+  if self:rooted() or self:stunned() then self.unit.speed = 0 end
 
   -- Apply Attack Speed Increases
   local frenzies = self:buffsWithTag('frenzy')
@@ -128,3 +127,21 @@ function UnitBuffs:posthurt(amount, source, kind)
 
   return amount
 end
+
+function UnitBuffs:taunted()
+  local taunt = next(self:buffsWithTag('taunt'))
+  return taunt and taunt.target
+end
+
+function UnitBuffs:stunned()
+  return next(self:buffsWithTag('stun'))
+end
+
+function UnitBuffs:rooted()
+  return next(self:buffsWithTag('root'))
+end
+
+function UnitBuffs:silenced()
+  return next(self:buffsWithTag('silence'))
+end
+

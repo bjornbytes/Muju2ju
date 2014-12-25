@@ -98,7 +98,7 @@ end
 -- Behavior
 ----------------
 function Unit:changeTarget(target)
-  local taunt = next(self.buffs:buffsWithTag('taunt'))
+  local taunt = self.buffs:taunted()
   self.target = taunt and taunt.target or target
 end
 
@@ -127,7 +127,7 @@ function Unit:moveTowards(target)
 end
 
 function Unit:attack(target)
-  if not self:inRange(target) then return end
+  if not self:inRange(target) or self.buffs:stunned() then return end
   self.target = target
   self.animation:set('attack')
 end
@@ -136,7 +136,7 @@ function Unit:useAbility(index, target)
   if self.dying or self.casting or self.channeling then return end
 
   local ability = self.abilities[index]
-  if ability:canUse() then
+  if ability:canUse() and not self.buffs:silenced() then
     ctx.net:emit('unitAbility', {id = self.id, tick = tick, ability = index, target = target})
 
     if ability.target == 'unit' or ability.target == 'ally' or ability.target == 'enemy' then

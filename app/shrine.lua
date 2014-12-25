@@ -1,4 +1,5 @@
 Shrine = class()
+Shrine.code = 'shrine'
 
 Shrine.width = 128 
 Shrine.height = 128 

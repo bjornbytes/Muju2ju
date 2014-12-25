@@ -10,7 +10,7 @@ function Ability:createSpell(code, vars)
 end
 
 function Ability:getUnitDirection()
-  return (self.unit.animation.backwards and not self.unit.flipped or self.unit.flipped) and 1 or -1 
+  return (self.unit.animation.flipped and -1 or 1)
 end
 
 function Ability:hasUpgrade(upgrade)

@@ -18,10 +18,6 @@ function HudUpgrades:update()
   else self.time = math.max(self.time - tickRate, 0) end
 end
 
-function HudUpgrades:draw()
-  --
-end
-
 function HudUpgrades:keypressed(key)
   if key == 'tab' then
     self.lastPress = tick
@@ -33,18 +29,8 @@ function HudUpgrades:keyreleased(key)
   if key == 'tab' then
     if (tick - self.lastPress) * tickRate > self.maxTime then
       self.active = false
-    else
-      --
     end
   end
-end
-
-function HudUpgrades:mousereleased(x, y, button)
-  --
-end
-
-function HudUpgrades:gamepadpressed(gamepad, button)
-  --
 end
 
 function HudUpgrades:getFactor()

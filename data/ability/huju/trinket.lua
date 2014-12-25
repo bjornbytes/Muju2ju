@@ -23,10 +23,7 @@ Trinket.haste = .4
 -- Behavior
 ----------------
 function Trinket:use(target)
-  ctx.spells:add(data.spell.huju.trinket, {
-    ability = self,
-    target = target
-  })
+  self:createSpell({target = target})
 end
 
 

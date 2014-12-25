@@ -21,34 +21,30 @@ FrozenOrb.range = 175
 FrozenOrb.radius = 10
 FrozenOrb.speed = 150
 FrozenOrb.duration = 2
-FrozenOrb.slowAmount = .25
+FrozenOrb.slow = .25
 
 
 ----------------
 -- Behavior
 ----------------
-function FrozenOrb:activate()
-
-end
-
-
 function FrozenOrb:use()
+  local damage, range = self.damage, self.range
+
   if self:hasUpgrade('winterswrath') then
-    self.damage = self.damage + self.damage * .05
+    damage = damage + damage * .05
   end
 
   if self:hasUpgrade('sweepinggale') then
-    self.range = self.range + self.range * .25
+    range = range + range * .25
   end
 
-  ctx.spells:add(data.spell.kuju.frozenorb, {
-    damage = self.damage,
+  self:createSpell({
+    damage = damage,
+    range = range,
     radius = self.radius,
-    range = self.range,
     speed = self.speed,
-    amount = self.slowAmount,
-    duration = self.duration,
-    ability = self
+    slow = self.slow,
+    duration = self.duration
   })
 end
 

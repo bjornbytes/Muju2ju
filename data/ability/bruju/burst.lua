@@ -33,8 +33,7 @@ function Burst:die()
     heal = self.upgrades.sanctuary.maxHealthHeal
   end
 
-  ctx.spells:add(data.spell.bruju.burst, {
-    ability = self,
+  self:createSpell({
     damage = damage,
     range = range,
     heal = heal

@@ -4,6 +4,11 @@ function Ability:init()
   self.timer = 0
 end
 
+function Ability:createSpell(code, vars)
+  if not code or type(code) == 'table' then code, vars = self.code, code end
+  ctx.spells:add(data.unit[self.unit.class.code][code], table.merge(vars, {ability = self}, true))
+end
+
 function Ability:getUnitDirection()
   return (self.unit.animation.backwards and not self.unit.flipped or self.unit.flipped) and 1 or -1 
 end

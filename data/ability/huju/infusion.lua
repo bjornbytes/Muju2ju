@@ -35,7 +35,7 @@ function Infusion:use()
   self.unit:hurt(self.unit.health * self.currentHealthCost, self.unit)
   self.unit.channeling = true
   self.channelTimer = self.duration
-  ctx.spells:add(data.spell.huju.infusion, {ability = self})
+  self:createSpell()
 end
 
 

@@ -11,19 +11,15 @@ Frostbite.description = 'Frostbite things'
 ----------------
 -- Data
 ----------------
-Frostbite.cooldown = 5
-Frostbite.targeted = true
+Frostbite.cooldown = 18
+Frostbite.target = 'location'
 
 
 ----------------
 -- Behavior
 ----------------
-function Frostbite:activate()
-
-end
-
 function Frostbite:use()
-  ctx.spells:add(data.spell.kuju.frostbite, {})
+  self:createSpell({})
 end
 
 

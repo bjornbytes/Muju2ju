@@ -1,8 +1,8 @@
 local rich = require 'lib/deps/richtext/richtext'
+local g = love.graphics
 
 Tooltip = class()
-
-local g = love.graphics
+Tooltip.maxWidth = .35
 
 function Tooltip:init()
   self.active = false
@@ -10,25 +10,31 @@ function Tooltip:init()
   self.tooltipText = nil
   self.x = nil
   self.y = nil
+  self.prevx = self.x
+  self.prevy = self.y
 end
 
 function Tooltip:update()
   self.active = false
+  self.prevx = self.x
+  self.prevy = self.y
+
+  local mx, my = love.mouse.getPosition()
+  self.x = self.x and math.lerp(self.x, mx, math.min(15 * tickRate, 1)) or mx
+  self.y = self.y and math.lerp(self.y, my, math.min(15 * tickRate, 1)) or my
 
   if not self.richOptions then self:resize() end
 end
 
 function Tooltip:draw()
-  local mx, my = love.mouse.getPosition()
-  self.x = self.x and math.lerp(self.x, mx, math.min(15 * delta, 1)) or mx
-  self.y = self.y and math.lerp(self.y, my, math.min(15 * delta, 1)) or my
-
   if self.active then
     local u, v = self:getUV()
-    local font = Typo.font('inglobal', .023 * v)
-    local textWidth, lines = font:getWrap(self.tooltipText, .375 * u)
-    local xx = math.round(math.min(self.x + 8, u - textWidth - (.03 * u)))
-    local yy = math.round(math.min(self.y + 8, v - (lines * font:getHeight()) - 7 - (.03 * u)))
+    local x = (self.prevx and self.x) and math.lerp(self.prevx, self.x, tickDelta / tickRate) or love.mouse.getX()
+    local y = (self.prevy and self.y) and math.lerp(self.prevy, self.y, tickDelta / tickRate) or love.mouse.getY()
+    local font = Typo.font('aeromatics', .023 * v)
+    local textWidth, lines = font:getWrap(self.tooltipText, self.maxWidth * u)
+    local xx = math.round(math.min(x + 8, u - textWidth - (.03 * u)))
+    local yy = math.round(math.min(y + 8, v - (lines * font:getHeight()) - 7 - (.03 * u)))
     g.setFont(font)
     g.setColor(30, 50, 70, 240)
     g.rectangle('fill', xx, yy, textWidth + 14, lines * font:getHeight() + 16 + 5)
@@ -65,30 +71,45 @@ end
 function Tooltip:abilityTooltip(code, index)
   local ability = data.ability[code][data.unit[code].abilities[index]]
   if not ability then return end
+  local description = self:substitutions(ability)
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. ability.name .. '{normal}')
-  table.insert(pieces, ability.description)
+  table.insert(pieces, description)
   return table.concat(pieces, '\n')
 end
 
-function Tooltip:abilityUpgradeTooltip(code, skill, index)
+function Tooltip:abilityUpgradeTooltip(code, ability, index)
   local upgrade = data.ability[code][data.unit[code].abilities[ability]].upgrades[index]
   if not upgrade then return end
+  local description = self:substitutions(upgrade)
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. upgrade.name .. '{normal}')
-  table.insert(pieces, upgrade.description)
+  table.insert(pieces, description)
   return table.concat(pieces, '\n')
+end
+
+function Tooltip:substitutions(object)
+  local lastvar = nil
+  local description = object.description:gsub('%$(%w+)', function(var)
+    if var == 's' then return object[lastvar] ~= 1 and 's' or '' end
+    lastvar = var
+    return object[var]
+  end)
+  description = description:gsub('%%(%w+)', function(var)
+    return object[var] * 100 .. '%'
+  end)
+  return description
 end
 
 function Tooltip:resize()
   local u, v = self:getUV()
   self.richOptions = {}
-  self.richOptions[2] = u * .375
+  self.richOptions[2] = u * self.maxWidth
   self.richOptions.white = {255, 255, 255}
   self.richOptions.red = {255, 100, 100}
   self.richOptions.green = {100, 255, 100}
-  self.richOptions.title = Typo.font('inglobal', .04 * v)
-  self.richOptions.normal = Typo.font('inglobal', .023 * v)
+  self.richOptions.title = Typo.font('aeromatics', .04 * v)
+  self.richOptions.normal = Typo.font('aeromatics', .023 * v)
 end
 
 function Tooltip:getUV()

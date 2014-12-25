@@ -5,7 +5,7 @@ Siphon.code = 'siphon'
 -- Meta
 ----------------
 Siphon.name = 'Siphon'
-Siphon.description = 'Siphon things'
+Siphon.description = 'Bruju passively siphons life from his enemies with every strike.  Siphon can be activated to temporarily intensify the effect, however the passive effect is lost while the ability recharges.'
 
 
 ----------------
@@ -43,13 +43,13 @@ end
 local Equilibrium = {}
 Equilibrium.code = 'equilibrium'
 Equilibrium.name = 'Equilibrium'
-Equilibrium.description = 'Increases the effect by 1% for every 1% of missing health.'
+Equilibrium.description = 'Increases the effect by $percentMissingMultiplier% for every 1% of missing health.'
 Equilibrium.percentMissingMultiplier = 1
 
 local Radiance = {}
 Radiance.code = 'radiance'
 Radiance.name = 'Radiance'
-Radiance.description = 'Equally distributes an additional 50% of the heal amount to nearby allies.'
+Radiance.description = 'Siphon equally distributes an additional %amountMultiplier of the heal amount to nearby allies.'
 Radiance.range = 100
 Radiance.amountMultiplier = .5
 

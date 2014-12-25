@@ -19,10 +19,10 @@ function Upgrades:process(data, player)
   local upgrade = unit and ability and data.upgrade and ability.upgrades[data.upgrade].code
 
   if ability and not upgrade and spend(abilityCost) then
-    deck.abilities[ability] = true
+    deck.abilities[ability.code] = true
     return true
   elseif ability and upgrade and spend(self.costs.abilityUpgrade) then
-    deck.upgrades[ability][upgrade] = true
+    deck.upgrades[ability.code][upgrade] = true
     return true
   elseif data.unit and data.rune then
     -- Coming soon

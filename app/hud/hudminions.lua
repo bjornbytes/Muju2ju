@@ -3,8 +3,8 @@ HudMinions = class()
 local g = love.graphics
 
 function HudMinions:init()
-  self.spread1 = 0
-  self.spread2 = 0
+  self.prevspread = {}
+  self.spread = {}
 
   self.geometry = setmetatable({}, {__index = function(t, k)
     return rawset(t, k, self.geometryFunctions[k]())[k]
@@ -21,18 +21,21 @@ function HudMinions:init()
       local xx = .5 * u - (minionInc * (self.count - 1) / 2)
       local yy = v * (.07 + (.07 * upgradeFactor)) + (.11 * v)
       local radius = math.max(.035 * v * upgradeFactor, .01)
-      local spreadFactor = 3.5 - (self.spread1 + self.spread2) ^ .75
       local res = {}
 
       for i = 1, self.count do
         res[i] = {}
 
+        local spread1 = math.lerp(self.prevspread[i][1], self.spread[i][1], tickDelta / tickRate)
+        local spread2 = math.lerp(self.prevspread[i][2], self.spread[i][2], tickDelta / tickRate)
+        local spreadFactor = 3.5 - (spread1 + spread2) ^ .75
+
         for j = 1, 2 do
           local sign = j == 1 and -1 or 1
-          local xx = xx + (inc / 2 + inc * self['spread' .. j] / spreadFactor) * sign
+          local xx = xx + (inc / 2 + inc * (j == 1 and spread1 or spread2) / spreadFactor) * sign
           res[i][j] = {xx, yy, radius, {}}
 
-          if p.deck[i].upgrades[j] then
+          if p:hasUnitAbility(i, j) then
             for k = 1, 2 do
               local yy = yy + (.08 * v)
               local sign = k == 1 and -1 or 1
@@ -60,7 +63,9 @@ function HudMinions:init()
       local res = {}
 
       for i = 1, self.count do
-        local yy = yy + (.08 * v) + (.02 * v) + (.1 * v) * math.max(self.spread1, self.spread2)
+        local spread1 = math.lerp(self.prevspread[i][1], self.spread[i][1], tickDelta / tickRate)
+        local spread2 = math.lerp(self.prevspread[i][2], self.spread[i][2], tickDelta / tickRate)
+        local yy = yy + (.08 * v) + (.02 * v) + (.1 * v) * math.max(spread1, spread2)
         res[i] = {}
 
         for j = 1, 3 do
@@ -81,6 +86,12 @@ function HudMinions:update()
 
 	for i = 1, self.count do
 		self.factor[i] = math.lerp(self.factor[i], p.selected == i and 1 or 0, 10 * tickRate)
+    for j = 1, 2 do
+      self.prevspread[i][j] = self.spread[i][j]
+      if p:hasUnitAbility(i, j) then
+        self.spread[i][j] = math.lerp(self.spread[i][j], 1, math.min(10 * tickRate, 1))
+      end
+    end
 	end
 
   local mx, my = love.mouse.getPosition()
@@ -158,6 +169,7 @@ function HudMinions:draw()
   for minion = 1, #upgrades do
     for upgrade = 1, 2 do
       local x, y, r, children = unpack(upgrades[minion][upgrade])
+      local spread = math.lerp(self.prevspread[minion][upgrade], self.spread[minion][upgrade], tickDelta / tickRate)
       g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
       g.circle('fill', x, y, r)
       g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
@@ -165,9 +177,9 @@ function HudMinions:draw()
 
       for i = 1, #children do
         local x, y, r = unpack(children[i])
-        g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * self['spread' .. upgrade])
+        g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * spread)
         g.circle('fill', x, y, r)
-        g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * self['spread' .. upgrade])
+        g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * spread)
         g.circle('line', x, y, r)
       end
     end
@@ -197,5 +209,8 @@ function HudMinions:ready()
   for i = 1, self.count do
     self.bg[i] = data.media.graphics.unit.portrait[p.deck[i].code] or data.media.graphics.menuCove
     self.factor[i] = 0
+
+    self.prevspread[i] = {0, 0}
+    self.spread[i] = {0, 0}
   end
 end

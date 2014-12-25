@@ -5,7 +5,7 @@ Trinket.code = 'trinket'
 -- Meta
 ----------------
 Trinket.name = 'Trinket'
-Trinket.description = 'Trinket things'
+Trinket.description = 'Huju entrusts a target ally with a trinket for $duration second$s.  The trinket increases the movement speed of the ally by %haste, and also increases their attack speed by %frenzy.'
 
 
 ----------------
@@ -33,14 +33,14 @@ end
 local Imbue = {}
 Imbue.code = 'imbue'
 Imbue.name = 'Imbue'
-Imbue.description = 'Trinket heals the ally at the end and reduces their cooldowns.'
+Imbue.description = 'When the trinket expires, the ally is healed for $heal health and all cooldowns of the ally are reduced by $cooldownReduction seconds.'
 Imbue.heal = 75
 Imbue.cooldownReduction = 3
 
 local Surge = {}
 Surge.code = 'surge'
 Surge.name = 'Surge'
-Surge.description = 'Trinket explodes at the end, damaging enemies and knocking them back.'
+Surge.description = 'The trinket explodes when it expires, dealing $damage damage to all nearby enemies and knocking them back a short distance.'
 Surge.damage = 75
 Surge.range = 100
 Surge.knockback = 100

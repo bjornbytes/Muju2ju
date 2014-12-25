@@ -5,7 +5,7 @@ Taunt.code = 'taunt'
 -- Meta
 ----------------
 Taunt.name = 'Taunt'
-Taunt.description = 'Taunt things'
+Taunt.description = 'Thuju taunts by beating his manly chest, forcing the nearest $targets target$s to attack him for $duration second$s.'
 
 
 ----------------
@@ -42,13 +42,13 @@ end
 local ImpenetrableHide = {}
 ImpenetrableHide.code = 'impenetrablehide'
 ImpenetrableHide.name = 'Impenetrable Hide'
-ImpenetrableHide.description = 'You get armor when you are taunting things.'
+ImpenetrableHide.description = 'Thuju also takes %armor reduced damage from all attacks while taunting.'
 ImpenetrableHide.armor = .4
 
 local WardOfThorns = {}
 WardOfThorns.code = 'wardofthorns'
 WardOfThorns.name = 'Ward of Thorns'
-WardOfThorns.description = 'You reflect damage dealt by taunted attackers.'
+WardOfThorns.description = 'Thuju\'s thorns get up in the grill of taunted melee enemies, reflecting %reflectAmount of the damage Thuju takes back at the attacker.'
 WardOfThorns.reflectAmount = .5
 
 Taunt.upgrades = {ImpenetrableHide, WardOfThorns}

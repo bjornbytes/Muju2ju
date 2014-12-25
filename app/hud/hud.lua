@@ -91,7 +91,6 @@ function Hud:mousepressed(...)
 end
 
 function Hud:mousereleased(...)
-  self.upgrades:mousereleased(...)
   self.pause:mousereleased(...)
   self.dead:mousereleased(...)
 end

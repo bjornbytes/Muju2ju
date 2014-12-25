@@ -119,7 +119,7 @@ function Game:keypressed(key)
   if (key == 'p' or key == 'escape') and not self.hud.upgrades.active then self.paused = not self.paused
   elseif key == 'm' then self.sound:mute() end
 
-  if self.hud.upgrades.active or self.paused or self.net.state == 'ending' then return end
+  if self.paused or self.net.state == 'ending' then return end
 
   self.players:keypressed(key)
 end

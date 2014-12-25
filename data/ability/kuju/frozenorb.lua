@@ -5,10 +5,7 @@ FrozenOrb.code = 'frozenorb'
 -- Meta
 ----------------
 FrozenOrb.name = 'Frozen Orb'
-FrozenOrb.description = [[
-Kuju sends out a projectile in a target direction that deals damage and slows units hit.
-It then returns to Kuju, reapplying the damage and slow.
-]]
+FrozenOrb.description = 'Kuju sends out a frozen orb in the direction she is facing that deals $damage damage and slows units hit by %slow for $duration second$s.  It then returns to Kuju, hitting enemies a second time.'
 
 
 ----------------
@@ -16,7 +13,7 @@ It then returns to Kuju, reapplying the damage and slow.
 ----------------
 FrozenOrb.cooldown = 5
 
-FrozenOrb.damage = 5
+FrozenOrb.damage = 30
 FrozenOrb.range = 175
 FrozenOrb.radius = 10
 FrozenOrb.speed = 150
@@ -31,11 +28,11 @@ function FrozenOrb:use()
   local damage, range = self.damage, self.range
 
   if self:hasUpgrade('winterswrath') then
-    damage = damage + damage * .05
+    damage = damage + damage * self.upgrades.winterswrath.damageIncrease
   end
 
   if self:hasUpgrade('sweepinggale') then
-    range = range + range * .25
+    range = range + range * self.upgrades.sweepinggale.rangeIncrease
   end
 
   self:createSpell({
@@ -55,12 +52,14 @@ end
 local WintersWrath = {}
 WintersWrath.name = 'Winter\'s Wrath'
 WintersWrath.code = 'winterswrath'
-WintersWrath.description = 'Frozen Orb deals 10% more damage.'
+WintersWrath.description = 'Frozen Orb deals %damageIncrease more damage.'
+WintersWrath.damageIncrease = .25
 
 local SweepingGale = {}
 SweepingGale.name = 'Sweeping Gale'
 SweepingGale.code = 'sweepinggale'
-SweepingGale.description = 'Frozen orb travels 25% further away from Kuju before returning.'
+SweepingGale.description = 'Frozen orb travels %rangeIncrease further away from Kuju before returning.'
+SweepingGale.rangeIncrease = .25
 
 FrozenOrb.upgrades = {WintersWrath, SweepingGale}
 

@@ -5,7 +5,7 @@ Tremor.code = 'tremor'
 -- Meta
 ----------------
 Tremor.name = 'Tremor'
-Tremor.description = 'Tremor things'
+Tremor.description = 'Thuju slams the ground in the direction he is facing, causing the tectonic plates of the Earth to erupt in front of him.  Any enemies unfortunate enough to be caught in the area of impact take $damage damage and are stunned for $stun second$s.'
 
 
 ----------------
@@ -43,14 +43,14 @@ end
 local Concussion = {}
 Concussion.code = 'concussion'
 Concussion.name = 'Concussion'
-Concussion.description = 'Tremor stuns for longer and silences enemies afterwards.'
+Concussion.description = 'Tremor now gives enemies a concussion, increasing the stun to $stun second$s and applying a $silence second silence.'
 Concussion.stun = 1.5
 Concussion.silence = 4
 
 local Fissure = {}
 Fissure.code = 'fissure'
 Fissure.name = 'Fissure'
-Fissure.description = 'Tremor has increased range and deals additional damage to structures.'
+Fissure.description = 'Thuju slams with increased force, creating a fissure in the ground.  The width of Tremor is %widthMultiplier of the normal width.  Additionally, tremor deals %structureDamageMultiplier damage to structures.'
 Fissure.widthMultiplier = 2
 Fissure.structureDamageMultiplier = 2
 

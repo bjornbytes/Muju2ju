@@ -5,7 +5,7 @@ Infusion.code = 'infusion'
 -- Meta
 ----------------
 Infusion.name = 'Infusion'
-Infusion.description = 'Infuse things'
+Infusion.description = 'Huju plants itself in the ground like a boss, channeling for $duration second$s.  During this time, nearby allies are healed for a total of %maxHealthHeal of their maximum health.  This ability costs %currentHealthCost of Huju\'s current health to use.'
 
 
 ----------------
@@ -45,14 +45,14 @@ end
 local Distortion = {}
 Distortion.code = 'distortion'
 Distortion.name = 'Distortion'
-Distortion.description = 'Infusion speeds up allies and slows enemies.'
+Distortion.description = 'Infusion creates some void zone thing that hastes allies in the area by %haste and slows enemies in the area by %slow.'
 Distortion.slow = .5
 Distortion.haste = .5
 
 local Resilience = {}
 Resilience.code = 'resilience'
 Resilience.name = 'Resilience'
-Resilience.description = 'Any allies under the effect of Infusion are immune to crowd control effects.'
+Resilience.description = 'Any allies under the effect of infusion become immune to crowd control effects.'
 
 Infusion.upgrades = {Distortion, Resilience}
 

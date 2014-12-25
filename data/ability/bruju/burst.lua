@@ -5,7 +5,7 @@ Burst.code = 'burst'
 -- Meta
 ----------------
 Burst.name = 'Burst'
-Burst.description = 'Burst things'
+Burst.description = 'Bruju ignites into a spirit flame on death, dealing $damage damage to nearby enemies.'
 
 
 ----------------
@@ -25,8 +25,8 @@ function Burst:die()
   local heal = 0
 
   if self:hasUpgrade('essenceFlame') then
-    damage = damage * self.upgrades.essenceflame.damageMultiplier
-    range = range * self.upgrades.essenceflame.rangeMultiplier
+    damage = damage + damage * self.upgrades.essenceflame.damageIncrease
+    range = range + range * self.upgrades.essenceflame.rangeIncrease
   end
 
   if self:hasUpgrade('sanctuary') then
@@ -47,14 +47,14 @@ end
 local EssenceFlame = {}
 EssenceFlame.code = 'essenceflame'
 EssenceFlame.name = 'Essence Flame'
-EssenceFlame.description = 'Burst deals 50% more damage and the radius is increased by 20%.'
-EssenceFlame.damageMultiplier = 1.5
-EssenceFlame.rangeMultiplier = 1.2
+EssenceFlame.description = 'Burst deals %damageIncrease more damage and the radius is increased by %rangeIncrease.'
+EssenceFlame.damageIncrease = .5
+EssenceFlame.rangeIncrease = .2
 
 local Sanctuary = {}
 Sanctuary.code = 'sanctuary'
 Sanctuary.name = 'Sanctuary'
-Sanctuary.description = 'Burst heals allies in the area of effect for 15% of their maximum health.'
+Sanctuary.description = 'Burst instantly heals all allies in the area of effect for %maxHealthHeal of their maximum health.'
 Sanctuary.maxHealthHeal = .15
 
 Burst.upgrades = {EssenceFlame, Sanctuary}

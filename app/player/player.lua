@@ -197,7 +197,6 @@ function Player:initDeck()
 
     table.each(data.unit[entry.code].abilities, function(code, i)
       self.deck[entry.code].abilities[code] = false
-      self.deck[entry.code].abilities[i] = false
     end)
 
     table.each(data.unit[entry.code].abilities, function(code)
@@ -222,4 +221,10 @@ end
 
 function Player:contains(x, y)
   math.inside(x, y, self.x - self.width / 2, self.y, self.width, self.height)
+end
+
+function Player:hasUnitAbility(unit, ability)
+  if type(unit) == 'number' then unit = self.deck[unit].code end
+  if type(ability) == 'number' then ability = data.unit[unit].abilities[ability].code end
+  return self.deck[unit].abilities[ability]
 end

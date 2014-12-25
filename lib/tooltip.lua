@@ -75,6 +75,7 @@ function Tooltip:abilityTooltip(code, index)
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. ability.name .. '{normal}')
   table.insert(pieces, description)
+  table.insert(pieces, 'Cost: ' .. ctx.upgrades.costs.ability)
   return table.concat(pieces, '\n')
 end
 
@@ -85,6 +86,7 @@ function Tooltip:abilityUpgradeTooltip(code, ability, index)
   local pieces = {}
   table.insert(pieces, '{white}{title}' .. upgrade.name .. '{normal}')
   table.insert(pieces, description)
+  table.insert(pieces, 'Cost: ' .. ctx.upgrades.costs.abilityUpgrade)
   return table.concat(pieces, '\n')
 end
 

@@ -26,15 +26,20 @@ Frostbite.rootThreshold = 2
 -- Behavior
 ----------------
 function Frostbite:use(target)
-  local width = self.width
+  local width, duration = self.width, self.rootDuration
 
   if self:hasUpgrade('tundra') then
     width = width * self.upgrades.tundra.widthMultiplier
   end
 
+  if self:hasUpgrade('frigidprison') then
+    duration = self.upgrades.frigidprison.rootDuration
+  end
+
   self:createSpell({
     x = target,
-    width = width
+    width = width,
+    rootDuration = duration
   })
 end
 
@@ -52,6 +57,7 @@ local FrigidPrison = {}
 FrigidPrison.code = 'frigidprison'
 FrigidPrison.name = 'Frigid Prison'
 FrigidPrison.description = 'This is another upgrade that makes Frostbite better.'
+FrigidPrison.rootDuration = 3
 
 Frostbite.upgrades = {Tundra, FrigidPrison}
 

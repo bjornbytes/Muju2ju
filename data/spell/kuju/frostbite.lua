@@ -35,7 +35,7 @@ function Frostbite:update()
     if not self.dirtyTargets[target.id] then
       self.targets[target.id] = (self.targets[target.id] or 0) + tickRate
       if self.targets[target.id] >= ability.rootThreshold then
-        target.buffs:add('frostbiteroot', {timer = ability.rootDuration})
+        target.buffs:add('frostbiteroot', {timer = self.rootDuration})
         self.dirtyTargets[target.id] = true
       end
     end

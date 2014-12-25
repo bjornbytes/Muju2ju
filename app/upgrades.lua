@@ -14,7 +14,7 @@ function Upgrades:process(data, player)
   local deck = data.unit and player.deck[data.unit]
   local abilityCount = data.unit and table.count(deck.upgrades)
   local unit = data.unit and _G['data'].unit[deck.code]
-  local ability = data.unit and data.ability and unit.abilities[data.ability]
+  local ability = data.unit and data.ability and _G['data'].ability[unit.code][unit.abilities[data.ability]]
   local abilityCost = ability and (abilityCount == 0 and self.costs.firstAbility or self.costs.secondAbility)
   local upgrade = unit and ability and data.upgrade and ability.upgrades[data.upgrade].code
 

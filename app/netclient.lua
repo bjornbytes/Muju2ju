@@ -206,11 +206,11 @@ NetClient.messages.upgrade = {
     rune = 3,
     other = 'string'
   },
-  delta = {'other'},
+  delta = {'unit', 'ability', 'upgrade', 'rune', 'other'},
   order = {'unit', 'ability', 'upgrade', 'rune', 'other'},
   important = true,
   receive = function(self, event)
-    ctx.upgrades:process(event.data, ctx.players:get(self.peerToPlayer[event.peer]))
+    ctx.upgrades:process(event.data, ctx.players:get(event.data.id))
   end
 }
 

@@ -87,7 +87,7 @@ function Hud:keyreleased(key)
 end
 
 function Hud:mousepressed(...)
-  --
+  self.minions:mousepressed(...)
 end
 
 function Hud:mousereleased(...)

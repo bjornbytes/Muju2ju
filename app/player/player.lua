@@ -32,7 +32,7 @@ function Player:init()
   self.ghostX = self.x
   self.ghostY = self.y
 
-	self.juju = 10
+	self.juju = 1000
 	self.jujuTimer = 1
   self.jujuRate = 2
 
@@ -227,4 +227,11 @@ function Player:hasUnitAbility(unit, ability)
   if type(unit) == 'number' then unit = self.deck[unit].code end
   if type(ability) == 'number' then ability = data.unit[unit].abilities[ability].code end
   return self.deck[unit].abilities[ability]
+end
+
+function Player:hasUnitAbilityUpgrade(unit, ability, upgrade)
+  if type(unit) == 'number' then unit = self.deck[unit].code end
+  if type(ability) == 'number' then ability = data.unit[unit].abilities[ability].code end
+  if type(upgrade) == 'number' then upgrade = data.ability[ability].upgrades[upgrade] end
+  return self.deck[unit].upgrades[upgrade]
 end

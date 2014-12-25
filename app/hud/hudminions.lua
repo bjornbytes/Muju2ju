@@ -199,6 +199,44 @@ function HudMinions:draw()
   end
 end
 
+function HudMinions:mousepressed(mx, my, b)
+  if ctx.net.state == 'ending' then return end
+  if b ~= 'l' then return end
+
+  local p = ctx.players:get(ctx.id)
+
+  local runes = self.geometry.runes
+  for minion = 1, #runes do
+    for i = 1, #runes[minion] do
+      if math.insideCircle(mx, my, unpack(runes[minion][i])) and p.deck[minion].runes[i] then
+        --
+      end
+    end
+  end
+
+  local upgrades = self.geometry.upgrades
+  for minion = 1, #upgrades do
+    for upgrade = 1, #upgrades[minion] do
+      local x, y, r, children = unpack(upgrades[minion][upgrade])
+      if not p:hasUnitAbility(minion, upgrade) and math.insideCircle(mx, my, x, y, r) then
+        local cost = table.count(p.deck[minion].abilities) == 0 and ctx.upgrades.costs.firstAbility or ctx.upgrades.costs.secondAbility
+        if p:spend(cost) then
+          ctx.net:send('upgrade', {unit = minion, ability = upgrade})
+        end
+      else
+        for i = 1, #children do
+          if p:hasUnitAbility(minion, upgrade) and not p:hasUnitAbilityUpgrade(minion, upgrade, i) and math.insideCircle(mx, my, unpack(children[i])) then
+            local cost = ctx.upgrades.costs.abilityUpgrade
+            if p:spend(cost) then
+              ctx.net:send('upgrade', {unit = minion, ability = upgrade, upgrade = i})
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
 function HudMinions:ready()
   local p = ctx.players:get(ctx.id)
 

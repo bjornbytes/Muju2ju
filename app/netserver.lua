@@ -261,7 +261,7 @@ NetServer.messages.upgrade = {
     rune = 3,
     other = 'string'
   },
-  delta = {'other'},
+  delta = {'unit', 'ability', 'upgrade', 'rune', 'other'},
   order = {'id', 'unit', 'ability', 'upgrade', 'rune', 'other'},
   important = true,
   receive = function(self, event)

@@ -29,7 +29,7 @@ if love.graphics then
 
   function g.printCenter(what, x, y)
     local font = g.getFont()
-    g.print(what, x, y, 0, 1, 1, font:getWidth(what) / 2, font:getHeight() / 2)
+    g.print(what, x, y, 0, 1, 1, math.round(font:getWidth(what) / 2), math.round(font:getHeight() / 2))
   end
 end
 

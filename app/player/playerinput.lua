@@ -38,7 +38,7 @@ function PlayerInput:update()
     self.axes[axis] = math.lerp(self.axes[axis] or 0, value, math.min(smooth * tickRate, 1))
   end
 
-  self.active = not ctx.hud.chat.active
+  self.active = not ctx.hud.chat.active and not ctx.hud.countdown.active
 
   if self.owner.dead then
     self.targeting = nil
@@ -50,7 +50,7 @@ function PlayerInput:read()
 
   input.x = self:getAxis('x')
   input.y = self:getAxis('y')
-  input.summon = lk.isDown(' ')
+  input.summon = self.active and lk.isDown(' ')
 
   if self.owner.summonTimer > 0 then
     input.x = 0
@@ -161,7 +161,7 @@ end
 
 -- Axis
 function PlayerInput:getAxis(axis)
-  return self.axes[axis]
+  return self.active and self.axes[axis] or 0
 end
 
 function PlayerInput:clearAxis(axis)
@@ -171,7 +171,7 @@ end
 function PlayerInput:keyboardAxis(neg, pos)
   neg = lk.isDown(strunpack(neg))
   pos = lk.isDown(strunpack(pos))
-  return neg and -1 or (pos and 1 or 0)
+  return self.active and (neg and -1 or (pos and 1 or 0)) or 0
 end
 
 function PlayerInput:gamepadAxis(axis)

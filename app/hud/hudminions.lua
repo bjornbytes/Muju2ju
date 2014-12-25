@@ -172,14 +172,20 @@ function HudMinions:draw()
       local spread = math.lerp(self.prevspread[minion][upgrade], self.spread[minion][upgrade], tickDelta / tickRate)
       g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
       g.circle('fill', x, y, r)
-      g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
+
+      if p:hasUnitAbility(minion, upgrade) then g.setColor(0, 255, 0, 255 * upgradeAlphaFactor)
+      else g.setColor(255, 0, 0, 255 * upgradeAlphaFactor) end
+
       g.circle('line', x, y, r)
 
       for i = 1, #children do
         local x, y, r = unpack(children[i])
         g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * spread)
         g.circle('fill', x, y, r)
-        g.setColor(255, 255, 255, 255 * upgradeAlphaFactor * spread)
+
+        if p:hasUnitAbilityUpgrade(minion, upgrade, i) then g.setColor(0, 255, 0, 255 * upgradeAlphaFactor)
+        else g.setColor(255, 0, 0, 255 * upgradeAlphaFactor) end
+
         g.circle('line', x, y, r)
       end
     end

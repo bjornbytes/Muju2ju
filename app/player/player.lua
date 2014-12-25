@@ -225,13 +225,13 @@ end
 
 function Player:hasUnitAbility(unit, ability)
   if type(unit) == 'number' then unit = self.deck[unit].code end
-  if type(ability) == 'number' then ability = data.unit[unit].abilities[ability].code end
+  if type(ability) == 'number' then ability = data.unit[unit].abilities[ability] end
   return self.deck[unit].abilities[ability]
 end
 
 function Player:hasUnitAbilityUpgrade(unit, ability, upgrade)
   if type(unit) == 'number' then unit = self.deck[unit].code end
-  if type(ability) == 'number' then ability = data.unit[unit].abilities[ability].code end
-  if type(upgrade) == 'number' then upgrade = data.ability[ability].upgrades[upgrade] end
-  return self.deck[unit].upgrades[upgrade]
+  if type(ability) == 'number' then ability = data.unit[unit].abilities[ability] end
+  if type(upgrade) == 'number' then upgrade = data.ability[unit][ability].upgrades[upgrade].code end
+  return self.deck[unit].upgrades[ability][upgrade]
 end

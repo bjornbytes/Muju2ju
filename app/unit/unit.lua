@@ -68,22 +68,24 @@ end
 ----------------
 Unit.stances = {}
 function Unit.stances:defensive()
-  local target = ctx.target:closest(self, 'enemy', 'player', 'unit')
+  self:changeTarget(ctx.target:closest(self, 'enemy', 'player', 'unit'))
 
-  if target and self:inRange(target) then
-    self:attack(target)
+  if self.target and self:inRange(self.target) then
+    self:attack(self.taregt)
   else
     self.animation:set('idle')
   end
 end
 
 function Unit.stances:aggressive()
-  local target = ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit')
+  self:changeTarget(ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit'))
 
-  if self:inRange(target) then
-    self:attack(target)
+  if self.target and self:inRange(self.target) then
+    self:attack(self.target)
+  elseif self.target then
+    self:moveIntoRange(self.target)
   else
-    self:moveIntoRange(target)
+    self.animation:set('idle')
   end
 end
 
@@ -95,6 +97,11 @@ end
 ----------------
 -- Behavior
 ----------------
+function Unit:changeTarget(target)
+  local taunt = next(self.buffs:buffsWithTag('taunt'))
+  self.target = taunt and taunt.target or target
+end
+
 function Unit:inRange(target)
   return math.abs(target.x - self.x) <= self.range + target.width / 2 + self.width / 2
 end

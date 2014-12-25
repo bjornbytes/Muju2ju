@@ -117,20 +117,22 @@ function PlayerInput:mousepressed(x, y, b)
   if b == 'r' then self.targeting = nil return
   elseif b ~= 'l' then return end
 
+  local input = self:current(tick + 1)
+
   if self.targeting then
     local unit = self.owner.deck[self.owner.selected].instance
-    local ability = data.unit[unit.class.code].abilities[self.targeting]
+    local ability = data.ability[unit.class.code][data.unit[unit.class.code].abilities[self.targeting]]
 
     if ability.target == 'unit' or ability.target == 'ally' or ability.target == 'enemy' then
       local teamFilter = ability.target == 'unit' and 'all' or ability.target
-      local target = ctx.target:atMouse(instance, ability.range or math.huge, teamFilter, 'unit')
+      local target = ctx.target:atMouse(unit, ability.range or math.huge, teamFilter, 'unit')
       if target then
         input.ability = self.targeting
         input.target = target.id
         self.targeting = nil
       end
     elseif ability.target == 'location' then
-      local x = ctx.target:location(instance, ability.range or math.huge)
+      local x = ctx.target:location(unit, ability.range or math.huge)
       input.ability = self.targeting
       input.target = x
       self.targeting = nil
@@ -139,7 +141,6 @@ function PlayerInput:mousepressed(x, y, b)
     return
   end
 
-  local input = self:current(tick + 1)
   for i = 1, #self.owner.deck do
     if self.owner.deck[i].instance and self.owner.deck[i].instance.animation:contains(x, y) then
       input.selected = i

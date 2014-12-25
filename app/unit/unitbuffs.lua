@@ -33,6 +33,10 @@ function UnitBuffs:postupdate()
 
   self.unit.speed = speed
 
+  -- Apply Roots
+  local rooted = table.count(self.buffsWithTag('root')) > 0
+  if rooted then self.unit.speed = 0 end
+
   -- Apply Attack Speed Increases
   local frenzies = self:buffsWithTag('frenzy')
   local attackSpeed = self.unit.class.attackSpeed

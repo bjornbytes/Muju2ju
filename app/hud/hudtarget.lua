@@ -82,7 +82,7 @@ function HudTarget:getTargetingInfo()
   local p = ctx.players:get(ctx.id)
   if p and p.input and p.input.targeting then
     local unit = p.deck[p.selected].instance
-    local ability = data.ability[unit.class.code][data.unit[unit.class.code].abilities[p.input.targeting]]
+    local ability = unit and data.ability[unit.class.code][data.unit[unit.class.code].abilities[p.input.targeting]]
     return unit, ability
   end
 end

@@ -111,6 +111,8 @@ function HudDead:draw()
 end
 
 function HudDead:mousereleased(mx, my, b)
+  if ctx.net.state ~= 'ending' then return end
+
   if b == 'l' then
     local x, y, w, h = self:continueGeometry()
     if math.inside(mx, my, x, y, w, h) then

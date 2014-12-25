@@ -5,8 +5,8 @@ function Ability:init()
 end
 
 function Ability:createSpell(code, vars)
-  if not code or type(code) == 'table' then code, vars = self.code, code end
-  ctx.spells:add(data.unit[self.unit.class.code][code], table.merge(vars, {ability = self}, true))
+  if not vars then code, vars = self.code, code end
+  ctx.spells:add(data.spell[self.unit.class.code][code], table.merge(vars, {ability = self}, true))
 end
 
 function Ability:getUnitDirection()

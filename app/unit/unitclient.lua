@@ -25,7 +25,7 @@ function UnitClient:update()
     local item = self.eventQueue[1]
 
     if item.kind == 'ability' then
-      self:useAbility(item.ability)
+      self:useAbility(item.ability, item.target)
     elseif item.kind == 'death' then
       self:die()
     end

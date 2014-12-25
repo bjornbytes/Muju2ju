@@ -1,7 +1,18 @@
 local Frostbite = extend(Spell)
 Frostbite.code = 'frostbite'
 
+local g = love.graphics
+
 function Frostbite:activate()
+  local ability, unit = self:getAbility(), self:getUnit()
+
+  self.timer = ability.duration
+  self.y = ctx.map.height - ctx.map.groundHeight
+  self.team = unit.team
+
+  self.targets = {}
+  self.dirtyTargets = {}
+
   ctx.event:emit('view.register', {object = self})
 end
 
@@ -10,10 +21,31 @@ function Frostbite:deactivate()
 end
 
 function Frostbite:update()
+  local ability, unit = self:getAbility(), self:getUnit()
+
+  self.timer = timer.rot(self.timer, function()
+    ctx.spells:remove(self)
+  end)
+
+  local targets = ctx.target:inRange(self, self.width / 2, 'enemy', 'unit')
+  table.each(targets, function(target)
+    target.buffs:add('frostbiteslow', {timer = tickRate, slow = ability.slow})
+    target:hurt(self.dps * tickRate, unit)
+
+    if not self.dirtyTargets[target.id] then
+      self.targets[target.id] = (self.targets[target.id] or 0) + tickRate
+      if self.targets[target.id] >= ability.rootThreshold then
+        target.buffs:add('frostbiteroot', {timer = ability.rootDuration})
+        self.dirtyTargets[target.id] = true
+      end
+    end
+  end)
 end
 
 function Frostbite:draw()
-	local g = love.graphics
+  g.setColor(0, 255, 255, 128)
+  local height = 20
+  g.rectangle('fill', self.x - self.width / 2, self.y - height / 2, self.width, height)
 end
 
 return Frostbite

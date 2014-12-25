@@ -215,8 +215,8 @@ end
 function Player:animate()
   if self.dead then return end
 
-  self.animation:set(math.abs(self.speed) > self.walkSpeed / 4 and 'walk' or 'idle')
-  self.animation.speed = self.animation.state.name == 'walk' and math.abs(self.speed / self.walkSpeed) or 1
+  self.animation:set(math.abs(self.speed / self.walkSpeed) > .4 and 'walk' or 'idle')
+  self.animation.speed = self.animation.state.name == 'walk' and math.max(math.abs(self.speed / self.walkSpeed), .4) or 1
   if self.speed ~= 0 then self.animation.flipped = math.sign(self.speed) > 0 end
 end
 

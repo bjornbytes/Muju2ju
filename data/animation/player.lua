@@ -11,7 +11,6 @@ Muju.states.idle = {
   loop = true,
   speed = .4,
   mix = {
-    idle = .1,
     walk = .2,
     summon = .1,
     death = .2
@@ -23,7 +22,7 @@ Muju.states.walk = {
   loop = true,
   speed = 1,
   mix = {
-    idle = .2,
+    idle = .1,
     summon = .1,
     death = .2
   }

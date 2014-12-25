@@ -99,7 +99,7 @@ function PlayerInput:keypressed(key)
     end
   end
 
-  if not self.targeting then
+  if not self.targeting and not love.keyboard.isDown(' ') then
     for i = 1, #self.owner.deck do
       if i == tonumber(key) then
         input.selected = i

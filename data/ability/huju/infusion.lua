@@ -14,7 +14,7 @@ Infusion.description = 'Infuse things'
 Infusion.cooldown = 8
 Infusion.range = 150
 Infusion.duration = 5
-Infusion.currentHealthCost = .1
+Infusion.currentHealthCost = .2
 Infusion.maxHealthHeal = .3
 
 
@@ -49,11 +49,11 @@ Distortion.description = 'Infusion speeds up allies and slows enemies.'
 Distortion.slow = .5
 Distortion.haste = .5
 
-local Bide = {}
-Bide.code = 'bide'
-Bide.name = 'Bide'
-Bide.description = 'Infusion absorbs damage and releases it back at enemies.'
+local Resilience = {}
+Resilience.code = 'resilience'
+Resilience.name = 'Resilience'
+Resilience.description = 'Any allies under the effect of Infusion are immune to crowd control effects.'
 
-Infusion.upgrades = {Distortion, Bide}
+Infusion.upgrades = {Distortion, Resilience}
 
 return Infusion

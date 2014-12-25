@@ -3,7 +3,7 @@ TrinketKnockback.code = 'trinketknockback'
 TrinketKnockback.name = 'Trinket'
 TrinketKnockback.tags = {'knockback'}
 
-function Trinket:update()
+function TrinketKnockback:update()
   local sign = math.sign(self.offset)
   local amount = math.ceil(math.max(math.abs(self.offset) * tickRate / .1, 100 * tickRate))
 

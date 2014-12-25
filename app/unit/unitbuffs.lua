@@ -47,8 +47,8 @@ function UnitBuffs:postupdate()
 end
 
 function UnitBuffs:add(code, vars)
+  if self:isCrowdControl(code) and self:ccImmune() then return end
   if self:get(code) then return self:reapply(code, vars) end
-
   local buff = data.buff[code]()
   buff.unit = self.unit
   buff.ability = ability
@@ -73,6 +73,7 @@ function UnitBuffs:get(code)
 end
 
 function UnitBuffs:reapply(code, vars)
+  if self:isCrowdControl(code) and self:ccImmune() then return end
   local buff = self:get(code)
   if buff then
     table.merge(vars, buff, true)
@@ -83,6 +84,13 @@ end
 
 function UnitBuffs:buffsWithTag(tag)
   return table.filter(self.list, function(buff) return table.has(buff.tags, tag) end)
+end
+
+function UnitBuffs:isCrowdControl(buff)
+  if type(buff) == 'string' then buff = data.buff[buff] end
+  local tags = buff.tags
+  local function t(s) return table.has(tags, s) end
+  return t('slow') or t('root') or t('stun') or t('silence') or t('knockback') or t('taunt')
 end
 
 function UnitBuffs:applyRunes()
@@ -143,4 +151,8 @@ end
 
 function UnitBuffs:silenced()
   return next(self:buffsWithTag('silence'))
+end
+
+function UnitBuffs:ccImmune()
+  return next(self:buffsWithTag('ccimmune'))
 end

@@ -107,3 +107,19 @@ function UnitBuffs:applyRunes()
   end)
 end
 
+
+function UnitBuffs:prehurt(amount, source, kind)
+  table.with(self.list, 'prehurt', amount, source, kind)
+
+  if kind == 'attack' then
+    local armors = self.buffs:buffsWithTag('armor')
+    local armor = 0
+    table.each(armors, function(buff)
+      armor = armor + (1 - armor) * buff.armor
+    end)
+
+    amount = amount * (1 - armor)
+  end
+
+  return amount
+end

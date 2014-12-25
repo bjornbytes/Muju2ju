@@ -107,7 +107,6 @@ function UnitBuffs:applyRunes()
   end)
 end
 
-
 function UnitBuffs:prehurt(amount, source, kind)
   table.with(self.list, 'prehurt', amount, source, kind)
 
@@ -120,6 +119,12 @@ function UnitBuffs:prehurt(amount, source, kind)
 
     amount = amount * (1 - armor)
   end
+
+  return amount
+end
+
+function UnitBuffs:posthurt(amount, source, kind)
+  table.with(self.list, 'posthurt', amount, source, kind)
 
   return amount
 end

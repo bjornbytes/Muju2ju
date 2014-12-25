@@ -38,6 +38,8 @@ function UnitServer:hurt(amount, source, kind)
 
   self.health = self.health - amount
 
+  self.buffs:posthurt(amount, source, kind)
+
   if self.health <= 0 then
     self.animation:set('death', {force = true})
     self.dying = true

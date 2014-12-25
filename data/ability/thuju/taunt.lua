@@ -29,6 +29,10 @@ function Taunt:use()
   if self:hasUpgrade('impenetrablehide') then
     self.unit.buffs:add('impenetrablehide', {timer = self.duration, armor = self.upgrades.impenetrablehide.armor})
   end
+
+  if self:hasUpgrade('wardofthorns') then
+    self.unit.buffs:add('wardofthorns', {reflectAmount = self.upgrades.wardofthorns.reflectAmount})
+  end
 end
 
 

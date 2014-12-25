@@ -147,7 +147,13 @@ function Unit:useAbility(index, target)
   end
 end
 
-Unit.hurt = f.empty
+function Unit:hurt(amount, source, kind)
+  if self.dying then return end
+
+  self.buffs:prehurt(amount, source, kind)
+  self.buffs:posthurt(amount, source, kind)
+end
+
 Unit.heal = f.empty
 
 function Unit:die()

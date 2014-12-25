@@ -15,8 +15,8 @@ FrozenOrb.cooldown = 5
 
 FrozenOrb.damage = 30
 FrozenOrb.range = 175
-FrozenOrb.radius = 10
-FrozenOrb.speed = 150
+FrozenOrb.radius = 15
+FrozenOrb.speed = 400
 FrozenOrb.duration = 2
 FrozenOrb.slow = .25
 

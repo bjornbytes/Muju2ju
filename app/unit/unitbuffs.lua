@@ -144,4 +144,3 @@ end
 function UnitBuffs:silenced()
   return next(self:buffsWithTag('silence'))
 end
-

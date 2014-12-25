@@ -43,7 +43,8 @@ Surge.name = 'Surge'
 Surge.description = 'Trinket explodes at the end, damaging enemies and knocking them back.'
 Surge.damage = 75
 Surge.range = 100
+Surge.knockback = 100
 
-Trinket.upgrades = {Distortion, Bide}
+Trinket.upgrades = {Imbue, Surge}
 
 return Trinket

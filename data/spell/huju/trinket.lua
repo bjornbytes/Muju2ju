@@ -26,9 +26,10 @@ function Trinket:update()
         end
       end)
     elseif ability:hasUpgrade('surge') then
-      table.each(ctx.target:inRange(self.target, ability.upgrades.surge.range, 'enemy', 'unit', 'player'), function(target)
+      table.each(ctx.target:inRange(self.target, ability.upgrades.surge.range, 'enemy', 'unit'), function(target)
         target:hurt(ability.upgrades.surge.damage, self:getUnit())
-        -- TODO knockback
+        local sign = math.sign(target.x - self.target.x)
+        target.buffs:add('trinketknockback', {offset = ability.upgrades.surge.knockback * sign})
       end)
     end
 

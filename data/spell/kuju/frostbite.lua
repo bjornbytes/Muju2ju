@@ -43,9 +43,10 @@ function Frostbite:update()
 end
 
 function Frostbite:draw()
-  g.setColor(0, 255, 255, 128)
-  local height = 20
-  g.rectangle('fill', self.x - self.width / 2, self.y - height / 2, self.width, height)
+  local image = data.media.graphics.spell.frostbite
+  local scale = self.width / image:getWidth()
+  g.setColor(255, 255, 255)
+  g.draw(image, self.x, self.y, 0, scale, scale, image:getWidth() / 2, image:getHeight() - 20)
 end
 
 return Frostbite

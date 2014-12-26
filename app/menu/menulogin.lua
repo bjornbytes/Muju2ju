@@ -9,30 +9,59 @@ function MenuLogin:init()
   end})
 
   self.geometryFunctions = {
+    frame = function()
+      local u, v = ctx.u, ctx.v
+      local retype = self.retype
+      local y = (.35 - (.17 / 2) * retype) * v
+      local height = (.525 + .17 * retype) * v
+      return {u * .25, y, u * .5, height}
+    end,
+
     username = function()
       local u, v = ctx.u, ctx.v
-      return {u * .325, v * .45, u * .35, v * .075}
+      local retype = self.retype
+      local y = (.45 - (.17 / 2 * retype)) * v
+      return {u * .325, y, u * .35, v * .075}
     end,
 
     password = function()
       local u, v = ctx.u, ctx.v
-      return {u * .325, v * .62, u * .35, v * .075}
+      local retype = self.retype
+      local y = (.45 - (.17 / 2 * retype) + .17) * v
+      return {u * .325, y, u * .35, v * .075}
+    end,
+
+    retype = function()
+      local u, v = ctx.u, ctx.v
+      local retype = self.retype
+      local y = (.45 - (.17 / 2 * retype) + .34) * v
+      return {u * .325, y, u * .35, v * .075}
     end,
 
     login = function()
       local u, v = ctx.u, ctx.v
-      return {u * .325, v * .75, u * .12, v * .075}
+      local retype = self.retype
+      local height = .075
+      local edge = self.geometry.frame[2] + self.geometry.frame[4]
+      local y = edge - (.05 + height) * v
+      return {u * .325, y, u * .12, height * v}
     end,
 
     signup = function()
       local u, v = ctx.u, ctx.v
-      return {u * .555, v * .75, u * .12, v * .075}
-    end
+      local retype = self.retype
+      local frameHeight = self.geometry.frame[4]
+      local height = .075
+      local edge = self.geometry.frame[2] + self.geometry.frame[4]
+      local y = edge - (.05 + height) * v
+      return {u * .555, y, u * .12, height * v}
+    end,
   }
 
   self.input = MenuTextInput()
   self.input:add('username', '', 'Username')
   self.input:add('password', '', 'Password')
+  self.input:add('retype', '', 'Retype Password')
 
   self.textboxPadding = .0225
   self.cursorx = nil
@@ -45,6 +74,10 @@ function MenuLogin:init()
   self.patchProgress = 0
   self.patching = false
   self.fileCount = 390
+  
+  self.retype = 0
+  self.lepr = Lepr(self, .4, 'inOutBack', {'retype'})
+  self.signUp = false
 end
 
 function MenuLogin:update()
@@ -70,8 +103,20 @@ end
 function MenuLogin:draw()
   local u, v = ctx.u, ctx.v
 
+  g.setColor(255, 255, 255)
+  local scale = v * .325 / data.media.graphics.title:getHeight()
+  g.draw(data.media.graphics.title, u * .5, 0, 0, scale, scale, data.media.graphics.title:getWidth() / 2)
+
+  self.lepr:update(delta)
+  if self.lepr.tween.clock < self.lepr.tween.duration then table.clear(self.geometry) end
+  local retypeAlpha = math.clamp(self.retype, 0, 1) * 255
+
+  g.setColor(255, 255, 255)
+  local scale = v * .325 / data.media.graphics.title:getHeight()
+  g.draw(data.media.graphics.title, u * .5, 0, 0, scale, scale, data.media.graphics.title:getWidth() / 2)
+
   g.setColor(0, 0, 0, 160)
-  g.rectangle('fill', u * .25, v * .35, u * .5, v * .525)
+  g.rectangle('fill', unpack(self.geometry.frame))
 
   g.push()
   g.translate(.5, .5)
@@ -84,6 +129,10 @@ function MenuLogin:draw()
   g.setColor(val, val, val)
   g.rectangle('line', unpack(self.geometry.password))
 
+  val = self.input.focused == 'retype' and 200 or 100
+  g.setColor(val, val, val, retypeAlpha)
+  g.rectangle('line', unpack(self.geometry.retype))
+
   g.setColor(100, 100, 100)
   g.rectangle('line', unpack(self.geometry.login))
   g.rectangle('line', unpack(self.geometry.signup))
@@ -91,32 +140,40 @@ function MenuLogin:draw()
 
   g.setFont('mesmerize', v * .03)
   g.setColor(200, 200, 200)
-  g.print('Username', u * .325, v * .40)
-  g.print('Password', u * .325, v * .57)
+  g.print('Username', self.geometry.username[1], self.geometry.username[2] - (.05 * v))
+  g.print('Password', self.geometry.password[1], self.geometry.password[2] - (.05 * v))
+  g.setColor(200, 200, 200, retypeAlpha)
+  g.print('Retype Password', self.geometry.retype[1], self.geometry.retype[2] - (.05 * v))
 
+  g.setColor(200, 200, 200)
   local _, uy = unpack(self.geometry.username)
   g.print(self.input.text.username, u * .325 + v * self.textboxPadding, uy + v * self.textboxPadding)
 
   local _, py = unpack(self.geometry.password)
   g.print(('*'):rep(#self.input.text.password), u * .325 + v * self.textboxPadding, py + v * self.textboxPadding)
 
+  g.setColor(200, 200, 200, retypeAlpha)
+  local _, ry = unpack(self.geometry.retype)
+  g.print(('*'):rep(#self.input.text.retype), u * .325 + v * self.textboxPadding, ry + v * self.textboxPadding)
+
   if self.input.focused and self.cursorx then
-    local y = (self.input.focused == 'username' and uy or py) + v * self.textboxPadding
+    local y = self.geometry[self.input.focused][2] + self.textboxPadding * v
     local cursorx = math.lerp(self.prevcursorx or self.cursorx, self.cursorx, tickDelta / tickRate)
     g.setColor(255, 255, 255)
     g.line(cursorx, y, cursorx, y + g.getFont():getHeight())
   end
 
   g.setColor(200, 200, 200)
-
-  g.printCenter('Login', u * .325 + u * .06, v * .75 + v * .0375)
-  g.printCenter('Sign Up', u * .555 + u * .06, v * .75 + v * .0375)
-
-  g.setColor(255, 255, 255)
-  local scale = v * .325 / data.media.graphics.title:getHeight()
-  g.draw(data.media.graphics.title, u * .5, 0, 0, scale, scale, data.media.graphics.title:getWidth() / 2)
+  local x, y, w, h
+  x, y, w, h = unpack(self.geometry.login)
+  g.printCenter(self.signUp and 'Ok' or 'Login', x + w / 2, y + h / 2)
+  x, y, w, h = unpack(self.geometry.signup)
+  g.printCenter(self.signUp and 'Cancel' or 'Sign Up', x + w / 2, y + h / 2)
 
   if self.patching then
+    g.setColor(0, 0, 0)
+    g.rectangle('fill', 0, 0, u, v)
+
     g.setColor(0, 0, 0, 100)
     g.rectangle('fill', u * .2, v * .45, u * .6, v * .1)
 
@@ -132,7 +189,8 @@ end
 function MenuLogin:keypressed(key)
   if key == 'tab' then
     if self.input.focused == 'username' then self.input:focus('password')
-    elseif self.input.focused == 'password' then self.input:focus('username') end
+    elseif self.input.focused == 'password' then self.input:focus(self.signUp and 'retype' or 'username')
+    elseif self.input.focused == 'retype' then self.input:focus('username') end
   elseif key == 'return' and self.input.focused == 'password' then
     self:authenticate()
   end
@@ -154,10 +212,23 @@ function MenuLogin:mousepressed(mx, my, b)
   elseif math.inside(mx, my, unpack(self.geometry.password)) then
     self.input:focus('password')
     self:seekCursor('password', mx)
+  elseif math.inside(mx, my, unpack(self.geometry.retype)) and self.signUp then
+    self.input:focus('retype')
+    self:seekCursor('retype', mx)
   elseif math.inside(mx, my, unpack(self.geometry.login)) then
-    self:authenticate()
+    if self.signUp then
+      if self.input.text.password == self.input.text.retype then
+        ctx.hub:send('signup', {username = self.input.text.username, password = self.input.text.password})
+      else
+        ctx.failure:set('Passwords don\'t match #shrekt')
+      end
+    else
+      self:authenticate()
+    end
   elseif math.inside(mx, my, unpack(self.geometry.signup)) then
-    --
+    self.retype = 1 - self.retype
+    self.signUp = not self.signUp
+    self.lepr:reset()
   end
 end
 
@@ -182,6 +253,15 @@ function MenuLogin:hubMessage(message, data)
       end
 
       ctx.loader:unset()
+    else
+      ctx.user = data.user
+      ctx.user.token = data.token
+      self:patch()
+    end
+  elseif message == 'signup' then
+    if data.error then
+      print(data.error)
+      ctx.failure:set('Unknown error occurred')
     else
       ctx.user = data.user
       ctx.user.token = data.token

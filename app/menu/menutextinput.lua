@@ -64,6 +64,7 @@ end
 
 function MenuTextInput:focus(code)
   self.focused = code
+  self.cursorPosition = #self.text[self.focused]
 end
 
 function MenuTextInput:unfocus()

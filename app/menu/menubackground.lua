@@ -12,12 +12,14 @@ end
 
 function MenuBackground:draw()
   local u, v = ctx.u, ctx.v
+  local image = data.media.graphics.map.backgroundSpirit
+  local scale = v / image:getHeight()
 
-  g.setColor(255, 255, 255)
-  g.draw(self.canvas)
+  g.setColor(120, 120, 120)
+  g.draw(image, 0, 0, 0, scale, scale)
 
-  g.setColor(10, 50, 80, 180)
-  g.rectangle('fill', 0, 0, u, v)
+  --[[g.setColor(10, 50, 80, 180)
+  g.rectangle('fill', 0, 0, u, v)]]
 end
 
 function MenuBackground:resize()

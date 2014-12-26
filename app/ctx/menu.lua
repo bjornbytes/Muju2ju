@@ -48,7 +48,7 @@ end
 
 function Menu:draw()
   self.background:draw()
-  self.nav:draw()
+  if self.page ~= 'login' then self.nav:draw() end
   self:run('draw')
   if self.invitation then
     love.graphics.setColor(255, 255, 255)

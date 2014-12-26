@@ -16,7 +16,7 @@ return {
       width = .4,
       height = .05,
       padding = 8,
-      font = 'aeromatics',
+      font = 'mesmerize',
       text = '',
       placeholder = 'Username',
       border = {255, 255, 255}
@@ -30,7 +30,7 @@ return {
       width = .4,
       height = .05,
       padding = 8,
-      font = 'aeromatics',
+      font = 'mesmerize',
       text = '',
       placeholder = 'Password',
       border = {255, 255, 255}
@@ -44,7 +44,7 @@ return {
       width = .1,
       height = .05,
       padding = 8,
-      font = 'aeromatics',
+      font = 'mesmerize',
       text = 'Login',
       center = true,
       border = {255, 255, 255}
@@ -58,7 +58,7 @@ return {
       width = .1,
       height = .05,
       padding = 8,
-      font = 'aeromatics',
+      font = 'mesmerize',
       text = 'Sign up',
       center = true
     }
@@ -71,7 +71,7 @@ return {
       width = .1,
       height = .05,
       padding = 8,
-      font = 'aeromatics',
+      font = 'mesmerize',
       text = 'Quit',
       center = true,
       border = {255, 255, 255}

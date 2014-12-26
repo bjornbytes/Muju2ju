@@ -43,12 +43,12 @@ function HudCountdown:draw()
   self.lepr:update(delta)
 
   local width = u * .25
-  g.setColor(0, 0, 0, 100)
+  g.setColor(0, 0, 0, 200)
   g.rectangle('fill', (self.offset * width) - width, v * .4, width, v * .2)
   g.rectangle('fill', u - (self.offset * width), v * .4, width, v * .2)
 
   g.setColor(255, 255, 255)
-  g.setFont('pixel', 8)
+  g.setFont('mesmerize', .05 * v)
 
   local str = ctx.config.players[1] and ctx.config.players[1].username
   if str then

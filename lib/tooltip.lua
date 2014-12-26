@@ -31,7 +31,7 @@ function Tooltip:draw()
     local u, v = self:getUV()
     local x = (self.prevx and self.x) and math.lerp(self.prevx, self.x, tickDelta / tickRate) or love.mouse.getX()
     local y = (self.prevy and self.y) and math.lerp(self.prevy, self.y, tickDelta / tickRate) or love.mouse.getY()
-    local font = Typo.font('aeromatics', .023 * v)
+    local font = Typo.font('mesmerize', .023 * v)
     local textWidth, lines = font:getWrap(self.tooltipText, self.maxWidth * u)
     local xx = math.round(math.min(x + 8, u - textWidth - (.03 * u)))
     local yy = math.round(math.min(y + 8, v - (lines * font:getHeight()) - 7 - (.03 * u)))
@@ -110,8 +110,8 @@ function Tooltip:resize()
   self.richOptions.white = {255, 255, 255}
   self.richOptions.red = {255, 100, 100}
   self.richOptions.green = {100, 255, 100}
-  self.richOptions.title = Typo.font('aeromatics', .04 * v)
-  self.richOptions.normal = Typo.font('aeromatics', .023 * v)
+  self.richOptions.title = Typo.font('mesmerize', .04 * v)
+  self.richOptions.normal = Typo.font('mesmerize', .023 * v)
 end
 
 function Tooltip:getUV()

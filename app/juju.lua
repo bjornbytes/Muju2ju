@@ -45,7 +45,6 @@ function Juju:update(noHistory)
       if ctx.tag == 'server' then
         self.collectedBy.juju = self.collectedBy.juju + self.amount
       end
-			ctx.hud.jujuIconScale = 1
 			for i = 1, 20 do
         ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
 			end
@@ -71,7 +70,6 @@ function Juju:update(noHistory)
       self.scale = math.lerp(self.scale, .1, 5 * tickRate)
       if math.distance(self.x, self.y, tx, ty) < 16 then
         ctx.jujus:remove(self.id)
-        ctx.hud.jujuIconScale = 1
         for i = 1, 20 do
           ctx.event:emit('particles.add', {kind = 'jujuSex', x = tx, y = ty})
         end

@@ -1,8 +1,8 @@
-HudMinions = class()
+HudUnits = class()
 
 local g = love.graphics
 
-function HudMinions:init()
+function HudUnits:init()
   self.prevspread = {}
   self.spread = {}
 
@@ -81,7 +81,7 @@ function HudMinions:init()
   }
 end
 
-function HudMinions:update()
+function HudUnits:update()
   local p = ctx.players:get(ctx.id)
 
 	for i = 1, self.count do
@@ -121,7 +121,7 @@ function HudMinions:update()
   end
 end
 
-function HudMinions:draw()
+function HudUnits:draw()
   if ctx.net.state == 'ending' then return end
 
   local p = ctx.players:get(ctx.id)
@@ -153,14 +153,6 @@ function HudMinions:draw()
     local val = 255 * alpha
     g.setColor(val, val, val, val)
     g.draw(bg, xx, yy, 0, scale, scale, w / 2, h / 2)
-
-    local population = p:getPopulation()
-    local str = population .. ' / ' .. p.maxPopulation
-    g.setFont('inglobalb', .03 * v)
-    g.setColor(0, 0, 0, 200)
-    g.print(str, u * .1 + 1, 2 + 1)
-    g.setColor(population == p.maxPopulation and {255, 0, 0} or {255, 255, 255}, 255)
-    g.print(str, u * .1, 2)
 
     xx = xx + inc
   end
@@ -205,7 +197,7 @@ function HudMinions:draw()
   end
 end
 
-function HudMinions:mousepressed(mx, my, b)
+function HudUnits:mousepressed(mx, my, b)
   if ctx.net.state == 'ending' then return end
   if b ~= 'l' then return end
 
@@ -241,7 +233,7 @@ function HudMinions:mousepressed(mx, my, b)
   end
 end
 
-function HudMinions:ready()
+function HudUnits:ready()
   local p = ctx.players:get(ctx.id)
 
   self.count = #p.deck

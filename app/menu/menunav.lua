@@ -34,9 +34,10 @@ function MenuNav:draw()
 
   g.rectangle('line', self.geometry.quit())
 
-  if false and ctx.user.username then
-    g.setFont('mesmerize', self.height * v - 6)
-    g.print(ctx.user.username, u * .5 - g.getFont():getWidth(ctx.user.username) / 2, 2)
+  if ctx.user.username then
+    g.setFont('mesmerize', (self.height - .02) * v)
+    g.setColor(255, 255, 255)
+    g.print(ctx.user.username, u * .5 - g.getFont():getWidth(ctx.user.username) / 2, self.height * v / 2 - g.getFont():getHeight() / 2)
   end
 end
 

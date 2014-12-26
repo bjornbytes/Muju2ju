@@ -128,9 +128,7 @@ function MenuLogin:authenticate()
   local username, password = self.input.text.username, self.input.text.password
   ctx.hub:send('login', {username = username, password = password})
 
-  print('logging in')
-
-  -- set up loading spinner!
+  ctx.loader:set('Logging in...')
 end
 
 function MenuLogin:hubMessage(message, data)
@@ -143,8 +141,11 @@ function MenuLogin:hubMessage(message, data)
       table.print(ctx.user)
       ctx.hub:send('connect')
     end
+
+    ctx.loader:set('Connecting to juju hub...')
   elseif message == 'connect' then
     ctx:push('main')
+    ctx.loader:unset()
   end
 end
 
@@ -187,4 +188,8 @@ function MenuLogin:updateCursorPosition()
     self.cursorx = math.lerp(self.cursorx or cursorx, cursorx, math.min(18 * tickRate))
     self.cursorx = math.clamp(self.cursorx, x, x + g.getFont():getWidth(text .. 'M'))
   end
+end
+
+function MenuLogin:resize()
+  table.clear(self.geometry)
 end

@@ -72,8 +72,8 @@ function MenuMain:draw()
   local image = hover and data.media.graphics.buttonYellowHover or data.media.graphics.buttonYellow
   g.draw(image, x, y, 0, w / image:getWidth(), h / image:getHeight())
 
-  g.setFont('philosopher', .05 * v)
-  g.printCenter('PLAY', x + w / 2, y + h / 2)
+  g.setFont('mesmerize', .05 * v)
+  g.printCenter('Play', x + w / 2, y + h / 2)
 
   self.drag:draw()
 end
@@ -86,6 +86,7 @@ function MenuMain:mousepressed(x, y, b)
   if b == 'l' then
     if math.inside(x, y, unpack(self.geometry.play)) then
       ctx.hub:send('lobbyCreate', {gameType = 'versus'})
+      ctx.loader:set('Searching for match...')
     end
   end
 
@@ -110,5 +111,6 @@ function MenuMain:hubMessage(message, data)
   elseif message == 'lobbyStart' then
     Context:add(Game, data, ctx.user)
     Context:remove(ctx)
+    ctx.loader:set('Starting game...')
   end
 end

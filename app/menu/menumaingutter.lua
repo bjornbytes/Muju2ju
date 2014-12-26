@@ -20,7 +20,7 @@ function MenuMainGutter:init()
       local res = {}
       local ct
       local u, v = ctx.u, ctx.v
-      g.setFont('philosopher', .04 * v)
+      g.setFont('mesmerize', .04 * v)
       local fh = g.getFont():getHeight()
       local radius = .035 * v
       local inc = .01 * u + 2 * radius
@@ -102,7 +102,7 @@ function MenuMainGutter:draw()
   g.translate(0, -self.scroll)
 
   local geometry = self.geometry.all
-  g.setFont('philosopher', .04 * v)
+  g.setFont('mesmerize', .04 * v)
   g.print('Minions', unpack(geometry.unitLabel))
   g.print('Runes', unpack(geometry.runeLabel))
 

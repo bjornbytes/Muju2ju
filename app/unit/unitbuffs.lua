@@ -144,6 +144,14 @@ function UnitBuffs:posthurt(amount, source, kind)
   return amount
 end
 
+function UnitBuffs:preattack(target, damage)
+  table.with(self.list, 'preattack', target, damage)
+end
+
+function UnitBuffs:postattack(target, damage)
+  table.with(self.list, 'postattack', target, damage)
+end
+
 function UnitBuffs:taunted()
   local taunt = next(self:buffsWithTag('taunt'))
   return taunt and taunt.target

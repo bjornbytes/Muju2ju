@@ -219,8 +219,9 @@ function NetClient:init()
   self.state = 'connecting'
   self:connectTo(ctx.config.ip, ctx.config.port)
   self.messageBuffer = {}
+  self.retries = 0
 
-  ctx.event:on('game.quit', f.cur(self.quit, self))
+  ctx.event:on('game.quit', f.cur(self.quit, self), self)
 
   Net.init(self)
 end
@@ -235,19 +236,35 @@ function NetClient:connect(event)
   self.state = 'waiting'
   self.server = event.peer
   self:send('join', {username = ctx.user.username})
+  self.retries = 0
   event.peer:ping()
 end
 
 function NetClient:disconnect(event)
   if not self.server then
-    print('Unable to connect to server')
-  elseif self.state ~= 'ending' then
-    ctx.event:emit('game.quit')
-    print('Lost connection to server')
-  end
+    print('Unable to connect to server, retrying')
+    local retries = self.retries or 0
+    self:init()
+    self.retries = retries + 1
 
-  Context:add(Menu, ctx.user)
-  Context:remove(ctx)
+    if self.retries >= 3 then
+      print('Unable to connect after 3 attempts, quitting to menu')
+      Context:add(Menu, ctx.user)
+      Context:remove(ctx)
+    end
+  elseif self.state ~= 'ending' then
+    print('Lost connection to server, attempting to reconnect')
+    local retries = self.retries or 0
+    self:init()
+    self.retries = retries + 1
+
+    if self.retries >= 3 then
+      print('Unable to reconnect after 3 retries, quitting to menu')
+      ctx.event:emit('game.quit')
+      Context:add(Menu, ctx.user)
+      Context:remove(ctx)
+    end
+  end
 end
 
 function NetClient:send(msg, data)

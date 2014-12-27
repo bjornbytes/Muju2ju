@@ -67,7 +67,7 @@ NetServer.messages.leave = {
   order = {'id', 'reason'},
   important = true,
   receive = function(self, event)
-    event.data.reason = 'left'
+    event.reason = 'left'
     self:disconnect(event)
   end
 }
@@ -381,7 +381,8 @@ function NetServer:disconnect(event)
   local pid = self.peerToPlayer[event.peer]
   if pid then
     print('player ' .. pid .. ' disconnected')
-    local reason = event.data.reason or 'disconnect'
+    local reason = event.reason or 'disconnect'
+    local username = ctx.config.players[pid].username
     self:emit('leave', {id = pid, reason = reason})
     self:emit('chat', {message = username .. ' has left the game (' .. reason .. ')'})
   end

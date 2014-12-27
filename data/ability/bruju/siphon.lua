@@ -20,8 +20,10 @@ Siphon.activeLifesteal = .4
 ----------------
 -- Behavior
 ----------------
-function Siphon:activate()
-  self.buff = self.unit.buffs:add('siphon', {ability = self})
+function Siphon:update()
+  if not self.unit.buffs:get('siphon') then
+    self.buff = self.unit.buffs:add('siphon', {ability = self})
+  end
 end
 
 function Siphon:deactivate()

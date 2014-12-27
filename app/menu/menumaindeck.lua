@@ -89,7 +89,11 @@ function MenuMainDeck:draw()
 
   table.each(self.geometry.units, function(unit, i)
     local x, y, r = unpack(unit)
-    g.circle('line', x, y, r)
+    local image = data.media.graphics.menuCove
+    local scale = r * 2 / 385
+    local val = ctx.user.deck[i] and 255 or 180
+    g.setColor(val, val, val)
+    g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
     if ctx.user.deck[i] then
       g.printCenter(ctx.user.deck[i].code:capitalize(), x, y)
     end
@@ -98,18 +102,31 @@ function MenuMainDeck:draw()
   table.each(self.geometry.unitRunes, function(list, unit)
     table.each(list, function(rune, i)
       local x, y, r = unpack(rune)
-      g.circle('line', x, y, r)
+      local image = data.media.graphics.menuCove
+      local scale = r * 2 / 385
+      local val = (ctx.user.deck[unit] and ctx.user.deck[unit].runes[i]) and 255 or 180
+      g.setColor(val, val, val)
+      g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
       if ctx.user.deck[unit] and ctx.user.deck[unit].runes[i] then
         local id = ctx.user.deck[unit].runes[i].id
-        g.printCenter(runes[id].name, x, y)
+        -- g.printCenter(runes[id].name, x, y)
       end
     end)
   end)
 
-  g.circle('line', unpack(self.geometry.muju))
+  local x, y, r = unpack(self.geometry.muju)
+  local image = data.media.graphics.menuCove
+  local scale = r * 2 / 385
+  g.setColor(255, 255, 255)
+  g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
+  g.printCenter('Muju', x, y)
 
   table.each(self.geometry.mujuRunes, function(rune)
-    g.circle('line', unpack(rune))
+    local x, y, r = unpack(rune)
+    local image = data.media.graphics.menuCove
+    local scale = r * 2 / 385
+    g.setColor(180, 180, 180)
+    g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
   end)
 
   g.pop()

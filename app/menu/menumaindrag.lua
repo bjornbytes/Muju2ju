@@ -36,7 +36,11 @@ function MenuMainDrag:draw()
   if self.active then
     self.dragX = math.lerp(self.dragX, love.mouse.getX(), 15 * delta)
     self.dragY = math.lerp(self.dragY, love.mouse.getY(), 15 * delta)
-    g.circle('fill', self.dragX, self.dragY, .035 * ctx.v)
+    local r = .035 * ctx.v
+    local image = data.media.graphics.menuCove
+    local scale = r * 2 / 385
+    g.setColor(255, 255, 255)
+    g.draw(image, self.dragX, self.dragY, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
   end
 end
 

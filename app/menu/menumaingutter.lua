@@ -108,13 +108,17 @@ function MenuMainGutter:draw()
 
   table.each(geometry.units, function(unit, i)
     local x, y, r = unpack(unit)
-    g.circle('line', x, y, r)
+    local image = data.media.graphics.menuCove
+    local scale = r * 2 / 385
+    g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
     g.print(self.units[i]:capitalize(), x + r + .02 * u, y - g.getFont():getHeight() / 2)
   end)
 
   table.each(geometry.runes, function(rune, i)
     local x, y, r = unpack(rune)
-    g.circle('line', x, y, r)
+    local image = data.media.graphics.menuCove
+    local scale = r * 2 / 385
+    g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
     g.print(runes[self.runes[i].id].name, x + r + .02 * u, y - g.getFont():getHeight() / 2)
   end)
 

@@ -126,7 +126,7 @@ function UnitBuffs:prehurt(amount, source, kind)
   table.with(self.list, 'prehurt', amount, source, kind)
 
   if kind == 'attack' then
-    local armors = self.buffs:buffsWithTag('armor')
+    local armors = self:buffsWithTag('armor')
     local armor = 0
     table.each(armors, function(buff)
       armor = armor + (1 - armor) * buff.armor

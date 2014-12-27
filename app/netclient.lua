@@ -99,6 +99,8 @@ NetClient.messages.snapshot = {
   receive = function(self, event)
     if self.state ~= 'playing' then return end
 
+    print(tick - data.tick)
+
     table.each(event.data.players, function(data)
       local p = ctx.players:get(data.id)
 

@@ -30,7 +30,7 @@ function Frostbite:update()
   local targets = ctx.target:inRange(self, self.width / 2, 'enemy', 'unit')
   table.each(targets, function(target)
     target.buffs:add('frostbiteslow', {timer = tickRate, slow = ability.slow})
-    target:hurt(self.dps * tickRate, unit)
+    target:hurt(ability.dps * tickRate, unit)
 
     if not self.dirtyTargets[target.id] then
       self.targets[target.id] = (self.targets[target.id] or 0) + tickRate

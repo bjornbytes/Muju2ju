@@ -179,3 +179,7 @@ end
 function Unit:contains(...)
   return self.animation:contains(...)
 end
+
+function Unit:hasRunes()
+  return self.runes and #self.runes > 0
+end

@@ -43,6 +43,12 @@ function UnitBuffs:postupdate()
     attackSpeed = attackSpeed * (1 - frenzy.frenzy)
   end)
 
+  -- Apply DoTs
+  local dots = self:buffsWithTag('dot')
+  table.each(dots, function(dot)
+    self.unit:hurt(dot.dot * tickRate)
+  end)
+
   self.unit.attackSpeed = attackSpeed
 end
 
@@ -94,6 +100,8 @@ function UnitBuffs:isCrowdControl(buff)
 end
 
 function UnitBuffs:applyRunes()
+  if not self.unit:hasRunes() then return end
+
   local unit, player = self.unit, self.unit.player
   local runes = player.deck[unit.class.code].runes
   

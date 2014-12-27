@@ -31,7 +31,7 @@ function Menu:load(user)
 
   if table.has(arg, 'test') then
     Context:remove(self)
-    Context:add(Game, testConfig, {username = 'bjorn'})
+    Context:add(Game, testConfig, {username = 'player'})
   end
 
   self.u, self.v = love.graphics.getDimensions()

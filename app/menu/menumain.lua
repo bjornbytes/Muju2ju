@@ -112,5 +112,8 @@ function MenuMain:hubMessage(message, data)
     Context:add(Game, data, ctx.user)
     Context:remove(ctx)
     ctx.loader:set('Starting game...')
+  elseif message == 'saveDeck' then
+    if data.error then print(data.error) end
+    ctx.loader:unset()
   end
 end

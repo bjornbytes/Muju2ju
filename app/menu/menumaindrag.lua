@@ -68,6 +68,8 @@ function MenuMainDrag:mousepressed(mx, my, b)
 end
 
 function MenuMainDrag:mousereleased(mx, my, b)
+  local deckChanged = false
+
   if b == 'l' then
     if self.active then
       local deck, gutter = ctx.pages.main.deck, ctx.pages.main.gutter
@@ -93,7 +95,7 @@ function MenuMainDrag:mousereleased(mx, my, b)
             gutter.units[self.dragIndex] = unit.code
           end
 
-          table.clear(gutter.geometry)
+          deckChanged = true
         end
       elseif self.dragType == 'rune' then
         local unit, i, rune = self:hoverDeckUnitRunes()
@@ -108,7 +110,7 @@ function MenuMainDrag:mousereleased(mx, my, b)
             gutter.runes[self.dragIndex] = rune
           end
 
-          table.clear(gutter.geometry)
+          deckChanged = true
         end
       end
     end
@@ -125,17 +127,21 @@ function MenuMainDrag:mousereleased(mx, my, b)
 
       table.insert(gutter.units, unit.code)
       ctx.user.deck[i] = nil
-
-      table.clear(gutter.geometry)
+      deckChanged = true
     end
 
     local unit, i, rune = self:hoverDeckUnitRunes()
     if rune then
       table.insert(gutter.runes, rune)
       ctx.user.deck[unit].runes[i] = nil
-
-      table.clear(gutter.geometry)
+      deckChanged = true
     end
+  end
+
+  if deckChanged then
+    ctx.hub:send('saveDeck', {deck = ctx.user.deck})
+    ctx.loader:set('Saving...')
+    table.clear(gutter.geometry)
   end
 end
 

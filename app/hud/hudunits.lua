@@ -218,7 +218,7 @@ function HudUnits:mousepressed(mx, my, b)
       local x, y, r, children = unpack(upgrades[minion][upgrade])
       if not p:hasUnitAbility(minion, upgrade) and math.insideCircle(mx, my, x, y, r) then
         if p:spend(ctx.upgrades.costs.ability) then
-          ctx.net:send('upgrade', {unit = minion, ability = upgrade})
+          return ctx.net:send('upgrade', {unit = minion, ability = upgrade})
         end
       else
         for i = 1, #children do

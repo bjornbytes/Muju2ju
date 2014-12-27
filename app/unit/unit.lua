@@ -171,8 +171,10 @@ end
 ----------------
 function Unit:abilityCall(key, ...)
   for i = 1, 2 do
-    local ability = self.abilities[i]
-    f.exe(ability[key], ability, ...)
+    if self.player:hasUnitAbility(self.class.code, i) then
+      local ability = self.abilities[i]
+      f.exe(ability[key], ability, ...)
+    end
   end
 end
 

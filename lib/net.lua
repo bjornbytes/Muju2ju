@@ -46,9 +46,9 @@ end
 function Net:connectTo(ip, port)
   if not self.host then self:listen() end
   local peer = self.host:connect(ip .. ':' .. port, 2)
-  peer:timeout(0, 0, 5000)
-  peer:round_trip_time(self.pingGuess)
-  peer:last_round_trip_time(self.pingGuess)
+  peer:timeout(0, 0, 3000)
+  --[[peer:round_trip_time(self.pingGuess)
+  peer:last_round_trip_time(self.pingGuess)]]
 end
 
 function Net:update()

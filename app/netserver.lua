@@ -372,10 +372,10 @@ function NetServer:quit()
 end
 
 function NetServer:connect(event)
-  event.peer:timeout(0, 0, 5000)
+  event.peer:timeout(0, 0, 3000)
   event.peer:ping()
-  event.peer:round_trip_time(self.pingGuess)
-  event.peer:last_round_trip_time(self.pingGuess)
+  --[[event.peer:round_trip_time(self.pingGuess)
+  event.peer:last_round_trip_time(self.pingGuess)]]
 end
 
 function NetServer:disconnect(event)
@@ -417,6 +417,8 @@ function NetServer:emit(evt, data)
   local buffer = self.messages[evt].important and self.importantEventBuffer or self.eventBuffer
   table.insert(buffer, {evt, data, tick})
   ctx.event:emit(evt, data)
+
+  self.host:flush()
 end
 
 function NetServer:sync()

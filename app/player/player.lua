@@ -32,7 +32,7 @@ function Player:init()
   self.ghostX = self.x
   self.ghostY = self.y
 
-	self.juju = 1000
+	self.juju = 10
 	self.jujuTimer = 1
   self.jujuRate = 2
 

@@ -12,7 +12,9 @@ function UnitServer:activate()
   self.animation:on('event', function(data)
     if data.data.name == 'attack' then
       if self.target then
-        self.target:hurt(self.damage, self, 'attack')
+        self.buffs:preattack(self.target, self.damage)
+        local amount = self.target:hurt(self.damage, self, 'attack')
+        self.buffs:postattack(self.target, amount)
       end
     end
   end)
@@ -43,8 +45,9 @@ function UnitServer:hurt(amount, source, kind)
   if self.health <= 0 then
     self.animation:set('death', {force = true})
     self.dying = true
-    return true
   end
+
+  return amount
 end
 
 function UnitServer:heal(amount, source)

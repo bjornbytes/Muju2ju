@@ -280,6 +280,7 @@ function NetServer:init()
   self.peerToPlayer = {}
   self.eventBuffer = {}
   self.importantEventBuffer = {}
+  self.disconnectedSince = {}
 
   ctx.event:on('game.quit', f.cur(self.quit, self))
   ctx.event:on('over', function(data)
@@ -292,6 +293,24 @@ function NetServer:init()
 
     local winners = table.filter(ctx.config.players, function(player) return player.team == data.winner end)
     local losers = table.filter(ctx.config.players, function(player) return player.team ~= data.winner end)
+
+    local i = 1
+    local leavers = {}
+
+    table.each(winners, function(player, key)
+      if self.disconnectedSince[player.id] and (tick - self.disconnectedSince[player.id]) * tickRate > 5 then
+        table.insert(leavers, ctx.config.players[player.id].username)
+        winners[key] = nil
+      end
+    end)
+
+    table.each(losers, function(player, key)
+      if self.disconnectedSince[player.id] and (tick - self.disconnectedSince[player.id]) * tickRate > 5 then
+        table.insert(leavers, ctx.config.players[player.id].username)
+        losers[key] = nil
+      end
+    end)
+
     winners = table.values(table.map(winners, function(winner) return winner.username end))
     losers = table.values(table.map(losers, function(loser) return loser.username end))
 
@@ -300,7 +319,7 @@ function NetServer:init()
     assert(socket and json and hub)
     assert(hub:connect('127.0.0.1', 7999))
     print('connected')
-    local req = json.encode({cmd = 'gameOver', payload = {token = ctx.config.token, winners = winners, losers = losers}})
+    local req = json.encode({cmd = 'gameOver', payload = {token = ctx.config.token, winners = winners, losers = losers, leavers = leavers}})
     print('sent gameover')
     assert(req)
     hub:send(req .. '\n')
@@ -352,6 +371,7 @@ function NetServer:disconnect(event)
     local reason = event.reason or 'left'
     self:emit('leave', {id = pid, reason = reason})
   end
+  self.disconnectedSince[self.peerToPlayer[event.peer]] = tick
   self.peerToPlayer[event.peer] = nil
   event.peer:disconnect_now()
 

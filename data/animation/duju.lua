@@ -3,6 +3,7 @@ Duju.code = 'duju'
 
 Duju.scale = 1
 Duju.default = 'idle'
+Duju.backwards = true
 Duju.states = {}
 
 Duju.states.spawn = {

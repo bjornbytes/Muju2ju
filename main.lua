@@ -16,7 +16,7 @@ testConfig = {
       color = 'purple',
       skin = {},
       deck = {
-        { code = 'thuju',
+        { code = 'duju',
           skin = {},
           runes = {}
         },

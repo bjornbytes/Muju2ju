@@ -92,6 +92,19 @@ function Menu:resize()
   self.tooltip:resize()
 end
 
+function Menu:quit()
+  if ctx.user.token then
+    local http = require 'socket.http'
+    local serverAddress = '96.126.101.55'
+    http.request({
+      url = 'http://' .. serverAddress .. ':7000/api/users/logout',
+      headers = {
+        ['x-hub-token'] = ctx.user.token
+      }
+    })
+  end
+end
+
 function Menu:hubMessage(message, data)
   if message == 'lobbyInvitation' then
     self.invitation = data

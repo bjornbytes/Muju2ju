@@ -121,8 +121,11 @@ function MenuMain:hubMessage(message, data)
       ctx.user.units = data.units
       self:activate()
 
+      ctx.failure:set('Problem saving deck')
+
       table.clear(self.gutter.geometry)
     end
+
     ctx.loader:unset()
   end
 end

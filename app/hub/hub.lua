@@ -49,7 +49,7 @@ while true do
       local str, code = http.request('http://' .. serverAddress .. ':7000/api/users/login', formatPost(message.payload))
 
       local data
-      if code == 200 then
+      if str and code == 200 then
         data = {cmd = 'login', payload = json.decode(str)}
       else
         data = {cmd = 'login', payload = {error = code}}
@@ -60,7 +60,7 @@ while true do
       local str, code = http.request('http://' .. serverAddress .. ':7000/api/users/signup', formatPost(message.payload))
 
       local data
-      if code == 200 then
+      if str and code == 200 then
         data = {cmd = 'signup', payload = json.decode(str)}
       else
         data = {cmd = 'signup', payload = {error = code}}

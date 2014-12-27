@@ -135,7 +135,15 @@ function MenuLogin:hubMessage(message, data)
   if message == 'login' then
     if data.error then
       print('login failed (' .. data.error .. ')')
-      ctx.failure:set('Unable to log in')
+
+      if data.error == 401 then
+        ctx.failure:set('Incorrect username or password')
+      elseif data.error == 'Network is unreachable' then
+        ctx.failure:set('Unable to connect')
+      else
+        ctx.failure:set('Unknown error occurred')
+      end
+
       ctx.loader:unset()
     else
       ctx.user = data.user

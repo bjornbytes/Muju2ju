@@ -99,8 +99,6 @@ NetClient.messages.snapshot = {
   receive = function(self, event)
     if self.state ~= 'playing' then return end
 
-    print(tick - event.data.tick)
-
     table.each(event.data.players, function(data)
       local p = ctx.players:get(data.id)
 
@@ -260,7 +258,7 @@ function NetClient:send(msg, data)
 
   local important = self.messages[msg].important
   local channel = important and 0 or 1
-  local reliability = important and 'reliable' or 'unsequenced'
+  local reliability = important and 'reliable' or 'unreliable'
   self.server:send(tostring(self.outStream), channel, reliability)
   self.host:flush()
 end

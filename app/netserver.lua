@@ -409,7 +409,7 @@ function NetServer:send(msg, peer, data)
   self.outStream:clear()
   self:pack(msg, data)
   local important = self.messages[msg].important
-  peer:send(tostring(self.outStream), important and 0 or 1, important and 'reliable' or 'unsequenced')
+  peer:send(tostring(self.outStream), important and 0 or 1, important and 'reliable' or 'unreliable')
 end
 
 function NetServer:emit(evt, data)
@@ -439,7 +439,7 @@ function NetServer:sync()
       table.remove(self.eventBuffer, 1)
     end
 
-    self.host:broadcast(tostring(self.outStream), 1, 'unsequenced')
+    self.host:broadcast(tostring(self.outStream), 1, 'unreliable')
   end
 
   self.host:flush()

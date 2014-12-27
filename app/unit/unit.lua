@@ -71,7 +71,7 @@ function Unit.stances:defensive()
   self:changeTarget(ctx.target:closest(self, 'enemy', 'player', 'unit'))
 
   if self.target and self:inRange(self.target) then
-    self:attack(self.taregt)
+    self:attack(self.target)
   else
     self.animation:set('idle')
   end

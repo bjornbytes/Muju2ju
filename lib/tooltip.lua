@@ -45,7 +45,8 @@ function Tooltip:draw()
 end
 
 function Tooltip:setTooltip(str)
-  self.tooltip = rich.new(table.merge({str}, self.richOptions))
+  local u, v = self:getUV()
+  self.tooltip = rich:new({str, u * self.maxWidth, self.richOptions}, {255, 255, 255})
   self.tooltipText = str:gsub('{%a+}', '')
   self.active = true
 end
@@ -106,7 +107,6 @@ end
 function Tooltip:resize()
   local u, v = self:getUV()
   self.richOptions = {}
-  self.richOptions[2] = u * self.maxWidth
   self.richOptions.white = {255, 255, 255}
   self.richOptions.red = {255, 100, 100}
   self.richOptions.green = {100, 255, 100}

@@ -25,7 +25,7 @@ function RichText:render()
   if not self.rt then
     love.graphics.push()
     love.graphics.origin()
-    self.rt = rich.new(self.richtext)
+    self.rt = rich:new(self.richtext)
     love.graphics.pop()
   end
 

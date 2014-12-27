@@ -120,7 +120,7 @@ function MenuMainDrag:mousereleased(mx, my, b)
     local deck, gutter = ctx.pages.main.deck, ctx.pages.main.gutter
 
     local i, unit = self:hoverDeckUnits()
-    if unit then
+    if unit and table.count(ctx.user.deck) > 1 then
       while #unit.runes > 0 do
         table.insert(gutter.runes, table.remove(unit.runes, 1))
       end
@@ -141,7 +141,7 @@ function MenuMainDrag:mousereleased(mx, my, b)
   if deckChanged then
     ctx.hub:send('saveDeck', {deck = ctx.user.deck})
     ctx.loader:set('Saving...')
-    table.clear(gutter.geometry)
+    table.clear(ctx.pages.main.gutter.geometry)
   end
 end
 

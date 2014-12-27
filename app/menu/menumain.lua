@@ -26,7 +26,7 @@ function MenuMain:activate()
   self.gutter.units = {}
   for _, code in ipairs(ctx.user.units) do
     local inDeck = false
-    for j = 1, #ctx.user.deck do if ctx.user.deck[j].code == code then inDeck = true break end end
+    for j = 1, 3 do if ctx.user.deck[j] and ctx.user.deck[j].code == code then inDeck = true break end end
     if not inDeck then
       table.insert(self.gutter.units, code)
     end
@@ -36,11 +36,13 @@ function MenuMain:activate()
   for _, rune in ipairs(ctx.user.runes) do
     local token = rune.token
     local inDeck = false
-    for i = 1, #ctx.user.deck do
-      for j = 1, #ctx.user.deck[i].runes do
-        if ctx.user.deck[i][j].token == token then
-          inDeck = true
-          break
+    for i = 1, 3 do
+      if ctx.user.deck[i] then
+        for j = 1, #ctx.user.deck[i].runes do
+          if ctx.user.deck[i][j].token == token then
+            inDeck = true
+            break
+          end
         end
       end
     end
@@ -113,7 +115,14 @@ function MenuMain:hubMessage(message, data)
     Context:remove(ctx)
     ctx.loader:set('Starting game...')
   elseif message == 'saveDeck' then
-    if data.error then print(data.error) end
+    if data.error then
+      ctx.user.deck = data.deck
+      ctx.user.runes = data.runes
+      ctx.user.units = data.units
+      self:activate()
+
+      table.clear(self.gutter.geometry)
+    end
     ctx.loader:unset()
   end
 end

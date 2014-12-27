@@ -16,6 +16,7 @@ function Menu:load(user)
   self.nav = MenuNav()
   self.background = MenuBackground()
   self.loader = MenuLoader()
+  self.failure = MenuError()
   self.tooltip = Tooltip()
 
   self.invitation = nil
@@ -43,6 +44,7 @@ function Menu:update()
   
   self.hub:update()
   self.loader:update()
+  self.failure:update()
   self.tooltip:update()
 
   self:run('update')
@@ -57,6 +59,7 @@ function Menu:draw()
     love.graphics.print('you have an invitation', 10, 10)
   end
   self.loader:draw()
+  self.failure:draw()
   self.tooltip:draw()
 end
 

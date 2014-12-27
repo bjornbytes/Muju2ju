@@ -135,13 +135,14 @@ function MenuLogin:hubMessage(message, data)
   if message == 'login' then
     if data.error then
       print('login failed (' .. data.error .. ')')
+      ctx.failure:set('Unable to log in')
+      ctx.loader:unset()
     else
       ctx.user = data.user
       ctx.user.token = data.token
       ctx.hub:send('connect')
+      ctx.loader:set('Connecting to juju hub...')
     end
-
-    ctx.loader:set('Connecting to juju hub...')
   elseif message == 'connect' then
     ctx:push('main')
     ctx.loader:unset()

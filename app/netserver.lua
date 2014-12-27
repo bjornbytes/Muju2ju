@@ -347,6 +347,20 @@ function NetServer:init()
   Net.init(self)
 end
 
+function NetServer:update()
+  if table.count(self.peerToPlayer) == 0 then
+    self.quitTimer = (self.quitTimer or 0) + tickRate
+
+    if self.quitTimer >= 60 then
+      love.event.quit()
+    end
+  else
+    self.quitTimer = 0
+  end
+
+  return Net.update(self)
+end
+
 function NetServer:quit()
   if self.host then
     ctx.players:each(function(player)

@@ -162,23 +162,19 @@ function HudUnits:draw()
     for upgrade = 1, 2 do
       local x, y, r, children = unpack(upgrades[minion][upgrade])
       local spread = math.lerp(self.prevspread[minion][upgrade], self.spread[minion][upgrade], tickDelta / tickRate)
-      g.setColor(0, 0, 0, 160 * upgradeAlphaFactor)
-      g.circle('fill', x, y, r)
-
-      if p:hasUnitAbility(minion, upgrade) then g.setColor(0, 255, 0, 255 * upgradeAlphaFactor)
-      else g.setColor(255, 0, 0, 255 * upgradeAlphaFactor) end
-
-      g.circle('line', x, y, r)
+      local image = data.media.graphics.menuCove
+      local scale = r * 2 / 385
+      local val = p:hasUnitAbility(minion, upgrade) and 255 or 150
+      g.setColor(val, val, val, 255 * upgradeAlphaFactor)
+      g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
 
       for i = 1, #children do
         local x, y, r = unpack(children[i])
-        g.setColor(0, 0, 0, 160 * upgradeAlphaFactor * spread)
-        g.circle('fill', x, y, r)
-
-        if p:hasUnitAbilityUpgrade(minion, upgrade, i) then g.setColor(0, 255, 0, 255 * upgradeAlphaFactor)
-        else g.setColor(255, 0, 0, 255 * upgradeAlphaFactor) end
-
-        g.circle('line', x, y, r)
+        local image = data.media.graphics.menuCove
+        local scale = r * 2 / 385
+        local val = p:hasUnitAbilityUpgrade(minion, upgrade, i) and 255 or 150
+        g.setColor(val, val, val, 255 * upgradeAlphaFactor * spread)
+        g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
       end
     end
   end
@@ -187,12 +183,11 @@ function HudUnits:draw()
   for minion = 1, #runes do
     for i = 1, #runes[minion] do
       local x, y, r = unpack(runes[minion][i])
-      g.setColor(0, 0, 0, 200 * upgradeAlphaFactor)
-      g.circle('fill', x, y, r)
-      if p.deck[minion].runes[i] then
-        g.setColor(255, 255, 255, 255 * upgradeAlphaFactor)
-        g.circle('line', x, y, r)
-      end
+      local image = data.media.graphics.menuCove
+      local scale = r * 2 / 385
+      local val = p.deck[minion].runes[i] and 255 or 150
+      g.setColor(val, val, val, 255 * upgradeAlphaFactor)
+      g.draw(image, x, y, 0, scale, scale, image:getWidth() / 2, image:getHeight() / 2)
     end
   end
 end

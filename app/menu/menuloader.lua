@@ -8,7 +8,7 @@ function MenuLoader:init()
   self.offset = 0
   self.prevoffset = 0
 
-  self.height = .09
+  self.height = .06
   self.fontSize = .03
 
   self.active = false
@@ -37,24 +37,19 @@ function MenuLoader:draw()
   local font = g.setFont('mesmerize', self.fontSize * v)
   local padding = (self.height - self.fontSize) / 2 * v
   local width = padding + (self.fontSize * v) + padding + font:getWidth(self.text) + padding
-  local alpha = (offset / (self.height * v)) * 255
 
-  g.setColor(0, 0, 0, 255)
-  local x = u * .5 - width / 2
-  local y = v * .5 - self.height * v / 2
-  g.rectangle('fill', x, y, width, self.height * v)
-  g.setColor(100, 100, 100, alpha)
-  g.rectangle('line', x + .5, y + .5, width, self.height * v)
+  g.setColor(0, 0, 0, 200)
+  g.rectangle('fill', u - width, v - offset, width, self.height * v)
 
   local image = data.media.graphics.juju
   local w, h = image:getDimensions()
   local scale = (self.fontSize * v) / w
-  local x = x + padding + (w * scale / 2)
-  g.setColor(255, 255, 255, alpha)
+  local x = u - width + padding + (w * scale / 2)
+  g.setColor(255, 255, 255)
   local s = scale * (.9 + math.cos(tick / 7) ^ 2 / 4)
-  g.draw(image, x, y + (self.height * v / 2), angle, s, s, w / 2, h / 2)
+  g.draw(image, x, v - offset + (self.height * v / 2), angle, s, s, w / 2, h / 2)
 
-  g.print(self.text, x + (w * scale / 2) + padding, y + (self.height * v / 2) - font:getHeight() / 2 - 1)
+  g.print(self.text, x + (w * scale / 2) + padding, v - offset + (self.height * v / 2) - font:getHeight() / 2 - 1)
 end
 
 function MenuLoader:set(text)

@@ -58,7 +58,7 @@ function HudCountdown:draw()
 
   str = ctx.config.players[2] and ctx.config.players[2].username
   if str then
-    local x, y = math.round(u - (self.offset * width / 2)), math.round(v * .5)
+    local x, y = math.round(u - (self.offset * width) + (width / 2)), math.round(v * .5)
     g.printCenter(str, x, y)
   end
 

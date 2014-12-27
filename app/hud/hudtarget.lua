@@ -22,9 +22,7 @@ function HudTarget:update()
   local unit, ability = self:getTargetingInfo()
   if unit and ability then
     if ability.target == 'location' then
-      local x, y = ctx.view:screenPoint(ctx.target:location(unit, ability.range))
-      self.x = math.lerp(self.x or x, x, math.min(8 * tickRate, 1))
-      self.y = math.lerp(self.y or y, y, math.min(8 * tickRate, 1))
+      self.x, self.y = ctx.view:screenPoint(ctx.target:location(unit, ability.range))
     elseif ability.target == 'unit' or ability.target == 'ally' or ability.target == 'enemy' then
       local teamFilter = ability.target == 'unit' and 'all' or ability.target
       local target = ctx.target:atMouse(unit, ability.range or math.huge, teamFilter, 'unit')
@@ -35,8 +33,7 @@ function HudTarget:update()
         x = math.clamp(x, unit.x - ability.range, unit.x + ability.range)
       end
 
-      self.x = math.lerp(self.x or x, x, math.min(8 * tickRate, 1))
-      self.y = math.lerp(self.y or y, y, math.min(8 * tickRate, 1))
+      self.x, self.y = x, y
     end
 
     self.alpha = math.lerp(self.alpha or 0, 1, math.min(8 * tickRate, 1))

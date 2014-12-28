@@ -3,11 +3,11 @@ local json = require 'lib/deps/dkjson'
 MenuHub = class()
 
 function MenuHub:init()
-  self.thread = love.thread.newThread('app/hub/hub.lua')
+  self.thread = love.thread.newThread('app/thread/hub.lua')
   self.thread:start()
 
-  self.receiveQueue = love.thread.getChannel('hubReceiveQueue')
-  self.sendQueue = love.thread.getChannel('hubSendQueue')
+  self.receiveQueue = love.thread.getChannel('hub.receive')
+  self.sendQueue = love.thread.getChannel('hub.send')
 end
 
 function MenuHub:update()

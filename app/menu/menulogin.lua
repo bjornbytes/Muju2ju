@@ -1,4 +1,5 @@
 local g = love.graphics
+local sha1 = require 'lib/deps/sha1/sha1'
 
 MenuLogin = class()
 
@@ -36,10 +37,32 @@ function MenuLogin:init()
   self.textboxPadding = .0225
   self.cursorx = nil
   self.prevcursorx = self.cursorx
+
+  self.hashes = {}
+
+  self.patcherThread = love.thread.newThread('app/thread/patcher.lua')
+  self.patcherOut = love.thread.getChannel('patcher.out')
+  self.patchProgress = 0
+  self.patching = false
+  self.fileCount = 390
 end
 
 function MenuLogin:update()
   self:updateCursorPosition()
+
+  local hashed = self.patcherOut:pop()
+  if hashed then
+    if hashed == 'done!' then
+      self:donePatching()
+    else
+      self.patchProgress = hashed
+      print('hashed ' .. hashed .. ' files')
+    end
+  end
+
+  if self.patcherThread:getError() then
+    print(self.patcherThread:getError())
+  end
 end
 
 function MenuLogin:draw()
@@ -90,6 +113,18 @@ function MenuLogin:draw()
   g.setColor(255, 255, 255)
   local scale = v * .325 / data.media.graphics.title:getHeight()
   g.draw(data.media.graphics.title, u * .5, 0, 0, scale, scale, data.media.graphics.title:getWidth() / 2)
+
+  if self.patching then
+    g.setColor(0, 0, 0, 100)
+    g.rectangle('fill', u * .2, v * .45, u * .6, v * .1)
+
+    g.setColor(100, 100, 100)
+    g.rectangle('line', u * .2 + .5, v * .45 + .5, u * .6, v * .1)
+
+    g.setColor(200, 200, 200)
+    local percent = self.patchProgress / self.fileCount
+    g.rectangle('fill', u * .2 + 8, v * .45 + 8, (u * .6 - 16) * percent, v * .1 - 16)
+  end
 end
 
 function MenuLogin:keypressed(key)
@@ -148,11 +183,19 @@ function MenuLogin:hubMessage(message, data)
     else
       ctx.user = data.user
       ctx.user.token = data.token
-      ctx.hub:send('connect')
-      ctx.loader:set('Connecting to juju hub...')
+      self:patch()
     end
   elseif message == 'connect' then
-    ctx:push('patcher')
+    if data.patch then
+      ctx.hub:send('patch', {hashes = self.hashes})
+      ctx.loader:set('Patching...')
+    else
+      ctx:push('main')
+      ctx.loader:unset()
+    end
+  elseif message == 'patch' then
+    
+    ctx:push('main')
     ctx.loader:unset()
   end
 end
@@ -200,4 +243,17 @@ end
 
 function MenuLogin:resize()
   table.clear(self.geometry)
+end
+
+function MenuLogin:patch()
+  ctx.loader:set('Checking game version...')
+
+  self.patcherThread:start()
+  self.patching = true
+
+  -- ctx.hub:send('connect', {gameHash = gameHash})
+end
+
+function MenuLogin:donePatching()
+  ctx.hub:send('connect')
 end

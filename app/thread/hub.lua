@@ -2,8 +2,8 @@ local hub = (require 'socket').tcp()
 local http = require 'socket.http'
 local json = require 'lib/deps/dkjson'
 
-local receiveQueue = love.thread.getChannel('hubReceiveQueue')
-local sendQueue = love.thread.getChannel('hubSendQueue')
+local receiveQueue = love.thread.getChannel('hub.receive')
+local sendQueue = love.thread.getChannel('hub.send')
 
 local serverAddress = '96.126.101.55'
 

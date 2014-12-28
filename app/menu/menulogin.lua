@@ -152,7 +152,7 @@ function MenuLogin:hubMessage(message, data)
       ctx.loader:set('Connecting to juju hub...')
     end
   elseif message == 'connect' then
-    ctx:push('main')
+    ctx:push('patcher')
     ctx.loader:unset()
   end
 end

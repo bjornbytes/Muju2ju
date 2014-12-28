@@ -24,6 +24,7 @@ function Menu:load(user)
   self.pages = {
     signup = MenuSignup(),
     login = MenuLogin(),
+    patcher = MenuPatcher(),
     main = MenuMain(),
     lobby = MenuLobby()
   }

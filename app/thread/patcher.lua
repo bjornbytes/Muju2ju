@@ -37,4 +37,5 @@ end
 
 local gameHash = sha1(table.concat(hashes, ''))
 
-out:push('done!')
+out:push('done')
+out:push(gameHash)

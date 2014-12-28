@@ -52,10 +52,12 @@ function MenuLogin:update()
 
   local hashed = self.patcherOut:pop()
   if hashed then
-    if hashed == 'done!' then
-      self:donePatching()
+    if hashed == 'done' then
+      self.hash = self.patcherOut:pop()
+      self:doneHashing(self.hash)
     else
-      self.patchProgress = hashed
+      print(hashed)
+      self.patchProgress = tonumber(hashed)
       print('hashed ' .. hashed .. ' files')
     end
   end
@@ -250,10 +252,8 @@ function MenuLogin:patch()
 
   self.patcherThread:start()
   self.patching = true
-
-  -- ctx.hub:send('connect', {gameHash = gameHash})
 end
 
-function MenuLogin:donePatching()
-  ctx.hub:send('connect')
+function MenuLogin:doneHashing(hash)
+  ctx.hub:send('connect', {gameHash = hash})
 end

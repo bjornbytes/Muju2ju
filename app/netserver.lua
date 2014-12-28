@@ -419,7 +419,7 @@ function NetServer:emit(evt, data)
   table.insert(buffer, {evt, data, tick})
   ctx.event:emit(evt, data)
 
-  self.host:flush()
+  if self.host then self.host:flush() end
 end
 
 function NetServer:sync()

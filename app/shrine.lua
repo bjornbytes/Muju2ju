@@ -28,14 +28,14 @@ function Shrine:init()
 end
 
 function Shrine:update()
-  self.healthDisplay = math.lerp(self.healthDisplay, self.health, 2 * tickRate)
+  self.healthDisplay = math.lerp(self.healthDisplay, self.health, math.min(2 * tickRate, 1))
 
-  self.hurtFactor = math.lerp(self.hurtFactor, (tick - self.lastHurt) * tickRate < 5 and 1 or 0, 4 * tickRate)
+  self.hurtFactor = math.lerp(self.hurtFactor, (tick - self.lastHurt) * tickRate < 5 and 1 or 0, math.min(4 * tickRate, 1))
 
   if ctx.id then
     local p = ctx.players:get(ctx.id)
-    self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, .6 * tickRate)
-    self.highlight = math.lerp(self.highlight, p:atShrine() and 128 or 0, 5 * tickRate)
+    self.color = table.interpolate(self.color, p.dead and {160, 100, 225} or {255, 255, 255}, math.min(.6 * tickRate, 1))
+    self.highlight = math.lerp(self.highlight, p:atShrine() and 128 or 0, math.min(5 * tickRate, 1))
   end
 end
 

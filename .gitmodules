@@ -13,3 +13,6 @@
 [submodule "lib/deps/spine"]
 	path = lib/deps/spine
 	url = https://github.com/bjornswenson/spine-runtimes
+[submodule "lib/deps/sha1"]
+	path = lib/deps/sha1
+	url = https://github.com/kikito/sha1.lua

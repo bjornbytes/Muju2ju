@@ -20,13 +20,13 @@ Duju.states.idle = {
 Duju.states.walk = {
   priority = 1,
   loop = true,
-  speed = 1
+  speed = .5
 }
 
 Duju.states.attack = {
   priority = 1,
   loop = true,
-  speed = 1
+  speed = .4
 }
 
 Duju.states.headbutt = {

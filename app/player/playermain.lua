@@ -55,7 +55,7 @@ function PlayerMain:trace(data)
   self.x = data.x or self.x
   self.health = data.health and ((data.health / 255) * self.maxHealth) or self.health
 
-  if self.ghost:contained() then
+  if true or self.ghost:contained() then
     self.ghostX = data.ghostX or self.ghostX
     self.ghostY = data.ghostY or self.ghostY
   end

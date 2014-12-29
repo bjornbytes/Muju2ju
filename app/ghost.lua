@@ -81,7 +81,7 @@ function Ghost:draw(x, y, angle)
   local bounds = math.lerp(self.prevMaxDis, self.maxDis, tickDelta / tickRate)
 	g.circle('fill', self.owner.x, self.owner.y + self.owner.height, bounds)
 
-  self.drawX, self.drawY = x, y
+  self.drawX, self.drawY = x or self.owner.ghostX, y or self.owner.ghostY
 end
 
 function Ghost:move(input)

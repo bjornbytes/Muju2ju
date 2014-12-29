@@ -70,6 +70,8 @@ function PlayerInput:read()
 end
 
 function PlayerInput:keypressed(key)
+  if not self.active then return end
+
   local input = self:current(tick + 1)
 
   if key == 'q' then

@@ -3,7 +3,6 @@ local sha1 = require 'lib/deps/sha1/sha1'
 
 local out = love.thread.getChannel('patcher.out')
 
-local hashed = 0
 local hashes = {}
 
 local ignore = {'.git', '.DS_Store', 'error.log'}
@@ -20,9 +19,9 @@ local function halp(base)
       if love.filesystem.isDirectory(path) then
         halp(path)
       else
-        table.insert(hashes, {path = path, hash = sha1(love.filesystem.read(path))})
-        hashed = hashed + 1
-        out:push(hashed)
+        local entry = {path = path, has = sha1(love.filesystem.read(path))}
+        table.insert(hashes, entry)
+        out:push(entry)
       end
     end
   end

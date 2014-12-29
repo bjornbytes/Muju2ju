@@ -89,9 +89,8 @@ function MenuLogin:update()
       self.hash = self.patcherOut:pop()
       self:doneHashing(self.hash)
     else
-      print(hashed)
-      self.patchProgress = tonumber(hashed)
-      print('hashed ' .. hashed .. ' files')
+      self.patchProgress = self.patchProgress + 1
+      if type(hashed) == 'table' then table.insert(self.hashes, hashed) end
     end
   end
 
@@ -335,5 +334,10 @@ function MenuLogin:patch()
 end
 
 function MenuLogin:doneHashing(hash)
+  table.sort(self.hashes, function(a, b) return a.path < b.path end)
+  for key, entry in pairs(self.hashes) do
+    self.hashes[key] = entry.hash
+  end
+
   ctx.hub:send('connect', {gameHash = hash})
 end

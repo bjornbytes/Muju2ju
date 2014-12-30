@@ -15,7 +15,7 @@ local function carry(line)
     local idx = buffer:find('\n')
     if not idx then break end
     local message = buffer:sub(1, idx)
-    print('hub received: ' .. message)
+    --print('hub received: ' .. message)
     receiveQueue:push(message)
     buffer = buffer:sub(idx + 1)
   end
@@ -68,7 +68,7 @@ while true do
 
       receiveQueue:push(json.encode(data))
     else
-      print('hub sending: ' .. str)
+      --print('hub sending: ' .. str)
       local bytes, e = hub:send(str .. '\n')
       if e then print('send error: ' .. e) end
     end

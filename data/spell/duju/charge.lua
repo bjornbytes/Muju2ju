@@ -25,7 +25,7 @@ function Charge:update()
         if self.ability:hasUpgrade('trample') then
           target.buffs:add('chargestun', {stun = self.duration, timer = self.duration})
         else
-          target.buffs:add('distortionslow', {timer = self.duration, slow = self.slowAmount})
+          target.buffs:add('chargeslow', {timer = self.duration, slow = self.slow})
         end
       end
     end)

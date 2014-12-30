@@ -20,7 +20,7 @@ Charge.damage = 5
 Charge.range = 125
 Charge.speed = 625
 Charge.slowDuration = 2
-Charge.slowAmount = .25
+Charge.slow = .25
 
 
 ----------------
@@ -44,7 +44,7 @@ function Charge:use()
     damage = self.damage,
     range = self.range,
     speed = self.speed,
-    amount = self.slowAmount,
+    slow = self.slow,
     duration = self.stunDuration or self.slowDuration,
     ability = self
   })

@@ -19,6 +19,7 @@ function Headbutt:postattack(target, damage)
     if target.buffs then target.buffs:add('headbuttknockback', {offset = offset, ability = self.ability}) end
   end
 
+  local damage = self.unit.damage * modifier
   target:hurt(damage + damage * modifier, self.unit)
 
   self.unit.buffs:remove(self)

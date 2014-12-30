@@ -19,7 +19,7 @@ local function halp(base)
       if love.filesystem.isDirectory(path) then
         halp(path)
       else
-        local entry = {path = path, has = sha1(love.filesystem.read(path))}
+        local entry = {path = path, hash = sha1(love.filesystem.read(path))}
         table.insert(hashes, entry)
         out:push(entry)
       end

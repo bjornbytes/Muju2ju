@@ -335,9 +335,6 @@ end
 
 function MenuLogin:doneHashing(hash)
   table.sort(self.hashes, function(a, b) return a.path < b.path end)
-  for key, entry in pairs(self.hashes) do
-    self.hashes[key] = entry.hash
-  end
 
   ctx.hub:send('connect', {gameHash = hash})
 end

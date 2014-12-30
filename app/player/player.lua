@@ -37,7 +37,7 @@ function Player:init()
   self.jujuRate = 2
 
 	self.selected = 1
-  self.maxPopulation = 1
+  self.maxPopulation = 3
   self.minionCost = 10 -- For Debugging
 
   self.summonTimer = 0

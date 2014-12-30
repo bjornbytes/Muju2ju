@@ -16,7 +16,7 @@ function Headbutt:postattack(target, damage)
       offset = self.ability.knockbackDistance + self.ability.knockbackDistance * self.ability.upgrades.bash.knockbackModifier
     end
 
-    target.buffs:add('headbuttknockback', {offset = offset, ability = self.ability})
+    if target.buffs then target.buffs:add('headbuttknockback', {offset = offset, ability = self.ability}) end
   end
 
   target:hurt(damage + damage * modifier, self.unit)

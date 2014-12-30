@@ -16,7 +16,7 @@ function MenuHub:update()
     if not message then break end
     
     message = json.decode(message)
-    if message and message.cmd then
+    if message and type(message) == 'table' and message.cmd then
       ctx:hubMessage(message.cmd, message.payload)
     end
   end

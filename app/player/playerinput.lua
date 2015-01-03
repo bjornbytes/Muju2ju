@@ -124,6 +124,8 @@ function PlayerInput:mousepressed(x, y, b)
 
   if self.targeting then
     local unit = self.owner.deck[self.owner.selected].instance
+    if not unit then self.targeting = nil return end
+
     local ability = data.ability[unit.class.code][data.unit[unit.class.code].abilities[self.targeting]]
 
     if ability.target == 'unit' or ability.target == 'ally' or ability.target == 'enemy' then

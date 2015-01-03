@@ -83,14 +83,18 @@ end
 function MenuLogin:update()
   self:updateCursorPosition()
 
-  local hashed = self.patcherOut:pop()
-  if hashed then
-    if hashed == 'done' then
-      self.hash = self.patcherOut:pop()
-      self:doneHashing(self.hash)
+  while true do
+    local hashed = self.patcherOut:pop()
+    if hashed then
+      if hashed == 'done' then
+        self.hash = self.patcherOut:pop()
+        self:doneHashing(self.hash)
+      else
+        self.patchProgress = self.patchProgress + 1
+        if type(hashed) == 'table' then table.insert(self.hashes, hashed) end
+      end
     else
-      self.patchProgress = self.patchProgress + 1
-      if type(hashed) == 'table' then table.insert(self.hashes, hashed) end
+      break
     end
   end
 

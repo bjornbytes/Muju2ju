@@ -132,7 +132,7 @@ function Player:slot(input)
     self.summonTimer = self.summonTimer + tickRate
     self.summonTweenTime = math.min(self.summonTweenTime + tickRate, self.summonTweenDuration)
 
-    if self.summonTimer >= .25 then
+    if self.summonTimer >= 30 then
       if self:spend(self.minionCost) then
         ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = self.deck[self.selected].code, x = math.round(self.x)})
 

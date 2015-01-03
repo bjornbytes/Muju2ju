@@ -68,7 +68,7 @@ end
 ----------------
 Unit.stances = {}
 function Unit.stances:defensive()
-  self:changeTarget(ctx.target:closest(self, 'enemy', 'player', 'unit'))
+  self:changeTarget(ctx.target:closest(self, 'enemy', 'unit'))
 
   if self.target and self:inRange(self.target) then
     self:attack(self.target)
@@ -78,7 +78,7 @@ function Unit.stances:defensive()
 end
 
 function Unit.stances:aggressive()
-  self:changeTarget(ctx.target:closest(self, 'enemy', 'shrine', 'player', 'unit'))
+  self:changeTarget(ctx.target:closest(self, 'enemy', 'shrine', 'unit'))
 
   if self.target and self:inRange(self.target) then
     self:attack(self.target)

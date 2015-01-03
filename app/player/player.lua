@@ -126,12 +126,7 @@ function Player:slot(input)
     self.deck[self.selected].instance.stance = Unit.stanceList[input.stance]
   end
 
-  local summoned = table.count(
-    ctx.units:filter(function(u)
-      return u.player == self and
-      u.class.code ==
-      self.deck[input.summon].code
-    end)) > 0
+  local summoned = self.deck[self.selected].instance
 
   if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation and not summoned then
     self.summonTimer = self.summonTimer + tickRate

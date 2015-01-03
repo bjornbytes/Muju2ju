@@ -38,7 +38,8 @@ function PlayerInput:update()
     self.axes[axis] = math.lerp(self.axes[axis] or 0, value, math.min(smooth * tickRate, 1))
   end
 
-  self.active = not ctx.hud.chat.active and not ctx.hud.countdown.active
+  --self.active = not ctx.hud.chat.active and not ctx.hud.countdown.active
+  self.active = true
 
   if self.owner.dead then
     self.targeting = nil

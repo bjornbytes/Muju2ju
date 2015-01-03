@@ -1,6 +1,6 @@
 Map = class()
 
-Map.width, Map.height = 960, 600
+Map.width, Map.height = 1500, 600
 Map.depth = -100
 
 local backgroundData = {

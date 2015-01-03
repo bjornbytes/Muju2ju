@@ -34,7 +34,7 @@ function Player:init()
 
 	self.juju = 100
 	self.jujuTimer = 1
-  self.jujuRate = 2
+  self.jujuRate = 1
 
 	self.selected = 1
   self.maxPopulation = 3
@@ -132,7 +132,7 @@ function Player:slot(input)
     self.summonTimer = self.summonTimer + tickRate
     self.summonTweenTime = math.min(self.summonTweenTime + tickRate, self.summonTweenDuration)
 
-    if self.summonTimer >= 5 then
+    if self.summonTimer >= .25 then
       if self:spend(self.minionCost) then
         ctx.net:emit('unitCreate', {id = ctx.units.nextId, owner = self.id, kind = self.deck[self.selected].code, x = math.round(self.x)})
 

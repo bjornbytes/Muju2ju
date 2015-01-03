@@ -47,7 +47,7 @@ function UnitServer:hurt(amount, source, kind)
     self.dying = true
   end
 
-  if love.math.random() < .05 then
+  if love.math.random() < .15 then
     ctx.net:emit('jujuCreate', {
       id = ctx.jujus.nextId,
       x = math.round(self.x),

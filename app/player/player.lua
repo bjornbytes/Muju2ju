@@ -129,7 +129,8 @@ function Player:slot(input)
   local summoned = table.count(
     ctx.units:filter(function(u)
       return u.player == self and
-      u.class.code == self.deck[input.summon].code
+      u.class.code ==
+      self.deck[input.summon].code
     end)) > 0
 
   if not self.dead and not self.animation.state.blocking and input.summon and self.juju >= self.minionCost and self:getPopulation() < self.maxPopulation and not summoned then

@@ -67,7 +67,7 @@ end
 function Target:atMouse(...)
   local mx, my = ctx.view:worldPoint(love.mouse.getPosition())
   for _, entry in ipairs(self:inRange(...)) do
-    if entry[1]:contains(mx, my) then return unpack(entry) end
+    if entry[1] and entry[1]:contains(mx, my) then return unpack(entry) end
   end
   return nil
 end

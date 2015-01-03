@@ -1,8 +1,20 @@
 require 'require'
 
 runes = {
-  { name = 'Rune of Fortitude',
-    description = 'This rune will make your minions more stronk.'
+  { name = 'Agility Rune',
+    description = 'This rune will make your minion faster.'
+  },
+  { name = 'Force Rune',
+    description = '50 DPS PLUS'
+  },
+  { name = 'Fortitude Rune',
+    description = 'This rune will make your minion stronk.'
+  },
+  { name = 'Frenzy Rune',
+    description = 'This rune will make ur minion like its on some speed',
+  },
+  { name = 'Range Rune',
+    description = 'This rune will make ur minion attack farther'
   }
 }
 

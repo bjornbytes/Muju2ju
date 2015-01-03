@@ -83,13 +83,14 @@ NetClient.messages.input = {
     x = 'float',
     y = 'float',
     summon = 'bool',
+    die = 'bool',
     selected = 2,
     stance = 2,
     ability = 2,
     target = 10
   },
   delta = {{'x', 'y'}, 'selected', 'stance', 'ability', 'target'},
-  order = {'tick', 'x', 'y', 'summon', 'selected', 'stance', 'ability', 'target'},
+  order = {'tick', 'x', 'y', 'summon', 'die', 'selected', 'stance', 'ability', 'target'},
   receive = function(self, event)
     ctx.players:get(ctx.id):trace(event.data)
   end

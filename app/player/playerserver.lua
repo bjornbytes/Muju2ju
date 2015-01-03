@@ -33,8 +33,6 @@ function PlayerServer:update()
 		return self.jujuRate
 	end)
 
-	self:hurt(self.maxHealth * .033 * tickRate)
-
   Player.update(self)
 end
 
@@ -50,6 +48,10 @@ function PlayerServer:trace(data)
   data.x = math.clamp(data.x, -1, 1)
   data.y = math.clamp(data.y, -1, 1)
   if data.selected then data.selected = math.clamp(data.selected, 1, #self.deck) end
+
+  if data.die then
+    self:die()
+  end
 
   -- if not self.dead then?
   self:move(data)

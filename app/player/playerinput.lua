@@ -52,6 +52,7 @@ function PlayerInput:read()
   input.x = self:getAxis('x')
   input.y = self:getAxis('y')
   input.summon = self.active and lk.isDown(' ')
+  input.die = self.active and lk.isDown('f')
 
   if self.owner.summonTimer > 0 then
     input.x = 0

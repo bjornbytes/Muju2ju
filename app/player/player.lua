@@ -154,6 +154,7 @@ Player.heal = f.empty
 function Player:die()
   self.deathTimer = self.deathDuration
   self.dead = true
+  self.health = 0
   self.ghost:activate()
   self.animation:set('death')
 end

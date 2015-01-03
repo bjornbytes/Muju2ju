@@ -31,11 +31,11 @@ function Siphon:deactivate()
 end
 
 function Siphon:ready()
-  self.buff:setPassive()
+  if self.buff then self.buff:setPassive() end
 end
 
 function Siphon:use()
-  self.buff:setActive()
+  if self.buff then self.buff:setActive() end
 end
 
 
